@@ -239,6 +239,7 @@ def regles():
 <li><b>Composante.</b> Tracée seulement quand D&amp;D la rend indispensable : coûteuse ou consommée. Son prix s'inscrit dans la forme, ramené au plus petit nombre (10 pièces d'une sorte = 1 de la sorte au-dessus : cuivre, argent, or, platine) ; la matière et le métal de la pièce vont en annotation.</li>
 <li><b>Un glyphe, un sort.</b> Deux glyphes strictement identiques sont, par définition, le même sort : tout ce qui distingue un sort s'inscrit dans son glyphe. La construction de la bibliothèque s'arrête si deux sorts différents produisent le même glyphe.</li>
 <li><b>Où s'inscrit ce qui distingue un sort.</b> La nature de l'effet dans l'Impact (annotation du cercle, ou satellite annoté pour un aspect à isoler) ; un Impact plein annoté pour un effet total ; ce sur quoi le sort peut être lancé dans la Condition (« ne peut viser qu'un humanoïde ») ; ce que le sort touche en annotation de la Cible (« tous les alliés dans la zone ») ; les fins anticipées en annotation de la Durée ; les seuils (points de vie, niveau de sort) dans un satellite annoté et chiffré.</li>
+<li><b>Deux éditions de D&amp;D.</b> Les sorts viennent du SRD 5.1 (règles de 2014) et du SRD 5.2 (règles de 2024). Une révision de 2024 qui change le glyphe devient une forme « version 2024 » sur la page du sort ; une révision qui ne le change pas est le même sort et n'ajoute rien. Quand les deux versions n'ont plus rien en commun, la version de 2024 a sa propre entrée.</li>
 <li><b>Une forme par option.</b> Quand un sort laisse choisir l'effet ou la géométrie au lancement, chaque option est un glyphe à part, et la bibliothèque les montre toutes.</li>
 <li><b>Êtres invoqués.</b> L'Impact dit l'être (sa nature) et sa puissance (son intensité), alignée pour l'instant sur le facteur de puissance de D&amp;D ; le nombre d'êtres en satellite.</li>
 <li><b>Jets de sauvegarde.</b> Non inscrits : leur difficulté dépend de l'incantateur, non du sort.</li>
@@ -267,7 +268,7 @@ if __name__ == "__main__":
     for sp in spells:
         for fm in sp["forms"]:
             key = (repr(fm["core"]), repr([(r[0], r[1], tuple(r[2]), repr(r[4:5])) for r in fm["rings"]]), repr(fm["split"]))
-            if key in seen and seen[key][0] != sp["idx"]: dups.append((seen[key][1], f'{sp["fr"]} [{fm["label"]}]'))
+            if key in seen: dups.append((seen[key][1], f'{sp["fr"]} [{fm["label"]}]'))
             else: seen.setdefault(key, (sp["idx"], f'{sp["fr"]} [{fm["label"]}]'))
     if dups:
         print(f"ATTENTION : {len(dups)} glyphe(s) en double")

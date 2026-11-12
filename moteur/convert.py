@@ -13,6 +13,31 @@ from combos import COMBOS, ECOLES, DAMAGE_COMBO, MEDIUM, code
 from translit import alde
 
 SRD = {s["index"]: s for s in json.load(open(DATA + "/srd/spells.json", encoding="utf-8"))}
+
+def _merge24(old, new):
+    """fiche D&D des règles de 2024 : les champs présents en 2024 l'emportent ; ceux que les données de 2024 omettent
+    (zone, dégâts, soins) sont repris de 2014, et les dégâts ne changent de dés que si leur type est resté le même"""
+    r = dict(old or {})
+    for k in ("index", "name", "level", "school", "ritual", "concentration", "classes"):
+        if k in new: r[k] = new[k]
+    r["range"] = re.split(r"\s+component", new["range"], flags=re.I)[0]
+    r["duration"] = new["duration"]
+    ct = new["casting_time"].split(",")[0].strip()
+    r["casting_time"] = {"action": "1 action", "bonus action": "1 bonus action", "reaction": "1 reaction"}.get(ct.lower(), ct)
+    if re.match(r"action \(", ct.lower()): r["casting_time"] = "1 action"
+    r["material"] = (new.get("material") or "").replace("+", "").replace(" GP", " gp").replace("GP", "gp") or None
+    r["desc"] = [new.get("description", "")]
+    if new.get("area_of_effect"): r["area_of_effect"] = new["area_of_effect"]
+    if new.get("heal_at_slot_level"): r["heal_at_slot_level"] = new["heal_at_slot_level"]
+    d_old = (old or {}).get("damage"); d_old = d_old[0] if isinstance(d_old, list) else d_old
+    d_new = new.get("damage")
+    if d_new and (not d_old or d_old.get("damage_type", {}).get("index") == d_new.get("damage_type", {}).get("index") or not old):
+        r["damage"] = d_new
+    r["_ed"] = "2024"
+    return r
+SRD24 = {}
+for _s in json.load(open(DATA + "/srd/spells-2024.json", encoding="utf-8")):
+    SRD24[_s["index"]] = _merge24(SRD.get(_s["index"]), _s)
 GRIM = {s["title"]: s for s in SP.SPELLS}
 
 ACCENTS = {"LUMIERE": "lumière", "NECROSE": "nécrose", "DUREE": "durée", "METRES": "mètres", "KILOMETRES": "kilomètres",
@@ -189,7 +214,7 @@ def cost(s):
     return n, metals[i]
 
 def build_spell(idx, fiche):
-    s = SRD[idx]
+    s = (SRD24 if fiche.get("src") == "2024" else SRD)[fiche.get("src_idx", idx)]
     fr = fiche["fr"]
     level = s["level"]
     ecole, hemi, comb_def = ECOLES[s["school"]["name"]]
@@ -327,8 +352,33 @@ def build_spell(idx, fiche):
     return dict(idx=idx, fr=fr, en=s["name"], level=level, ecole=ecole, fam=fam, verb=verb, core=core, rings=rings, split=split,
                 bsplit=SP.PART[0], svg=svg, rows=rows, r0=r0, notes=notes, dnd=dnd_line(s, fr), pol=pol)
 
+def glyph_key(f):
+    return (repr(f["core"]), repr([(r[0], r[1], tuple(r[2]), repr(r[4:5])) for r in f["rings"]]), repr(f["split"]))
+
 def build_forms(idx, fiche):
-    """toutes les formes d'un sort : la forme principale, puis les variantes (alt)"""
+    """toutes les formes d'un sort ; puis, pour un sort qui existe aussi dans les règles de 2024,
+    ses formes de 2024 qui donnent un glyphe différent (un glyphe identique est le même sort)"""
+    forms = _forms(idx, fiche)
+    if fiche.get("src") == "2024": return forms
+    v = fiche.get("v24", {})
+    if v is None: return forms
+    src_idx = v.get("src_idx", idx)
+    if src_idx not in SRD24: return forms
+    f24 = {**fiche, **{k: x for k, x in v.items() if k not in ("name",)}, "src": "2024", "src_idx": src_idx}
+    if "options" in v and v["options"] is None: f24.pop("options", None)
+    f24["alt"] = [dict(a, **{k: x for k, x in v.items() if k in ("impact", "impact_sats", "impact_add", "aoe", "options")}) if not a.get("grimoire") else a
+                  for a in fiche.get("alt", [])]
+    seen = {glyph_key(f) for f in forms}
+    nom = f" ({v['name']})" if v.get("name") else ""
+    for f in _forms(idx, f24, single_note=False):
+        if glyph_key(f) in seen: continue
+        seen.add(glyph_key(f))
+        f["label"] = f["label"] + " — version 2024" + nom
+        f["notes"] = [f"Règles de 2024{nom} : la révision change ce que le glyphe inscrit."] + [n for n in f["notes"] if not n.startswith("Pas de forme")]
+        forms.append(f)
+    return forms
+
+def _forms(idx, fiche, single_note=True):
     fams = [fiche]
     for alt in fiche.get("alt", []):
         base = {k: v for k, v in fiche.items() if k not in ("grimoire", "alt", "notes", "label", "why_single", "options")}
@@ -341,9 +391,10 @@ def build_forms(idx, fiche):
             forms.append(build_spell(idx, {k: v for k, v in fam.items() if k != "options"})); srcs.append(fam); continue
         for o in opts:
             o = dict(o); lab = o.pop("label")
+            if o.pop("only_base", False) and i > 0: continue
             src = {**{k: v for k, v in fam.items() if k != "options"}, **o}
             forms.append(build_spell(idx, src)); srcs.append({**src, "_opt": lab})
-    if len(forms) == 1 and not fiche.get("single_note") is False:
+    if single_note and len(forms) == 1 and not fiche.get("single_note") is False:
         f0 = forms[0]
         if fiche.get("why_single"): f0["notes"].append(fiche["why_single"])
         elif f0["fam"] == "H": f0["notes"].append("Pas de forme arcane : le sort façonne la matière elle-même, que l'Arcane ne touche pas.")
@@ -376,7 +427,7 @@ def words_of(sp, declared=True):
 SCHOOL_FR = {k: v[0] for k, v in ECOLES.items()}
 def fr_cast(t):
     t = t.lower()
-    m = {"1 action": "1 action", "1 bonus action": "1 action bonus", "1 reaction": "1 réaction"}
+    m = {"1 action": "1 action", "1 bonus action": "1 action bonus", "1 reaction": "1 réaction", "action": "1 action", "bonus action": "1 action bonus", "reaction": "1 réaction"}
     if t in m: return m[t]
     p = parse_time(t); return fr_time(*p) if p else t
 def fr_range(r):
@@ -408,7 +459,8 @@ def fr_duration(d):
 def dnd_line(s, fr):
     lv = "tour de magie" if s["level"] == 0 else f"niveau {s['level']}"
     rit = " (rituel)" if s.get("ritual") else ""
-    return f"D&amp;D 5e : {lv}{rit} · {SCHOOL_FR[s['school']['name']].lower()} · incantation {fr_cast(s['casting_time'])} · portée {fr_range(s['range'])} · durée {fr_duration(s['duration'])}"
+    ed = " (règles de 2024)" if s.get("_ed") else ""
+    return f"D&amp;D 5e{ed} : {lv}{rit} · {SCHOOL_FR[s['school']['name']].lower()} · incantation {fr_cast(s['casting_time'])} · portée {fr_range(s['range'])} · durée {fr_duration(s['duration'])}"
 
 # ---------- bande ----------
 def band_rings(sp):

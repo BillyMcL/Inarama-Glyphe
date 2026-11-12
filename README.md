@@ -1,8 +1,8 @@
 # Bibliothèque glyphique d'Inarama
 
-Les sorts du **SRD 5.1** de D&D transposés en glyphes d'Inarama : chaque sort en **glyphe circulaire** et en **glyphe en bande**, en notation **déclarée** et **non déclarée**, avec la lecture de chaque cercle et la traduction des annotations en Alde.
+Les sorts des **SRD 5.1 et 5.2** de D&D (règles de 2014 et de 2024) transposés en glyphes d'Inarama : chaque sort en **glyphe circulaire** et en **glyphe en bande**, en notation **déclarée** et **non déclarée**, avec la lecture de chaque cercle et la traduction des annotations en Alde.
 
-- 318 sorts, 495 formes (Arcane, Magie hybride, arts rares ; une forme par option de lancement).
+- 346 sorts, 677 formes (Arcane, Magie hybride, arts rares ; une forme par option de lancement ; une forme « version 2024 » quand la révision change le glyphe).
 - Règle d'or : **deux glyphes strictement identiques sont le même sort**. La construction s'arrête si deux sorts différents produisent le même glyphe.
 
 Le système glyphique lui-même (cercles, valeurs, annotations) est défini dans le dépôt de lore [Inarama-lore](https://github.com/BillyMcL/Inarama-lore), qui fait autorité. Cette bibliothèque en est une application : quand une règle change dans le lore, on l'applique ici.
@@ -26,7 +26,8 @@ Le site est publié automatiquement par GitHub Pages à chaque modification de l
 | `moteur/alde.py`, `moteur/translit.py` | Écriture de l'Alde et translittération provisoire des annotations. |
 | `moteur/combos.py` | Les 35 combinaisons élémentaires et la correspondance des écoles. |
 | `moteur/compact.py` | Allègement des pages : chaque syllabe d'Alde dessinée une fois, puis réemployée. |
-| `donnees/srd/spells.json` | Données des sorts du SRD 5.1 (5e-bits). |
+| `donnees/srd/spells.json` | Données des sorts du SRD 5.1, règles de 2014 (5e-bits). |
+| `donnees/srd/spells-2024.json` | Données des sorts du SRD 5.2, règles de 2024 (5e-bits). |
 | `donnees/grimoire_glyphique.html`, `donnees/glyphes_en_bande.html` | Documents de référence dont la page des règles reprend des sections. Le grimoire est en pause : on ne le modifie pas sans décision. |
 
 ## Construire le site sur son ordinateur
@@ -46,6 +47,6 @@ Le fichier `.github/workflows/publier.yml` reconstruit et publie le site à chaq
 
 ## Licence et attribution
 
-Les données de sorts proviennent du *System Reference Document 5.1* de Wizards of the Coast LLC, publié sous licence [Creative Commons Attribution 4.0 International](https://creativecommons.org/licenses/by/4.0/legalcode). Voir `ATTRIBUTION.md`.
+Les données de sorts proviennent des *System Reference Documents 5.1 et 5.2* de Wizards of the Coast LLC, publié sous licence [Creative Commons Attribution 4.0 International](https://creativecommons.org/licenses/by/4.0/legalcode). Voir `ATTRIBUTION.md`.
 
 Le système glyphique, les conversions, les glyphes et l'univers d'Inarama sont des créations originales ; leur licence n'est pas encore fixée.

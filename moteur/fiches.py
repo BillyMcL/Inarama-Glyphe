@@ -797,3 +797,105 @@ FICHES["wall-of-force"].pop("grimoire", None); FICHES["wall-of-force"].update(ve
 PAN = [("FORME", 2, [], "plan : dix panneaux contigus", [(90, 1)]), ("AMPLEUR", 90, ["SURFACE", "METRES"], "90 m² : dix panneaux de 3 m")]
 for k in ("wall-of-force", "wall-of-ice"):
     opts(k, O("Sphère ou dôme", aoe={"type": "sphere", "size": 10}), O("Panneaux", no_aoe=True, forme=PAN))
+
+# ===== Règles de 2024 (SRD 5.2) =====
+# Chaque sort commun reçoit ses formes de 2024 ; celles dont le glyphe ne change pas sont écartées (même sort).
+# V24 corrige ce que les données de 2024 ne disent pas en champs structurés (soins, dégâts d'un autre type, zones).
+ENERGIES = [("Acide", "acide", "Acide sulfurique"), ("Froid", "froid", "Glace"), ("Feu", "feu", "Feu"),
+            ("Foudre", "foudre", "Foudre"), ("Poison", "poison", "Ammoniac"), ("Tonnerre", "tonnerre", "Orage")]
+V24 = {
+"animate-objects": dict(qty_cible=3),
+"antipathy-sympathy": dict(cible=1, cible_obj=["objet"], no_aoe=True, impact_sats=[(36, ["mètres"])]),
+"arcane-sword": dict(impact=(29, None, "4d12 + 3 en moyenne")),
+"contagion": dict(grimoire=None, verb=V("qualite", True), cible=3, options=None, impact=(50, ["nécrose", "poison", "faiblesse"], "11d8 en moyenne, puis la faiblesse")),
+"banishment": dict(grimoire=None, verb=V("trame", True), cible=9, loc=(9, "METRES", "9 m")),
+"cure-wounds": dict(impact=(12, None, "2d8 + 3 en moyenne")),
+"healing-word": dict(impact=(8, None, "2d4 + 3 en moyenne")),
+"mass-cure-wounds": dict(impact=(26, None, "5d8 + 3 en moyenne")),
+"mass-healing-word": dict(impact=(8, None, "2d4 + 3 en moyenne")),
+"prayer-of-healing": dict(qty_cible=5, impact=(9, ["vie", "repos"], "2d8 en moyenne et un court repos")),
+"darkvision": dict(impact=(45, ["vision", "obscurité"], "voir dans le noir à 45 m")),
+"enhance-ability": dict(options=[O(n, **I("aptitude", w)) for n, w in [("Force", "force"), ("Dextérité", "dextérité"), ("Intelligence", "intelligence"), ("Sagesse", "sagesse"), ("Charisme", "charisme")]]),
+"false-life": dict(impact=(9, ["vie", "temporaire"], "2d4 + 4 en moyenne")),
+"flame-strike": dict(impact_sats=[(18, ["lumière"])]),
+"ice-storm": dict(impact=(14, ["froid"], "4d6 en moyenne"), impact_sats=[(11, ["choc"])]),
+"jump": dict(impact=(9, ["saut", "mètres"], "bonds de 9 m")),
+"power-word-kill": dict(impact_sats=[(78, ["esprit"])]),
+"prismatic-spray": dict(impact=(42, ["feu", "acide", "foudre", "poison", "froid", "pétrification", "bannissement"], "12d6 en moyenne, selon la couleur")),
+"ray-of-enfeeblement": dict(impact=(P, ["faiblesse"], "désavantage en Force"), impact_sats=[(5, ["dégâts"])]),
+"sleep": dict(aoe={"type": "sphere", "size": 5}, impact=(P, ["sommeil"], "neutralisée, puis endormie")),
+"color-spray": dict(impact=(P, ["aveuglement"], "aveuglée jusqu'à ton prochain tour")),
+"storm-of-vengeance": dict(aoe={"type": "sphere", "size": 300}),
+"vicious-mockery": dict(impact=(4, ["esprit", "maladresse"], "1d6 en moyenne, puis une attaque maladroite")),
+"weird": dict(impact_sats=[(28, ["esprit"])]),
+"feeblemind": dict(src_idx="befuddlement", name="Befuddlement", dur=None, impact=(65, ["esprit"], "10d12 en moyenne"), impact_sats=[(P, ["incantation"])]),
+"branding-smite": dict(src_idx="shining-smite", name="Shining Smite", impact_sats=[(P, ["révélation", "marque"])]),
+}
+for k in ("conjure-animals", "conjure-minor-elementals", "conjure-woodland-beings", "conjure-fey", "conjure-celestial", "conjure-elemental", "true-strike", "resistance"):
+    FICHES[k]["v24"] = None          # en 2024 ce sont d'autres sorts : entrées séparées
+for k, v in V24.items(): FICHES[k]["v24"] = v
+
+E24 = dict(src="2024")
+NEW24 = {
+# --- entrées séparées : même nom, autre sort ---
+"conjure-animals-2024": dict(E24, src_idx="conjure-animals", fr="Invocation d'animaux (2024)", verb=V("trame"), cible="plein", aoe={"type": "sphere", "size": 10},
+    impact=(17, ["taille"], "3d10 en moyenne"), impact_add=["meute", "esprit"]),
+"conjure-minor-elementals-2024": dict(E24, src_idx="conjure-minor-elementals", fr="Invocation d'élémentaires mineurs (2024)", comb="Air", why="les esprits élémentaires",
+    cible="plein", aoe={"type": "sphere", "size": 15}, no_loc=True, cond=["coup"], impact=(9, ["acide", "froid", "feu", "foudre"], "2d8 à chaque coup"), impact_sats=[(P, ["terrain"])]),
+"conjure-woodland-beings-2024": dict(E24, src_idx="conjure-woodland-beings", fr="Invocation d'êtres sylvestres (2024)", verb=V("trame"), cible="plein",
+    aoe={"type": "sphere", "size": 10}, no_loc=True, impact=(23, None, "5d8 en moyenne"), impact_add=["esprit", "fée"]),
+"conjure-fey-2024": dict(E24, src_idx="conjure-fey", fr="Invocation de fée (2024)", verb=V("trame"), cible=3, impact=(23, ["esprit", "peur"], "3d12 + 3 en moyenne, puis la peur")),
+"conjure-celestial-2024": dict(E24, src_idx="conjure-celestial", fr="Invocation de céleste (2024)", verb=V("trame"), cible="plein", aoe={"type": "cylinder", "size": 10},
+    impact=(29, ["vie"], "4d12 + 3 en moyenne pour qui est soigné"), impact_sats=[(39, ["lumière"])]),
+"conjure-elemental-2024": dict(E24, src_idx="conjure-elemental", fr="Invocation d'élémentaire (2024)", fam="H", cible="plein", aoe={"type": "sphere", "size": 5},
+    options=[O(n, comb=c, why=f"l'esprit de {n.lower()}", impact=(36, [w], "8d8 en moyenne"), impact_sats=[(P, ["entrave"])]) for n, w, c in
+             [("Air", "foudre", "Foudre"), ("Terre", "tonnerre", "Orage"), ("Feu", "feu", "Feu"), ("Eau", "froid", "Glace")]]),
+"resistance-2024": dict(E24, src_idx="resistance", fr="Résistance (2024)", verb=V("ordre"), cible=2, fin=["usage"],
+    options=[O(n, impact=(3, ["garde", w], "1d4 retranché aux dégâts")) for n, w in
+    [("Acide", "acide"), ("Choc", "choc"), ("Froid", "froid"), ("Feu", "feu"), ("Foudre", "foudre"), ("Nécrose", "nécrose"),
+     ("Perforation", "perce"), ("Poison", "poison"), ("Radiance", "lumière"), ("Tranchant", "taille"), ("Tonnerre", "tonnerre")]]),
+"true-strike-2024": dict(E24, src_idx="true-strike", fr="Coup au but (2024)", verb=V("intensite"), cible=3, no_loc=True, impact=(P, ["arme", "lumière"], "une attaque d'arme guidée, radiante au choix")),
+# --- sorts nouveaux du SRD 5.2 ---
+"aura-of-life": dict(E24, fr="Aura de vie", verb=V("nature", True), cible=2, qty_cible=P, aoe={"type": "sphere", "size": 30}, no_loc=True,
+    impact=(P, ["résistance", "nécrose", "vie"], "résistance à la nécrose, maximum préservé"), impact_sats=[(1, ["vie", "mourant"])]),
+"charm-monster": dict(E24, fr="Charme-monstre", fam="H", comb="Pollen", why="ce qui se respire et charme", cible=3, impact=(P, ["charme"], "charmée entièrement"), fin=["offense"],
+    alt=[A("relation")]),
+"chromatic-orb": dict(E24, fr="Orbe chromatique", fam="A", verb=V("existence", True), cible=3, comp=["diamant"],
+    options=[O(n, comb=c, why=f"l'orbe de {w}", impact=(14, [w], "3d8 en moyenne"), impact_sats=[(P, ["rebond"])]) for n, w, c in ENERGIES],
+    alt=[dict(fam="H", label="Forme hybride")]),
+"dissonant-whispers": dict(E24, fr="Murmures dissonants", verb=V("force", True), cible=3, impact_add=["fuite"]),
+"divine-smite": dict(E24, fr="Châtiment divin", verb=V("existence", True), cible=3, no_loc=True, cond=["coup"], impact_sats=[(5, ["fiélon", "mort-vivant"])],
+    alt=[H("Feu", "le feu sacré")]),
+"dragons-breath": dict(E24, fr="Souffle du dragon", fam="A", verb=V("nature"), cible=2,
+    options=[O(n, comb=c, why=f"le souffle de {w}", impact=(11, [w], "3d6 en moyenne"), impact_sats=[(5, ["cône", "mètres"])]) for n, w, c in ENERGIES[:5]],
+    alt=[dict(fam="H", label="Forme hybride")]),
+"elementalism": dict(E24, fr="Élémentalisme", fam="H", cible="plein", aoe={"type": "cube", "size": 5},
+    options=[O("Appel de l'air", comb="Air", why="l'air", **I("brise")), O("Appel de la terre", comb="Terre", why="la terre", **I("poussière", "écriture")),
+             O("Appel du feu", comb="Feu", why="le feu", **I("braise", "flamme")), O("Appel de l'eau", comb="Eau", why="l'eau", **I("bruine", "brume")),
+             O("Façonnage des éléments", fam="A", verb=V("nature"), **I("façonnage", "élément"))]),
+"ensnaring-strike": dict(E24, fr="Frappe piégeante", comb="Plante", why="les lianes", cible=3, no_loc=True, cond=["coup"],
+    impact=(P, ["entrave"], "entravée par des lianes"), impact_sats=[(4, ["perce"])]),
+"hex": dict(E24, fr="Maléfice", verb=V("qualite", True), cible=3, cond=["coup"], impact=(4, ["nécrose"], "1d6 à chaque coup"),
+    options=[O(n, impact_sats=[(P, ["maladresse", w])]) for n, w in [("Force", "force"), ("Dextérité", "dextérité"), ("Constitution", "constitution"),
+             ("Intelligence", "intelligence"), ("Sagesse", "sagesse"), ("Charisme", "charisme")]],
+    alt=[H("Sang", "le sang maudit")]),
+"ice-knife": dict(E24, fr="Couteau de glace", comb="Glace", why="l'éclat de glace", cible=3, impact=(6, ["perce"], "1d10 en moyenne"), impact_sats=[(7, ["froid"])],
+    alt=[A("existence", True)]),
+"mind-spike": dict(E24, fr="Pique mentale", verb=V("visibilite"), cible=3, impact_sats=[(P, ["traque"])]),
+"phantasmal-force": dict(E24, fr="Force fantasmagorique", verb=V("existence"), cible=3, aoe={"type": "cube", "size": 10}, impact=(9, ["esprit", "illusion"], "2d8 en moyenne"),
+    alt=[H("Plasma", ILL)]),
+"power-word-heal": dict(E24, fr="Mot de pouvoir guérisseur", verb=V("existence"), cible=2, cond=["parole"],
+    impact=(P, ["vie", "charme", "peur", "paralysie", "poison", "étourdissement"], "tous ses points de vie, les maux levés"), alt=[H("Sang", "le fluide vital")]),
+"ray-of-sickness": dict(E24, fr="Rayon empoisonné", cible=3, impact_sats=[(P, ["empoisonnement"])], alt=[A("existence", True)]),
+"searing-smite": dict(E24, fr="Châtiment brûlant", cible=3, no_loc=True, cond=["coup"], impact_sats=[(4, ["brûlure"])], alt=[A("existence", True)]),
+"sorcerous-burst": dict(E24, fr="Explosion ensorcelée", fam="A", verb=V("existence", True), cible=3,
+    options=[O(n, comb=c, why=f"l'énergie de {w}", impact=(5, [w], "1d8 en moyenne"), impact_sats=[(3, ["relance"])]) for n, w, c in ENERGIES]
+            + [O("Esprit", only_base=True, impact=(5, ["esprit"], "1d8 en moyenne"), impact_sats=[(3, ["relance"])])],
+    alt=[dict(fam="H", label="Forme hybride")]),
+"starry-wisp": dict(E24, fr="Feu stellaire", verb=V("existence", True), cible=3, impact_sats=[(P, ["révélation"])], alt=[H("Plasma", LUM)]),
+"summon-dragon": dict(E24, fr="Invocation de dragon", verb=V("trame"), cible=9, comp=["effigie"], impact=(P, ["dragon", "esprit"], "un esprit draconique allié")),
+"tsunami": dict(E24, fr="Tsunami", comb="Eau", why="le raz-de-marée", cible="plein", aoe={"type": "line", "size": 300},
+    impact=(33, ["choc"], "6d10 en moyenne"), impact_sats=[(15, ["recul", "mètres"])]),
+"vitriolic-sphere": dict(E24, fr="Sphère vitriolique", cible="plein", aoe={"type": "sphere", "size": 20}, impact_sats=[(13, ["acide", "différé"])], alt=[A("existence", True)]),
+}
+FICHES.update(NEW24)

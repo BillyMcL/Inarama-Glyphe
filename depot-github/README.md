@@ -1,0 +1,51 @@
+# Bibliothèque glyphique d'Inarama
+
+Les sorts du **SRD 5.1** de D&D transposés en glyphes d'Inarama : chaque sort en **glyphe circulaire** et en **glyphe en bande**, en notation **déclarée** et **non déclarée**, avec la lecture de chaque cercle et la traduction des annotations en Alde.
+
+- 318 sorts, 495 formes (Arcane, Magie hybride, arts rares ; une forme par option de lancement).
+- Règle d'or : **deux glyphes strictement identiques sont le même sort**. La construction s'arrête si deux sorts différents produisent le même glyphe.
+
+Le système glyphique lui-même (cercles, valeurs, annotations) est défini dans le dépôt de lore [Inarama-lore](https://github.com/BillyMcL/Inarama-lore), qui fait autorité. Cette bibliothèque en est une application : quand une règle change dans le lore, on l'applique ici.
+
+## Lire la bibliothèque
+
+Le site est publié automatiquement par GitHub Pages à chaque modification de la branche `main` :
+**https://billymcl.github.io/Inarama-Glyphe/**
+
+## Arborescence
+
+| Chemin | Rôle |
+|---|---|
+| `moteur/fiches.py` | **Les fiches des sorts** : ce que les données D&D ne disent pas (nom français, famille, verbe, combinaison, cible, condition, impact, options…). C'est le fichier qu'on modifie le plus souvent. |
+| `moteur/convert.py` | Conversion d'un sort D&D en glyphe : unités, valeurs, cercles, satellites, répartition astrale. |
+| `moteur/site.py` | Génération du site (index, pages des sorts, règles) et contrôle d'unicité. |
+| `moteur/gen_glyphs.py` | Dessin du glyphe circulaire. |
+| `moteur/band_glyph.py` | Dessin du glyphe en bande. |
+| `moteur/spells.py` | Valeurs (alphabet des neuf formes), noyaux, sorts validés du grimoire. |
+| `moteur/build_picto.py` | Pictogrammes des douze verbes du noyau. |
+| `moteur/alde.py`, `moteur/translit.py` | Écriture de l'Alde et translittération provisoire des annotations. |
+| `moteur/combos.py` | Les 35 combinaisons élémentaires et la correspondance des écoles. |
+| `moteur/compact.py` | Allègement des pages : chaque syllabe d'Alde dessinée une fois, puis réemployée. |
+| `donnees/srd/spells.json` | Données des sorts du SRD 5.1 (5e-bits). |
+| `donnees/grimoire_glyphique.html`, `donnees/glyphes_en_bande.html` | Documents de référence dont la page des règles reprend des sections. Le grimoire est en pause : on ne le modifie pas sans décision. |
+
+## Construire le site sur son ordinateur
+
+Il faut Python 3.10 ou plus récent, sans aucune bibliothèque à installer.
+
+```
+python moteur/site.py site
+```
+
+Le site apparaît dans le dossier `site/` (ignoré par git) : ouvrir `site/index.html`.
+Pour que la construction s'arrête en cas de glyphe en double, comme sur GitHub : `STRICT=1 python moteur/site.py site` (sous Windows PowerShell : `$env:STRICT=1; python moteur/site.py site`).
+
+## Publication
+
+Le fichier `.github/workflows/publier.yml` reconstruit et publie le site à chaque envoi sur `main`. Une seule fois, dans les réglages du dépôt : **Settings → Pages → Build and deployment → Source : GitHub Actions**.
+
+## Licence et attribution
+
+Les données de sorts proviennent du *System Reference Document 5.1* de Wizards of the Coast LLC, publié sous licence [Creative Commons Attribution 4.0 International](https://creativecommons.org/licenses/by/4.0/legalcode). Voir `ATTRIBUTION.md`.
+
+Le système glyphique, les conversions, les glyphes et l'univers d'Inarama sont des créations originales ; leur licence n'est pas encore fixée.

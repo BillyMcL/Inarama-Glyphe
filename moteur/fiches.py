@@ -911,11 +911,15 @@ CMD35 = [O(n, **I("mot", w, why=d)) for n, w, d in [("Approche", "approche", "ve
 V35 = {
 "bane": dict(qty_cible=P, impact=(1, ["chance", "coup", "peur"], "1 retranché aux attaques et aux sauvegardes contre la peur")),
 "bless": dict(qty_cible=P, impact=(1, ["chance", "coup", "peur"], "1 ajouté aux attaques et aux sauvegardes contre la peur")),
-"charm-person": {}, "hold-person": {}, "suggestion": {}, "charm-monster": {}, "confusion": {}, "dominate-person": {},
-"hold-monster": {}, "irresistible-dance": {}, "power-word-stun": {}, "dominate-monster": {}, "power-word-kill": {},
+"charm-person": {}, "suggestion": {}, "confusion": {}, "dominate-person": {},
+"irresistible-dance": {}, "power-word-stun": {}, "dominate-monster": {}, "power-word-kill": {},
 "enthrall": {}, "hideous-laughter": {}, "zone-of-truth": {}, "animal-messenger": {},
-"command": dict(options=CMD35),
-"sleep": dict(impact=(18, ["sommeil", "vie"], "4 DV, soit 18 points de vie de créatures endormies")),
+"command": dict(options=CMD35 + [dict(o, label=o["label"] + " — suprême", src_idx="command-greater", qty_cible=9) for o in CMD35]),
+"sleep": dict(options=[O("Sommeil", impact=(18, ["sommeil", "vie"], "4 DV, soit 18 points de vie de créatures endormies")),
+                       O("Sommeil profond", src_idx="deep-slumber", impact=(45, ["sommeil", "vie"], "10 DV, soit 45 points de vie de créatures endormies"))]),
+"hold-person": dict(options=[O("Immobilisation de personne"), O("Immobilisation de personnes", src_idx="hold-person-mass", qty_cible=P)]),
+"hold-monster": dict(options=[O("Immobilisation de monstre"), O("Immobilisation de monstres", src_idx="hold-monster-mass", qty_cible=P)]),
+"charm-monster": dict(options=[O("Charme-monstre"), O("Charme-monstre de groupe", src_idx="charm-monster-mass", impact=(135, ["charme", "vie"], "30 DV, soit 135 points de vie de créatures charmées"))]),
 "aid": dict(qty_cible=None, impact=(8, ["vie", "temporaire"], "1d8 + 3 en moyenne"), impact_sats=[(1, ["courage"])]),
 "calm-emotions": dict(cond=[], options=None, impact=(P, ["calme", "fureur", "peur", "confusion"], "fureur, peur et confusion suspendues")),
 "heroism": dict(impact=(2, ["courage", "coup", "résistance", "aptitude"], "+2 aux attaques, sauvegardes et compétences"), impact_sats=[]),
@@ -941,20 +945,15 @@ NEW35 = {
 "animal-trance": dict(src="3.5", fr="Transe animale", verb=V("relation"), cible=P, cond=["bête", "instinct"], impact=(32, ["fascination", "vie"], "2d6 DV, soit 32 points de vie d'animaux fascinés")),
 "hold-animal": F35("hold-person", "Immobilisation d'animal", cond=["bête"]),
 "touch-of-idiocy": dict(src="3.5", fr="Contact débilitant", verb=V("intensite", True), cible=3, impact=(4, ["intellect", "sagesse", "charisme"], "1d6 retranché à chacune")),
-"deep-slumber": F35("sleep", "Sommeil profond", impact=(45, ["sommeil", "vie"], "10 DV, soit 45 points de vie de créatures endormies")),
 "good-hope": dict(src="3.5", fr="Espoir", verb=V("intensite"), cible=2, qty_cible=7, impact=(2, ["espoir", "coup", "résistance", "aptitude", "dégâts"], "+2 aux attaques, dégâts, sauvegardes et tests")),
 "prayer": dict(src="3.5", fr="Prière", verb=V("intensite"), cible=P, impact=(1, ["chance", "coup", "résistance", "aptitude", "dégâts"], "+1 aux alliés, 1 retranché aux ennemis")),
 "rage": dict(src="3.5", fr="Rage", verb=V("intensite"), cible=2, qty_cible=1, impact=(2, ["fureur", "force", "constitution"], "+2 en Force et en Constitution, la garde baissée")),
 "crushing-despair": dict(src="3.5", fr="Désespoir foudroyant", verb=V("intensite", True), cible=P, impact=(2, ["désespoir", "coup", "résistance", "aptitude", "dégâts"], "2 retranché aux attaques, dégâts, sauvegardes et tests")),
 "geas-lesser": F35("geas", "Quête mineure", cond=["compréhension", "seuil"], cond_sats=[(32, ["vie"])], impact_sats=[(2, ["aptitude", "jour"])]),
-"command-greater": F35("command", "Injonction suprême", qty_cible=9, options=CMD35),
 "mind-fog": dict(src="3.5", fr="Brume mentale", verb=V("intensite", True), cible=P, impact=(10, ["brume", "sagesse", "volonté"], "10 retranché à la Sagesse et à la volonté")),
 "song-of-discord": dict(src="3.5", fr="Chant de discorde", verb=V("relation", True), cible=P, impact=(1, ["discorde", "moitié"], "une chance sur deux de frapper son voisin")),
 "heroism-greater": F35("heroism", "Héroïsme suprême", impact=(4, ["courage", "coup", "résistance", "aptitude"], "+4 aux attaques, sauvegardes et compétences"),
     impact_sats=[(11, ["vie", "temporaire"]), (P, ["intrépidité"])]),
-"hold-person-mass": F35("hold-person", "Immobilisation de personnes", qty_cible=P),
-"hold-monster-mass": F35("hold-monster", "Immobilisation de monstres", qty_cible=P),
-"charm-monster-mass": F35("charm-monster", "Charme-monstre de groupe", impact=(135, ["charme", "vie"], "30 DV, soit 135 points de vie de créatures charmées")),
 "insanity": F35("confusion", "Aliénation mentale", cible=3, dur=(P, None)),
 "power-word-blind": F35("power-word-stun", "Mot de pouvoir aveuglant", dur=(P, "VIE"), cond_sats=[(200, ["vie"])], impact=(P, ["aveuglement"], "aveuglée")),
 "demand": F35("sending", "Exigence", impact=(P, ["message", "conduite"], "un message et la conduite suggérée")),
@@ -1033,11 +1032,14 @@ V35c = {
 "banishment": {}, "sequester": {}, "mind-blank": {}, "imprisonment": {},
 "resistance": dict(impact=(1, ["garde", "résistance"], "1 ajouté aux sauvegardes"), fin=[]),
 "glyph-of-warding": dict(options=[O("Glyphe explosif", impact=(9, ["piège", "explosion"], "2d8 en moyenne"), impact_sats=[]),
-                                  O("Glyphe de sort", impact=(P, ["piège", "sort"], "un sort enfermé"), impact_sats=[(3, ["seuil", "niveau"])])]),
+                                  O("Glyphe de sort", impact=(P, ["piège", "sort"], "un sort enfermé"), impact_sats=[(3, ["seuil", "niveau"])]),
+                                  O("Glyphe explosif suprême", src_idx="glyph-of-warding-greater", impact=(23, ["piège", "explosion"], "5d8 en moyenne"), impact_sats=[]),
+                                  O("Glyphe de sort suprême", src_idx="glyph-of-warding-greater", impact=(P, ["piège", "sort"], "un sort enfermé"), impact_sats=[(6, ["seuil", "niveau"])])]),
 "protection-from-energy": dict(impact_sats=[(60, ["plafond"])]),
 "stoneskin": dict(impact=(10, ["garde", "coup"], "10 retranché à chaque coup d'arme"), impact_sats=[(70, ["plafond"])]),
 "forbiddance": dict(impact_sats=[(21, ["hostile"])]),
-"globe-of-invulnerability": dict(impact_sats=[(4, ["seuil", "niveau"])]),
+"globe-of-invulnerability": dict(options=[O("Globe d'invulnérabilité", impact_sats=[(4, ["seuil", "niveau"])]),
+                                          O("Globe d'invulnérabilité partielle", src_idx="globe-of-invulnerability-lesser", impact_sats=[(3, ["seuil", "niveau"])])]),
 "protection-from-evil-and-good": dict(src_idx="protection-from-evil", comp=[], impact=GARDE(2), impact_sats=[(P, ["contrôle"]), (P, ["invoqué"])],
                                       options=TRI("protection-from-evil", "protection-from-law", "protection-from-chaos")),
 "magic-circle": dict(src_idx="magic-circle-against-evil", comp=[], cible=P, cible_note=[], impact=GARDE(2), impact_sats=[(P, ["contrôle"]), (P, ["invoqué", "barrière"])],
@@ -1069,17 +1071,15 @@ NEW35c = {
 "antiplant-shell": dict(src="3.5", fr="Coquille antivégétale", verb=V("force", True), cible=P, impact=(P, ["barrière", "plante"], "les plantes tenues au dehors")),
 "dimensional-anchor": dict(src="3.5", fr="Ancre dimensionnelle", verb=V("mouvement", True), cible=3, impact=(P, ["passage", "plan"], "nul voyage extradimensionnel")),
 "fire-trap": dict(src="3.5", fr="Piège de feu", fam="H", comb="Feu", why="le feu", cible=1, cible_obj=["objet"], cond=["ouverture"], comp=["or"], impact=(10, ["feu", "explosion"], "1d4 + 7 en moyenne")),
-"globe-of-invulnerability-lesser": F35("globe-of-invulnerability", "Globe d'invulnérabilité partielle", impact_sats=[(3, ["seuil", "niveau"])]),
 "repel-vermin": dict(src="3.5", fr="Répulsif", verb=V("force", True), cible=P, impact=(P, ["barrière", "vermine"], "la vermine tenue au dehors"), impact_sats=[(7, ["douleur"])]),
-"spell-immunity": dict(src="3.5", fr="Immunité contre les sorts", verb=SEP, cible=2, impact=(1, ["immunité", "sort"], "un sort désigné sans effet"), impact_sats=[(4, ["seuil", "niveau"])]),
-"spell-immunity-greater": dict(src="3.5", fr="Immunité contre les sorts suprême", verb=SEP, cible=2, impact=(3, ["immunité", "sort"], "trois sorts désignés sans effet"), impact_sats=[(8, ["seuil", "niveau"])]),
+"spell-immunity": dict(src="3.5", fr="Immunité contre les sorts", verb=SEP, cible=2,
+    options=[O("Immunité contre les sorts", impact=(1, ["immunité", "sort"], "un sort désigné sans effet"), impact_sats=[(4, ["seuil", "niveau"])]),
+             O("Immunité contre les sorts suprême", src_idx="spell-immunity-greater", impact=(3, ["immunité", "sort"], "trois sorts désignés sans effet"), impact_sats=[(8, ["seuil", "niveau"])])]),
 "atonement": dict(src="3.5", fr="Pénitence", verb=V("qualite"), cible=2, comp=["chapelet"], cond=["repentir"], impact=(P, ["faute", "pardon"], "la faute levée, les dons rendus")),
 "break-enchantment": dict(src="3.5", fr="Délivrance", verb=V("qualite"), cible=2, qty_cible=9, impact=(P, ["enchantement", "transmutation", "malédiction"], "libérée des sorts et des malédictions")),
 "dismissal": dict(src="3.5", fr="Renvoi", verb=V("trame", True), cible=9, impact=(P, ["exil"], "renvoyée sur son plan"), impact_sats=[(1, ["égarement", "cinquième"])]),
 "spell-resistance": dict(src="3.5", fr="Résistance à la magie", verb=SEP, cible=2, impact=(21, ["résistance", "magie"], "résistance à la magie de 21")),
 "dispel-magic-greater": dict(src="3.5", fr="Dissipation suprême", verb=SEP, cible=P, impact=(P, ["sort", "dissipation", "malédiction"], "les sorts prennent fin, malédictions comprises")),
-"glyph-of-warding-greater": F35("glyph-of-warding", "Glyphe de garde suprême", options=[O("Glyphe explosif suprême", impact=(23, ["piège", "explosion"], "5d8 en moyenne"), impact_sats=[]),
-    O("Glyphe de sort suprême", impact=(P, ["piège", "sort"], "un sort enfermé"), impact_sats=[(6, ["seuil", "niveau"])])]),
 "repulsion": dict(src="3.5", fr="Répulsion", verb=V("force", True), cible=P, comp=["fer"], impact=(P, ["répulsion"], "nul ne peut s'approcher")),
 "spell-turning": dict(src="3.5", fr="Renvoi des sorts", verb=V("force", True), cible=1, impact=(9, ["sort", "renvoi"], "1d4 + 6 niveaux de sorts renvoyés")),
 "dimensional-lock": dict(src="3.5", fr="Verrou dimensionnel", verb=V("mouvement", True), cible=P, impact=(P, ["passage", "plan"], "nul voyage extradimensionnel dans la zone")),
@@ -1089,3 +1089,101 @@ NEW35c = {
 "mages-disjunction": dict(src="3.5", fr="Disjonction", verb=V("ordre", True), cible=P, impact=(P, ["magie", "disjonction"], "sorts défaits, objets magiques éteints")),
 }
 FICHES.update(NEW35c)
+
+# ===== D&D 3.5 — lot 4 : Invocation =====
+# Règle des échelons : des variantes qui ne diffèrent que par les chiffres (intensité, quantité, seuil) sont un même sort, une page,
+# une forme par échelon ; si l'effet change, entrée séparée.
+# Êtres convoqués : puissance = facteur de puissance estimé de la meilleure créature de chaque liste 3.5 (même échelle que la 5e).
+ROM = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"]
+CR35 = [0.5, 1, 2, 4, 5, 7, 9, 11, 12]
+def _pw(p, w):
+    return (1, w + ["moitié"], "puissance ½") if p == 0.5 else (p, w, f"puissance {p}")
+def SUMMON(prefix, kinds):
+    out = []
+    for n in range(1, 10):
+        ch = [(n, 1)] + ([(n - 1, 2)] if n >= 2 else []) + ([(n - 2, 4)] if n >= 3 else [])
+        for lab, w in kinds:
+            for r, q in ch:
+                p = CR35[r - 1]; ps = "½" if p == 0.5 else str(p)
+                o = O(f"Rang {ROM[n-1]} — {q} être{'s' if q > 1 else ''} de puissance {ps}" + (f" — {lab}" if lab else ""),
+                      src_idx=f"{prefix}-{ROM[n-1].lower()}", impact=_pw(p, list(w)))
+                if q > 1: o["impact_sats"] = [(q, ["nombre"])]
+                out.append(o)
+    return out
+CURE = lambda: [O("Soins mineurs", src_idx="cure-minor-wounds", impact=(1, None, "1 point de vie")),
+                O("Soins légers", src_idx="cure-light-wounds", impact=(6, None, "1d8 + 1 en moyenne")),
+                O("Soins modérés", src_idx="cure-moderate-wounds", impact=(12, None, "2d8 + 3 en moyenne")),
+                O("Soins importants", src_idx="cure-serious-wounds", impact=(19, None, "3d8 + 5 en moyenne")),
+                O("Soins intensifs", src_idx="cure-critical-wounds", impact=(25, None, "4d8 + 7 en moyenne"))]
+CUREM = lambda: [O("Soins légers de groupe", src_idx="cure-light-wounds-mass", qty_cible=9, impact=(14, None, "1d8 + 9 en moyenne")),
+                 O("Soins modérés de groupe", src_idx="cure-moderate-wounds-mass", qty_cible=11, impact=(20, None, "2d8 + 11 en moyenne")),
+                 O("Soins importants de groupe", src_idx="cure-serious-wounds-mass", qty_cible=13, impact=(27, None, "3d8 + 13 en moyenne")),
+                 O("Soins intensifs de groupe", src_idx="cure-critical-wounds-mass", qty_cible=15, impact=(33, None, "4d8 + 15 en moyenne"))]
+V35d = {
+"acid-splash": {}, "grease": {}, "mage-armor": {}, "unseen-servant": {}, "acid-arrow": {}, "web": {}, "create-food-and-water": {},
+"phantom-steed": {}, "sleet-storm": {}, "stinking-cloud": {}, "dimension-door": {}, "raise-dead": {}, "secret-chest": {},
+"tree-stride": {}, "wall-of-stone": {},
+"black-tentacles": dict(impact=(8, ["étreinte", "choc"], "1d6 + 4 en moyenne, à chaque tour")),
+"cloudkill": dict(impact=(P, ["mort", "poison"], "les plus faibles tués"), impact_sats=[(27, ["seuil", "vie"]), (3, ["constitution"])]),
+"insect-plague": dict(impact=(P, ["nuée", "insectes"], "des nuées de criquets"), impact_sats=[(3, ["nombre"])]),
+"wall-of-thorns": dict(impact=(P, ["épine", "mur"], "un mur de ronces qui déchire et entrave")),
+"heal": dict(impact=(110, None, "10 par niveau, soit 110 points de vie, et les maux levés")),
+"heroes-feast": {}, "transport-via-plants": {}, "word-of-recall": {}, "instant-summons": {}, "plane-shift": {},
+"regenerate": {}, "resurrection": {}, "incendiary-cloud": {}, "maze": {}, "gate": dict(comp=[]), "storm-of-vengeance": {},
+"teleportation-circle": {}, "true-resurrection": {},
+"cure-wounds": dict(src_idx="cure-light-wounds", name="Cure Wounds", options=CURE()),
+"mass-cure-wounds": dict(src_idx="cure-light-wounds-mass", name="Mass Cure Wounds", no_aoe=True, options=CUREM()),
+"mass-heal": dict(src_idx="heal-mass", name="Mass Heal", impact=(170, None, "10 par niveau, soit 170 points de vie chacun")),
+"lesser-restoration": dict(src_idx="restoration-lesser", options=[
+    O("Caractéristique", impact=(P, ["aptitude", "fatigue"], "une caractéristique rendue, la fatigue levée")),
+    O("Maladie", src_idx="remove-disease", impact=(P, ["maladie"], "toutes les maladies levées")),
+    O("Cécité", src_idx="remove-blindness-deafness", impact=(P, ["aveuglement"], "la cécité levée")),
+    O("Surdité", src_idx="remove-blindness-deafness", impact=(P, ["surdité"], "la surdité levée")),
+    O("Paralysie", src_idx="remove-paralysis", impact=(P, ["paralysie"], "la paralysie levée")),
+    O("Poison", src_idx="neutralize-poison", impact=(P, ["poison"], "le poison neutralisé"))]),
+"greater-restoration": dict(src_idx="restoration", options=[
+    O("Restauration", impact=(1, ["aptitude", "niveau"], "un niveau perdu rendu")),
+    O("Restauration suprême", src_idx="restoration-greater", comp=[], impact=(P, ["aptitude", "niveau"], "tous les niveaux perdus rendus"))]),
+"teleport": dict(options=[O("Téléportation"), O("Téléportation suprême", src_idx="teleport-greater")]),
+"planar-ally": dict(src_idx="planar-ally-lesser", options=[O("Allié planaire mineur", impact=(27, ["être", "vie"], "6 DV, soit 27 points de vie")),
+    O("Allié planaire", src_idx="planar-ally", impact=(54, ["être", "vie"], "12 DV, soit 54 points de vie")),
+    O("Allié planaire majeur", src_idx="planar-ally-greater", impact=(81, ["être", "vie"], "18 DV, soit 81 points de vie"))]),
+"planar-binding": dict(src_idx="planar-binding-lesser", comp=[], options=[O("Lien planaire mineur", impact=(27, ["service", "vie"], "6 DV, soit 27 points de vie")),
+    O("Lien planaire", src_idx="planar-binding", impact=(54, ["service", "vie"], "12 DV, soit 54 points de vie")),
+    O("Lien planaire majeur", src_idx="planar-binding-greater", impact=(81, ["service", "vie"], "18 DV, soit 81 points de vie"))]),
+"create-or-destroy-water": dict(src_idx="create-water", name="Create Water", options=None, impact=(8, ["eau", "litres", "création"], "8 litres créés")),
+"fog-cloud": dict(options=[O("Nappe de brouillard"), O("Brume de dissimulation", src_idx="obscuring-mist")]),
+"faithful-hound": dict(src_idx="mages-faithful-hound", name="Mage's Faithful Hound", impact=(10, ["morsure"], "2d6 + 3 en moyenne")),
+"magnificent-mansion": dict(src_idx="mages-magnificent-mansion", name="Mage's Magnificent Mansion"),
+}
+for k, v in V35d.items(): FICHES[k]["v35"] = v
+INV = lambda **kw: {**dict(src="3.5", verb=V("trame")), **kw}
+NEW35d = {
+"summon-monster-i": INV(fr="Convocation de monstres", cible=9, options=SUMMON("summon-monster", [("lumineux", ["être", "lumineux"]), ("ténébreux", ["être", "ténébreux"])])),
+"summon-natures-ally-i": INV(fr="Convocation d'alliés naturels", cible=7, cible_note=["bête"], options=SUMMON("summon-natures-ally", [("", ["bête"])])),
+"summon-instrument": INV(fr="Convocation d'instrument", cible=1, cible_obj=["instrument"], impact=(P, ["instrument"], "un instrument de musique")),
+"mount": INV(fr="Monture", cible=7, impact=(P, ["monture", "cheval"], "un cheval ou un poney sellé")),
+"summon-swarm": INV(fr="Convocation de nuées", cible=P, options=[O(n, impact=(P, ["nuée", w], d)) for n, w, d in
+    [("Chauves-souris", "chauve-souris", "une nuée de chauves-souris"), ("Rats", "rat", "une nuée de rats"), ("Araignées", "araignée", "une nuée d'araignées")]]),
+"creeping-doom": INV(fr="Fléau rampant", cible=P, qty=6, impact=(P, ["nuée", "mille-pattes"], "six nuées de mille-pattes")),
+"elemental-swarm": dict(src="3.5", fr="Nuée d'élémentaires", fam="H", cible=P, options=[O(n, comb=c, why=f"les élémentaires de {d}", impact=(9, ["élémentaire"], "2d4 grands, puis 1d4 énormes, puis un supérieur"))
+    for n, c, d in [("Air", "Air", "l'air"), ("Terre", "Terre", "la terre"), ("Feu", "Feu", "feu"), ("Eau", "Eau", "l'eau")]]),
+"shambler": dict(src="3.5", fr="Tertres errants", comb="Plante", why="les plantes", cible=P, impact=(50, ["tertre", "vie"], "11 DV chacun, soit 50 points de vie"), impact_sats=[(5, ["nombre"])]),
+"delay-poison": dict(src="3.5", fr="Ralentissement du poison", verb=V("nature", True), cible=2, impact=(P, ["poison", "sursis"], "le poison sans effet jusqu'au terme")),
+"glitterdust": dict(src="3.5", fr="Poussière scintillante", verb=V("visibilite"), cible=P, impact=(P, ["aveuglement", "invisible"], "aveuglées, l'invisible révélé")),
+"heal-mount": dict(src="3.5", fr="Guérison de la monture", verb=V("existence"), cible=2, cond=["monture"], impact=(P, ["vie", "maladie", "aveuglement"], "sa monture entièrement guérie"), alt=[H("Sang", "le fluide vital")]),
+"sepia-snake-sigil": dict(src="3.5", fr="Sceau du serpent", verb=V("mouvement", True), cible=1, cible_obj=["écrit"], cond=["lecture"], comp=["ambre"], impact=(P, ["paralysie", "serpent"], "le lecteur figé dans l'ambre")),
+"minor-creation": dict(src="3.5", fr="Création mineure", verb=V("existence"), cible=1, cible_obj=["plante"], impact=(7, ["création", "volume"], "7 pieds cubes de matière végétale")),
+"major-creation": dict(src="3.5", fr="Création majeure", verb=V("existence"), cible=1, cible_obj=["minéral"], impact=(9, ["création", "volume"], "9 pieds cubes de matière végétale ou minérale")),
+"secure-shelter": dict(src="3.5", fr="Abri", verb=V("existence"), cible=P, impact=(P, ["abri", "chaumière"], "une chaumière solide")),
+"solid-fog": dict(src="3.5", fr="Brouillard dense", comb="Brume", why="le brouillard", cible=P, impact=(P, ["brouillard", "obscurité", "lenteur"], "zone obscurcie où l'on avance à peine")),
+"acid-fog": dict(src="3.5", fr="Brouillard acide", comb="Acide sulfurique", why="l'acide", cible=P, impact=(7, ["acide", "brouillard", "lenteur"], "2d6 en moyenne à chaque tour")),
+"fire-seeds": dict(src="3.5", fr="Graines de feu", comb="Feu", why="le feu", cible=1, cible_obj=["graine"],
+    options=[O("Glands explosifs", impact=(39, ["feu", "jet"], "11d6 en moyenne, en quatre glands")), O("Baies explosives", impact=(16, ["feu", "explosion"], "1d8 + 11 en moyenne par baie"), impact_sats=[(8, ["nombre"])])]),
+"wall-of-iron": dict(src="3.5", fr="Mur de fer", comb="Acier", why="le métal du mur", cible=P, comp=["fer", "or"], impact=(P, ["fer", "mur"], "un mur de fer"), impact_sats=[(35, ["chute"])]),
+"phase-door": dict(src="3.5", fr="Passage dimensionnel", fam="R", art="spatiomancie", verb=V("mouvement"), cible=1, impact=(P, ["passage", "éthéré"], "un passage à travers la paroi")),
+"teleport-object": dict(src="3.5", fr="Téléportation d'objet", verb=V("mouvement"), cible=1, cible_obj=["objet"], impact=(P, ["téléportation"], "l'objet envoyé au loin")),
+"trap-the-soul": dict(src="3.5", fr="Piège à âme", verb=V("mouvement", True), cible=3, comp=["gemme"], impact=(P, ["âme", "gemme"], "l'être enfermé dans la gemme")),
+"refuge": dict(src="3.5", fr="Refuge", fam="R", art="spatiomancie", verb=V("mouvement"), cible=1, cible_obj=["objet"], cond=["mot"], comp=["gemme"], impact=(P, ["retour", "demeure"], "son porteur ramené à ta demeure")),
+}
+FICHES.update(NEW35d)

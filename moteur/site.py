@@ -82,7 +82,7 @@ HEAD = """<!doctype html>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya+SC:wght@500;700&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="{root}style.css"></head><body><div class="wrap">"""
-FOOT = """<footer>Données de sorts tirées des System Reference Documents 5.1 et 5.2 de Wizards of the Coast LLC, sous licence Creative Commons Attribution 4.0 International. Glyphes, conversions et système d'Inarama : création originale.</footer></div></body></html>"""
+FOOT = """<footer>Données de sorts tirées du System Reference Document 5.1 de Wizards of the Coast LLC, sous licence Creative Commons Attribution 4.0 International. Glyphes, conversions et système d'Inarama : création originale.</footer></div></body></html>"""
 
 import sys as _s
 _s.path.insert(0, D)
@@ -180,7 +180,7 @@ def index(spells):
     head = HEAD.format(title="Bibliothèque glyphique", root="").replace('<link rel="stylesheet" href="style.css">', f"<style>{CSS}{IDX_CSS}</style>").replace("<body>", '<body class="idx">')
     return head + f"""
 <header><div class="eyebrow">Inarama · Arcane et Magie</div><h1>Bibliothèque glyphique</h1>
-<p class="lede">Les sorts des SRD 5.1 et 5.2 de D&amp;D (règles de 2014 et de 2024) transposés en glyphes d'Inarama. Touchez un sort pour lire chacune de ses formes ; les glyphes eux-mêmes sont sur sa page. <a href="regles.html">Les règles de lecture</a>.</p></header>
+<p class="lede">Les sorts du SRD 5.1 de D&amp;D transposés en glyphes d'Inarama. Touchez un sort pour lire chacune de ses formes ; les glyphes eux-mêmes sont sur sa page. <a href="regles.html">Les règles de lecture</a>.</p></header>
 <div class="bar">
 <input id="q" type="search" placeholder="Chercher un sort (français ou anglais)" aria-label="Chercher un sort">
 <details class="flt"><summary><span id="n"></span><span>Filtres</span></summary>
@@ -243,6 +243,10 @@ def regles():
 <li><b>Une forme par option.</b> Quand un sort laisse choisir l'effet ou la géométrie au lancement, chaque option est un glyphe à part, et la bibliothèque les montre toutes.</li>
 <li><b>Êtres invoqués.</b> L'Impact dit l'être (sa nature) et sa puissance (son intensité), alignée pour l'instant sur le facteur de puissance de D&amp;D ; le nombre d'êtres en satellite.</li>
 <li><b>Jets de sauvegarde.</b> Non inscrits : leur difficulté dépend de l'incantateur, non du sort.</li>
+<li><b>D&amp;D 3.5.</b> Les sorts du SRD 3.5 entrent école par école. Le lanceur de référence est le plus petit lanceur capable du sort : portées, durées et nombres de cibles « par niveau » se calculent à son niveau. Un sort commun dont le glyphe change devient une forme « version 3.5 » ; les sorts propres à la 3.5 ont leur entrée.</li>
+<li><b>Dés de vie.</b> Comme les dégâts, ils se ramènent à une valeur fixe : un dé de vie vaut 4,5 points de vie (un d8), arrondi à l'entier. Réserves et seuils s'écrivent donc en « vie », comme en 5e.</li>
+<li><b>Portée nulle.</b> Un sort qui naît là où se tient le lanceur n'a pas d'anneau de Localisation : le vide.</li>
+<li><b>Concentration sans terme.</b> Une durée qui tient tant que dure la concentration, sans maximum, est pleine : infinie.</li>
 <li><b>Unités.</b> Mètres, kilogrammes et litres, en attendant les unités propres aux peuples d'Inarama.</li>
 <li><b>Les sorts divins sont de l'Arcane.</b> Dans Inarama, la religion passe par une magie très académique, et ses grands praticiens deviennent des figures de culte : les sorts de clerc s'écrivent en glyphes arcaniques, la lumière radiante comme médium.</li>
 <li><b>Plusieurs formes pour un même sort.</b> Un sort peut s'inscrire en Arcane et en Magie hybride : les deux pratiques l'écrivent différemment, et la bibliothèque montre toutes les formes connues.</li>

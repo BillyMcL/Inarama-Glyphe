@@ -35,6 +35,8 @@ def _merge24(old, new):
         r["damage"] = d_new
     r["_ed"] = "2024"
     return r
+import srd35 as _srd35
+SRD35 = _srd35.load(DATA + "/srd/srd35")
 SRD24 = {}
 for _s in json.load(open(DATA + "/srd/spells-2024.json", encoding="utf-8")):
     SRD24[_s["index"]] = _merge24(SRD.get(_s["index"]), _s)
@@ -84,6 +86,7 @@ def parse_time(t):
     t = t.lower().replace("up to ", "")
     if "instantaneous" in t or "special" in t: return None
     if "until dispelled" in t or "permanent" in t: return ("plein", None)
+    if t.strip() == "concentration": return ("plein", None)   # concentration sans durée maximale : infinie
     m = re.match(r"(\d+)\s*(round|minute|hour|day)", t)
     if not m: return None
     n, u = int(m.group(1)), m.group(2)
@@ -97,7 +100,7 @@ def parse_cast(t):
 
 def localisation(rng):
     r = rng.lower()
-    if r.startswith("self") or r == "special": return None
+    if r.startswith("self") or r == "special" or re.match(r"0\s*feet", r): return None   # portée nulle : vide, pas d'anneau
     if r == "touch": return (2, "METRES", "2 m : le contact")
     if r in ("sight", "unlimited"): return ("plein", None, "à vue" if r == "sight" else "illimitée")
     m = re.match(r"(\d+)\s*(feet|foot|mile|miles)", r)
@@ -214,7 +217,7 @@ def cost(s):
     return n, metals[i]
 
 def build_spell(idx, fiche):
-    s = (SRD24 if fiche.get("src") == "2024" else SRD)[fiche.get("src_idx", idx)]
+    s = {"2024": SRD24, "3.5": SRD35}.get(fiche.get("src"), SRD)[fiche.get("src_idx", idx)]
     fr = fiche["fr"]
     level = s["level"]
     ecole, hemi, comb_def = ECOLES[s["school"]["name"]]
@@ -359,23 +362,34 @@ def build_forms(idx, fiche):
     """toutes les formes d'un sort ; puis, pour un sort qui existe aussi dans les règles de 2024,
     ses formes de 2024 qui donnent un glyphe différent (un glyphe identique est le même sort)"""
     forms = _forms(idx, fiche)
-    if fiche.get("src") == "2024": return forms
-    v = fiche.get("v24", {})
-    if v is None: return forms
-    src_idx = v.get("src_idx", idx)
-    if src_idx not in SRD24: return forms
-    f24 = {**fiche, **{k: x for k, x in v.items() if k not in ("name",)}, "src": "2024", "src_idx": src_idx}
-    if "options" in v and v["options"] is None: f24.pop("options", None)
-    f24["alt"] = [dict(a, **{k: x for k, x in v.items() if k in ("impact", "impact_sats", "impact_add", "aoe", "options")}) if not a.get("grimoire") else a
-                  for a in fiche.get("alt", [])]
+    if fiche.get("src") == "3.5": return forms
     seen = {glyph_key(f) for f in forms}
-    nom = f" ({v['name']})" if v.get("name") else ""
-    for f in _forms(idx, f24, single_note=False):
-        if glyph_key(f) in seen: continue
-        seen.add(glyph_key(f))
-        f["label"] = f["label"] + " — version 2024" + nom
-        f["notes"] = [f"Règles de 2024{nom} : la révision change ce que le glyphe inscrit."] + [n for n in f["notes"] if not n.startswith("Pas de forme")]
-        forms.append(f)
+    for ed, base, key in (("2024", SRD24, "v24"), ("3.5", SRD35, "v35")):
+        if ed == fiche.get("src"): continue
+        v = fiche.get(key, {} if ed == "2024" else None)   # la 3.5 n'entre qu'école par école, après relecture
+        if v is None: continue
+        src_idx = v.get("src_idx", idx)
+        if src_idx not in base: continue
+        fe = {**fiche, **{k: x for k, x in v.items() if k not in ("name", "alt")}, "src": ed, "src_idx": src_idx}
+        # la famille et la combinaison de la version d'origine se conservent, même si l'autre édition type autrement ses dégâts
+        if not fiche.get("grimoire") and forms[0]["fam"] in ("H", "A") and "fam" not in fe:
+            fe["fam"] = forms[0]["fam"]
+            if fe["fam"] == "H" and not fe.get("comb"):
+                d0 = SRD.get(idx, {}).get("damage") or {}; d0 = d0[0] if isinstance(d0, list) else d0
+                fe["comb"] = DAMAGE_COMBO.get((d0.get("damage_type") or {}).get("name")) or ECOLES[SRD[idx]["school"]["name"]][2]
+        if "options" in v and v["options"] is None: fe.pop("options", None)
+        fe["alt"] = [dict(a, **{k: x for k, x in v.items() if k in ("impact", "impact_sats", "impact_add", "aoe", "options")}) if not a.get("grimoire") else a
+                     for a in fiche.get("alt", [])]
+        for a, extra in zip(fe["alt"], v.get("alt", [])): a.update(extra)
+        fe.pop("v24", None); fe.pop("v35", None)
+        nom = f" ({v['name']})" if v.get("name") else ""
+        for f in _forms(idx, fe, single_note=False):
+            if glyph_key(f) in seen: continue
+            seen.add(glyph_key(f))
+            f["label"] = f["label"] + f" — version {ed}" + nom
+            what = "Règles de 2024" if ed == "2024" else f"D&D 3.5, lanceur de référence de niveau {base[src_idx]['_cl']}"
+            f["notes"] = [f"{what}{nom} : la version change ce que le glyphe inscrit."] + [n for n in f["notes"] if not n.startswith("Pas de forme")]
+            forms.append(f)
     return forms
 
 def _forms(idx, fiche, single_note=True):
@@ -459,6 +473,8 @@ def fr_duration(d):
 def dnd_line(s, fr):
     lv = "tour de magie" if s["level"] == 0 else f"niveau {s['level']}"
     rit = " (rituel)" if s.get("ritual") else ""
+    if s.get("_ed") == "3.5":
+        return f"D&amp;D 3.5 (lanceur de niveau {s['_cl']}) : {lv} · {SCHOOL_FR[s['school']['name']].lower()} · incantation {fr_cast(s['casting_time'])} · portée {fr_range(s['range'])} · durée {fr_duration(s['duration'])}"
     ed = " (règles de 2024)" if s.get("_ed") else ""
     return f"D&amp;D 5e{ed} : {lv}{rit} · {SCHOOL_FR[s['school']['name']].lower()} · incantation {fr_cast(s['casting_time'])} · portée {fr_range(s['range'])} · durée {fr_duration(s['duration'])}"
 

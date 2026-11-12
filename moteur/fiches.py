@@ -899,3 +899,72 @@ NEW24 = {
 "vitriolic-sphere": dict(E24, fr="Sphère vitriolique", cible="plein", aoe={"type": "sphere", "size": 20}, impact_sats=[(13, ["acide", "différé"])], alt=[A("existence", True)]),
 }
 FICHES.update(NEW24)
+
+# ===== D&D 3.5 (SRD 3.5, OGL) — lot 1 : Enchantement =====
+# Lanceur de référence : le plus petit lanceur capable du sort.
+# Dés de vie (DV) : ramenés à des points de vie moyens, comme les dégâts — un DV vaut un d8, soit 4,5 points de vie, arrondi à l'entier.
+def F35(base, fr, **kw):
+    f = {k: v for k, v in FICHES[base].items() if k not in ("v24", "v35", "src", "src_idx", "grimoire", "notes")}
+    f.update(src="3.5", fr=fr); f.update(kw); return f
+CMD35 = [O(n, **I("mot", w, why=d)) for n, w, d in [("Approche", "approche", "venir à moi"), ("Lâche", "lâcher", "lâcher ce qu'elle tient"),
+         ("À terre", "chute", "tomber à terre"), ("Fuis", "fuite", "fuir"), ("Halte", "halte", "rester immobile")]]
+V35 = {
+"bane": dict(qty_cible=P, impact=(1, ["chance", "coup", "peur"], "1 retranché aux attaques et aux sauvegardes contre la peur")),
+"bless": dict(qty_cible=P, impact=(1, ["chance", "coup", "peur"], "1 ajouté aux attaques et aux sauvegardes contre la peur")),
+"charm-person": {}, "hold-person": {}, "suggestion": {}, "charm-monster": {}, "confusion": {}, "dominate-person": {},
+"hold-monster": {}, "irresistible-dance": {}, "power-word-stun": {}, "dominate-monster": {}, "power-word-kill": {},
+"enthrall": {}, "hideous-laughter": {}, "zone-of-truth": {}, "animal-messenger": {},
+"command": dict(options=CMD35),
+"sleep": dict(impact=(18, ["sommeil", "vie"], "4 DV, soit 18 points de vie de créatures endormies")),
+"aid": dict(qty_cible=None, impact=(8, ["vie", "temporaire"], "1d8 + 3 en moyenne"), impact_sats=[(1, ["courage"])]),
+"calm-emotions": dict(cond=[], options=None, impact=(P, ["calme", "fureur", "peur", "confusion"], "fureur, peur et confusion suspendues")),
+"heroism": dict(impact=(2, ["courage", "coup", "résistance", "aptitude"], "+2 aux attaques, sauvegardes et compétences"), impact_sats=[]),
+"modify-memory": dict(cond_sats=[], impact_sats=[(5, ["minutes"])]),
+"feeblemind": dict(impact=(P, ["intellect", "charisme"], "Intelligence et Charisme ramenés à 1"), impact_sats=[]),
+"geas": dict(src_idx="geas-quest", name="Geas/Quest", dur=(11, "JOURS"), fin=["accomplissement"], impact_sats=[(11, ["blessure", "jour"])]),
+"mass-suggestion": dict(src_idx="suggestion-mass", name="Suggestion, Mass", qty_cible=11),
+"dominate-beast": dict(src_idx="dominate-animal", name="Dominate Animal"),
+"antipathy-sympathy": dict(src_idx="antipathy", alt=[dict(src_idx="sympathy")]),
+}
+for k, v in V35.items(): FICHES[k]["v35"] = v
+SYM = lambda fr, **kw: {**dict(src="3.5", fr=fr, verb=V("visibilite"), cible=P, aoe={"type": "sphere", "size": 60}, cond=["déclencheur"],
+                            dur=(P, None), fin=["déclenchement"]), **kw}
+NEW35 = {
+"daze": dict(src="3.5", fr="Hébétement", verb=V("ordre", True), cible=3, cond=["humanoïde", "seuil"], cond_sats=[(18, ["vie"])], impact=(P, ["hébétude"], "privée d'action")),
+"daze-monster": dict(src="3.5", fr="Hébétement de monstre", verb=V("ordre", True), cible=3, cond=["vivant", "seuil"], cond_sats=[(27, ["vie"])], impact=(P, ["hébétude"], "privée d'action")),
+"lullaby": dict(src="3.5", fr="Berceuse", verb=V("intensite", True), cible=P, impact=(5, ["torpeur", "vigilance"], "5 retranché à la vigilance, 2 aux sauvegardes contre le sommeil"),
+    alt=[H("Pollen", "ce qui se respire et assoupit")]),
+"calm-animals": dict(src="3.5", fr="Apaisement des animaux", verb=V("ordre"), cible=P, cond=["bête", "instinct"], impact=(27, ["calme", "vie"], "2d4 + 1 DV, soit 27 points de vie d'animaux apaisés")),
+"charm-animal": F35("charm-person", "Charme-animal", cond=["bête"]),
+"confusion-lesser": F35("confusion", "Confusion mineure", cible=3),
+"hypnotism": dict(src="3.5", fr="Hypnose", verb=V("relation"), cible=P, cond=["vivant"], impact=(23, ["fascination", "vie"], "2d4 DV, soit 23 points de vie de créatures fascinées")),
+"animal-trance": dict(src="3.5", fr="Transe animale", verb=V("relation"), cible=P, cond=["bête", "instinct"], impact=(32, ["fascination", "vie"], "2d6 DV, soit 32 points de vie d'animaux fascinés")),
+"hold-animal": F35("hold-person", "Immobilisation d'animal", cond=["bête"]),
+"touch-of-idiocy": dict(src="3.5", fr="Contact débilitant", verb=V("intensite", True), cible=3, impact=(4, ["intellect", "sagesse", "charisme"], "1d6 retranché à chacune")),
+"deep-slumber": F35("sleep", "Sommeil profond", impact=(45, ["sommeil", "vie"], "10 DV, soit 45 points de vie de créatures endormies")),
+"good-hope": dict(src="3.5", fr="Espoir", verb=V("intensite"), cible=2, qty_cible=7, impact=(2, ["espoir", "coup", "résistance", "aptitude", "dégâts"], "+2 aux attaques, dégâts, sauvegardes et tests")),
+"prayer": dict(src="3.5", fr="Prière", verb=V("intensite"), cible=P, impact=(1, ["chance", "coup", "résistance", "aptitude", "dégâts"], "+1 aux alliés, 1 retranché aux ennemis")),
+"rage": dict(src="3.5", fr="Rage", verb=V("intensite"), cible=2, qty_cible=1, impact=(2, ["fureur", "force", "constitution"], "+2 en Force et en Constitution, la garde baissée")),
+"crushing-despair": dict(src="3.5", fr="Désespoir foudroyant", verb=V("intensite", True), cible=P, impact=(2, ["désespoir", "coup", "résistance", "aptitude", "dégâts"], "2 retranché aux attaques, dégâts, sauvegardes et tests")),
+"geas-lesser": F35("geas", "Quête mineure", cond=["compréhension", "seuil"], cond_sats=[(32, ["vie"])], impact_sats=[(2, ["aptitude", "jour"])]),
+"command-greater": F35("command", "Injonction suprême", qty_cible=9, options=CMD35),
+"mind-fog": dict(src="3.5", fr="Brume mentale", verb=V("intensite", True), cible=P, impact=(10, ["brume", "sagesse", "volonté"], "10 retranché à la Sagesse et à la volonté")),
+"song-of-discord": dict(src="3.5", fr="Chant de discorde", verb=V("relation", True), cible=P, impact=(P, ["discorde"], "une chance sur deux de frapper son voisin")),
+"heroism-greater": F35("heroism", "Héroïsme suprême", impact=(4, ["courage", "coup", "résistance", "aptitude"], "+4 aux attaques, sauvegardes et compétences"),
+    impact_sats=[(11, ["vie", "temporaire"]), (P, ["intrépidité"])]),
+"hold-person-mass": F35("hold-person", "Immobilisation de personnes", qty_cible=P),
+"hold-monster-mass": F35("hold-monster", "Immobilisation de monstres", qty_cible=P),
+"charm-monster-mass": F35("charm-monster", "Charme-monstre de groupe", impact=(135, ["charme", "vie"], "30 DV, soit 135 points de vie de créatures charmées")),
+"insanity": F35("confusion", "Aliénation mentale", cible=3, dur=(P, None)),
+"power-word-blind": F35("power-word-stun", "Mot de pouvoir aveuglant", dur=(P, "VIE"), cond_sats=[(200, ["vie"])], impact=(P, ["aveuglement"], "aveuglée")),
+"demand": F35("sending", "Exigence", impact=(P, ["message", "conduite"], "un message et la conduite suggérée")),
+"binding": dict(src="3.5", fr="Entrave", verb=V("mouvement", True), cible=3, dur=(P, None),
+    options=[O(n, **I("entrave", w, why=d)) for n, w, d in [("Enchaînement", "chaînes", "enchaînée sur place"), ("Sommeil", "sommeil", "endormie"),
+             ("Sommeil enchaîné", "torpeur", "endormie et enchaînée"),
+             ("Immobilisation", "paralysie", "paralysée"), ("Emprisonnement", "prison", "enfermée sous terre"), ("Rétrécissement", "gemme", "rétrécie dans une gemme")]]),
+"symbol-of-sleep": SYM("Symbole de sommeil", cond=["déclencheur", "seuil"], cond_sats=[(45, ["vie"])], impact=(P, ["sommeil"], "un sommeil profond")),
+"symbol-of-persuasion": SYM("Symbole de persuasion", impact=(P, ["charme"], "charmée")),
+"symbol-of-stunning": SYM("Symbole d'étourdissement", impact=(P, ["étourdissement"], "étourdie")),
+"symbol-of-insanity": SYM("Symbole d'aliénation", impact=(P, ["folie"], "aliénée à jamais")),
+}
+FICHES.update(NEW35)

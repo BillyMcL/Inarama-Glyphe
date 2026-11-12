@@ -170,29 +170,35 @@ details.sp .m { font-family:var(--f-mono); font-size:.72rem; color:var(--muted);
   .rd { grid-template-columns:1fr; } .rd dt { padding-top:6px; }
 }
 """
+SOURCES = {"5.1": "D&D 5e · 2014 (SRD 5.1)", "5.2": "D&D 5e · 2024 (SRD 5.2)", "3.5": "D&D 3.5 (SRD 3.5)"}
+def form_source(x):
+    d = x["dnd"]
+    return "3.5" if "D&amp;D 3.5" in d else "5.2" if "2024" in d else "5.1"
 def index(spells):
     data = []
     for s in spells:
         fs = [dict(b=x["label"], v=x["verb"], r=[[c, l] for _, c, l in x["rows"]]) for x in s["forms"]]
-        data.append(dict(i=s["idx"], f=s["fr"], e=s["en"], l=s["level"], c=s["ecole"], m=sorted(set(x["fam"] for x in s["forms"])), d=s["forms"][0]["dnd"], x=fs))
+        data.append(dict(i=s["idx"], f=s["fr"], e=s["en"], l=s["level"], c=s["ecole"], m=sorted(set(x["fam"] for x in s["forms"])), o=sorted(set(s["src"]) | set(form_source(x) for x in s["forms"])), d=s["forms"][0]["dnd"], x=fs))
     ecoles = sorted({s["ecole"] for s in spells})
     levels = sorted({s["level"] for s in spells})
     head = HEAD.format(title="Bibliothèque glyphique", root="").replace('<link rel="stylesheet" href="style.css">', f"<style>{CSS}{IDX_CSS}</style>").replace("<body>", '<body class="idx">')
     return head + f"""
 <header><div class="eyebrow">Inarama · Arcane et Magie</div><h1>Bibliothèque glyphique</h1>
-<p class="lede">Les sorts du SRD 5.1 de D&amp;D transposés en glyphes d'Inarama. Touchez un sort pour lire chacune de ses formes ; les glyphes eux-mêmes sont sur sa page. <a href="regles.html">Les règles de lecture</a>.</p></header>
+<p class="lede">Les sorts de D&amp;D (SRD 5.1, 5.2 et 3.5) transposés en glyphes d'Inarama. Touchez un sort pour lire chacune de ses formes ; les glyphes eux-mêmes sont sur sa page. <a href="regles.html">Les règles de lecture</a>.</p></header>
 <div class="bar">
 <input id="q" type="search" placeholder="Chercher un sort (français ou anglais)" aria-label="Chercher un sort">
 <details class="flt"><summary><span id="n"></span><span>Filtres</span></summary>
 <div class="row"><span class="lbl">Niveau</span>{''.join(f'<button type="button" data-l="{l}" aria-pressed="false">{"TM" if l == 0 else l}</button>' for l in levels)}</div>
 <div class="row"><span class="lbl">Famille</span>{''.join(f'<button type="button" data-m="{k}" aria-pressed="false">{v}</button>' for k, v in FAM.items())}</div>
+<div class="row"><span class="lbl">Source</span>{''.join(f'<button type="button" data-o="{k}" aria-pressed="false">{v}</button>' for k, v in SOURCES.items())}</div>
 <div class="row"><span class="lbl">École</span>{''.join(f'<button type="button" data-c="{e}" aria-pressed="false">{e}</button>' for e in ecoles)}</div>
 </details></div>
 <div id="out"></div>
 <script>
 const S = {json.dumps(data, ensure_ascii=False, separators=(",", ":"))};
 const FAM = {json.dumps(FAM, ensure_ascii=False)};
-const st = {{l:new Set(), m:new Set(), c:new Set(), q:""}};
+const st = {{l:new Set(), m:new Set(), c:new Set(), o:new Set(), q:""}};
+const SRC = {{"3.5":"D&D 3.5","5.1":"5e 2014","5.2":"5e 2024"}};
 const norm = s => s.normalize("NFD").replace(/[\\u0300-\\u036f]/g,"").toLowerCase();
 const esc = s => String(s).replace(/&(?!amp;|nbsp;)/g,"&amp;").replace(/</g,"&lt;");
 const body = s => `<div class="spb"><p class="dnd">${{s.d}}</p>` + s.x.map(x =>
@@ -201,13 +207,13 @@ const body = s => `<div class="spb"><p class="dnd">${{s.d}}</p>` + s.x.map(x =>
   `<a class="go" href="sorts/${{s.i}}.html">Voir les glyphes →</a></div>`;
 function draw(){{
   const q = norm(st.q);
-  const f = S.filter(s => (!st.l.size||st.l.has(String(s.l))) && (!st.m.size||s.m.some(x=>st.m.has(x))) && (!st.c.size||st.c.has(s.c)) && (!q||norm(s.f+" "+s.e).includes(q)));
+  const f = S.filter(s => (!st.l.size||st.l.has(String(s.l))) && (!st.m.size||s.m.some(x=>st.m.has(x))) && (!st.c.size||st.c.has(s.c)) && (!st.o.size||s.o.some(x=>st.o.has(x))) && (!q||norm(s.f+" "+s.e).includes(q)));
   document.getElementById("n").textContent = f.length + " sort" + (f.length>1?"s":"") + " sur " + S.length;
   const by = {{}}; f.forEach(s => (by[s.l] = by[s.l]||[]).push(s));
   document.getElementById("out").innerHTML = Object.keys(by).sort((a,b)=>a-b).map(l =>
     `<section class="lvl sec"><h2>${{l==0?"Tours de magie":"Niveau "+l}}</h2><div class="list">` +
     by[l].sort((a,b)=>a.f.localeCompare(b.f,"fr")).map(s => `<details class="sp" data-i="${{s.i}}"><summary><b>${{s.f}}</b>` +
-      `<span class="m">${{s.e}} · ${{s.c}} · ${{s.m.map(x=>FAM[x]).join(" + ")}}${{s.x.length>1?" · "+s.x.length+" formes":""}}</span></summary></details>`).join("") +
+      `<span class="m">${{s.e}} · ${{s.c}} · ${{s.m.map(x=>FAM[x]).join(" + ")}}${{s.x.length>1?" · "+s.x.length+" formes":""}} · ${{s.o.map(x=>SRC[x]).join(" / ")}}</span></summary></details>`).join("") +
     `</div></section>`).join("");
 }}
 const BY = Object.fromEntries(S.map(s => [s.i, s]));
@@ -216,7 +222,7 @@ document.getElementById("out").addEventListener("toggle", e => {{
 }}, true);
 document.getElementById("q").addEventListener("input", e => {{ st.q = e.target.value; draw(); }});
 document.querySelectorAll(".bar button").forEach(b => b.addEventListener("click", () => {{
-  const k = b.dataset.l!==undefined?"l":b.dataset.m!==undefined?"m":"c"; const v = b.dataset[k];
+  const k = b.dataset.l!==undefined?"l":b.dataset.m!==undefined?"m":b.dataset.o!==undefined?"o":"c"; const v = b.dataset[k];
   const on = b.getAttribute("aria-pressed")!=="true"; b.setAttribute("aria-pressed", on);
   on ? st[k].add(v) : st[k].delete(v); draw(); }}));
 if (matchMedia("(min-width:900px)").matches) document.querySelector("details.flt").open = true;
@@ -276,7 +282,7 @@ if __name__ == "__main__":
     spells = []
     for k, f in FICHES.items():
         forms = C.build_forms(k, f)
-        spells.append(dict(idx=k, fr=f["fr"], en=forms[0]["en"], level=forms[0]["level"], ecole=forms[0]["ecole"], forms=forms))
+        spells.append(dict(idx=k, fr=f["fr"], en=forms[0]["en"], level=forms[0]["level"], ecole=forms[0]["ecole"], forms=forms, src=C.sources_of(k, f)))
     spells.sort(key=lambda s: (s["level"], s["fr"]))
     # contrôle d'unicité : deux glyphes strictement identiques sont, par définition, le même sort
     seen, dups = {}, []

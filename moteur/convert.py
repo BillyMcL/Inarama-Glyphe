@@ -527,3 +527,19 @@ def band_svg(sp, declared):
     left = BG.astral_band("ten", split[1]) if split and (split[1] or declared) else None
     right = BG.astral_band("lum", split[0]) if split and (split[0] or declared) else None
     return BG.compose(main, left, right)
+
+
+def sources_of(idx, fiche):
+    """d'où vient le sort : chaque édition où il existe, que son glyphe y change ou non"""
+    out = set()
+    src = fiche.get("src")
+    if src is None and idx in SRD: out.add("5.1")
+    if src == "2024": out.add("5.2")
+    if src == "3.5": out.add("3.5")
+    for ed, base, key in (("5.2", SRD24, "v24"), ("3.5", SRD35, "v35")):
+        if src in ("2024", "3.5") and ed != {"2024": "5.2", "3.5": "3.5"}[src]: continue
+        v = fiche.get(key, {} if ed == "5.2" else None)
+        if v is None or src is not None: continue
+        ids = [v.get("src_idx", idx)] + [o.get("src_idx") for o in (v.get("options") or []) if o.get("src_idx")]
+        if any(i in base for i in ids): out.add(ed)
+    return sorted(out)

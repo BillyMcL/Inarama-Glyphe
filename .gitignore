@@ -1,0 +1,6 @@
+# site généré (publié par GitHub Actions, jamais versionné)
+site/
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db

@@ -82,7 +82,7 @@ HEAD = """<!doctype html>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya+SC:wght@500;700&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="{root}style.css"></head><body><div class="wrap">"""
-FOOT = """<footer>Données de sorts tirées du System Reference Document 5.1 de Wizards of the Coast LLC, sous licence Creative Commons Attribution 4.0 International. Glyphes, conversions et système d'Inarama : création originale.</footer></div></body></html>"""
+FOOT = """<footer>Données de sorts tirées des System Reference Documents 5.1 et 5.2 de Wizards of the Coast LLC, sous licence Creative Commons Attribution 4.0 International. Glyphes, conversions et système d'Inarama : création originale.</footer></div></body></html>"""
 
 import sys as _s
 _s.path.insert(0, D)
@@ -180,7 +180,7 @@ def index(spells):
     head = HEAD.format(title="Bibliothèque glyphique", root="").replace('<link rel="stylesheet" href="style.css">', f"<style>{CSS}{IDX_CSS}</style>").replace("<body>", '<body class="idx">')
     return head + f"""
 <header><div class="eyebrow">Inarama · Arcane et Magie</div><h1>Bibliothèque glyphique</h1>
-<p class="lede">Les sorts du SRD 5.1 de D&amp;D transposés en glyphes d'Inarama. Touchez un sort pour lire chacune de ses formes ; les glyphes eux-mêmes sont sur sa page. <a href="regles.html">Les règles de lecture</a>.</p></header>
+<p class="lede">Les sorts des SRD 5.1 et 5.2 de D&amp;D (règles de 2014 et de 2024) transposés en glyphes d'Inarama. Touchez un sort pour lire chacune de ses formes ; les glyphes eux-mêmes sont sur sa page. <a href="regles.html">Les règles de lecture</a>.</p></header>
 <div class="bar">
 <input id="q" type="search" placeholder="Chercher un sort (français ou anglais)" aria-label="Chercher un sort">
 <details class="flt"><summary><span id="n"></span><span>Filtres</span></summary>

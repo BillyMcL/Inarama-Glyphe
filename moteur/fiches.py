@@ -949,7 +949,7 @@ NEW35 = {
 "geas-lesser": F35("geas", "Quête mineure", cond=["compréhension", "seuil"], cond_sats=[(32, ["vie"])], impact_sats=[(2, ["aptitude", "jour"])]),
 "command-greater": F35("command", "Injonction suprême", qty_cible=9, options=CMD35),
 "mind-fog": dict(src="3.5", fr="Brume mentale", verb=V("intensite", True), cible=P, impact=(10, ["brume", "sagesse", "volonté"], "10 retranché à la Sagesse et à la volonté")),
-"song-of-discord": dict(src="3.5", fr="Chant de discorde", verb=V("relation", True), cible=P, impact=(P, ["discorde"], "une chance sur deux de frapper son voisin")),
+"song-of-discord": dict(src="3.5", fr="Chant de discorde", verb=V("relation", True), cible=P, impact=(1, ["discorde", "moitié"], "une chance sur deux de frapper son voisin")),
 "heroism-greater": F35("heroism", "Héroïsme suprême", impact=(4, ["courage", "coup", "résistance", "aptitude"], "+4 aux attaques, sauvegardes et compétences"),
     impact_sats=[(11, ["vie", "temporaire"]), (P, ["intrépidité"])]),
 "hold-person-mass": F35("hold-person", "Immobilisation de personnes", qty_cible=P),
@@ -988,7 +988,8 @@ V35b = {
 "foresight": dict(impact=(2, ["avenir", "vigilance", "garde"], "jamais surprise, 2 ajouté à la défense")),
 "detect-poison-and-disease": dict(src_idx="detect-poison", name="Detect Poison", impact=(P, ["poison", "présence"], "la présence du poison, puis sa nature")),
 "detect-evil-and-good": dict(src_idx="detect-evil", cible_note=[], notes=[], impact=AURA,
-    options=[O("Hostilité", cible=3, qty_cible=P), O("Bienveillance", src_idx="detect-good", cible=2, qty_cible=P)]),
+    options=[O("Hostilité", cible=3, qty_cible=P), O("Bienveillance", src_idx="detect-good", cible=2, qty_cible=P),
+             O("Lumineux", src_idx="detect-law", cible=P, cible_note=["lumineux"]), O("Ténébreux", src_idx="detect-chaos", cible=P, cible_note=["ténébreux"])]),
 "clairvoyance": dict(src_idx="clairaudience-clairvoyance", name="Clairaudience/Clairvoyance",
     options=[O("Clairaudience", impact=(P, ["ouïe"], "entendre par le capteur")), O("Clairvoyance", impact=(P, ["vue"], "voir par le capteur"))]),
 }
@@ -999,8 +1000,6 @@ NEW35b = {
 "read-magic": dict(src="3.5", fr="Lecture de la magie", verb=V("visibilite"), cible=1, cible_obj=["écrit"], impact=(P, ["sens", "magie"], "les écrits magiques déchiffrés")),
 "detect-animals-or-plants": DET("Détection des animaux ou des plantes", options=[O("Animaux", **I("présence", "bête", why="présence, nombre et position d'une espèce animale")),
     O("Plantes", **I("présence", "plante", why="présence, nombre et position d'une espèce végétale"))]),
-"detect-law": DET("Détection de la loi", "aura", "présence", "force", cible_note=["lumineux"], why="ce qui est chargé d'énergie de l'Étoile"),
-"detect-chaos": DET("Détection du chaos", "aura", "présence", "force", cible_note=["ténébreux"], why="ce qui est chargé d'énergie de l'Abysse"),
 "detect-secret-doors": DET("Détection des passages secrets", "passage", "secret", why="présence, nombre et position des passages dérobés"),
 "detect-snares-and-pits": DET("Détection des collets et des fosses", "piège", "nature", why="les pièges naturels, fosses et éboulis"),
 "detect-undead": DET("Détection des morts-vivants", "aura", "présence", "force", cible=9, cible_note=["MORTVIVANT"], why="présence, nombre et force des auras"),
@@ -1019,3 +1018,74 @@ NEW35b = {
 "moment-of-prescience": dict(src="3.5", fr="Moment de prescience", fam="R", art="chronomancie", verb=V("visibilite"), cible=1, impact=(15, ["avenir", "chance"], "15 ajouté à un seul jet"), fin=["usage"]),
 }
 FICHES.update(NEW35b)
+
+# ===== D&D 3.5 — lot 3 : Abjuration =====
+# Un sort « contre » l'alignement est un seul sort en trois formes, qui ne diffèrent que par la catégorie visée (Condition) :
+# l'hostile (contre le mal comme contre le bien : même glyphe), le lumineux (contre la loi), le ténébreux (contre le chaos).
+SEP = V("relation", True)
+GARDE = lambda n: (n, ["garde", "résistance"], f"{n} ajouté à la défense et aux sauvegardes")
+EN35 = [("Acide", "acide"), ("Froid", "froid"), ("Foudre", "foudre"), ("Feu", "feu"), ("Tonnerre", "tonnerre")]
+TRI = lambda hos, lum, ten: [O("Contre l'hostile", src_idx=hos, cond=["hostile"]), O("Contre le lumineux", src_idx=lum, cond=["lumineux"]),
+                            O("Contre le ténébreux", src_idx=ten, cond=["ténébreux"])]
+V35c = {
+"alarm": {}, "sanctuary": {}, "shield": dict(impact=(4, ["garde", "projectile"], "4 ajouté à la défense, insensible au projectile magique")), "shield-of-faith": {}, "arcane-lock": {}, "dispel-magic": {}, "nondetection": {},
+"freedom-of-movement": {}, "remove-curse": {}, "antilife-shell": {}, "antimagic-field": {}, "guards-and-wards": {},
+"banishment": {}, "sequester": {}, "mind-blank": {}, "imprisonment": {},
+"resistance": dict(impact=(1, ["garde", "résistance"], "1 ajouté aux sauvegardes"), fin=[]),
+"glyph-of-warding": dict(options=[O("Glyphe explosif", impact=(9, ["piège", "explosion"], "2d8 en moyenne"), impact_sats=[]),
+                                  O("Glyphe de sort", impact=(P, ["piège", "sort"], "un sort enfermé"), impact_sats=[(3, ["seuil", "niveau"])])]),
+"protection-from-energy": dict(impact_sats=[(60, ["plafond"])]),
+"stoneskin": dict(impact=(10, ["garde", "coup"], "10 retranché à chaque coup d'arme"), impact_sats=[(70, ["plafond"])]),
+"forbiddance": dict(impact_sats=[(21, ["hostile"])]),
+"globe-of-invulnerability": dict(impact_sats=[(4, ["seuil", "niveau"])]),
+"protection-from-evil-and-good": dict(src_idx="protection-from-evil", comp=[], impact=GARDE(2), impact_sats=[(P, ["contrôle"]), (P, ["invoqué"])],
+                                      options=TRI("protection-from-evil", "protection-from-law", "protection-from-chaos")),
+"magic-circle": dict(src_idx="magic-circle-against-evil", comp=[], cible=P, cible_note=[], impact=GARDE(2), impact_sats=[(P, ["contrôle"]), (P, ["invoqué", "barrière"])],
+                     options=TRI("magic-circle-against-evil", "magic-circle-against-law", "magic-circle-against-chaos")),
+"dispel-evil-and-good": dict(src_idx="dispel-evil", cible=1, impact=(4, ["garde"], "4 ajouté à la défense"), impact_sats=[(P, ["renvoi"]), (P, ["dissipation"])],
+                             options=TRI("dispel-evil", "dispel-law", "dispel-chaos")),
+"holy-aura": dict(impact=GARDE(4), options=[O("Aura sacrée — contre l'hostile", cond=["hostile"], impact_sats=[(25, ["magie"]), (P, ["aveuglement"])]),
+                  O("Aura impie — contre l'hostile", src_idx="unholy-aura", cond=["hostile"], impact_sats=[(25, ["magie"]), (4, ["force", "faiblesse"])]),
+                  O("Manteau du chaos — contre le lumineux", src_idx="cloak-of-chaos", cond=["lumineux"], impact_sats=[(25, ["magie"]), (P, ["confusion"])]),
+                  O("Bouclier de la loi — contre le ténébreux", src_idx="shield-of-law", cond=["ténébreux"], impact_sats=[(25, ["magie"]), (P, ["lenteur"])])]),
+"private-sanctum": dict(src_idx="mages-private-sanctum", name="Mage's Private Sanctum"),
+"prismatic-wall": dict(options=[O("Mur", aoe={"type": "line", "size": 60}), O("Sphère", src_idx="prismatic-sphere", aoe={"type": "sphere", "size": 10})]),
+}
+for k, v in V35c.items(): FICHES[k]["v35"] = v
+NEW35c = {
+"endure-elements": dict(src="3.5", fr="Endurance aux énergies destructives", verb=SEP, cible=2, impact=(P, ["chaleur", "froid", "climat"], "à l'aise par tout climat")),
+"entropic-shield": dict(src="3.5", fr="Bouclier entropique", verb=SEP, cible=1, impact=(1, ["garde", "trait", "cinquième"], "une chance sur cinq de manquer à distance")),
+"hide-from-animals": dict(src="3.5", fr="Invisibilité pour les animaux", verb=V("visibilite", True), cible=2, cond=["bête"], impact=(P, ["dissimulation"], "ni vue, ni ouïe, ni odorat"), fin=["agression"]),
+"hide-from-undead": dict(src="3.5", fr="Invisibilité pour les morts-vivants", verb=V("visibilite", True), cible=2, cond=["MORTVIVANT"], impact=(P, ["dissimulation"], "ni vue, ni ouïe, ni odorat"), fin=["agression"]),
+"hold-portal": dict(src="3.5", fr="Verrouillage", verb=V("ordre"), cible=1, cible_obj=["porte"], impact=(P, ["verrou"], "fermée comme à clé")),
+"remove-fear": dict(src="3.5", fr="Délivrance de la peur", verb=V("qualite"), cible=2, impact=(4, ["courage", "peur"], "4 ajouté contre la peur, la peur suspendue")),
+"obscure-object": dict(src="3.5", fr="Camouflage d'objet", verb=V("visibilite", True), cible=1, cible_obj=["objet"], impact=(P, ["divination"], "insaisissable à la scrutation")),
+"protection-from-arrows": dict(src="3.5", fr="Protection contre les projectiles", verb=SEP, cible=2, impact=(10, ["garde", "trait"], "10 retranché à chaque coup à distance"), impact_sats=[(30, ["plafond"])]),
+"resist-energy": dict(src="3.5", fr="Résistance aux énergies destructives", verb=SEP, cible=2,
+    options=[O(n, impact=(10, ["résistance", w], "10 retranché à chaque coup")) for n, w in EN35]),
+"shield-other": dict(src="3.5", fr="Protection d'autrui", verb=V("relation"), cible=2, comp=["anneau", "platine"], impact=(1, ["garde", "résistance", "partage"], "1 ajouté, la moitié de ses blessures pour moi")),
+"undetectable-alignment": dict(src="3.5", fr="Intention indétectable", verb=V("visibilite", True), cible=2, impact=(P, ["hostile", "astral", "divination"], "hostilité et charge astrale insaisissables")),
+"explosive-runes": dict(src="3.5", fr="Runes explosives", verb=V("existence", True), cible=1, cible_obj=["écrit"], cond=["lecture"], impact=(21, ["force", "explosion"], "6d6 en moyenne")),
+"antiplant-shell": dict(src="3.5", fr="Coquille antivégétale", verb=V("force", True), cible=P, impact=(P, ["barrière", "plante"], "les plantes tenues au dehors")),
+"dimensional-anchor": dict(src="3.5", fr="Ancre dimensionnelle", verb=V("mouvement", True), cible=3, impact=(P, ["passage", "plan"], "nul voyage extradimensionnel")),
+"fire-trap": dict(src="3.5", fr="Piège de feu", fam="H", comb="Feu", why="le feu", cible=1, cible_obj=["objet"], cond=["ouverture"], comp=["or"], impact=(10, ["feu", "explosion"], "1d4 + 7 en moyenne")),
+"globe-of-invulnerability-lesser": F35("globe-of-invulnerability", "Globe d'invulnérabilité partielle", impact_sats=[(3, ["seuil", "niveau"])]),
+"repel-vermin": dict(src="3.5", fr="Répulsif", verb=V("force", True), cible=P, impact=(P, ["barrière", "vermine"], "la vermine tenue au dehors"), impact_sats=[(7, ["douleur"])]),
+"spell-immunity": dict(src="3.5", fr="Immunité contre les sorts", verb=SEP, cible=2, impact=(1, ["immunité", "sort"], "un sort désigné sans effet"), impact_sats=[(4, ["seuil", "niveau"])]),
+"spell-immunity-greater": dict(src="3.5", fr="Immunité contre les sorts suprême", verb=SEP, cible=2, impact=(3, ["immunité", "sort"], "trois sorts désignés sans effet"), impact_sats=[(8, ["seuil", "niveau"])]),
+"atonement": dict(src="3.5", fr="Pénitence", verb=V("qualite"), cible=2, comp=["chapelet"], cond=["repentir"], impact=(P, ["faute", "pardon"], "la faute levée, les dons rendus")),
+"break-enchantment": dict(src="3.5", fr="Délivrance", verb=V("qualite"), cible=2, qty_cible=9, impact=(P, ["enchantement", "transmutation", "malédiction"], "libérée des sorts et des malédictions")),
+"dismissal": dict(src="3.5", fr="Renvoi", verb=V("trame", True), cible=9, impact=(P, ["exil"], "renvoyée sur son plan"), impact_sats=[(1, ["égarement", "cinquième"])]),
+"spell-resistance": dict(src="3.5", fr="Résistance à la magie", verb=SEP, cible=2, impact=(21, ["résistance", "magie"], "résistance à la magie de 21")),
+"dispel-magic-greater": dict(src="3.5", fr="Dissipation suprême", verb=SEP, cible=P, impact=(P, ["sort", "dissipation", "malédiction"], "les sorts prennent fin, malédictions comprises")),
+"glyph-of-warding-greater": F35("glyph-of-warding", "Glyphe de garde suprême", options=[O("Glyphe explosif suprême", impact=(23, ["piège", "explosion"], "5d8 en moyenne"), impact_sats=[]),
+    O("Glyphe de sort suprême", impact=(P, ["piège", "sort"], "un sort enfermé"), impact_sats=[(6, ["seuil", "niveau"])])]),
+"repulsion": dict(src="3.5", fr="Répulsion", verb=V("force", True), cible=P, comp=["fer"], impact=(P, ["répulsion"], "nul ne peut s'approcher")),
+"spell-turning": dict(src="3.5", fr="Renvoi des sorts", verb=V("force", True), cible=1, impact=(9, ["sort", "renvoi"], "1d4 + 6 niveaux de sorts renvoyés")),
+"dimensional-lock": dict(src="3.5", fr="Verrou dimensionnel", verb=V("mouvement", True), cible=P, impact=(P, ["passage", "plan"], "nul voyage extradimensionnel dans la zone")),
+"protection-from-spells": dict(src="3.5", fr="Protection contre les sorts", verb=SEP, cible=2, qty_cible=3, comp=["diamant"], consumed=True, impact=(8, ["résistance", "sort"], "8 ajouté aux sauvegardes contre les sorts")),
+"repel-metal-or-stone": dict(src="3.5", fr="Répulsion du métal et de la pierre", verb=V("force", True), cible=1, cible_obj=["métal", "pierre"], impact=(P, ["répulsion"], "repoussés jusqu'au bout de la portée")),
+"freedom": dict(src="3.5", fr="Liberté", verb=V("mouvement"), cible=2, impact=(P, ["libération", "entrave", "prison"], "délivrée de toute entrave, même emprisonnée")),
+"mages-disjunction": dict(src="3.5", fr="Disjonction", verb=V("ordre", True), cible=P, impact=(P, ["magie", "disjonction"], "sorts défaits, objets magiques éteints")),
+}
+FICHES.update(NEW35c)

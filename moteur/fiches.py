@@ -968,3 +968,54 @@ NEW35 = {
 "symbol-of-insanity": SYM("Symbole d'aliénation", impact=(P, ["folie"], "aliénée à jamais")),
 }
 FICHES.update(NEW35)
+
+# ===== D&D 3.5 — lot 2 : Divination =====
+# Alignement : le système moral universel est écarté (ce qui est bon à Galombar ne l'est pas à Hodolin), pas les sorts. Ils se transposent :
+#  bien / mal  → bienveillance / hostilité envers le lanceur : Cible 2 (allié) / Cible 3 (ennemi), relatives par nature ;
+#  loi / chaos → l'énergie astrale lumineuse (l'Étoile) / ténébreuse (l'Abysse), et ce qui en est chargé.
+AURA = (P, ["aura", "présence", "force"], "présence, nombre et force des auras")
+V35b = {
+"detect-magic": {}, "comprehend-languages": {}, "identify": {}, "speak-with-animals": {}, "augury": {}, "detect-thoughts": {},
+"locate-object": {}, "see-invisibility": {}, "speak-with-plants": {}, "tongues": {}, "arcane-eye": {}, "divination": {},
+"locate-creature": {}, "telepathic-bond": {}, "find-the-path": {}, "legend-lore": {}, "true-seeing": {},
+"guidance": dict(impact=(1, ["chance", "aptitude"], "1 ajouté à un test")),
+"true-strike": dict(impact=(20, ["faille", "coup"], "20 ajouté à la prochaine attaque")),
+"find-traps": dict(impact=(1, ["piège", "fouille"], "la moitié du niveau ajoutée à la fouille des pièges")),
+"scrying": dict(loc=(P, None, "n'importe où")),
+"commune": dict(qty=9),
+"commune-with-nature": dict(loc=(14, "KILOMETRES", "14 km (9 miles)")),
+"contact-other-plane": dict(qty=4, impact_sats=[(8, ["intellect", "charisme"])]),
+"foresight": dict(impact=(2, ["avenir", "vigilance", "garde"], "jamais surprise, 2 ajouté à la défense")),
+"detect-poison-and-disease": dict(src_idx="detect-poison", name="Detect Poison", impact=(P, ["poison", "présence"], "la présence du poison, puis sa nature")),
+"detect-evil-and-good": dict(src_idx="detect-evil", cible_note=[], notes=[], impact=AURA,
+    options=[O("Hostilité", cible=3, qty_cible=P), O("Bienveillance", src_idx="detect-good", cible=2, qty_cible=P)]),
+"clairvoyance": dict(src_idx="clairaudience-clairvoyance", name="Clairaudience/Clairvoyance",
+    options=[O("Clairaudience", impact=(P, ["ouïe"], "entendre par le capteur")), O("Clairvoyance", impact=(P, ["vue"], "voir par le capteur"))]),
+}
+for k, v in V35b.items(): FICHES[k]["v35"] = v
+DET = lambda fr, *w, why="", **kw: {**dict(src="3.5", fr=fr, verb=V("visibilite"), cible=P, impact=(P, list(w), why)), **kw}
+NEW35b = {
+"know-direction": dict(src="3.5", fr="Orientation", verb=V("visibilite"), cible=1, impact=(P, ["nord"], "la direction du nord")),
+"read-magic": dict(src="3.5", fr="Lecture de la magie", verb=V("visibilite"), cible=1, cible_obj=["écrit"], impact=(P, ["sens", "magie"], "les écrits magiques déchiffrés")),
+"detect-animals-or-plants": DET("Détection des animaux ou des plantes", options=[O("Animaux", **I("présence", "bête", why="présence, nombre et position d'une espèce animale")),
+    O("Plantes", **I("présence", "plante", why="présence, nombre et position d'une espèce végétale"))]),
+"detect-law": DET("Détection de la loi", "aura", "présence", "force", cible_note=["lumineux"], why="ce qui est chargé d'énergie de l'Étoile"),
+"detect-chaos": DET("Détection du chaos", "aura", "présence", "force", cible_note=["ténébreux"], why="ce qui est chargé d'énergie de l'Abysse"),
+"detect-secret-doors": DET("Détection des passages secrets", "passage", "secret", why="présence, nombre et position des passages dérobés"),
+"detect-snares-and-pits": DET("Détection des collets et des fosses", "piège", "nature", why="les pièges naturels, fosses et éboulis"),
+"detect-undead": DET("Détection des morts-vivants", "aura", "présence", "force", cible=9, cible_note=["MORTVIVANT"], why="présence, nombre et force des auras"),
+"status": dict(src="3.5", fr="Rapport", verb=V("relation"), cible=2, impact=(P, ["lien", "état", "direction"], "position et état des compagnons")),
+"arcane-sight": dict(src="3.5", fr="Vision magique", verb=V("visibilite"), cible=1, impact=(P, ["aura", "force"], "les auras magiques et leur force"), impact_sats=[(36, ["mètres"])]),
+"arcane-sight-greater": dict(src="3.5", fr="Vision magique suprême", verb=V("visibilite"), cible=1, impact=(P, ["aura", "force", "sort"], "les auras, et les sorts actifs sur chacun"), impact_sats=[(36, ["mètres"])]),
+"detect-scrying": DET("Détection de la scrutation", "capteur", "scrutation", why="les capteurs magiques, parfois le scrutateur"),
+"discern-lies": dict(src="3.5", fr="Détection du mensonge", verb=V("visibilite"), cible=3, impact=(P, ["mensonge"], "le mensonge délibéré décelé")),
+"prying-eyes": dict(src="3.5", fr="Yeux indiscrets", verb=V("visibilite"), qty=12, impact=(P, ["OEIL", "vision", "rapport"], "des yeux volants qui reviennent faire rapport")),
+"prying-eyes-greater": dict(src="3.5", fr="Yeux indiscrets suprêmes", verb=V("visibilite"), qty=18, impact=(P, ["OEIL", "vision", "vérité", "rapport"], "des yeux volants qui voient les choses telles qu'elles sont")),
+"analyze-dweomer": dict(src="3.5", fr="Analyse d'enchantement", verb=V("visibilite"), cible=1, cible_obj=["objet"], comp=["gemme"], impact=(P, ["propriété", "enchantement"], "propriétés et sorts en cours")),
+"stone-tell": dict(src="3.5", fr="Pierre parlante", comb="Roche", why="la pierre", cible=P, impact=(P, ["parole", "pierre"], "parler aux pierres"), alt=[A("relation")]),
+"scrying-greater": F35("scrying", "Scrutation suprême", impact=(P, ["vue", "ouïe", "sort"], "voir et entendre la cible, et lancer des détections à travers")),
+"vision": F35("legend-lore", "Vision", comp=[], impact=(P, ["légende", "vision"], "le savoir légendaire, en une vision")),
+"discern-location": dict(src="3.5", fr="Localisation infaillible", verb=V("visibilite"), cible=4, impact=(P, ["lieu", "nom"], "le nom exact du lieu où se trouve la cible")),
+"moment-of-prescience": dict(src="3.5", fr="Moment de prescience", fam="R", art="chronomancie", verb=V("visibilite"), cible=1, impact=(15, ["avenir", "chance"], "15 ajouté à un seul jet"), fin=["usage"]),
+}
+FICHES.update(NEW35b)

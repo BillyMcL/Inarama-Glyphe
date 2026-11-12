@@ -314,6 +314,14 @@ def build_spell(idx, fiche):
         if c_:
             val = c_[0]; cw.append(word(c_[1])); rd = f"valeur {c_[0]} pièce{'s' if c_[0] > 1 else ''} de {c_[1]} ; " + rd
         rings.append(("COMPOSANTE", val, cw, rd))
+    # coût en expérience (3.5) : le lanceur paie de sa propre substance. Un niveau (1 000 × niveau du lanceur en XP) vaut un DV,
+    # soit 4,5 points de vie : moins d'un point → 1 « vie » ; un point ou plus → n « vie · durable » (retirée pour de bon)
+    if s.get("_xp"):
+        if fiche.get("comp"): raise ValueError(f"{idx} : composante et coût en expérience à la fois, cas à trancher")
+        xp, cl = int(s["_xp"]), int(s["_cl"]); pv = xp * 4.5 / (1000 * cl)
+        if pv < 1: rings.append(("COMPOSANTE", 1, ["VIE"], f"{xp} points d'expérience au niveau {cl}, soit {pv:.2f} point de vie : 1 point de vie".replace('.', ',', 1)))
+        else:
+            n = rnd(pv); rings.append(("COMPOSANTE", n, ["VIE", word("durable")], f"{xp} points d'expérience au niveau {cl} : {n} points de vie retirés pour de bon"))
     # 12 Cosmétique
     if fiche.get("cosm"):
         v, w = fiche["cosm"]
@@ -378,6 +386,8 @@ def build_forms(idx, fiche):
                 d0 = SRD.get(idx, {}).get("damage") or {}; d0 = d0[0] if isinstance(d0, list) else d0
                 fe["comb"] = DAMAGE_COMBO.get((d0.get("damage_type") or {}).get("name")) or ECOLES[SRD[idx]["school"]["name"]][2]
         if "options" in v and v["options"] is None: fe.pop("options", None)
+        # en 3.5, la portée lue dans le texte est la vraie : une portée forcée pour la 5e ne la remplace pas
+        if ed == "3.5" and "loc" not in v: fe.pop("loc", None)
         fe["alt"] = [dict(a, **{k: x for k, x in v.items() if k in ("impact", "impact_sats", "impact_add", "aoe", "options")}) if not a.get("grimoire") else a
                      for a in fiche.get("alt", [])]
         for a, extra in zip(fe["alt"], v.get("alt", [])): a.update(extra)

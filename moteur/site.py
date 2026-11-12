@@ -245,6 +245,8 @@ def regles():
 <li><b>Jets de sauvegarde.</b> Non inscrits : leur difficulté dépend de l'incantateur, non du sort.</li>
 <li><b>D&amp;D 3.5.</b> Les sorts du SRD 3.5 entrent école par école. Le lanceur de référence est le plus petit lanceur capable du sort : portées, durées et nombres de cibles « par niveau » se calculent à son niveau. Un sort commun dont le glyphe change devient une forme « version 3.5 » ; les sorts propres à la 3.5 ont leur entrée.</li>
 <li><b>Dés de vie.</b> Comme les dégâts, ils se ramènent à une valeur fixe : un dé de vie vaut 4,5 points de vie (un d8), arrondi à l'entier. Réserves et seuils s'écrivent donc en « vie », comme en 5e.</li>
+<li><b>L'alignement transposé.</b> Inarama n'a pas de balance morale universelle : ce qui est bon à Galombar ne l'est pas à Hodolin. Le système d'alignement est écarté, pas les sorts. Bien et mal deviennent la bienveillance et l'hostilité envers le lanceur (Cible allié, Cible ennemi) ; loi et chaos deviennent l'énergie astrale lumineuse de l'Étoile et ténébreuse de l'Abysse, et ce qui en est chargé.</li>
+<li><b>Coût en expérience.</b> Quand un sort de la 3.5 coûte de l'expérience, le lanceur paie de sa propre substance : une Composante annotée « vie ». Un niveau d'expérience vaut un dé de vie, soit 4,5 points de vie ; moins d'un point s'écrit 1 « vie », un point ou plus s'écrit en « vie durable », retirée pour de bon.</li>
 <li><b>Portée nulle.</b> Un sort qui naît là où se tient le lanceur n'a pas d'anneau de Localisation : le vide.</li>
 <li><b>Concentration sans terme.</b> Une durée qui tient tant que dure la concentration, sans maximum, est pleine : infinie.</li>
 <li><b>Unités.</b> Mètres, kilogrammes et litres, en attendant les unités propres aux peuples d'Inarama.</li>

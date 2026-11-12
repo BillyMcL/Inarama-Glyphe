@@ -54,6 +54,7 @@ def best_factors(n):
     return None
 def val(n, pol):
     """renvoie (spec, multiplicatif ?, polarité lisible ?)"""
+    if n is None: return [], False, False                  # vide : un emplacement sans forme (le sort qu'on y inscrira)
     if n == "plein": return [("full", 0, 0)], False, False
     if n in PRIM: return [form(n, pol)], False, True
     if n == 6: return [form(3, pol, 0), form(3, pol, 1)], False, False

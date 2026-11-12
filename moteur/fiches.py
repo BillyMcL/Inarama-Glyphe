@@ -1173,8 +1173,6 @@ NEW35d = {
 "glitterdust": dict(src="3.5", fr="Poussière scintillante", verb=V("visibilite"), cible=P, impact=(P, ["aveuglement", "invisible"], "aveuglées, l'invisible révélé")),
 "heal-mount": dict(src="3.5", fr="Guérison de la monture", verb=V("existence"), cible=2, cond=["monture"], impact=(P, ["vie", "maladie", "aveuglement"], "sa monture entièrement guérie"), alt=[H("Sang", "le fluide vital")]),
 "sepia-snake-sigil": dict(src="3.5", fr="Sceau du serpent", verb=V("mouvement", True), cible=1, cible_obj=["écrit"], cond=["lecture"], comp=["ambre"], impact=(P, ["paralysie", "serpent"], "le lecteur figé dans l'ambre")),
-"minor-creation": dict(src="3.5", fr="Création mineure", verb=V("existence"), cible=1, cible_obj=["plante"], impact=(7, ["création", "volume"], "7 pieds cubes de matière végétale")),
-"major-creation": dict(src="3.5", fr="Création majeure", verb=V("existence"), cible=1, cible_obj=["minéral"], impact=(9, ["création", "volume"], "9 pieds cubes de matière végétale ou minérale")),
 "secure-shelter": dict(src="3.5", fr="Abri", verb=V("existence"), cible=P, impact=(P, ["abri", "chaumière"], "une chaumière solide")),
 "solid-fog": dict(src="3.5", fr="Brouillard dense", comb="Brume", why="le brouillard", cible=P, impact=(P, ["brouillard", "obscurité", "lenteur"], "zone obscurcie où l'on avance à peine")),
 "acid-fog": dict(src="3.5", fr="Brouillard acide", comb="Acide sulfurique", why="l'acide", cible=P, impact=(7, ["acide", "brouillard", "lenteur"], "2d6 en moyenne à chaque tour")),
@@ -1272,7 +1270,6 @@ V35f.update({
 for k, v in V35f.items(): FICHES[k]["v35"] = v
 IMG = lambda fr, *w, **kw: {**dict(src="3.5", fr=fr, verb=V("existence"), cosm=(P, "IMAGE"), impact=(P, ["image"] + list(w), "une image, avec " + ", ".join(w)), alt=ILLH()), **kw}
 NEW35f = {
-"magic-aura": dict(src="3.5", fr="Aura magique", verb=V("visibilite", True), cible=1, cible_obj=["objet"], impact=(P, ["aura", "faux-semblant"], "l'aura magique travestie"), alt=ILLH()),
 "ventriloquism": dict(src="3.5", fr="Ventriloquie", verb=V("visibilite", True), cible=1, impact=(P, ["voix", "lieu"], "la voix qui semble venir d'ailleurs"), alt=[H("Air", "l'air qui porte la voix")]),
 "minor-image": IMG("Image imparfaite", "son"),
 "persistent-image": IMG("Image persistante", "son", "odeur", "chaleur", "scénario"),
@@ -1447,3 +1444,39 @@ FICHES.update({
 "arcane-mark": dict(src="3.5", fr="Marque du mage", verb=V("existence"), cible=1, cible_obj=["surface"], impact=(P, ["marque", "rune"], "ta rune personnelle, visible ou non")),
 "permanency": dict(src="3.5", fr="Permanence", verb=V("ordre"), cible=1, impact=(P, ["sort", "permanence"], "un sort rendu permanent")),
 })
+
+# ===== Emplacement de sort =====
+# Un sort qui stocke, reproduit, imite ou prolonge un autre sort porte un satellite-emplacement sur l'Impact : vide dans la
+# bibliothèque, il reçoit au lancement le glyphe du sort concerné.
+SLOT = (None, ["sort"])
+def _slot(d, base=()):
+    """ajoute l'emplacement à la fiche et à chacune de ses options (une option sans satellites propres hérite de ceux de la fiche)"""
+    if not d: return
+    own = [s for s in d.get("impact_sats", list(base)) if s != SLOT]
+    if "impact_sats" in d or "impact" in d or base: d["impact_sats"] = own + [SLOT]
+    for o in d.get("options") or []:
+        o["impact_sats"] = [s for s in o.get("impact_sats", own) if s != SLOT] + [SLOT]
+for k in ["wish", "miracle", "contingency", "spellstaff", "imbue-with-spell-ability", "permanency", "mages-lucubration", "shadow-conjuration", "shadow-evocation"]:
+    _slot(FICHES[k]); _slot(FICHES[k].get("v35"), base=FICHES[k].get("impact_sats", []))
+_g = lambda o: "sort" in o.get("label", "").lower()
+for d in (FICHES["glyph-of-warding"], FICHES["glyph-of-warding"].get("v35")):
+    for o in d.get("options") or []:
+        if _g(o): o["impact_sats"] = [s for s in o.get("impact_sats", []) if s != SLOT] + [SLOT]
+
+# ===== Relecture =====
+# Aura magique (3.5) = l'Aura magique de la 5e ; Création mineure et majeure = échelons de Création.
+FICHES["arcanists-magic-aura"]["v35"] = dict(src_idx="magic-aura", name="Magic Aura")
+FICHES["creation"]["v35"] = dict(src_idx="minor-creation", options=[
+    O("Création mineure", cible_obj=["plante"], impact=(7, ["création", "volume"], "7 pieds cubes de matière végétale")),
+    O("Création majeure", src_idx="major-creation", cible_obj=["minéral"], impact=(9, ["création", "volume"], "9 pieds cubes de matière végétale ou minérale"))])
+# Création (5e) tire son objet du plan de l'Ombre : énergie astrale, donc une forme lumineuse et une forme ténébreuse
+FICHES["creation"]["options"] = [O(f"Forme {ef}", impact=(P, ["matière", e], f"un objet tiré de l'énergie {ef}")) for e, ef in ASTR]
+# formes 3.5 dont les données ne disent pas l'effet
+for k, v in {"divine-favor": dict(impact=(1, ["chance", "coup", "dégâts"], "+1 aux attaques et aux dégâts")),
+             "heat-metal": dict(impact=(5, ["feu"], "jusqu'à 2d4 au plus fort")),
+             "spiritual-weapon": dict(impact=(6, None, "1d8 + 1 en moyenne, de force")),
+             "wind-wall": dict(impact=(P, ["vent", "trait"], "les projectiles déviés")),
+             "dream": dict(impact=(P, ["rêve", "message"], "un message en songe")),
+             "arcane-sword": dict(impact=(14, None, "4d6 en moyenne, de force")),
+             "produce-flame": dict(impact=(5, ["feu"], "1d6 + 1 en moyenne"))}.items():
+    FICHES[k]["v35"] = {**(FICHES[k].get("v35") or {}), **v}

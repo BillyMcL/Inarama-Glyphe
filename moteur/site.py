@@ -254,6 +254,8 @@ def regles():
 <li><b>Matière et expérience.</b> Quand un sort coûte à la fois une matière et de l'expérience, la matière garde la valeur de la Composante et la vie payée devient un satellite annoté « vie ».</li>
 <li><b>Énergie positive et négative.</b> Elles s'écrivent « vie » et « nécrose », non lumineux et ténébreux : on soigne et on blesse dans les deux hémisphères. Un niveau perdu vaut un dé de vie, soit 4,5 points de vie, « durable » quand la perte peut devenir définitive.</li>
 <li><b>Grimoire et éditions.</b> Un sort du grimoire se traite comme les autres : son glyphe validé reste la forme de référence, et ses versions 2024 ou 3.5 prennent leur durée, leur portée et leur nombre de cibles dans leurs propres données ; options et échelons s'y ajoutent de même.</li>
+<li><b>Emplacement de sort.</b> Un sort qui stocke, reproduit, imite ou prolonge un autre sort (Souhait, Miracle, Glyphe de sort, Contingence…) porte sur l'Impact un satellite vide annoté « sort » : il reçoit au lancement le glyphe du sort concerné.</li>
+<li><b>Plusieurs satellites.</b> Sur le cercle, ils se répartissent symétriquement (opposés, à 120°, en croix) ; sur la bande, ils se centrent de part et d'autre du milieu, à intervalles égaux.</li>
 <li><b>Portée nulle.</b> Un sort qui naît là où se tient le lanceur n'a pas d'anneau de Localisation : le vide.</li>
 <li><b>Concentration sans terme.</b> Une durée qui tient tant que dure la concentration, sans maximum, est pleine : infinie.</li>
 <li><b>Unités.</b> Mètres, kilogrammes et litres, en attendant les unités propres aux peuples d'Inarama.</li>

@@ -158,11 +158,13 @@ def split_rare(crits):
 def place_sats(sats):
     """satellites annotés (valeur, [mots]) : un seul se place au nord ou au sud ; deux, de part et d'autre"""
     if not sats: return []
-    angles = ["NS"] if len(sats) == 1 else [90, 270, 0, 180][:len(sats)]
+    # sur le cercle, plusieurs satellites d'un même encart se répartissent symétriquement : opposés, à 120°, en croix…
+    n = len(sats)
+    angles = ["NS"] if n == 1 else [90, 270] if n == 2 else [(90 + k * 360 / n) % 360 for k in range(n)]
     return [(a, v, " ".join(word(w) for w in ws)) for a, (v, ws) in zip(angles, sats)]
 def sat_reading(sats):
     if not sats: return ""
-    return "".join(f" ; satellite {v} « {' · '.join(shown(w) for w in ws)} »" for v, ws in sats)
+    return "".join(f" ; satellite {'vide' if v is None else v} « {' · '.join(shown(w) for w in ws)} »" for v, ws in sats)
 
 GRAFT = ("impact", "impact_add", "impact_sats", "cond", "cond_sats", "fin", "cible_note", "qty")
 def graft(idx, fiche, g, fam, s, fr, level, ecole, hemi, notes):
@@ -510,7 +512,13 @@ def band_rings(sp):
         if lum is not None: pol = "up" if crit in lum else "down"
         else: pol = "down" if (sp["core"][0] == "verb" and sp["core"][2]) else "up"
         spec, mult, ok = SP.val(v, pol) if v is not None else ([], False, False)
-        sats = [((90 if d == "NS" or d % 360 == 270 else d), SP.val(sv, pol)[0], (x[0] if x else "")) for d, sv, *x in (rest[0] if rest else [])]
+        raw = rest[0] if rest else []
+        if len(raw) >= 2 and crit != "FORME":
+            # en bandeau, plusieurs satellites se centrent de part et d'autre du milieu, à intervalles égaux
+            # (deux satellites : au quart et aux trois quarts, l'est et l'ouest du cercle déroulé)
+            k = len(raw); xs = [0.5 + (i - (k - 1) / 2) / k for i in range(k)]
+            raw = [((270 - 360 * x) % 360, sv, *rest_) for x, (d, sv, *rest_) in zip(xs, raw)]
+        sats = [((90 if d == "NS" or d % 360 == 270 else d), SP.val(sv, pol)[0], (x[0] if x else "")) for d, sv, *x in raw]
         out.append(dict(label=" ".join([crit] + list(words) + (["FOIS"] if mult else [])), spec=spec, sats=sats))
     return out
 def band_svg(sp, declared):

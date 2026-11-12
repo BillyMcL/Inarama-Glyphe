@@ -1187,3 +1187,61 @@ NEW35d = {
 "refuge": dict(src="3.5", fr="Refuge", fam="R", art="spatiomancie", verb=V("mouvement"), cible=1, cible_obj=["objet"], cond=["mot"], comp=["gemme"], impact=(P, ["retour", "demeure"], "son porteur ramené à ta demeure")),
 }
 FICHES.update(NEW35d)
+
+# ===== D&D 3.5 — lot 5 : Évocation =====
+LUMH = lambda: [H("Plasma", LUM)]
+WORD = lambda lab, idx, who, *w: O(lab, src_idx=idx, cond=[who], impact=(P, list(w) + ["mort"], "selon la vie qui reste, jusqu'à la mort"))
+SMITE = lambda lab, idx, who, w, d: O(lab, src_idx=idx, cond=[who], impact=(14, [w], f"3d8 en moyenne, puis {d}"))
+V35e = {k: {} for k in ["dancing-lights", "light", "ray-of-frost", "burning-hands", "divine-favor", "faerie-fire", "floating-disk", "magic-missile",
+    "produce-flame", "shocking-grasp", "continual-flame", "flame-blade", "flaming-sphere", "gust-of-wind", "scorching-ray", "shatter",
+    "spiritual-weapon", "daylight", "fireball", "lightning-bolt", "tiny-hut", "wind-wall", "fire-shield", "ice-storm", "resilient-sphere",
+    "wall-of-fire", "wall-of-ice", "cone-of-cold", "flame-strike", "sending", "wall-of-force", "blade-barrier", "chain-lightning", "contingency",
+    "freezing-sphere", "delayed-blast-fireball", "forcecage", "prismatic-spray", "sunbeam", "earthquake", "fire-storm", "sunburst", "meteor-swarm"]}
+V35e.update({
+"darkness": dict(options=[O("Ténèbres"), O("Ténèbres profondes", src_idx="deeper-darkness")]),
+"meteor-swarm": dict(impact=(21, ["feu"], "6d6 en moyenne par météore"), impact_sats=[(7, ["choc"])]),
+"fire-shield": dict(impact=(11, ["feu"], "1d6 + 7 en moyenne"), alt=[dict(impact=(11, ["froid"], "1d6 + 7 en moyenne"))]),
+"call-lightning": dict(options=[O("Appel de la foudre"), O("Appel de la tempête", src_idx="call-lightning-storm")]),
+"arcane-sword": dict(src_idx="mages-sword", name="Mage's Sword"),
+"arcane-hand": dict(src_idx="interposing-hand", impact_add=[], options=[
+    O("Main interposée", impact=(4, ["main", "garde"], "4 ajouté à la défense contre un adversaire")),
+    O("Main puissante", src_idx="forceful-hand", impact=(P, ["main", "poussée"], "l'adversaire repoussé")),
+    O("Main agrippante", src_idx="grasping-hand", impact=(P, ["main", "étreinte"], "l'adversaire agrippé")),
+    O("Poing serré", src_idx="clenched-fist", impact=(16, ["main", "choc"], "1d8 + 11 en moyenne")),
+    O("Main broyeuse", src_idx="crushing-hand", impact=(19, ["main", "étreinte", "broyage"], "2d6 + 12 en moyenne, à chaque étreinte"))]),
+"divine-word": dict(src_idx="holy-word", cond=[], options=[
+    WORD("Mot sacré — contre l'hostile", "holy-word", "hostile", "surdité", "aveuglement", "paralysie"),
+    WORD("Blasphème — contre l'hostile", "blasphemy", "hostile", "hébétude", "faiblesse", "paralysie"),
+    WORD("Mot de chaos — contre le lumineux", "word-of-chaos", "lumineux", "surdité", "étourdissement", "confusion"),
+    WORD("Décret — contre le ténébreux", "dictum", "ténébreux", "surdité", "lenteur", "paralysie")]),
+"hallow": dict(cond=["hostile"], options=[O("Sanctification", impact_sats=[(4, ["mort-vivant", "faiblesse"])]),
+                                          O("Sanctification impie", src_idx="unhallow", impact_sats=[(4, ["mort-vivant", "force"])])]),
+})
+for k, v in V35e.items(): FICHES[k]["v35"] = v
+NEW35e = {
+"flare": dict(src="3.5", fr="Lueur", verb=V("visibilite"), cible=3, impact=(P, ["éblouissement"], "éblouie une minute"), alt=LUMH()),
+"consecrate": dict(src="3.5", fr="Consécration", verb=V("qualite"), cible=P, comp=["argent"],
+    options=[O("Consécration", impact=(1, ["mort-vivant", "faiblesse"], "1 retranché aux morts-vivants")),
+             O("Profanation", src_idx="desecrate", impact=(1, ["mort-vivant", "force"], "1 ajouté aux morts-vivants"))]),
+"sound-burst": dict(src="3.5", fr="Cacophonie", cible=P, impact_sats=[(P, ["étourdissement"])]),
+"helping-hand": dict(src="3.5", fr="Main secourable", verb=V("relation"), cible=4, impact=(P, ["guide", "main"], "une main fantôme qui ramène la personne cherchée")),
+"invisibility-purge": dict(src="3.5", fr="Purge d'invisibilité", verb=V("visibilite"), cible=P, aoe={"type": "sphere", "size": 25}, impact=(P, ["invisible", "révélation"], "tout l'invisible rendu visible")),
+"searing-light": dict(src="3.5", fr="Lumière brûlante", verb=V("existence", True), cible=3, impact=(9, ["lumière"], "2d8 en moyenne"), impact_sats=[(18, ["mort-vivant"])], alt=LUMH()),
+"divine-power": dict(src="3.5", fr="Force divine", verb=V("intensite"), cible=1, impact=(6, ["force", "coup"], "6 ajouté à la Force, l'attaque d'un guerrier"), impact_sats=[(7, ["vie", "temporaire"])]),
+"holy-sword": dict(src="3.5", fr="Arme sacrée", verb=V("intensite"), cible=1, cible_obj=["arme"], cond=["hostile"], impact=(5, ["arme"], "5 ajouté à l'arme"), impact_sats=[(7, ["dégâts"]), (P, ["cercle"])]),
+"imbue-with-spell-ability": dict(src="3.5", fr="Transfert de sorts", verb=V("relation"), cible=2, impact=(P, ["sort", "transfert"], "des sorts confiés à autrui"), impact_sats=[(4, ["seuil", "niveau"])]),
+"shout": dict(src="3.5", fr="Cri", cible=P, impact=(18, ["tonnerre"], "5d6 en moyenne"), impact_sats=[(P, ["surdité"])]),
+"shout-greater": dict(src="3.5", fr="Cri suprême", cible=P, impact=(35, ["tonnerre"], "10d6 en moyenne"), impact_sats=[(P, ["surdité"]), (P, ["étourdissement"])]),
+"holy-smite": dict(src="3.5", fr="Châtiment sacré", verb=V("existence", True), cible=P, options=[
+    SMITE("Châtiment sacré — contre l'hostile", "holy-smite", "hostile", "aveuglement", "aveuglée"),
+    SMITE("Fléau impie — contre l'hostile", "unholy-blight", "hostile", "nausée", "nauséeuse"),
+    SMITE("Marteau du chaos — contre le lumineux", "chaos-hammer", "lumineux", "lenteur", "ralentie"),
+    SMITE("Colère de l'ordre — contre le ténébreux", "orders-wrath", "ténébreux", "hébétude", "hébétée")]),
+"sympathetic-vibration": dict(src="3.5", fr="Vibration sympathique", verb=V("existence", True), cible=1, cible_obj=["structure"], impact=(11, ["vibration", "choc"], "2d10 à chaque tour")),
+"polar-ray": dict(src="3.5", fr="Rayon polaire", cible=3),
+"telekinetic-sphere": F35("resilient-sphere", "Sphère télékinésique", impact=(P, ["prison", "barrière", "apesanteur"], "une sphère close, son contenu presque sans poids")),
+"whirlwind": dict(src="3.5", fr="Tornade", comb="Tempête", why="le cyclone", cible=P, impact=(11, ["choc", "tourbillon"], "3d6 en moyenne, emportée")),
+"implosion": dict(src="3.5", fr="Implosion", verb=V("existence", True), cible=3, qty=4, impact=(P, ["mort"], "la créature s'effondre sur elle-même")),
+"miracle": dict(src="3.5", fr="Miracle", verb=V("trame"), cible=9, cible_note=["DIVINITE"], impact=(P, ["intercession"], "la puissance priée intercède"), impact_sats=[(8, ["seuil", "niveau"])]),
+}
+FICHES.update(NEW35e)

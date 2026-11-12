@@ -317,11 +317,14 @@ def build_spell(idx, fiche):
     # coût en expérience (3.5) : le lanceur paie de sa propre substance. Un niveau (1 000 × niveau du lanceur en XP) vaut un DV,
     # soit 4,5 points de vie : moins d'un point → 1 « vie » ; un point ou plus → n « vie · durable » (retirée pour de bon)
     if s.get("_xp"):
-        if fiche.get("comp"): raise ValueError(f"{idx} : composante et coût en expérience à la fois, cas à trancher")
         xp, cl = int(s["_xp"]), int(s["_cl"]); pv = xp * 4.5 / (1000 * cl)
-        if pv < 1: rings.append(("COMPOSANTE", 1, ["VIE"], f"{xp} points d'expérience au niveau {cl}, soit {pv:.2f} point de vie : 1 point de vie".replace('.', ',', 1)))
-        else:
-            n = rnd(pv); rings.append(("COMPOSANTE", n, ["VIE", word("durable")], f"{xp} points d'expérience au niveau {cl} : {n} points de vie retirés pour de bon"))
+        n, xw = (1, ["VIE"]) if pv < 1 else (rnd(pv), ["VIE", word("durable")])
+        xr = (f"{xp} points d'expérience au niveau {cl}, soit {pv:.2f} point de vie : 1 point de vie".replace('.', ',', 1) if pv < 1
+              else f"{xp} points d'expérience au niveau {cl} : {n} points de vie retirés pour de bon")
+        if fiche.get("comp"):   # matière ET expérience : la vie payée devient un satellite annoté de la Composante
+            r = rings.pop(); sats = [(n, xw)]
+            rings.append((r[0], r[1], r[2], r[3] + sat_reading(sats), place_sats(sats)))
+        else: rings.append(("COMPOSANTE", n, xw, xr))
     # 12 Cosmétique
     if fiche.get("cosm"):
         v, w = fiche["cosm"]

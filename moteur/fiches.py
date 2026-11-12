@@ -1245,3 +1245,116 @@ NEW35e = {
 "miracle": dict(src="3.5", fr="Miracle", verb=V("trame"), cible=9, cible_note=["DIVINITE"], impact=(P, ["intercession"], "la puissance priée intercède"), impact_sats=[(8, ["seuil", "niveau"])]),
 }
 FICHES.update(NEW35e)
+
+# ===== D&D 3.5 — lot 6 : Illusion =====
+# Plans de l'Ombre et de la Lumière : transposés en hémisphères ténébreux et lumineux ; leur énergie est l'énergie astrale.
+# Un sort lié à l'une des deux énergies a toujours sa réciproque : l'une n'existe pas sans l'autre.
+ILLH = lambda: [H("Plasma", ILL)]
+# L'un n'existe pas sans sa réciproque : chaque sort d'ombre a sa forme lumineuse et sa forme ténébreuse.
+ASTR = [("lumineux", "lumineuse"), ("ténébreux", "ténébreuse")]
+SHADOW = lambda base, rows: [O(f"{lab} — {e}", src_idx=idx, impact=(n, [e, "cinquième"], f"{n} cinquième{'s' if n > 1 else ''} de réalité, tirée de l'énergie {ef}"),
+                               impact_sats=[(lv, ["seuil", "niveau"])]) for lab, idx, n, lv in rows for e, ef in ASTR]
+V35f = {k: {} for k in ["disguise-self", "silent-image", "magic-mouth", "silence", "illusory-script", "major-image", "hallucinatory-terrain",
+    "phantasmal-killer", "dream", "mislead", "project-image", "weird", "simulacrum"]}
+V35f.update({
+"color-spray": dict(impact=(P, ["inconscience", "aveuglement", "étourdissement"], "selon la vie qui reste")),
+"hypnotic-pattern": dict(impact=(36, ["fascination", "vie"], "2d4 + 3 DV, soit 36 points de vie de créatures fascinées")),
+"blur": dict(impact=(1, ["flou", "cinquième"], "une chance sur cinq d'être manquée")),
+"mirror-image": dict(impact=(4, ["image"], "1d4 + 1 doubles")),
+"minor-illusion": dict(src_idx="ghost-sound", name="Ghost Sound", options=None, cosm=(P, "son"), impact=(P, ["son"], "un son illusoire")),
+"invisibility": dict(options=[O("Invisibilité"), O("Sphère d'invisibilité", src_idx="invisibility-sphere", aoe={"type": "sphere", "size": 10}),
+                              O("Invisibilité de groupe", src_idx="invisibility-mass", qty_cible=P)]),
+"greater-invisibility": dict(src_idx="invisibility-greater", name="Invisibility, Greater"),
+"programmed-illusion": dict(src_idx="programmed-image", name="Programmed Image"),
+"mirage-arcane": dict(src_idx="mirage-arcana", name="Mirage Arcana"),
+"seeming": dict(options=[O("Apparence trompeuse"), O("Voile", src_idx="veil", qty_cible=P)]),
+})
+for k, v in V35f.items(): FICHES[k]["v35"] = v
+IMG = lambda fr, *w, **kw: {**dict(src="3.5", fr=fr, verb=V("existence"), cosm=(P, "IMAGE"), impact=(P, ["image"] + list(w), "une image, avec " + ", ".join(w)), alt=ILLH()), **kw}
+NEW35f = {
+"magic-aura": dict(src="3.5", fr="Aura magique", verb=V("visibilite", True), cible=1, cible_obj=["objet"], impact=(P, ["aura", "faux-semblant"], "l'aura magique travestie"), alt=ILLH()),
+"ventriloquism": dict(src="3.5", fr="Ventriloquie", verb=V("visibilite", True), cible=1, impact=(P, ["voix", "lieu"], "la voix qui semble venir d'ailleurs"), alt=[H("Air", "l'air qui porte la voix")]),
+"minor-image": IMG("Image imparfaite", "son"),
+"persistent-image": IMG("Image persistante", "son", "odeur", "chaleur", "scénario"),
+"permanent-image": IMG("Image permanente", "son", "odeur", "chaleur", comp=["jade"]),
+"misdirection": dict(src="3.5", fr="Détournement", verb=V("visibilite", True), cible=1, impact=(P, ["aura", "leurre"], "les détections lisent un autre objet"), alt=ILLH()),
+"phantom-trap": dict(src="3.5", fr="Piège illusoire", verb=V("visibilite", True), cible=1, cible_obj=["mécanisme"], comp=["pyrite"], impact=(P, ["piège", "faux-semblant"], "un piège qui n'existe pas")),
+"displacement": dict(src="3.5", fr="Déplacement", verb=V("visibilite", True), cible=2, impact=(1, ["leurre", "moitié"], "une chance sur deux d'être manquée"), alt=ILLH()),
+"illusory-wall": dict(src="3.5", fr="Mur illusoire", verb=V("existence"), cible=P, cosm=(P, "IMAGE"), impact=(P, ["mur", "image"], "un mur qu'on traverse"), alt=ILLH()),
+"rainbow-pattern": dict(src="3.5", fr="Motif chatoyant", verb=V("mouvement", True), cible=P, cosm=(P, "COULEURS"), impact=(108, ["fascination", "vie"], "24 DV, soit 108 points de vie de créatures fascinées"), alt=ILLH()),
+"scintillating-pattern": dict(src="3.5", fr="Motif scintillant", verb=V("ordre", True), cible=P, cosm=(P, "COULEURS"), impact=(68, ["confusion", "étourdissement", "vie"], "15 DV, soit 68 points de vie de créatures frappées"), alt=ILLH()),
+"zone-of-silence": dict(src="3.5", fr="Zone de silence", verb=V("visibilite", True), cible=P, impact=(P, ["silence", "secret"], "nul son ne sort de la zone"), alt=[H("Air", "l'air qui ne porte plus le son")]),
+"false-vision": dict(src="3.5", fr="Vision mensongère", verb=V("visibilite", True), cible=P, comp=["jade"], impact=(P, ["divination", "leurre"], "la scrutation voit une fausse image"), alt=ILLH()),
+"nightmare": dict(src="3.5", fr="Cauchemar", verb=V("relation", True), cible=3, loc=(P, None, "illimitée"), cond=["sommeil"], impact=(6, ["esprit", "fatigue"], "1d10 en moyenne, le repos ruiné")),
+"screen": dict(src="3.5", fr="Écran", verb=V("visibilite", True), cible=P, impact=(P, ["divination", "vue", "leurre"], "ni vue ni scrutation ne voient la vérité"), alt=ILLH()),
+"shadow-walk": dict(src="3.5", fr="Traversée astrale", fam="R", art="spatiomancie", verb=V("mouvement"), cible=2,
+    options=[O(f"Par le flux {e}", cond=[e], impact=(P, [e, "passage"], f"un voyage rapide par le flux {e}")) for e, _ in ASTR]),
+"shadow-conjuration": dict(src="3.5", fr="Invocation astrale", verb=V("existence"), cible=P,
+    options=SHADOW("shadow-conjuration", [("Invocation astrale", "shadow-conjuration", 1, 3), ("Invocation astrale suprême", "shadow-conjuration-greater", 3, 6), ("Invocation astrale ultime", "shades", 4, 8)])),
+"shadow-evocation": dict(src="3.5", fr="Évocation astrale", verb=V("existence", True), cible=P,
+    options=SHADOW("shadow-evocation", [("Évocation astrale", "shadow-evocation", 1, 4), ("Évocation astrale suprême", "shadow-evocation-greater", 3, 7)])),
+}
+FICHES.update(NEW35f)
+
+# ===== D&D 3.5 — lot 7 : Nécromancie =====
+# Énergie négative → « nécrose », énergie positive → « vie » (pas le ténébreux et le lumineux : on soigne dans les deux hémisphères).
+# Niveaux perdus → un niveau vaut un DV, soit 4,5 points de vie ; « durable » quand la perte peut devenir définitive.
+SANGH = lambda: [H("Sang", "le sang qu'on retire")]
+NEC = lambda **kw: {**dict(src="3.5", verb=V("existence", True), cible=3), **kw}
+V35g = {k: {} for k in ["chill-touch", "ray-of-enfeeblement", "blindness-deafness", "gentle-repose", "speak-with-dead", "vampiric-touch",
+    "animate-dead", "bestow-curse", "contagion", "death-ward", "fear", "blight", "magic-jar", "eyebite", "clone", "astral-projection"]}
+V35g.update({
+"false-life": dict(impact=(9, ["vie", "temporaire"], "1d10 + 3 en moyenne")),
+"harm": dict(impact=(110, ["nécrose"], "10 par niveau, soit 110 points de vie retirés")),
+"finger-of-death": dict(impact=(P, ["mort"], "morte"), impact_sats=[(24, ["nécrose"])]),
+"circle-of-death": dict(impact=(124, ["mort", "vie"], "1d4 DV par niveau, soit 124 points de vie de créatures tuées")),
+"inflict-wounds": dict(src_idx="inflict-light-wounds", name="Inflict Wounds", options=[
+    O("Blessure mineure", src_idx="inflict-minor-wounds", impact=(1, ["nécrose"], "1 point de vie")),
+    O("Blessure légère", impact=(6, ["nécrose"], "1d8 + 1 en moyenne")),
+    O("Blessure modérée", src_idx="inflict-moderate-wounds", impact=(12, ["nécrose"], "2d8 + 3 en moyenne")),
+    O("Blessure grave", src_idx="inflict-serious-wounds", impact=(19, ["nécrose"], "3d8 + 5 en moyenne")),
+    O("Blessure critique", src_idx="inflict-critical-wounds", impact=(25, ["nécrose"], "4d8 + 7 en moyenne"))]),
+"create-undead": dict(options=[O("Création de mort-vivant"), O("Création de mort-vivant dominant", src_idx="create-greater-undead")]),
+})
+for k, v in V35g.items(): FICHES[k]["v35"] = v
+NEW35g = {
+"inflict-light-wounds-mass": NEC(fr="Blessure de groupe", alt=SANGH(), options=[
+    O("Blessure légère de groupe", qty_cible=9, impact=(14, ["nécrose"], "1d8 + 9 en moyenne")),
+    O("Blessure modérée de groupe", src_idx="inflict-moderate-wounds-mass", qty_cible=11, impact=(20, ["nécrose"], "2d8 + 11 en moyenne")),
+    O("Blessure grave de groupe", src_idx="inflict-serious-wounds-mass", qty_cible=13, impact=(27, ["nécrose"], "3d8 + 13 en moyenne")),
+    O("Blessure critique de groupe", src_idx="inflict-critical-wounds-mass", qty_cible=15, impact=(33, ["nécrose"], "4d8 + 15 en moyenne"))]),
+"disrupt-undead": NEC(fr="Destruction de mort-vivant", cond=["MORTVIVANT"], impact=(4, ["vie"], "1d6 en moyenne, aux seuls morts-vivants")),
+"touch-of-fatigue": NEC(fr="Contact de fatigue", verb=V("intensite", True), options=[O("Contact de fatigue", **I("fatigue", why="fatiguée")),
+    O("Rayon d'épuisement", src_idx="ray-of-exhaustion", **I("épuisement", why="épuisée"))]),
+"waves-of-fatigue": NEC(fr="Vagues de fatigue", verb=V("intensite", True), cible=P, cond=["vivant"], options=[O("Vagues de fatigue", **I("fatigue", why="fatiguées")),
+    O("Vagues d'épuisement", src_idx="waves-of-exhaustion", **I("épuisement", why="épuisées"))]),
+"cause-fear": NEC(fr="Frayeur", verb=V("force", True), cond=["vivant", "seuil"], cond_sats=[(23, ["vie"])], impact=(P, ["peur"], "effrayée"),
+    options=[O("Frayeur"), O("Effroi", src_idx="scare", qty_cible=P)]),
+"curse-water": dict(src="3.5", fr="Eau consacrée", verb=V("qualite"), cible=1, cible_obj=["eau"], comp=["argent"],
+    options=[O("Eau bénite", src_idx="bless-water", impact=(P, ["eau", "vie"], "une eau qui brûle les morts-vivants")),
+             O("Eau maudite", verb=V("qualite", True), impact=(P, ["eau", "nécrose"], "une eau qui brûle les vivants d'outre-plan"))]),
+"deathwatch": dict(src="3.5", fr="Regard funeste", verb=V("visibilite"), cible=P, impact=(P, ["vie", "état"], "l'état de chaque mourant")),
+"doom": NEC(fr="Malédiction funeste", verb=V("intensite", True), impact=(2, ["peur", "coup", "résistance", "aptitude"], "2 retranché, secouée")),
+"command-undead": dict(src="3.5", fr="Contrôle des morts-vivants", verb=V("relation"), cible=3, cond=["MORTVIVANT"], options=[
+    O("Injonction aux morts-vivants", impact=(P, ["amitié"], "un mort-vivant amical")),
+    O("Contrôle des morts-vivants", src_idx="control-undead", impact=(117, ["domination", "vie"], "26 DV, soit 117 points de vie de morts-vivants commandés"))]),
+"death-knell": NEC(fr="Glas", cond=["mourant"], impact=(P, ["mort"], "achevée, sa vie prise"), impact_sats=[(5, ["vie", "temporaire"]), (2, ["force"])]),
+"ghoul-touch": NEC(fr="Caresse de la goule", verb=V("mouvement", True), cond=["humanoïde"], impact=(P, ["paralysie"], "paralysée"), impact_sats=[(P, ["nausée"])]),
+"spectral-hand": dict(src="3.5", fr="Main spectrale", verb=V("existence"), cible=1, impact=(P, ["main", "contact"], "les sorts de contact portés au loin"), impact_sats=[(3, ["vie"])]),
+"halt-undead": NEC(fr="Immobilisation des morts-vivants", verb=V("mouvement", True), qty_cible=3, cond=["MORTVIVANT"], impact=(P, ["paralysie"], "immobile")),
+"enervation": NEC(fr="Énervation", options=[O("Énervation", impact=(11, ["vie"], "1d4 niveaux perdus pour un temps, soit 11 points de vie")),
+    O("Absorption d'énergie", src_idx="energy-drain", impact=(23, ["vie", "durable"], "2d4 niveaux perdus, soit 23 points de vie retirés pour de bon"))]),
+"poison": dict(src="3.5", fr="Empoisonnement", fam="H", comb="Ammoniac", why="le venin", cible=3, impact=(6, ["poison", "constitution"], "1d10 maintenant, 1d10 une minute plus tard")),
+"mark-of-justice": NEC(fr="Marque de la justice", verb=V("qualite", True), cond=["transgression"], impact=(P, ["malédiction", "marque"], "maudite si elle transgresse")),
+"slay-living": NEC(fr="Mise à mort", cond=["vivant"], impact=(P, ["mort"], "morte"), impact_sats=[(20, ["nécrose"])], alt=SANGH()),
+"destruction": NEC(fr="Destruction", comp=["symbole"], impact=(P, ["mort", "anéantissement"], "morte, sa dépouille consumée"), impact_sats=[(35, ["nécrose"])]),
+"undeath-to-death": NEC(fr="Mort des morts-vivants", cible=P, cond=["MORTVIVANT"], comp=["diamant"], impact=(124, ["destruction", "vie"], "1d4 DV par niveau, soit 124 points de vie de morts-vivants détruits")),
+"horrid-wilting": NEC(fr="Flétrissure", cible=P, cond=["vivant"], impact=(53, ["dessèchement"], "15d6 en moyenne")),
+"soul-bind": NEC(fr="Âme liée", verb=V("mouvement", True), cible=7, comp=["saphir"], impact=(P, ["âme", "gemme"], "l'âme enfermée dans la gemme")),
+"wail-of-the-banshee": NEC(fr="Plainte d'outre-tombe", cible=P, qty_cible=17, cond=["écoute"], impact=(P, ["mort"], "morte")),
+"symbol-of-pain": SYM("Symbole de douleur", impact=(4, ["douleur", "coup", "aptitude"], "4 retranché aux attaques et aux tests")),
+"symbol-of-fear": SYM("Symbole de terreur", impact=(P, ["panique"], "paniquée")),
+"symbol-of-weakness": SYM("Symbole de faiblesse", impact=(11, ["force", "faiblesse"], "3d6 en moyenne retirés à la Force")),
+"symbol-of-death": SYM("Symbole de mort", cond=["déclencheur", "seuil"], cond_sats=[(150, ["vie"])], impact=(P, ["mort"], "mortes")),
+}
+FICHES.update(NEW35g)

@@ -1,8 +1,9 @@
 # Bibliothèque glyphique d'Inarama
 
-Les sorts des **SRD 5.1 et 5.2** de D&D (règles de 2014 et de 2024) et du **SRD 3.5** (école par école) transposés en glyphes d'Inarama : chaque sort en **glyphe circulaire** et en **glyphe en bande**, en notation **déclarée** et **non déclarée**, avec la lecture de chaque cercle et la traduction des annotations en Alde.
+Les sorts des **SRD 5.1 et 5.2** de D&D (règles de 2014 et de 2024), du **SRD 3.5** et de **Pathfinder 1** (école par école) transposés en glyphes d'Inarama : chaque sort en **glyphe circulaire** et en **glyphe en bande**, en notation **déclarée** et **non déclarée**, avec la lecture de chaque cercle et la traduction des annotations en Alde.
 
-- 555 sorts, 1541 formes (Arcane, Magie hybride, arts rares ; une forme par option de lancement ; une forme « version 2024 » ou « version 3.5 » quand l'autre édition change le glyphe).
+- 2195 sorts, 3779 formes (Arcane, Magie hybride, arts rares ; une forme par option de lancement ; une forme « version 2024 », « version 3.5 » ou « Pathfinder 1 » quand une autre édition change le glyphe).
+- Pathfinder 1 : sorts légaux en Pathfinder Society seulement (hors *Technology Guide*). Les noms propres de Golarion sont effacés, le sens du sort est gardé ; les sorts qui dépendent du monde de Golarion ou qui ne sont qu'une mécanique de jeu sont écartés et listés dans `PF1_RELECTURE` (`moteur/fiches.py`).
 - Règle d'or : **deux glyphes strictement identiques sont le même sort**. La construction s'arrête si deux sorts différents produisent le même glyphe.
 
 Le système glyphique lui-même (cercles, valeurs, annotations) est défini dans le dépôt de lore [Inarama-lore](https://github.com/BillyMcL/Inarama-lore), qui fait autorité. Cette bibliothèque en est une application : quand une règle change dans le lore, on l'applique ici.
@@ -29,6 +30,7 @@ Le site est publié automatiquement par GitHub Pages à chaque modification de l
 | `donnees/srd/spells.json` | Données des sorts du SRD 5.1, règles de 2014 (5e-bits). |
 | `donnees/srd/spells-2024.json` | Données des sorts du SRD 5.2, règles de 2024 (5e-bits). |
 | `donnees/srd/srd35/` | Texte du SRD 3.5 (OGL), lu par `moteur/srd35.py`. |
+| `donnees/pf1/sorts-pf1.json` | Sorts de Pathfinder 1 (OGL), lus par `moteur/pf1.py`. |
 | `donnees/grimoire_glyphique.html`, `donnees/glyphes_en_bande.html` | Documents de référence dont la page des règles reprend des sections. Le grimoire est en pause : on ne le modifie pas sans décision. |
 
 ## Construire le site sur son ordinateur

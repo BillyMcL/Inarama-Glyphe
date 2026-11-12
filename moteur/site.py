@@ -170,10 +170,10 @@ details.sp .m { font-family:var(--f-mono); font-size:.72rem; color:var(--muted);
   .rd { grid-template-columns:1fr; } .rd dt { padding-top:6px; }
 }
 """
-SOURCES = {"5.1": "D&D 5e · 2014 (SRD 5.1)", "5.2": "D&D 5e · 2024 (SRD 5.2)", "3.5": "D&D 3.5 (SRD 3.5)"}
+SOURCES = {"5.1": "D&D 5e · 2014 (SRD 5.1)", "5.2": "D&D 5e · 2024 (SRD 5.2)", "3.5": "D&D 3.5 (SRD 3.5)", "pf1": "Pathfinder 1"}
 def form_source(x):
     d = x["dnd"]
-    return "3.5" if "D&amp;D 3.5" in d else "5.2" if "2024" in d else "5.1"
+    return "pf1" if d.startswith("Pathfinder 1") else "3.5" if "D&amp;D 3.5" in d else "5.2" if "2024" in d else "5.1"
 def index(spells):
     data = []
     for s in spells:
@@ -184,7 +184,7 @@ def index(spells):
     head = HEAD.format(title="Bibliothèque glyphique", root="").replace('<link rel="stylesheet" href="style.css">', f"<style>{CSS}{IDX_CSS}</style>").replace("<body>", '<body class="idx">')
     return head + f"""
 <header><div class="eyebrow">Inarama · Arcane et Magie</div><h1>Bibliothèque glyphique</h1>
-<p class="lede">Les sorts de D&amp;D (SRD 5.1, 5.2 et 3.5) transposés en glyphes d'Inarama. Touchez un sort pour lire chacune de ses formes ; les glyphes eux-mêmes sont sur sa page. <a href="regles.html">Les règles de lecture</a>.</p></header>
+<p class="lede">Les sorts de D&amp;D (SRD 5.1, 5.2 et 3.5) et de Pathfinder 1 transposés en glyphes d'Inarama. Touchez un sort pour lire chacune de ses formes ; les glyphes eux-mêmes sont sur sa page. <a href="regles.html">Les règles de lecture</a>.</p></header>
 <div class="bar">
 <input id="q" type="search" placeholder="Chercher un sort (français ou anglais)" aria-label="Chercher un sort">
 <details class="flt"><summary><span id="n"></span><span>Filtres</span></summary>
@@ -198,7 +198,7 @@ def index(spells):
 const S = {json.dumps(data, ensure_ascii=False, separators=(",", ":"))};
 const FAM = {json.dumps(FAM, ensure_ascii=False)};
 const st = {{l:new Set(), m:new Set(), c:new Set(), o:new Set(), q:""}};
-const SRC = {{"3.5":"D&D 3.5","5.1":"5e 2014","5.2":"5e 2024"}};
+const SRC = {{"3.5":"D&D 3.5","5.1":"5e 2014","5.2":"5e 2024","pf1":"Pathfinder 1"}};
 const norm = s => s.normalize("NFD").replace(/[\\u0300-\\u036f]/g,"").toLowerCase();
 const esc = s => String(s).replace(/&(?!amp;|nbsp;)/g,"&amp;").replace(/</g,"&lt;");
 const body = s => `<div class="spb"><p class="dnd">${{s.d}}</p>` + s.x.map(x =>
@@ -268,6 +268,7 @@ def regles():
 <li><b>Les sorts divins sont de l'Arcane.</b> Dans Inarama, la religion passe par une magie très académique, et ses grands praticiens deviennent des figures de culte : les sorts de clerc s'écrivent en glyphes arcaniques, la lumière radiante comme médium.</li>
 <li><b>Plusieurs formes pour un même sort.</b> Un sort peut s'inscrire en Arcane et en Magie hybride : les deux pratiques l'écrivent différemment, et la bibliothèque montre toutes les formes connues.</li>
 <li><b>Valeurs trop longues.</b> Une valeur qui demanderait plus de quatre formes est arrondie à la plus proche qui s'écrit simplement ; la lecture le signale.</li>
+<li><b>Pathfinder 1.</b> Seuls les sorts légaux en Pathfinder Society sont repris. Le lanceur de référence est de niveau 2L−1 pour les classes à neuf niveaux de sorts, 3L−2 pour celles à six niveaux, le paladin et le rôdeur. Un nom propre du monde de Golarion s'efface et le sort garde son sens ; un sort dont l'effet dépend de ce monde, ou qui n'est qu'une mécanique de jeu (jets de dés, actions, dons, pouvoirs de classe), est écarté. Sont aussi écartés les sorts qui ne servent qu'aux armes à feu, ou qui supposent d'autres mondes : Inarama n'a ni l'un ni l'autre. Une mécanique de jeu dans un sort gardé se transpose par son esprit, sans vocabulaire de jeu.</li>
 <li><b>Souhait</b> se trace comme Miracle : un Impact plein « souhait », et le niveau maximal des sorts qu'il reproduit en satellite de seuil.</li>
 <li><b>Annotations.</b> Mots français transcrits en Alde, en attendant le lexique propre.</li></ul></section>"""
     return HEAD.format(title="Règles · Bibliothèque glyphique", root="") + """

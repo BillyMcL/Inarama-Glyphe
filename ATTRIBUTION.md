@@ -20,6 +20,20 @@ System Reference Document Copyright 2000-2003, Wizards of the Coast, Inc.; Autho
 
 Bibliothèque glyphique d'Inarama Copyright 2026, BillyMcL.
 
+## Pathfinder 1 — Open Game License v1.0a
+
+Les sorts de Pathfinder 1 proviennent des livres de règles de Paizo Inc., publiés sous l'Open Game License v1.0a (texte complet dans `donnees/srd/srd35/LICENCE-OGL.md`). Les données structurées (`donnees/pf1/sorts-pf1.json`) sont tirées du fichier SpellList.json du projet SpellTable-pf1e (https://github.com/iociveteres/SpellTable-pf1e, licence MIT), filtré sur les sorts légaux en Pathfinder Society.
+
+**Contenu ouvert.** Les données de règles des sorts reprises sur les pages (nom anglais, niveau, école, incantation, portée, durée, zone).
+
+**Identité de produit.** Les noms propres du monde de Golarion (dieux, lieux, peuples, personnages, organisations) relèvent de l'identité de produit de Paizo : ils ont été retirés des noms français des sorts, et les sorts qui en dépendent ont été écartés.
+
+**15. COPYRIGHT NOTICE (Pathfinder 1)**
+
+Pathfinder Roleplaying Game Core Rulebook. © 2009, Paizo Publishing, LLC; Author: Jason Bulmahn, based on material by Jonathan Tweet, Monte Cook, and Skip Williams.
+
+Les sorts repris viennent de 130 ouvrages Pathfinder (Core Rulebook, Advanced Player's Guide, Ultimate Magic, Ultimate Combat, Advanced Class Guide, Occult Adventures, guides de joueur et suppléments de campagne). **À compléter :** la ligne de section 15 propre à chacun de ces ouvrages.
+
 ## Créations originales
 
 Le système glyphique d'Inarama, les conversions, les glyphes produits et les textes en français sont des créations originales et ne relèvent pas de cette licence.

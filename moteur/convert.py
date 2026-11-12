@@ -37,6 +37,8 @@ def _merge24(old, new):
     return r
 import srd35 as _srd35
 SRD35 = _srd35.load(DATA + "/srd/srd35")
+import pf1 as _pf1
+PF1 = _pf1.load(DATA + "/pf1/sorts-pf1.json", SRD35)
 SRD24 = {}
 for _s in json.load(open(DATA + "/srd/spells-2024.json", encoding="utf-8")):
     SRD24[_s["index"]] = _merge24(SRD.get(_s["index"]), _s)
@@ -229,7 +231,7 @@ def cost(s):
     return n, metals[i]
 
 def build_spell(idx, fiche):
-    s = {"2024": SRD24, "3.5": SRD35}.get(fiche.get("src"), SRD)[fiche.get("src_idx", idx)]
+    s = {"2024": SRD24, "3.5": SRD35, "pf1": PF1}.get(fiche.get("src"), SRD)[fiche.get("src_idx", idx)]
     fr = fiche["fr"]
     level = s["level"]
     ecole, hemi, comb_def = ECOLES[s["school"]["name"]]
@@ -385,34 +387,37 @@ def build_forms(idx, fiche):
     """toutes les formes d'un sort ; puis, pour un sort qui existe aussi dans les règles de 2024,
     ses formes de 2024 qui donnent un glyphe différent (un glyphe identique est le même sort)"""
     forms = _forms(idx, fiche)
-    if fiche.get("src") == "3.5": return forms
+    if fiche.get("src") == "pf1": return forms
     seen = {glyph_key(f) for f in forms}
-    for ed, base, key in (("2024", SRD24, "v24"), ("3.5", SRD35, "v35")):
-        if ed == fiche.get("src"): continue
-        v = fiche.get(key, {} if ed == "2024" else None)   # la 3.5 n'entre qu'école par école, après relecture
+    for ed, base, key in (("2024", SRD24, "v24"), ("3.5", SRD35, "v35"), ("PF1", PF1, "vpf")):
+        if ed == fiche.get("src") or (fiche.get("src") == "3.5" and ed == "2024"): continue
+        v = fiche.get(key, {} if ed == "2024" else None)   # 3.5 et Pathfinder 1 n'entrent qu'école par école, après relecture   # la 3.5 n'entre qu'école par école, après relecture
         if v is None: continue
         src_idx = v.get("src_idx", idx)
         if src_idx not in base: continue
-        fe = {**fiche, **{k: x for k, x in v.items() if k not in ("name", "alt")}, "src": ed, "src_idx": src_idx}
+        fe = {**fiche, **{k: x for k, x in v.items() if k not in ("name", "alt")}, "src": {"PF1": "pf1"}.get(ed, ed), "src_idx": src_idx}
         # la famille et la combinaison de la version d'origine se conservent, même si l'autre édition type autrement ses dégâts
         if not fiche.get("grimoire") and forms[0]["fam"] in ("H", "A") and "fam" not in fe:
             fe["fam"] = forms[0]["fam"]
-            if fe["fam"] == "H" and not fe.get("comb"):
+            if fe["fam"] == "H" and not fe.get("comb") and idx not in SRD:
+                fe["comb"] = forms[0].get("comb")      # sort venu de la 3.5 : sa combinaison d'origine
+            elif fe["fam"] == "H" and not fe.get("comb"):
                 d0 = SRD.get(idx, {}).get("damage") or {}; d0 = d0[0] if isinstance(d0, list) else d0
                 fe["comb"] = DAMAGE_COMBO.get((d0.get("damage_type") or {}).get("name")) or ECOLES[SRD[idx]["school"]["name"]][2]
         if "options" in v and v["options"] is None: fe.pop("options", None)
         # en 3.5, la portée lue dans le texte est la vraie : une portée forcée pour la 5e ne la remplace pas
-        if ed == "3.5" and "loc" not in v: fe.pop("loc", None)
+        if ed in ("3.5", "PF1") and "loc" not in v: fe.pop("loc", None)
         fe["alt"] = [dict(a, **{k: x for k, x in v.items() if k in ("impact", "impact_sats", "impact_add", "aoe", "options")}) if not a.get("grimoire") else dict(a)
                      for a in fiche.get("alt", [])]
         for a, extra in zip(fe["alt"], v.get("alt", [])): a.update(extra)
-        fe.pop("v24", None); fe.pop("v35", None)
+        fe.pop("v24", None); fe.pop("v35", None); fe.pop("vpf", None)
         nom = f" ({v['name']})" if v.get("name") else ""
         for f in _forms(idx, fe, single_note=False):
             if glyph_key(f) in seen: continue
             seen.add(glyph_key(f))
             f["label"] = f["label"] + f" — version {ed}" + nom
-            what = "Règles de 2024" if ed == "2024" else f"D&D 3.5, lanceur de référence de niveau {base[src_idx]['_cl']}"
+            what = ("Règles de 2024" if ed == "2024" else f"D&D 3.5, lanceur de référence de niveau {base[src_idx]['_cl']}" if ed == "3.5"
+                    else f"Pathfinder 1, lanceur de référence de niveau {base[src_idx]['_cl']}")
             f["notes"] = [f"{what}{nom} : la version change ce que le glyphe inscrit."] + [n for n in f["notes"] if not n.startswith("Pas de forme")]
             forms.append(f)
     return forms
@@ -499,6 +504,8 @@ def fr_duration(d):
 def dnd_line(s, fr):
     lv = "tour de magie" if s["level"] == 0 else f"niveau {s['level']}"
     rit = " (rituel)" if s.get("ritual") else ""
+    if s.get("_ed") == "pf1":
+        return f"Pathfinder 1 (lanceur de niveau {s['_cl']}, {s['_book']}) : {lv} · {SCHOOL_FR[s['school']['name']].lower()} · incantation {fr_cast(s['casting_time'])} · portée {fr_range(s['range'])} · durée {fr_duration(s['duration'])}"
     if s.get("_ed") == "3.5":
         return f"D&amp;D 3.5 (lanceur de niveau {s['_cl']}) : {lv} · {SCHOOL_FR[s['school']['name']].lower()} · incantation {fr_cast(s['casting_time'])} · portée {fr_range(s['range'])} · durée {fr_duration(s['duration'])}"
     ed = " (règles de 2024)" if s.get("_ed") else ""
@@ -536,10 +543,10 @@ def sources_of(idx, fiche):
     if src is None and idx in SRD: out.add("5.1")
     if src == "2024": out.add("5.2")
     if src == "3.5": out.add("3.5")
-    for ed, base, key in (("5.2", SRD24, "v24"), ("3.5", SRD35, "v35")):
-        if src in ("2024", "3.5") and ed != {"2024": "5.2", "3.5": "3.5"}[src]: continue
+    if src == "pf1": out.add("pf1")
+    for ed, base, key in (("5.2", SRD24, "v24"), ("3.5", SRD35, "v35"), ("pf1", PF1, "vpf")):
         v = fiche.get(key, {} if ed == "5.2" else None)
-        if v is None or src is not None: continue
+        if v is None or (src is not None and not (src == "3.5" and ed == "pf1")): continue
         ids = [v.get("src_idx", idx)] + [o.get("src_idx") for o in (v.get("options") or []) if o.get("src_idx")]
         if any(i in base for i in ids): out.add(ed)
     return sorted(out)

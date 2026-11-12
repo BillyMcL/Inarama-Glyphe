@@ -5,6 +5,7 @@ le plus petit lanceur capable de lancer le sort (niveau du sort × 2 − 1 pour 
 """
 import os, re, glob
 
+UNIV = {"Wish": "Conjuration", "Limited Wish": "Conjuration", "Prestidigitation": "Transmutation", "Arcane Mark": "Transmutation", "Permanency": "Abjuration"}
 ECOLES35 = {"Abjuration", "Conjuration", "Divination", "Enchantment", "Evocation", "Illusion", "Necromancy", "Transmutation"}
 TYPES = {"acid": "Acid", "fire": "Fire", "cold": "Cold", "electricity": "Lightning", "sonic": "Thunder"}
 PAL = {0: 1, 1: 2, 2: 4, 3: 5, 4: 7}
@@ -146,6 +147,7 @@ def load(datadir):
             if m: levels[m.group(1).strip()] = int(m.group(2))
         L, CL = _caster_level(levels)
         sch = r["school"].split(" ")[0]
+        if sch == "Universal": sch = UNIV.get(r["name"], sch)   # école universelle : rattachée à l'école 5e la plus proche
         if L is None or sch not in ECOLES35: continue
         sub = re.findall(r"\(([^)]+)\)", r["school"]); desc = re.findall(r"\[([^\]]+)\]", r["school"])
         rng = _range(f.get("range"), CL)
@@ -155,6 +157,7 @@ def load(datadir):
         for m in re.finditer(r"_(?:Arcane )?(?:Material Component|Focus|Material Components)_?:?_?\s*(.*)", text):
             if re.search(r"\d[\d,]* gp", m.group(1)): mat = m.group(1); break
         xp = re.search(r"_XP Cost:?_?:?\s*([\d,]+) XP", text)
+        if not xp and r["name"] == "Wish": xp = re.search(r"([\d,]+) XP", "5,000 XP")   # « 5,000 XP or more » : le minimum
         rec = dict(index=k, name=r["name"], level=L, school={"name": sch}, casting_time=_cast(f.get("casting time")),
                    range=rng, duration=_duration(f.get("duration"), CL), concentration="concentration" in f.get("duration", "").lower(),
                    ritual=False, material=mat or None, desc=[text], _ed="3.5", _cl=CL, _sub=sub, _descr=desc,

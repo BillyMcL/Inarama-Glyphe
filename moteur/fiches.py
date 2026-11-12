@@ -1221,8 +1221,8 @@ for k, v in V35e.items(): FICHES[k]["v35"] = v
 NEW35e = {
 "flare": dict(src="3.5", fr="Lueur", verb=V("visibilite"), cible=3, impact=(P, ["éblouissement"], "éblouie une minute"), alt=LUMH()),
 "consecrate": dict(src="3.5", fr="Consécration", verb=V("qualite"), cible=P, comp=["argent"],
-    options=[O("Consécration", impact=(1, ["mort-vivant", "faiblesse"], "1 retranché aux morts-vivants")),
-             O("Profanation", src_idx="desecrate", impact=(1, ["mort-vivant", "force"], "1 ajouté aux morts-vivants"))]),
+    options=[O("Consécration — lumineux", impact=(1, ["mort-vivant", "lumineux"], "1 retranché aux morts-vivants")),
+             O("Profanation — ténébreux", src_idx="desecrate", impact=(1, ["mort-vivant", "ténébreux"], "1 ajouté aux morts-vivants"))]),
 "sound-burst": dict(src="3.5", fr="Cacophonie", cible=P, impact_sats=[(P, ["étourdissement"])]),
 "helping-hand": dict(src="3.5", fr="Main secourable", verb=V("relation"), cible=4, impact=(P, ["guide", "main"], "une main fantôme qui ramène la personne cherchée")),
 "invisibility-purge": dict(src="3.5", fr="Purge d'invisibilité", verb=V("visibilite"), cible=P, aoe={"type": "sphere", "size": 25}, impact=(P, ["invisible", "révélation"], "tout l'invisible rendu visible")),
@@ -1331,8 +1331,8 @@ NEW35g = {
 "cause-fear": NEC(fr="Frayeur", verb=V("force", True), cond=["vivant", "seuil"], cond_sats=[(23, ["vie"])], impact=(P, ["peur"], "effrayée"),
     options=[O("Frayeur"), O("Effroi", src_idx="scare", qty_cible=P)]),
 "curse-water": dict(src="3.5", fr="Eau consacrée", verb=V("qualite"), cible=1, cible_obj=["eau"], comp=["argent"],
-    options=[O("Eau bénite", src_idx="bless-water", impact=(P, ["eau", "vie"], "une eau qui brûle les morts-vivants")),
-             O("Eau maudite", verb=V("qualite", True), impact=(P, ["eau", "nécrose"], "une eau qui brûle les vivants d'outre-plan"))]),
+    options=[O("Eau bénite — lumineux", src_idx="bless-water", impact=(P, ["eau", "lumineux"], "une eau chargée d'énergie lumineuse")),
+             O("Eau maudite — ténébreux", impact=(P, ["eau", "ténébreux"], "une eau chargée d'énergie ténébreuse"))]),
 "deathwatch": dict(src="3.5", fr="Regard funeste", verb=V("visibilite"), cible=P, impact=(P, ["vie", "état"], "l'état de chaque mourant")),
 "doom": NEC(fr="Malédiction funeste", verb=V("intensite", True), impact=(2, ["peur", "coup", "résistance", "aptitude"], "2 retranché, secouée")),
 "command-undead": dict(src="3.5", fr="Contrôle des morts-vivants", verb=V("relation"), cible=3, cond=["MORTVIVANT"], options=[
@@ -1358,3 +1358,92 @@ NEW35g = {
 "symbol-of-death": SYM("Symbole de mort", cond=["déclencheur", "seuil"], cond_sats=[(150, ["vie"])], impact=(P, ["mort"], "mortes")),
 }
 FICHES.update(NEW35g)
+
+# ===== D&D 3.5 — lot 8 : Transmutation =====
+T35 = lambda **kw: {**dict(src="3.5"), **kw}
+ABIL = [("bears-endurance", "Endurance de l'ours", "constitution"), ("bulls-strength", "Force du taureau", "force"), ("cats-grace", "Grâce du félin", "dextérité"),
+        ("eagles-splendor", "Splendeur de l'aigle", "charisme"), ("foxs-cunning", "Ruse du renard", "intelligence"), ("owls-wisdom", "Sagesse du hibou", "sagesse")]
+V35h = {k: {} for k in "mage-hand message purify-food-and-drink entangle expeditious-retreat feather-fall goodberry jump longstrider pass-without-trace shillelagh alter-self barkskin darkvision heat-metal knock levitate rope-trick spider-climb blink gaseous-form glibness haste meld-into-stone slow spike-growth water-breathing water-walk polymorph reincarnate stone-shape awaken fabricate passwall telekinesis animate-objects control-water disintegrate flesh-to-stone move-earth wind-walk control-weather reverse-gravity animal-shapes shapechange time-stop".split()}
+V35h.update({
+"enhance-ability": dict(src_idx="bears-endurance", options=[O(n, src_idx=k, impact=(4, ["aptitude", w], f"4 ajouté en {w}")) for k, n, w in ABIL]
+                        + [O(n + " de groupe", src_idx=k + "-mass", qty_cible=11, impact=(4, ["aptitude", w], f"4 ajouté en {w}")) for k, n, w in ABIL]),
+"enlarge-reduce": dict(src_idx="enlarge-person", alt=[dict(src_idx="reduce-person")], options=[O("individuel"),
+    O("de groupe", only=0, src_idx="enlarge-person-mass", qty_cible=7), O("de groupe", only=1, src_idx="reduce-person-mass", qty_cible=7)]),
+"magic-weapon": dict(options=[O("Arme magique"), O("Arme magique suprême", src_idx="magic-weapon-greater", impact=(1, ["arme"], "+1 par quatre niveaux"))]),
+"mending": dict(options=[O("Réparation"), O("Restauration d'objet", src_idx="make-whole", **I("réparation", "entier", why="l'objet rendu entier"))]),
+"plant-growth": dict(options=[O("Croissance végétale"), O("Élagage", src_idx="diminish-plants", **I("élagage", why="la végétation ramenée au tiers")),
+                              O("Rabougrissement", src_idx="diminish-plants", **I("rabougrissement", why="les cultures appauvries"))]),
+"fly": dict(options=[O("Vol"), O("Vol prolongé", src_idx="overland-flight")]),
+"true-polymorph": dict(src_idx="polymorph-any-object", name="Polymorph Any Object"),
+"etherealness": dict(options=[O("Forme éthérée"), O("Passage éthéré", src_idx="ethereal-jaunt")]),
+})
+for k, v in V35h.items(): FICHES[k]["v35"] = v
+NEW35h = {
+"open-close": T35(fr="Ouverture/fermeture", cible=1, cible_obj=["porte"], options=[O("Ouverture", verb=V("relation", True), **I("ouverture")), O("Fermeture", verb=V("relation"), **I("fermeture"))]),
+"virtue": T35(fr="Vertu", verb=V("intensite"), cible=2, impact=(1, ["vie", "temporaire"], "1 point de vie temporaire")),
+"animate-rope": T35(fr="Animation de corde", verb=V("nature"), cible=1, cible_obj=["corde"], impact=(P, ["nœud", "entrave"], "la corde qui noue et entrave")),
+"bless-weapon": T35(fr="Arme bénie", verb=V("intensite"), cible=1, cible_obj=["arme"], cond=["hostile"], impact=(1, ["arme"], "+1 contre l'hostile")),
+"align-weapon": T35(fr="Arme orientée", verb=V("nature"), cible=1, cible_obj=["arme"], options=[O(f"Contre {l}", **I("arme", w, why=f"l'arme qui frappe {l}")) for l, w in [("l'hostile", "hostile"), ("le lumineux", "lumineux"), ("le ténébreux", "ténébreux")]]),
+"erase": T35(fr="Effacement", verb=V("existence", True), cible=1, cible_obj=["écrit"], impact=(P, ["effacement"], "l'écrit effacé")),
+"magic-fang": T35(fr="Morsure magique", verb=V("intensite"), cible=2, options=[O("Morsure magique", impact=(1, ["arme", "naturelle"], "+1 à une arme naturelle")),
+    O("Morsure magique suprême", src_idx="magic-fang-greater", impact=(1, ["arme", "naturelle", "toutes"], "+1 à toutes ses armes naturelles"))]),
+"magic-stone": T35(fr="Pierre magique", verb=V("intensite"), cible=1, cible_obj=["pierre"], impact=(5, ["projectile"], "1d6 + 1 en moyenne"), impact_sats=[(3, ["nombre"])]),
+"magic-vestment": T35(fr="Armure magique", verb=V("intensite"), cible=1, cible_obj=["armure"], impact=(1, ["garde"], "+1")),
+"reduce-animal": T35(fr="Rapetissement d'animal", verb=V("intensite", True), cible=2, cond=["bête"], impact=(P, ["rapetissement"], "taille réduite de moitié")),
+"chill-metal": T35(fr="Refroidir le métal", comb="Glace", why="le froid", cible=1, cible_obj=["METAL"], impact=(5, ["froid"], "2d4 au plus fort"), alt=[A("nature")]),
+"pyrotechnics": T35(fr="Pyrotechnie", comb="Feu", why="le feu transformé", cible=P, options=[O("Feux d'artifice", **I("aveuglement", why="aveuglées")), O("Fumée", **I("fumée", "obscurité", why="un nuage étouffant"))]),
+"soften-earth-and-stone": T35(fr="Ramollissement de la terre et de la pierre", comb="Boue", why="la boue", cible=P, impact=(P, ["boue", "argile"], "terre en boue, pierre en argile")),
+"tree-shape": T35(fr="Forme d'arbre", comb="Bois", why="le bois", cible=1, impact=(P, ["arbre", "forme"], "un arbre que rien ne distingue")),
+"warp-wood": T35(fr="Distorsion du bois", comb="Bois", why="le bois", cible=1, cible_obj=["bois"], qty_cible=3, impact=(P, ["gauchissement"], "le bois tordu")),
+"whispering-wind": T35(fr="Murmure du vent", comb="Air", why="le vent", cible=P, impact=(P, ["message", "vent"], "un message porté par le vent")),
+"wood-shape": T35(fr="Façonnage du bois", comb="Bois", why="le bois", cible=1, cible_obj=["bois"], impact=(P, ["façonnage"], "le bois façonné")),
+"flame-arrow": T35(fr="Flèches enflammées", comb="Feu", why="le feu", cible=1, cible_obj=["projectile"], impact=(4, ["feu"], "1d6 par trait"), impact_sats=[(50, ["nombre"])]),
+"keen-edge": T35(fr="Arme acérée", verb=V("intensite"), cible=1, cible_obj=["arme"], impact=(2, ["critique"], "les coups critiques deux fois plus fréquents")),
+"quench": T35(fr="Extinction des feux", comb="Eau", why="l'eau", cible=P, impact=(P, ["extinction", "feu"], "tous les feux éteints"), impact_sats=[(18, ["élémentaire"])]),
+"sculpt-sound": T35(fr="Sculpteur de sons", verb=V("nature"), cible=2, qty_cible=7, impact=(P, ["son", "transformation"], "les sons changés")),
+"secret-page": T35(fr="Page secrète", verb=V("visibilite", True), cible=1, cible_obj=["écrit"], impact=(P, ["écrit", "déguisement"], "la page qui montre autre chose")),
+"shrink-item": T35(fr="Rétrécissement d'objet", verb=V("intensite", True), cible=1, cible_obj=["objet"], impact=(1, ["taille", "seizième"], "un seizième de sa taille")),
+"snare": T35(fr="Collet", comb="Plante", why="la liane", cible=1, cible_obj=["corde"], cond=["passage"], impact=(P, ["entrave", "collet"], "pris au collet")),
+"air-walk": T35(fr="Marche dans les airs", comb="Air", why="l'air qui porte", cible=2, impact=(P, ["vol", "marche"], "marcher sur l'air"), alt=[A("mouvement")]),
+"command-plants": T35(fr="Contrôle des plantes", comb="Plante", why="les plantes", cible=3, cond=["plante"], options=[O("Injonction aux plantes", **I("amitié", why="des plantes amicales")),
+    O("Contrôle des plantes", src_idx="control-plants", impact=(135, ["domination", "vie"], "30 DV, soit 135 points de vie de plantes commandées"))]),
+"giant-vermin": T35(fr="Vermine géante", verb=V("intensite"), cible=1, cible_obj=["vermine"], qty_cible=3, impact=(P, ["croissance"], "la vermine devenue géante")),
+"mnemonic-enhancer": T35(fr="Amélioration de mémoire", verb=V("intensite"), cible=1, comp=["ivoire"], options=[O("Préparation", **I("mémoire", "sort", why="trois niveaux de sorts en plus")),
+    O("Rétention", **I("mémoire", "rappel", why="un sort lancé retenu"))]),
+"rusting-grasp": T35(fr="Rouille", verb=V("qualite", True), cible=1, cible_obj=["fer"], impact=(P, ["rouille"], "le fer rongé"), impact_sats=[(11, ["rouille"])]),
+"spike-stones": T35(fr="Pierres acérées", comb="Roche", why="la pierre", cible=P, impact=(5, ["perce", "pierre"], "1d8 à chaque pas")),
+"animal-growth": T35(fr="Croissance animale", verb=V("intensite"), cible=2, cond=["bête"], qty_cible=4, impact=(8, ["force", "taille"], "8 ajouté à la Force, taille doublée")),
+"baleful-polymorph": T35(fr="Métamorphose funeste", verb=V("nature", True), cible=3, impact=(P, ["bête", "métamorphose"], "changée en petite bête")),
+"control-winds": T35(fr="Contrôle des vents", comb="Air", why="le vent", cible=P, impact=(P, ["vent"], "le vent commandé")),
+"disrupting-weapon": T35(fr="Arme destructrice", verb=V("intensite"), cible=1, cible_obj=["arme"], cond=["MORTVIVANT"], impact=(P, ["destruction"], "le mort-vivant frappé détruit")),
+"righteous-might": T35(fr="Force du colosse", verb=V("intensite"), cible=1, impact=(8, ["force", "taille"], "8 ajouté à la Force, taille doublée")),
+"transmute-rock-to-mud": T35(fr="La pierre en boue", comb="Boue", why="la boue", cible=P, **I("boue", why="la roche devenue boue")),
+"transmute-mud-to-rock": T35(fr="La boue en pierre", comb="Roche", why="la pierre", cible=P, **I("pierre", why="la boue durcie en pierre")),
+"ironwood": T35(fr="Bois de fer", comb="Bois", why="le bois", cible=1, cible_obj=["bois"], impact=(P, ["acier", "bois"], "un bois aussi dur que l'acier")),
+"liveoak": T35(fr="Chêne animé", comb="Bois", why="le chêne", cible=1, cible_obj=["chêne"], impact=(P, ["gardien", "arbre"], "un chêne gardien")),
+"mages-lucubration": T35(fr="Lucubration", verb=V("intensite"), cible=1, impact=(P, ["mémoire", "sort"], "un sort lancé rappelé"), impact_sats=[(5, ["seuil", "niveau"])]),
+"repel-wood": T35(fr="Répulsion du bois", verb=V("force", True), cible=1, cible_obj=["bois"], impact=(P, ["répulsion"], "le bois repoussé")),
+"spellstaff": T35(fr="Bâton à sort", verb=V("relation"), cible=1, cible_obj=["bâton"], impact=(P, ["sort", "réserve"], "un sort gardé dans le bâton")),
+"stone-to-flesh": T35(fr="Pierre en chair", verb=V("nature"), cible=2, cond=["pétrification"], impact=(P, ["chair"], "la pierre rendue à la chair")),
+"transformation": T35(fr="Transformation", verb=V("intensite"), cible=1, impact=(4, ["force", "dextérité", "constitution", "garde"], "4 ajouté partout"), impact_sats=[(P, ["sort", "interdit"])]),
+"animate-plants": T35(fr="Animation des plantes", comb="Plante", why="les plantes", cible=1, cible_obj=["plante"], qty_cible=4, impact=(P, ["animation"], "les plantes qui attaquent")),
+"changestaff": T35(fr="Bâton sylvanien", comb="Bois", why="le bois", cible=1, cible_obj=["bâton"], impact=(P, ["sylvanien", "gardien"], "le bâton devenu sylvanien")),
+"statue": T35(fr="Statue", verb=V("nature"), cible=2, impact=(P, ["pierre", "forme"], "changée en statue, à volonté")),
+"transmute-metal-to-wood": T35(fr="Métal en bois", comb="Bois", why="le bois", cible=P, impact=(P, ["métal", "bois"], "tout le métal changé en bois")),
+"iron-body": T35(fr="Corps de fer", verb=V("nature"), cible=1, impact=(15, ["garde", "fer"], "15 retranché à chaque coup"), impact_sats=[(P, ["immunité"])]),
+"temporal-stasis": T35(fr="Stase temporelle", fam="R", art="chronomancie", verb=V("mouvement", True), cible=3, comp=["gemme"], impact=(P, ["stase"], "le temps arrêté pour elle")),
+}
+FICHES.update(NEW35h)
+
+# ===== D&D 3.5 — école universelle (rattachée à l'école 5e la plus proche) =====
+# Souhait : tracé comme Miracle — un sort qui reproduit tout sort jusqu'à un seuil de niveau, ou exauce au-delà.
+FICHES["wish"] = dict(fr="Souhait", verb=V("trame"), impact=(P, ["souhait"], "un souhait exaucé"), impact_sats=[(8, ["seuil", "niveau"])])
+V35u = {
+"prestidigitation": {},
+"wish": dict(options=[O("Souhait"), O("Souhait limité", src_idx="limited-wish", impact_sats=[(6, ["seuil", "niveau"])])]),
+}
+for k, v in V35u.items(): FICHES[k]["v35"] = v
+FICHES.update({
+"arcane-mark": dict(src="3.5", fr="Marque du mage", verb=V("existence"), cible=1, cible_obj=["surface"], impact=(P, ["marque", "rune"], "ta rune personnelle, visible ou non")),
+"permanency": dict(src="3.5", fr="Permanence", verb=V("ordre"), cible=1, impact=(P, ["sort", "permanence"], "un sort rendu permanent")),
+})

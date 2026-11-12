@@ -253,13 +253,14 @@ def regles():
 <li><b>Plans de l'Ombre et de la Lumière.</b> Ils se transposent en hémisphères ténébreux et lumineux ; leur énergie est l'énergie astrale. Un sort lié à l'une des deux énergies a toujours sa forme réciproque, car l'une n'existe pas sans l'autre : les sorts d'ombre de la 3.5, renommés « astraux » (Invocation astrale, Évocation astrale, Traversée astrale), ont une forme lumineuse et une forme ténébreuse, avec la part de réalité en cinquièmes.</li>
 <li><b>Matière et expérience.</b> Quand un sort coûte à la fois une matière et de l'expérience, la matière garde la valeur de la Composante et la vie payée devient un satellite annoté « vie ».</li>
 <li><b>Énergie positive et négative.</b> Elles s'écrivent « vie » et « nécrose », non lumineux et ténébreux : on soigne et on blesse dans les deux hémisphères. Un niveau perdu vaut un dé de vie, soit 4,5 points de vie, « durable » quand la perte peut devenir définitive.</li>
+<li><b>Grimoire et éditions.</b> Un sort du grimoire se traite comme les autres : son glyphe validé reste la forme de référence, et ses versions 2024 ou 3.5 prennent leur durée, leur portée et leur nombre de cibles dans leurs propres données ; options et échelons s'y ajoutent de même.</li>
 <li><b>Portée nulle.</b> Un sort qui naît là où se tient le lanceur n'a pas d'anneau de Localisation : le vide.</li>
 <li><b>Concentration sans terme.</b> Une durée qui tient tant que dure la concentration, sans maximum, est pleine : infinie.</li>
 <li><b>Unités.</b> Mètres, kilogrammes et litres, en attendant les unités propres aux peuples d'Inarama.</li>
 <li><b>Les sorts divins sont de l'Arcane.</b> Dans Inarama, la religion passe par une magie très académique, et ses grands praticiens deviennent des figures de culte : les sorts de clerc s'écrivent en glyphes arcaniques, la lumière radiante comme médium.</li>
 <li><b>Plusieurs formes pour un même sort.</b> Un sort peut s'inscrire en Arcane et en Magie hybride : les deux pratiques l'écrivent différemment, et la bibliothèque montre toutes les formes connues.</li>
 <li><b>Valeurs trop longues.</b> Une valeur qui demanderait plus de quatre formes est arrondie à la plus proche qui s'écrit simplement ; la lecture le signale.</li>
-<li><b>Souhait</b> n'a pas de glyphe : on l'a abandonné, il dépasse ce que le formulaire sait écrire.</li>
+<li><b>Souhait</b> se trace comme Miracle : un Impact plein « souhait », et le niveau maximal des sorts qu'il reproduit en satellite de seuil.</li>
 <li><b>Annotations.</b> Mots français transcrits en Alde, en attendant le lexique propre.</li></ul></section>"""
     return HEAD.format(title="Règles · Bibliothèque glyphique", root="") + """
 <nav class="nav"><a href="index.html">← Bibliothèque</a></nav>

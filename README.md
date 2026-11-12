@@ -2,7 +2,7 @@
 
 Les sorts des **SRD 5.1 et 5.2** de D&D (règles de 2014 et de 2024) et du **SRD 3.5** (école par école) transposés en glyphes d'Inarama : chaque sort en **glyphe circulaire** et en **glyphe en bande**, en notation **déclarée** et **non déclarée**, avec la lecture de chaque cercle et la traduction des annotations en Alde.
 
-- 505 sorts, 1344 formes (Arcane, Magie hybride, arts rares ; une forme par option de lancement ; une forme « version 2024 » ou « version 3.5 » quand l'autre édition change le glyphe).
+- 558 sorts, 1542 formes (Arcane, Magie hybride, arts rares ; une forme par option de lancement ; une forme « version 2024 » ou « version 3.5 » quand l'autre édition change le glyphe).
 - Règle d'or : **deux glyphes strictement identiques sont le même sort**. La construction s'arrête si deux sorts différents produisent le même glyphe.
 
 Le système glyphique lui-même (cercles, valeurs, annotations) est défini dans le dépôt de lore [Inarama-lore](https://github.com/BillyMcL/Inarama-lore), qui fait autorité. Cette bibliothèque en est une application : quand une règle change dans le lore, on l'applique ici.

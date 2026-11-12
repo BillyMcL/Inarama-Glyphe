@@ -187,6 +187,16 @@ def graft(idx, fiche, g, fam, s, fr, level, ecole, hemi, notes):
             c_ = cost(s); v = c_[0]; words = list(words) + [word(c_[1])]
             reading = f"valeur {c_[0]} pièce{'s' if c_[0] > 1 else ''} de {c_[1]} ; " + reading
         rings.append((crit, v, list(words), reading, sats))
+    # une autre édition (2024, 3.5) d'un sort du grimoire se traite comme tout sort : sa durée, sa portée et le nombre
+    # de ses cibles viennent de ses propres données ; le grimoire garde ses choix (noyau, annotations, cercles propres)
+    if fiche.get("src"):
+        gen = build_spell(idx, {k: fiche[k] for k in ("fr", "src", "src_idx", "dur", "fin", "loc", "no_loc") if k in fiche} | {"fam": "A", "verb": ("existence", False)})
+        new = {r[0]: r for r in gen["rings"] if r[0] in ("DUREE", "LOCALISATION")}
+        rings = [r for r in rings if r[0] not in ("DUREE", "LOCALISATION")] + list(new.values())
+        if fiche.get("qty_cible"):
+            q = fiche["qty_cible"]
+            rings = [(r[0], r[1], r[2], r[3] + " ; satellite Quantité " + ("plein : tous ceux que je choisis" if q == "plein" else str(q)), list(r[4]) + [(90, q)])
+                     if r[0] == "CIBLE" else r for r in rings]
     tmp = build_spell(idx, {k: fiche[k] for k in ("fr", "verb", "comb", "fam", "art", "cond", "cond_sats", "impact", "impact_add", "impact_sats", "qty") if k in fiche} | {"fam": "A", "verb": ("existence", False)})
     for r in tmp["rings"]:
         if r[0] in ("CONDITION", "IMPACT", "QUANTITE") and fiche.get({"CONDITION": "cond", "IMPACT": "impact", "QUANTITE": "qty"}[r[0]]):
@@ -226,7 +236,7 @@ def build_spell(idx, fiche):
     if fiche.get("grimoire"):
         g = GRIM[fiche["grimoire"]]
         fam = {"H": "H", "G": "H", "R": "R", "X": "H"}.get(g["group"], "A")
-        if g["group"] == "X" or any(fiche.get(k) for k in GRAFT) or cost(s):
+        if g["group"] == "X" or any(fiche.get(k) for k in GRAFT) or cost(s) or fiche.get("src") or fiche.get("qty_cible"):
             return graft(idx, fiche, g, fam, s, fr, level, ecole, hemi, notes)
         return dict(idx=idx, fr=fr, en=s["name"], level=level, ecole=ecole, fam=fam, verb=g["verb"], core=g["core"],
                     rings=g["rings"], split=g["split"], bsplit=g["bsplit"], svg=g["svg"], rows=g["rows"], r0=g["r0"],
@@ -320,7 +330,7 @@ def build_spell(idx, fiche):
         xp, cl = int(s["_xp"]), int(s["_cl"]); pv = xp * 4.5 / (1000 * cl)
         n, xw = (1, ["VIE"]) if pv < 1 else (rnd(pv), ["VIE", word("durable")])
         xr = (f"{xp} points d'expérience au niveau {cl}, soit {pv:.2f} point de vie : 1 point de vie".replace('.', ',', 1) if pv < 1
-              else f"{xp} points d'expérience au niveau {cl} : {n} points de vie retirés pour de bon")
+              else f"{xp} points d'expérience au niveau {cl} : {n} point{'s' if n > 1 else ''} de vie retiré{'s' if n > 1 else ''} pour de bon")
         if fiche.get("comp"):   # matière ET expérience : la vie payée devient un satellite annoté de la Composante
             r = rings.pop(); sats = [(n, xw)]
             rings.append((r[0], r[1], r[2], r[3] + sat_reading(sats), place_sats(sats)))
@@ -391,7 +401,7 @@ def build_forms(idx, fiche):
         if "options" in v and v["options"] is None: fe.pop("options", None)
         # en 3.5, la portée lue dans le texte est la vraie : une portée forcée pour la 5e ne la remplace pas
         if ed == "3.5" and "loc" not in v: fe.pop("loc", None)
-        fe["alt"] = [dict(a, **{k: x for k, x in v.items() if k in ("impact", "impact_sats", "impact_add", "aoe", "options")}) if not a.get("grimoire") else a
+        fe["alt"] = [dict(a, **{k: x for k, x in v.items() if k in ("impact", "impact_sats", "impact_add", "aoe", "options")}) if not a.get("grimoire") else dict(a)
                      for a in fiche.get("alt", [])]
         for a, extra in zip(fe["alt"], v.get("alt", [])): a.update(extra)
         fe.pop("v24", None); fe.pop("v35", None)
@@ -409,7 +419,7 @@ def _forms(idx, fiche, single_note=True):
     fams = [fiche]
     for alt in fiche.get("alt", []):
         base = {k: v for k, v in fiche.items() if k not in ("grimoire", "alt", "notes", "label", "why_single", "options")}
-        if alt.get("grimoire"): base = {"fr": fiche["fr"]}
+        if alt.get("grimoire"): base = {"fr": fiche["fr"], **({"src": fiche["src"]} if fiche.get("src") else {})}
         fams.append({**base, **alt})
     forms, srcs = [], []
     for i, fam in enumerate(fams):
@@ -419,6 +429,7 @@ def _forms(idx, fiche, single_note=True):
         for o in opts:
             o = dict(o); lab = o.pop("label")
             if o.pop("only_base", False) and i > 0: continue
+            if "only" in o and o.pop("only") != i: continue
             src = {**{k: v for k, v in fam.items() if k != "options"}, **o}
             forms.append(build_spell(idx, src)); srcs.append({**src, "_opt": lab})
     if single_note and len(forms) == 1 and not fiche.get("single_note") is False:

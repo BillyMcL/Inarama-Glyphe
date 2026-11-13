@@ -305,6 +305,13 @@ if __name__ == "__main__":
         print(f"ATTENTION : {len(dups)} glyphe(s) en double")
         for a_, b_ in dups: print("   ", a_, "=", b_)
         if os.environ.get("STRICT"): raise SystemExit("construction arrêtée : glyphes en double")
+    # contrôle de lecture : les règles de lint.py (Cible typée, Impact lisible, unités, satellites)
+    import lint as _lint
+    errs = _lint.lint(spells)
+    if errs:
+        print(f"ATTENTION : {len(errs)} défaut(s) de lecture")
+        print(_lint.rapport(errs))
+        if os.environ.get("STRICT"): raise SystemExit("construction arrêtée : défauts de lecture")
     for i, sp in enumerate(spells):
         prev = spells[i - 1] if i else None; nxt = spells[i + 1] if i + 1 < len(spells) else None
         open(f"{OUT}/sorts/{sp['idx']}.html", "w", encoding="utf-8").write(compact(page(sp, prev, nxt)))

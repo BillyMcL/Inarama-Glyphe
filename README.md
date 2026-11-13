@@ -2,7 +2,7 @@
 
 Les sorts des **SRD 5.1 et 5.2** de D&D (règles de 2014 et de 2024), du **SRD 3.5** et de **Pathfinder 1** (école par école) transposés en glyphes d'Inarama : chaque sort en **glyphe circulaire** et en **glyphe en bande**, en notation **déclarée** et **non déclarée**, avec la lecture de chaque cercle et la traduction des annotations en Alde.
 
-- 2151 sorts, 3808 formes (Arcane, Magie hybride, arts rares ; une forme par option de lancement ; une forme « version 2024 », « version 3.5 » ou « Pathfinder 1 » quand une autre édition change le glyphe).
+- 2151 sorts, 3806 formes (Arcane, Magie hybride, arts rares ; une forme par option de lancement ; une forme « version 2024 », « version 3.5 » ou « Pathfinder 1 » quand une autre édition change le glyphe).
 - Chaque sort porte une description, la note qu'un arcaniste écrirait à côté du glyphe (`donnees/descriptions.json`).
 - Pathfinder 1 : sorts légaux en Pathfinder Society seulement (hors *Technology Guide*). Les noms propres de Golarion sont effacés, le sens du sort est gardé ; les sorts qui dépendent du monde de Golarion ou qui ne sont qu'une mécanique de jeu sont écartés et listés dans `PF1_RELECTURE` (`moteur/fiches.py`).
 - Règle d'or : **deux glyphes strictement identiques sont le même sort**. La construction s'arrête si deux sorts différents produisent le même glyphe.
@@ -24,6 +24,8 @@ Le site est publié automatiquement par GitHub Pages à chaque modification de l
 | `moteur/gen_glyphs.py` | Dessin du glyphe circulaire. |
 | `moteur/band_glyph.py` | Dessin du glyphe en bande. |
 | `moteur/spells.py` | Valeurs (alphabet des neuf formes), noyaux, et les sorts du premier grimoire d'essai (la bibliothèque ne les reprend plus : tous ses sorts se génèrent depuis leurs données). |
+| `moteur/lexique.py` | Lexique typé : les mots qu'un cercle Cible peut porter (être, objet, part, faculté, lieu), les mesures et leurs unités. Un mot nouveau se déclare ici. |
+| `moteur/lint.py` | Contrôle de lecture des glyphes (Cible typée, Impact lisible, une énergie par cercle, unités, satellites annotés). La construction stricte s'arrête au premier défaut. |
 | `moteur/build_picto.py` | Pictogrammes des douze verbes du noyau. |
 | `moteur/alde.py`, `moteur/translit.py` | Écriture de l'Alde et translittération provisoire des annotations. |
 | `moteur/combos.py` | Les 35 combinaisons élémentaires et la correspondance des écoles. |

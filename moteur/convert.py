@@ -348,7 +348,7 @@ def build_spell(idx, fiche):
         if dmg:
             table = dmg.get("damage_at_slot_level") or dmg.get("damage_at_character_level") or {}
             d = table.get(str(level)) or (list(table.values())[0] if table else None)
-            med = [] if dtype in ("Force", "Psychic") else MEDIUM.get(dtype)     # force et dégâts psychiques : Impact nu (la psyché est dite par la Cible)
+            med = [] if dtype in ("Force", "Psychic") else (MEDIUM.get(dtype) or [])     # force, psyché, dégât sans nature : Impact nu — « vie » ne dit que le soin
             if d: imp = (rnd(dice_avg(d)), med, f"{d} en moyenne")
         else:
             d = s["heal_at_slot_level"].get(str(level)) or list(s["heal_at_slot_level"].values())[0]
@@ -363,6 +363,9 @@ def build_spell(idx, fiche):
             if "fractionné" in (st[1] or []) and len(st[1]) > 1:
                 isats[j] = (1, [w for w in st[1] if w != "fractionné"]); isats.append((st[0], ["fractionné"]))
         meds = med if isinstance(med, list) else ([med] if med else [])
+        extra_imp = []; els = []
+        # une face écrite en mot sur un satellite plein s'inscrit par son symbole
+        isats = [(sym({"LUMINEUX": "lumineux", "TENEBREUX": "tenebreux"}[norm(st[1][0])]), []) if st[0] == "plein" and len(st[1] or []) == 1 and norm(st[1][0]) in ("LUMINEUX", "TENEBREUX") else st for st in isats]
         nb = [st for st in isats if (st[1] or []) == ["nombre"]]
         if nb and not fiche.get("qty"): fiche = {**fiche, "qty": nb[0][0]}
         isats = [st for st in isats if (st[1] or []) != ["nombre"]]
@@ -384,7 +387,9 @@ def build_spell(idx, fiche):
                 if not meds: med = []
         else:
             els = [m for m in meds if norm(m) in ELEM_UNITS]
-            for m in els: isats += [(sym(u_), []) for u_ in ELEM_UNITS[norm(m)]]
+            # une énergie par cercle d'Impact : la première reste ici, chacune des autres reçoit son propre cercle
+            for m in els[:1]: isats += [(sym(u_), []) for u_ in ELEM_UNITS[norm(m)]]
+            extra_imp += [(v, [m], "") for m in els[1:]]
             if els:
                 meds = [m for m in meds if norm(m) not in ELEM_UNITS]
                 if not meds: med = []
@@ -392,12 +397,19 @@ def build_spell(idx, fiche):
         add_ = list(fiche.get("impact_add", []))
         if fam == "H": add_ = [a_ for a_ in add_ if norm(a_) not in red]
         else:
-            for a_ in [a_ for a_ in add_ if norm(a_) in ELEM_UNITS]: isats += [(sym(u_), []) for u_ in ELEM_UNITS[norm(a_)]]
+            ea_ = [a_ for a_ in add_ if norm(a_) in ELEM_UNITS]
+            if not any(isinstance(st[0], tuple) and st[0][1] in ("feu", "air", "terre", "eau") for st in isats):
+                for a_ in ea_[:1]: isats += [(sym(u_), []) for u_ in ELEM_UNITS[norm(a_)]]
+                ea_ = ea_[1:]
+            extra_imp += [(v, [a_], "") for a_ in ea_]
             add_ = [a_ for a_ in add_ if norm(a_) not in ELEM_UNITS]
+        isats += [(sym(norm(a_).lower()), []) for a_ in add_ if norm(a_) in ("LUMINEUX", "TENEBREUX")]
+        add_ = [a_ for a_ in add_ if norm(a_) not in ("LUMINEUX", "TENEBREUX")]
         fiche = {**fiche, "impact_sats": isats, "impact_add": add_}
         add = fiche.get("impact_add", [])
         # un sens éteint (aveuglement, surdité) n'est pas une forme de l'Impact : il passe en Cosmétique, « sens éteint »
         ET = {"AVEUGLEMENT": "vue", "CECITE": "vue", "SURDITE": "ouïe"}
+        if fiche.get("guerit") or tuple(fiche.get("verb") or ()) == ("qualite", False): ET = {}   # un sort qui guérit ces maux ne les inflige pas : ils restent des mots de l'Impact
         et_ = [ET[norm(m)] for m in list(meds) + list(add) if norm(m) in ET]
         et_ += [ET[norm(st[1][0])] for st in (fiche.get("impact_sats") or []) if len(st[1] or []) == 1 and norm(st[1][0]) in ET]
         if et_:
@@ -411,6 +423,20 @@ def build_spell(idx, fiche):
         head = "plein" if v == "plein" else f"intensité {v}"
         rings.append(("IMPACT", v, words, head + nat + (f" ({why})" if why else "") + sat_reading(fiche.get("impact_sats")),
                       place_sats(fiche.get("impact_sats"))))
+        # les autres cercles d'Impact : une énergie de plus, ou un second effet saisi à part (impact_plus)
+        vus_ = {tuple(ELEM_UNITS[norm(m)]) for m in (els[:1] if fam != "H" else [])}
+        uniq_ = []
+        for e_ in extra_imp:       # une même énergie dite par deux mots (vent, air) ne s'inscrit qu'une fois
+            t_ = tuple(ELEM_UNITS.get(norm(e_[1][0]), [e_[1][0]]))
+            if t_ not in vus_: vus_.add(t_); uniq_.append(e_)
+        for v2, w2, why2 in uniq_ + list(fiche.get("impact_plus", [])):
+            s2 = []; ww = []
+            for m in w2:
+                if fam != "H" and norm(m) in ELEM_UNITS: s2 += [(sym(u_), []) for u_ in ELEM_UNITS[norm(m)]]
+                elif norm(m) in ("LUMINEUX", "TENEBREUX"): s2.append((sym(norm(m).lower()), []))
+                elif not (fam == "H" and norm(m) in red): ww.append(m)
+            rings.append(("IMPACT", v2, [word(m) for m in ww], ("plein" if v2 == "plein" else f"intensité {v2}") + (", " + " · ".join(shown(m) for m in ww) if ww else "")
+                          + (f" ({why2})" if why2 else "") + sat_reading(s2), place_sats(s2)))
     # 9 Quantité
     if fiche.get("qty"):
         qn = fiche.get("qty_note") or []

@@ -4934,3 +4934,150 @@ for _k, _w in [("simulacrum", "double"), ("frost-mammoth", "mammouth"), ("wooden
         if _d is FICHES[_k] or "cible" in _d: _d["cible"] = 7
     ETRE(_k, _w); CN(_k, _w)
 # (aveuglement et surdité passent d'office en Cosmétique « sens éteint » : moteur)
+
+# ===== Règles du 14 novembre (audit par lecture inversée) =====
+def UNCN(k, *ws):
+    """retire des précisions de la Cible (sur la fiche, ses options et ses versions)"""
+    W = {_nrm(w) for w in ws}
+    for d in _dicts(FICHES[k]):
+        if d.get("cible_note"): d["cible_note"] = [w for w in d["cible_note"] if _nrm(w) not in W]
+def IADD(k, *ws):
+    """ajoute des mots à l'Impact de chaque forme qui en porte un"""
+    for d in _dicts(FICHES[k]):
+        imp = d.get("impact")
+        if imp and isinstance(imp[1], str): imp = (imp[0], [imp[1]], *imp[2:])
+        if imp and isinstance(imp[1], list):
+            d["impact"] = (imp[0], list(imp[1]) + [w for w in ws if _nrm(w) not in {_nrm(x) for x in imp[1]}], imp[2] if len(imp) > 2 else "")
+def RESERVE(k):
+    """règle 3 : une réserve de vie (« jusqu'à n points de vie de créatures ») n'est pas un Impact mais un seuil — Condition « seuil », satellite « vie »"""
+    for d in _dicts(FICHES[k]):
+        imp = d.get("impact")
+        if not imp or imp[0] == P or not isinstance(imp[1], (list, type(None))): continue
+        ws = [w for w in (imp[1] or []) if _nrm(w) != "VIE"]
+        if imp[1] is not None and len(ws) == len(imp[1]): continue
+        d["impact"] = (P, ws, imp[2] if len(imp) > 2 else "")
+        c0 = d.get("cond") if d.get("cond") is not None else (FICHES[k].get("cond") or [])
+        d["cond"] = [c for c in c0 if _nrm(c) != "SEUIL"] + ["seuil"]; d["cond_sats"] = [(imp[0], ["vie"])]
+for _k in ("color-spray", "sleep", "hypnotic-pattern", "planar-binding", "circle-of-death", "planar-ally", "charm-monster", "calm-animals",
+           "hypnotism", "animal-trance", "rainbow-pattern", "scintillating-pattern", "command-undead", "command-plants"):
+    RESERVE(_k)
+# règle 3 : « vie » dit un soin ; un dégât s'écrit nu (verbe Détruire) ou « blessure »
+IMPW("hunters-mark", ["blessure"]); IMPW("mindwipe", ["effacement"]); IMPW("veil-of-positive-energy", []); IMPW("shambler", [])
+for _k, _w in (("chill-touch", []), ("vampiric-touch", []), ("flame-strike", []), ("blight", ["dessèchement"])):
+    for _v in ("v35", "vpf"):
+        _d = FICHES[_k].get(_v)
+        if isinstance(_d, dict) and _d.get("impact") and (_d["impact"][1] is None or "vie" in (_d["impact"][1] or [])):
+            _d["impact"] = (_d["impact"][0], list(_w), _d["impact"][2] if len(_d["impact"]) > 2 else "")
+for _o in FICHES["enhance-ability"].get("options") or []:
+    if _o.get("impact") and _o["impact"][0] != P and (_o["impact"][1] is None or _o["impact"][1] == ["vie"]):
+        _o["impact"] = (_o["impact"][0], ["vie", "temporaire"], _o["impact"][2])
+# règle 2 : un sort qui guérit la cécité ou la surdité ne les inflige pas
+for _k in ("heal", "mass-heal", "heal-mount"): FICHES[_k]["guerit"] = True
+# règle 1 : un sort hybride n'a pas de verbe — son Impact plein nomme l'action
+for _k, _w in [("color-spray", "éblouissement"), ("protection-from-poison", "neutralisation"), ("gaseous-form", "métamorphose"),
+               ("stoneskin", "durcissement"), ("simulacrum", "création"), ("control-winds", "maîtrise"), ("transmute-rock-to-mud", "boue"),
+               ("caustic-safeguard", "riposte"), ("flashfire", "embrasement"), ("sonic-scream", "onde"), ("frost-mammoth", "création"),
+               ("fiery-body", "métamorphose"), ("flames-of-the-faithful", "embrasement"), ("magnifying-chime", "vibration"),
+               ("snapdragon-fireworks", "explosion"), ("sun-metal", "embrasement"), ("pyrotechnics", "éblouissement")]:
+    for _d in _dicts(FICHES[_k]):
+        if _d.get("impact") and _d["impact"][0] == P and not [w for w in (_d["impact"][1] or []) if _nrm(w) not in ("AVEUGLEMENT", "CECITE", "SURDITE")]:
+            _d["impact"] = (P, list(_d["impact"][1] or []) + [_w], _d["impact"][2] if len(_d["impact"]) > 2 else "")
+for _o in FICHES["pyrotechnics"]["options"] + FICHES["pyrotechnics"]["vpf"]["options"]:
+    if _o["label"] == "Fumée": _o["impact"] = (P, [w for w in _o["impact"][1] if _nrm(w) != "EBLOUISSEMENT"], _o["impact"][2])
+# règle 5 : la Cible ne porte que l'être, l'objet, la part, la faculté ou le lieu visé
+UNCN("comprehend-languages", "langue"); IMPW("comprehend-languages", ["langue", "compréhension"])
+UNCN("shield", "projectile"); SI("shield", "projectile")
+UNCN("shield-of-faith", "foi")
+UNCN("darkvision", "obscurité"); IMPW("darkvision", ["vision", "obscurité", "mètres"])
+UNCN("see-invisibility", "invisible", "éthéré"); IMPW("see-invisibility", ["vision", "invisible", "éthéré"])
+for _k in ("good-hope", "prayer", "crushing-despair"):
+    for _d in _dicts(FICHES[_k]):
+        if _d.get("cible_note"): _d["cible_note"] = ["frappe" if _nrm(w) == "BLESSURE" else w for w in _d["cible_note"]]
+for _k in ("chromatic-orb", "burning-arc-keleshite", "chains-of-fire", "contagious-flame", "ricochet-shot"):
+    UNCN(_k, "rebond")
+    for _d in _dicts(FICHES[_k]):
+        if _d is FICHES[_k] or _d.get("impact"): _d["impact_add"] = list(_d.get("impact_add") or []) + ["rebond"]
+# règle 6 : toujours un cercle Cible, sauf création à partir de rien
+for _k, _c in [("detect-magic", P), ("augury", 1), ("arcane-eye", P), ("legend-lore", 4), ("globe-of-invulnerability", 1), ("prismatic-wall", P),
+               ("prying-eyes", P), ("prying-eyes-greater", P), ("vision", 4)]:
+    FICHES[_k]["cible"] = _c
+# glyphes muets
+FICHES["reincarnate"]["impact"] = (P, ["vie", "corps", "renaissance"], "revient à la vie dans un corps nouveau")
+FICHES["time-stop"]["impact"] = (P, ["temps", "arrêt"], "le temps arrêté pour tous sauf le lanceur")
+# petits défauts
+RESAT("geas", [], lambda v, w: (v, ["blessure"])); RESAT("power-word-kill", [], lambda v, w: (v, ["blessure"]))
+RESAT("ice-knife", [], lambda v, w: (v, ["explosion"]))
+FICHES["continual-flame"].pop("cosm", None)
+for _k, _w in (("chill-touch", []), ("vampiric-touch", []), ("flame-strike", []), ("blight", ["dessèchement"])):
+    for _d in _dicts(FICHES[_k]):
+        _i = _d.get("impact")
+        if _i and _i[0] != P and (_i[1] is None or (isinstance(_i[1], list) and any(_nrm(w) == "VIE" for w in _i[1]))):
+            _d["impact"] = (_i[0], list(_w), _i[2] if len(_i) > 2 else "")
+for _k, _w in [("protection-from-poison", "neutralisation"), ("gaseous-form", "métamorphose"), ("simulacrum", "création"), ("control-winds", "maîtrise"),
+               ("transmute-rock-to-mud", "boue"), ("caustic-safeguard", "riposte"), ("flashfire", "embrasement"), ("frost-mammoth", "création"),
+               ("fiery-body", "métamorphose"), ("flames-of-the-faithful", "embrasement"), ("sun-metal", "embrasement"), ("stoneskin", "durcissement"),
+               ("magnifying-chime", "vibration"), ("snapdragon-fireworks", "explosion"), ("sonic-scream", "onde"), ("color-spray", "éblouissement")]:
+    FICHES[_k]["impact_add"] = [w for w in (FICHES[_k].get("impact_add") or []) if _nrm(w) != _nrm(_w)] + [_w]
+    for _d in _dicts(FICHES[_k]):
+        if _d.get("impact") and isinstance(_d["impact"][1], list): _d["impact"] = (_d["impact"][0], [w for w in _d["impact"][1] if _nrm(w) != _nrm(_w)], *_d["impact"][2:])
+# options de version restées sans Impact
+for _k, _imp in [("contagion", (P, ["maladie", "contagion"], "une maladie qui se transmet")), ("heal", (110, None, "10 par niveau, et les maux levés")),
+                 ("resist-energy", (10, ["résistance", "énergie"], "10 retranché à chaque coup")), ("align-weapon", (P, ["arme", "orientation"], "les armes orientées"))]:
+    for _v in ("v35", "vpf"):
+        for _o in (FICHES[_k].get(_v) or {}).get("options") or []:
+            if not _o.get("impact"): _o["impact"] = _imp
+# Bouclier de feu : la résistance à l'énergie contraire est un second Impact (règle 4)
+for _d in _dicts(FICHES["fire-shield"]):
+    _ss = _d.get("impact_sats")
+    if _ss and any(isinstance(st[0], tuple) for st in _ss):
+        _el = "froid" if any(isinstance(st[0], tuple) and st[0][1] == "eau" for st in _ss) else "feu"
+        _d["impact_sats"] = []; _d["impact_plus"] = [(P, ["résistance", _el], "")]
+for _d in _dicts(FICHES["continual-flame"]) + _dicts(FICHES["minor-illusion"]):
+    if _d.get("cosm") and "sens" not in str(_d["cosm"][1]).lower():
+        if _d in _dicts(FICHES["minor-illusion"]): _d["cosm"] = (1, "sens trompé")
+        else: _d.pop("cosm")
+IMPW("transmute-rock-to-mud", ["boue", "métamorphose"])
+# règle 8 : ce que la description dit, le glyphe l'inscrit
+for _k in ("ash-storm", "sand-whirlwind"): FICHES[_k]["impact_add"] = list(FICHES[_k].get("impact_add") or []) + ["cécité"]
+# règle 7 : une mesure porte son unité, un multiplicateur est dit « fois » ; « stature » dit la taille d'un être (« taille » reste le tranchant)
+def _REW(k, a, b, extra=()):
+    for d in _dicts(FICHES[k]):
+        i = d.get("impact")
+        if i and isinstance(i[1], list): d["impact"] = (i[0], [b if _nrm(w) == _nrm(a) else w for w in i[1]] + [x for x in extra if _nrm(x) not in {_nrm(w) for w in i[1]}], *i[2:])
+        if d.get("impact_sats"): d["impact_sats"] = [(st[0], [b if _nrm(w) == _nrm(a) else w for w in (st[1] or [])]) for st in d["impact_sats"]]
+_REW("jump", "saut", "saut", ["fois"]); _REW("longstrider", "pas", "pas", ["mètres"]); _REW("haste", "temps", "temps", ["fois"])
+_REW("skim", "lecture", "lecture", ["fois"]); _REW("ant-haul", "charge", "port", ["fois"])
+_REW("enlarge-reduce", "taille", "stature", ["fois"]); _REW("animal-growth", "taille", "stature"); _REW("righteous-might", "taille", "stature")
+def ADD(k, *ws):
+    """règle 8 : un effet que la description annonce s'inscrit à l'Impact (sur toutes les formes du sort)"""
+    cur = list(FICHES[k].get("impact_add") or [])
+    FICHES[k]["impact_add"] = cur + [w for w in ws if _nrm(w) not in {_nrm(x) for x in cur}]
+for _k, _w in [("brow-gasher", ["cécité"]), ("scouring-winds", ["cécité"]), ("wall-of-sound", ["surdité"]), ("garrulous-grin", ["peur"]),
+               ("devil-snare", ["ancrage"]), ("magic-circle", ["charme", "peur", "possession"]), ("beacon-of-hope", ["courage"]),
+               ("dissonant-whispers", ["peur"]), ("rally-point", ["courage"]), ("free-spirit", ["courage"]), ("sequester", ["sommeil"]),
+               ("lullaby", ["sommeil"]), ("freedom", ["paralysie", "sommeil"]), ("reinvigorating-wind", ["réveil"]),
+               ("freedom-of-movement", ["paralysie"]), ("overwhelming-grief", ["paralysie"]), ("mantle-of-doubt", ["paralysie"]),
+               ("hibernate", ["paralysie"]), ("delusional-pride", ["charme"]), ("battle-trance", ["charme"]), ("sleet-storm", ["extinction"]),
+               ("gust-of-wind", ["extinction"]), ("heroes-feast", ["guérison"]), ("nauseating-dart", ["poison"]), ("make-lost", ["oubli"]),
+               ("dream-reality", ["oubli"]), ("mindshock", ["douleur"]), ("spike-stones", ["lenteur"]), ("frost-fall", ["lenteur"]),
+               ("sickening-entanglement", ["entrave"]), ("winds-of-vengeance", ["renvoi"]), ("communication-placeholder", [])]:
+    if _k in FICHES: ADD(_k, *_w)
+IMPW("protection-from-evil-and-good", ["protection", "charme", "peur", "possession"])
+IMPW("rite-of-centered-mind", ["émotion", "peur"]); CN("mental-block", "mémoire"); SI("magic-stone", "mort-vivant")
+_REW("twilight-haze", "vue", "obscurité")
+IMPW("speak-with-animals", ["parole"]); IMPW("speak-with-plants", ["parole"])
+ADD("jump", "fois"); ADD("longstrider", "mètres")
+for _k in ("animal-growth", "righteous-might"):
+    for _d in _dicts(FICHES[_k]):
+        _i = _d.get("impact")
+        if _i and isinstance(_i[1], list) and any(_nrm(w) == "STATURE" for w in _i[1]):
+            _d["impact"] = (_i[0], [w for w in _i[1] if _nrm(w) != "STATURE"], *_i[2:])
+            _d["impact_sats"] = list(_d.get("impact_sats") or []) + [(2, ["stature", "fois"])]
+IMPW("disrupt-undead", ["lumière"]); RESERVE("undeath-to-death")
+for _d in _dicts(FICHES["enervation"]):
+    _i = _d.get("impact")
+    if _i and isinstance(_i[1], list): _d["impact"] = (_i[0], ["affaiblissement" if _nrm(w) == "VIE" else w for w in _i[1]], *_i[2:])
+IMPW("baphomets-blessing", ["taureau"])
+FICHES["misty-step"]["impact"] = (P, ["téléportation"], "disparaît et reparaît plus loin")
+IMPW("wave-shield", ["eau"]); FICHES["wave-shield"]["impact_plus"] = [(P, ["résistance", "feu"], "")]
+ADD("holy-javelin", "lumineux"); IMPW("ghost-brand", ["tangibilité", "intangible"])

@@ -183,10 +183,16 @@ def place_sats(sats):
     # sur le cercle, plusieurs satellites d'un même encart se répartissent symétriquement : opposés, à 120°, en croix…
     n = len(sats)
     angles = ["NS"] if n == 1 else [90, 270] if n == 2 else [(90 + k * 360 / n) % 360 for k in range(n)]
-    return [(a, v, " ".join(word(w) for w in ws)) for a, (v, ws) in zip(angles, sats)]
+    return [(a, v, " ".join(word(w[3:] if str(w).startswith("si:") else w) for w in ws)) for a, (v, ws) in zip(angles, sats)]
 def sat_reading(sats):
+    """un satellite peut porter sa propre Condition (« si:mort-vivant ») : il ne vaut que pour ce qui la remplit"""
     if not sats: return ""
-    return "".join(f" ; satellite {vshow(v)}" + (f" « {' · '.join(shown(w) for w in ws)} »" if ws else "") for v, ws in sats)
+    out = ""
+    for v, ws in sats:
+        cs = [w[3:] for w in ws if str(w).startswith("si:")]; ns = [w for w in ws if not str(w).startswith("si:")]
+        out += (f" ; satellite {vshow(v)}" + (f" « {' · '.join(shown(w) for w in ns)} »" if ns else "")
+                + (f", seulement si « {' · '.join(shown(w) for w in cs)} »" if cs else ""))
+    return out
 
 GRAFT = ("impact", "impact_add", "impact_sats", "cond", "cond_sats", "fin", "cible_note", "qty")
 def graft(idx, fiche, g, fam, s, fr, level, ecole, hemi, notes):
@@ -276,6 +282,8 @@ def build_spell(idx, fiche):
         val, *opt = c if isinstance(c, tuple) else (c,)
         words = [word(w) for w in fiche.get("cible_obj", [])]
         reading = (("objet annoté « " + fiche["cible_obj"][0].lower() + " »") if words else CIBLES.get(val, str(val)))
+        if val == "trame":      # contresort, dissipation : la Cible est vide, c'est la trame elle-même qui est visée
+            val = None; reading = "vide : la trame elle-même"
         if dtype == "Psychic" and not fiche.get("impact") and "psyché" not in (fiche.get("cible_note") or []):
             fiche = {**fiche, "cible_note": list(fiche.get("cible_note") or []) + ["psyché"]}
         if fiche.get("cible_note"):
@@ -327,7 +335,7 @@ def build_spell(idx, fiche):
     # 6 Localisation
     loc = fiche.get("loc") or localisation(s["range"])
     if loc and not fiche.get("no_loc"):
-        rings.append(("LOCALISATION", loc[0], [loc[1]] if loc[1] else [], loc[2]))
+        rings.append(("LOCALISATION", loc[0], ([word(w) for w in loc[1]] if isinstance(loc[1], list) else [loc[1]]) if loc[1] else [], loc[2]))
     # 7 Condition : la composante verbale est la Condition la plus commune (§2) ; les restrictions s'y ajoutent
     conds = (["parole"] if verbal(s) and not fiche.get("sans_parole") else []) + [c for c in (fiche.get("cond") or []) if not (verbal(s) and norm(c) == "PAROLE")]
     if conds:
@@ -359,10 +367,15 @@ def build_spell(idx, fiche):
         if nb and not fiche.get("qty"): fiche = {**fiche, "qty": nb[0][0]}
         isats = [st for st in isats if (st[1] or []) != ["nombre"]]
         # faces du plan astral : un symbole en satellite, sur la Cible quand c'est l'être visé, sur l'Impact sinon
+        # rayonnement et nécrose sont les énergies des deux faces : la nécrose est toujours ténébreuse ;
+        # la lumière n'est lumineuse que lorsqu'elle frappe (une valeur chiffrée), sinon c'est de la lumière qu'on voit
+        meds = ["tenebreux" if norm(m) == "NECROSE" else "lumineux" if norm(m) == "LUMIERE" and (v != "plein" or fiche.get("rayonnement")) else m for m in meds]
+        isats = [(st[0], [{"NECROSE": "ténébreux", "LUMIERE": "lumineux"}.get(norm(w), w) for w in (st[1] or [])]) + tuple(st[2:]) for st in isats]
         faces = [norm(m) for m in meds if norm(m) in ("LUMINEUX", "TENEBREUX")]
         if faces:
             meds = [m for m in meds if norm(m) not in ("LUMINEUX", "TENEBREUX")]
             isats += [(sym(f_.lower()), []) for f_ in faces]
+            if not meds: med = []
         comb_ = fiche.get("comb") or DAMAGE_COMBO.get(dtype) or comb_def
         red = REDIT.get(comb_, set()) | {norm(comb_)}
         if fam == "H":
@@ -383,6 +396,15 @@ def build_spell(idx, fiche):
             add_ = [a_ for a_ in add_ if norm(a_) not in ELEM_UNITS]
         fiche = {**fiche, "impact_sats": isats, "impact_add": add_}
         add = fiche.get("impact_add", [])
+        # un sens éteint (aveuglement, surdité) n'est pas une forme de l'Impact : il passe en Cosmétique, « sens éteint »
+        ET = {"AVEUGLEMENT": "vue", "CECITE": "vue", "SURDITE": "ouïe"}
+        et_ = [ET[norm(m)] for m in list(meds) + list(add) if norm(m) in ET]
+        et_ += [ET[norm(st[1][0])] for st in (fiche.get("impact_sats") or []) if len(st[1] or []) == 1 and norm(st[1][0]) in ET]
+        if et_:
+            meds = [m for m in meds if norm(m) not in ET]; add = [a_ for a_ in add if norm(a_) not in ET]
+            if not meds: med = []
+            fiche = {**fiche, "impact_add": add, "_eteint": list(dict.fromkeys(et_)),
+                     "impact_sats": [st for st in fiche.get("impact_sats") or [] if not (len(st[1] or []) == 1 and norm(st[1][0]) in ET)]}
         nu = isinstance(med, list) and not meds     # Impact nu : liste vide, la force brute du verbe (§6.7)
         words = list(dict.fromkeys(([word(m) for m in meds] if meds else ([] if nu else ["VIE"])) + [word(a) for a in add]))
         nat = ((", " + " · ".join(shown(m) for m in meds)) if meds else (", sans nature : la force brute du verbe" if nu else " de vie")) + ((" · " if meds else ", ") + " · ".join(shown(a) for a in add) if add else "")
@@ -391,7 +413,9 @@ def build_spell(idx, fiche):
                       place_sats(fiche.get("impact_sats"))))
     # 9 Quantité
     if fiche.get("qty"):
-        rings.append(("QUANTITE", fiche["qty"], [], f"{fiche['qty']} instances du sort"))
+        qn = fiche.get("qty_note") or []
+        rings.append(("QUANTITE", fiche["qty"], [word(w) for w in qn],
+                      f"{fiche['qty']} « {' · '.join(shown(w) for w in qn)} »" if qn else f"{fiche['qty']} instances du sort"))
     # 10 Composante
     if fiche.get("comp"):
         mat = (s.get("material") or "").lower()
@@ -436,6 +460,10 @@ def build_spell(idx, fiche):
         v, w = fiche["cosm"]
         sens = "sens" in w.lower()      # « sens trompé » : la valeur compte les sens trompés (1 la vue seule, plein tous les sens)
         rings.append(("COSMETIQUE", v, [word(x) for x in w.split()], f"{w.lower()}, " + (("tous les sens" if v == "plein" else f"{v} sens") if sens else ("au maximum" if v == "plein" else f"degré {v}"))))
+    if fiche.get("_eteint"):
+        se_ = fiche["_eteint"]
+        rings.append(("COSMETIQUE", len(se_), [word("sens"), word("éteint")] + [word(x) for x in se_],
+                      f"sens éteint, {len(se_)} sens : " + ", ".join(se_)))
     # une valeur qui demanderait plus de quatre formes est arrondie à la plus proche qui s'écrit simplement
     def nforms(n): return len(SP.val(n, "up")[0])
     for i, r in enumerate(rings):
@@ -443,6 +471,11 @@ def build_spell(idx, fiche):
         if isinstance(v, int) and nforms(v) > 4:
             best = min((x for x in range(max(1, v - v // 4), v + v // 4 + 2) if nforms(x) <= 4), key=lambda x: (abs(x - v), x))
             rings[i] = (r[0], best, r[2], r[3] + f" ; arrondi de {v} à {best} pour s'écrire en {nforms(best)} formes", *r[4:])
+    for crit_, sl in (fiche.get("sats") or {}).items():
+        for i, r in enumerate(rings):
+            if r[0] == crit_:
+                old_ = [(x[1], [x[2]] if len(x) > 2 and x[2] else []) for x in (r[4] if len(r) > 4 else [])]
+                rings[i] = (r[0], r[1], r[2], r[3] + sat_reading(sl), place_sats(old_ + list(sl))); break
     order = ["CIBLE", "FORME", "AMPLEUR", "DUREE", "LOCALISATION", "CONDITION", "IMPACT", "QUANTITE", "COMPOSANTE", "INTERACTION", "COSMETIQUE"]
     rings.sort(key=lambda r: order.index(r[0]))
     crits = []

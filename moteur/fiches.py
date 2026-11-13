@@ -4591,3 +4591,346 @@ MOVE("suppressing-stone", "esprit")
 for _d in _dicts(FICHES["truespeak"]):
     _d.pop("cible_note", None)
     if _d.get("impact"): _d["impact"] = (_d["impact"][0], ["parole", "langue"], _d["impact"][2])
+
+# ----- Décisions du 13 novembre (soir) -----
+# 1. Rayonnement et nécrose s'écrivent par les symboles des faces (moteur). La lumière qui ne frappe pas reste lumière vue :
+DROP("produce-flame", "lumière")
+FICHES["true-strike-2024"]["rayonnement"] = True
+# 2. Contresort, dissipation : Cible vide, la trame, annotée « sort » (ou « magie » quand c'est toute magie)
+for _k, _n in [("counterspell", "sort"), ("dispel-magic", "sort"), ("dispel-magic-greater", "sort"), ("symbol-of-dispelling", "sort"),
+               ("antimagic-field", "magie"), ("mages-disjunction", "magie")]:
+    for _d in _dicts(FICHES[_k]):
+        if _d is FICHES[_k] or "cible" in _d: _d["cible"] = "trame"
+    FICHES[_k]["cible_note"] = [_n]
+    DROP(_k, _n)
+    FICHES[_k]["notes"] = [n for n in (FICHES[_k].get("notes") or []) if not n.startswith("Cible vide")]
+# 3. Les êtres créés vont en Cible (7 : un être sans corps propre, fait de force ou de fantasme)
+RV("unseen-servant", cible=7, cible_note=["serviteur"]); DROP("unseen-servant", "serviteur")
+RV("phantom-steed", cible=7, cible_note=["monture"]); DROP("phantom-steed", "monture")
+RV("faithful-hound", cible=7, cible_note=["molosse"])
+for _d in _dicts(FICHES["produce-flame"]):
+    if _d.get("impact_add"): _d["impact_add"] = [w for w in _d["impact_add"] if _nrm(w) != "LUMIERE"]
+
+# ----- Décisions du 13 novembre (nuit) : les satellites -----
+def RESAT(k, old, new):
+    """remplace (ou retire si new vaut None) les satellites d'Impact annotés old ; new peut être une fonction (v, mots) → satellite"""
+    O_ = [_nrm(w) for w in old]
+    for d in _dicts(FICHES[k]):
+        if not d.get("impact_sats"): continue
+        out = []
+        for st in d["impact_sats"]:
+            if [_nrm(w) for w in (st[1] or [])] == O_:
+                if new is None: continue
+                st = new(*st[:2]) if callable(new) else (st[0], list(new))
+            out.append(st)
+        d["impact_sats"] = out
+def CN(k, *ws):
+    """ajoute des précisions à la Cible (sur la fiche et ses versions qui la redisent)"""
+    for d in [FICHES[k]] + [x for x in _dicts(FICHES[k]) if x.get("cible_note")]:
+        cn = list(d.get("cible_note") or [])
+        d["cible_note"] = cn + [w for w in ws if _nrm(w) not in {_nrm(x) for x in cn}]
+_CAR = {"FORCE": "force", "DEXTERITE": "adresse", "CONSTITUTION": "endurance", "INTELLIGENCE": "raison", "INTELLECT": "raison",
+        "SAGESSE": "lucidité", "CHARISME": "prestance"}
+
+# Famille A — deuxième grandeur : valeur + unité, gardée ; ce qui a un meilleur cercle y va
+RESAT("tree-stride", ["mètres"], None); FICHES["tree-stride"]["loc"] = (150, "METRES", "150 m, d'arbre en arbre")
+RESAT("antipathy-sympathy", ["mètres"], None); FICHES["antipathy-sympathy"].update(no_aoe=False, aoe={"type": "sphere", "size": 120})
+for o in FICHES["dragons-breath"]["options"]: o.pop("impact_sats", None)
+FICHES["dragons-breath"]["aoe"] = {"type": "cone", "size": 15}
+RESAT("create-food-and-water", ["litres", "eau"], None); FICHES["create-food-and-water"].update(qty=112, qty_note=["litres", "eau"])
+for _k in ("sending", "magic-mouth", "animal-messenger", "demand"):
+    if any([_nrm(w) for w in (st[1] or [])] == ["MOTS"] for d in _dicts(FICHES[_k]) for st in (d.get("impact_sats") or [])):
+        RESAT(_k, ["mots"], None); FICHES[_k].update(qty=25, qty_note=["mots"])
+RESAT("tiny-hut", ["occupants"], None); FICHES["tiny-hut"].update(qty_cible=9); CN("tiny-hut", "occupants")
+RESAT("modify-memory", ["minutes"], None); FICHES["modify-memory"]["sats"] = {"LOCALISATION": [(5, ["minutes", "passé"])]}   # la portée garde sa valeur ; le passé atteint en satellite
+RESAT("divination", ["jours"], None); FICHES["divination"]["loc"] = (7, ["JOURS", "AVENIR"], "7 jours dans l'avenir")
+RESAT("augury", ["minutes", "avenir"], None); FICHES["augury"]["loc"] = (30, ["MINUTES", "AVENIR"], "30 minutes dans l'avenir")
+
+# Famille B — ce qui a sa place ailleurs
+RESAT("finger-of-death", ["zombi"], ["mort-vivant"])
+RESAT("cone-of-cold", ["statue"], None); SENS("cone-of-cold", "vue", manif=["statue", "givre"])
+for _k in ("branding-smite", "starry-wisp"):
+    RESAT(_k, ["révélation"], None); RESAT(_k, ["révélation", "marque"], ["marque"])
+SENS("branding-smite", "vue", manif=["lueur"]); SENS("starry-wisp", "vue", manif=["lueur"])
+RESAT("freezing-sphere", ["gel", "eau"], None); CN("freezing-sphere", "eau")
+RESAT("ice-knife", ["froid"], lambda v, w: (v, [])); FICHES["ice-knife"]["impact_add"] = list(FICHES["ice-knife"].get("impact_add") or [])
+for _d in _dicts(FICHES["ice-knife"]):
+    if _d.get("impact_sats"): _d["impact_sats"] = [st for st in _d["impact_sats"] if st[1]] + [(st[0], []) for st in _d["impact_sats"] if not st[1]]
+_EU = {"FROID": ["air", "terre", "eau", "eau"], "FEU": ["feu"]}
+for _d in _dicts(FICHES["fire-shield"]):
+    _new = []
+    for st in _d.get("impact_sats") or []:
+        _n = [_nrm(x) for x in st[1]]
+        if _n[:1] == ["RESISTANCE"] and len(_n) == 2: _new += [(st[0], ["résistance"])] + [(("sym", u), []) for u in _EU[_n[1]]]
+        else: _new.append(st)
+    if _d.get("impact_sats"): _d["impact_sats"] = _new
+RESAT("cloudkill", ["constitution"], lambda v, w: (v, ["affaiblissement"])); FICHES["cloudkill"]["v35"]["cible_note"] = ["endurance"]
+RESAT("feeblemind", ["intellect"], None); CN("feeblemind", "raison")
+# Contact avec les plans : c'est le lanceur qui risque sa raison, pas l'être contacté — la perte reste un effet secondaire
+RESAT("contact-other-plane", ["intellect", "charisme"], lambda v, w: (v, ["raison", "prestance"]))
+RESAT("contact-other-plane", ["esprit", "folie"], lambda v, w: (v, ["folie"]))
+for _k in ("power-word-kill", "weird", "geas"):
+    RESAT(_k, ["esprit"], lambda v, w: (v, [])); CN(_k, "psyché")
+
+# Famille C — le satellite porte sa propre Condition
+for _k in ("planeslayers-call", "crusaders-edge"): RESAT(_k, ["cible"], lambda v, w: (P, ["si:plan"]))
+RESAT("protection-from-evil-and-good", ["cible"], lambda v, w: (P, ["si:plan"]))
+for _k in ("anti-incorporeal-shell", "sphere-of-warding"): RESAT(_k, ["cible"], None)
+RESAT("searing-light", ["mort-vivant"], lambda v, w: (v, ["si:mort-vivant"]))
+RESAT("divine-smite", ["fiélon", "mort-vivant"], lambda v, w: (v, ["si:ténébreux", "si:mort-vivant"]))
+RESAT("forbiddance", ["hostile"], lambda v, w: (v, ["si:hostile"]))
+RESAT("protection-from-evil-and-good", ["invoqué"], lambda v, w: (v, ["renvoi", "si:invoqué"]))
+RESAT("magic-circle", ["invoqué", "barrière"], lambda v, w: (v, ["barrière", "si:invoqué"]))
+RESAT("quench", ["élémentaire"], lambda v, w: (v, ["si:élémentaire"]))
+RESAT("rusting-grasp", ["créature"], lambda v, w: (v, ["si:fer"]))
+RESAT("confess", ["esprit"], lambda v, w: (v, ["si:mensonge"])); RESAT("confess", ["psyché"], lambda v, w: (v, ["si:mensonge"]))
+RESAT("aura-of-life", ["vie", "mourant"], lambda v, w: (v, ["vie", "si:mourant"]))
+for _o in FICHES["hallow"].get("options") or []:
+    if _o.get("impact_sats"):
+        _o["impact_sats"] = [(v, [w if _nrm(w) not in ("MORTVIVANT", "MORT-VIVANT") and w != "mort-vivant" else "si:mort-vivant" for w in ws]) for v, ws in _o["impact_sats"]]
+
+# Famille D — les règles de jeu
+for _o in FICHES["sorcerous-burst"]["options"]: _o.pop("impact_sats", None)
+RESAT("harm", ["maximum"], lambda v, w: (1, ["plancher"]))
+for _o in FICHES["chromatic-orb"]["options"]: _o["impact_sats"] = [st for st in (_o.get("impact_sats") or []) if [_nrm(x) for x in st[1]] != ["REBOND"]]
+FICHES["chromatic-orb"]["qty_cible"] = 2; CN("chromatic-orb", "rebond")
+RESAT("regenerate", ["vie", "tour"], None); FICHES["regenerate"]["sats"] = {"DUREE": [(1, ["vie", "tour"])]}
+RESAT("geas", ["blessure", "jour"], None); FICHES["geas"]["sats"] = {"DUREE": [(11, ["blessure", "jour"])]}
+RESAT("geas-lesser", ["aptitude", "jour"], None); FICHES["geas-lesser"]["sats"] = {"DUREE": [(2, ["aptitude", "jour"])]}
+RESAT("cloudkill", ["seuil", "vie"], None)
+FICHES["cloudkill"]["v35"]["cond"] = list(FICHES["cloudkill"]["v35"].get("cond") or []) + ["seuil"]; FICHES["cloudkill"]["v35"]["cond_sats"] = [(27, ["vie"])]
+for _o in FICHES["entice-fey-lesser"]["options"]:
+    _ss = [st for st in (_o.get("impact_sats") or []) if [_nrm(x) for x in st[1]] == ["VIE", "PLAFOND"]]
+    if _ss: _o["impact_sats"] = []; _o["cond"] = ["seuil"]; _o["cond_sats"] = [(_ss[0][0], ["vie"])]
+RESAT("transformation", ["sort", "interdit"], lambda v, w: (v, ["incantation"]))
+for _o in FICHES["hex"]["options"]:
+    _w = [x for x in _o["impact_sats"][0][1] if _nrm(x) != "MALADRESSE"][0]
+    _o["impact_sats"] = [(P, ["maladresse"])]; _o["cible_note"] = [_CAR.get(_nrm(_w), _w)]
+RESAT("holy-aura", ["force", "faiblesse"], lambda v, w: (v, ["affaiblissement"]))
+for _o in _dicts(FICHES["holy-aura"]):
+    if any(_nrm(x) == "AFFAIBLISSEMENT" for st in (_o.get("impact_sats") or []) for x in st[1]): _o["cible_note"] = ["force"]
+RESAT("contact-other-plane", ["intellect", "prestance"], lambda v, w: (v, ["raison", "prestance"]))
+RESAT("cloudkill", ["endurance"], lambda v, w: (v, ["affaiblissement"]))
+for _v in ("v35", "vpf"):
+    if isinstance(FICHES["cloudkill"].get(_v), dict):
+        FICHES["cloudkill"][_v]["cible_note"] = ["endurance"]
+        FICHES["cloudkill"][_v]["cond"] = ["seuil"]; FICHES["cloudkill"][_v]["cond_sats"] = [(27, ["vie"])]
+
+# ----- Passe fine Pathfinder 1, lot V : Abjuration (relue sort par sort contre le texte entier) -----
+def IMPW(k, words, value=None, why=None):
+    """réécrit les mots (et au besoin la valeur) de l'Impact, sur la fiche et toutes ses formes"""
+    for d in _dicts(FICHES[k]):
+        imp = d.get("impact")
+        if not imp: continue
+        d["impact"] = (imp[0] if value is None else value, list(words), (imp[2] if len(imp) > 2 else "") if why is None else why)
+def SI(k, *conds, value=P):
+    """un satellite d'Impact qui ne vaut que pour ce qui remplit sa Condition"""
+    for d in _dicts(FICHES[k]):
+        if d is FICHES[k] or d.get("impact"):
+            d["impact_sats"] = [st for st in (d.get("impact_sats") or []) if not any(str(w).startswith("si:") for w in st[1])] + [(value, ["si:" + c for c in conds])]
+def NOCOND(k, *ws):
+    W = {_nrm(w) for w in ws}
+    for d in _dicts(FICHES[k]):
+        if d.get("cond"): d["cond"] = [c for c in d["cond"] if _nrm(c) not in W]
+SENSL({"ablative-sphere-garundi": ("vue", ["globe", "cristal"]), "deflection": ("vue", ["tourbillon"]), "primal-scream": ("ouïe", ["cri"]),
+       "punishing-armor": ("vue", ["chatoiement"]), "spell-scourge": ("vue", "ouïe", ["fouet", "claquement"]), "soul-vault": ("vue", ["voûte"])})
+CN("antitoxin-touch", "peau"); CN("life-bubble", "souffle")
+IMPW("banishing-blade", ["recul"])
+FICHES["bestow-grace"]["cible_sym"] = ["lumineux"]
+IMPW("crimson-confession", ["marque"]); SENS("crimson-confession", "vue", manif=["rougeur", "marque"])
+IMPW("death-from-below", []); SI("death-from-below", "grand")
+IMPW("escaping-ward", ["esquive"]); SI("escaping-ward", "grand")
+SI("devil-snare", "plan")
+ETRE("draconic-suppression", "souffle")
+IMPW("enshroud-thoughts", ["dissimulation"]); CN("enshroud-thoughts", "mémoire")
+ETRE("gird-ally", "invoqué")
+for _k in ("anti-incorporeal-shell", "sphere-of-warding"):
+    NOCOND(_k, "intangible"); SI(_k, "intangible")
+for _d in _dicts(FICHES["lament-of-summers-last-breath"]):
+    if _d.get("impact_sats"): _d["impact_sats"] = [(("sym", "feu"), [])]
+SI("lament-of-summers-last-breath", "glace", value=5)
+FICHES["magnetic-field"]["cible"] = P; ETRE("magnetic-field", "métal")
+DROP("marks-of-forbiddance", "marque"); SENS("marks-of-forbiddance", "vue", manif=["sceau"])
+IMPW("node-of-blasting", ["chancellement"], value=21, why="6d6 en moyenne à qui le touche")
+CN("rune-of-warding", "porte"); IMPW("rune-of-warding", ["explosion"])
+ETRE("shield-of-fortification", "vital")
+IMPW("undeath-ward", ["barrière"]); SI("undeath-ward", "mort-vivant")
+IMPW("unholy-ward", ["lumineux"], value=10, why="10 points de dégâts sacrés retenus"); CN("unholy-ward", "résistance")
+IMPW("veil-of-positive-energy", ["vie"]); SI("veil-of-positive-energy", "mort-vivant")
+NOCOND("wall-of-silver", "hostile"); IMPW("wall-of-silver", ["mur"]); SI("wall-of-silver", "hostile")
+ETRE("winter-feathers", "plume")
+IMPW("wreath-of-blades", ["lame"])
+for _o in FICHES["ward-of-the-season"]["options"]:     # la saison choisie est la nature de l'effet, pas une Condition de lancement
+    _s = _o.pop("cond")[0]; _o["impact"] = (P, ["saison", _s], "la force d'une saison")
+IMPW("lament-of-summers-last-breath", ["chaleur", "feu"])     # le manteau protège du froid et brûle les êtres de glace : c'est du feu
+for _d in _dicts(FICHES["lament-of-summers-last-breath"]):
+    _d["impact_sats"] = [st for st in (_d.get("impact_sats") or []) if not isinstance(st[0], tuple)]
+
+# ----- Passe fine Pathfinder 1, lot W : Divination -----
+SENSL({"carrion-compass": ("vue", ["organe"]), "rumormonger": ("vue", ["lueur"]), "whispering-lore": ("ouïe", ["murmure"]),
+       "sense-vitals": ("vue", ["yeux", "rouge"]), "aerial-tracks": ("vue", ["lueurs", "ondes"]), "aura-sight": ("vue", ["yeux", "lueur"]),
+       "track-ship": ("vue", ["icône"]), "pierce-disguise": ("vue", ["silhouette"]), "reveal-emotions": ("vue", ["couleurs"]),
+       "sand-table": ("vue", ["maquette"]), "questing-stone": ("vue", ["pierre"]), "see-alignment": ("vue", ["lueur"]),
+       "follow-aura": ("odorat", ["piste"]), "insect-spies": ("vue", ["scarabées"])})
+DROP("see-alignment", "lueur")
+IMPW("psychic-reading", ["lecture"]); IMPW("seek-thoughts", ["lecture"])
+ETRE("ancestral-communion", "ancêtre"); ETRE("ancestral-memory", "ancêtre")
+MOVE("anticipate-thoughts", "garde")
+ETRE("insect-spies", "insecte"); ETRE("seed-spies", "graine")
+IMPW("synapse-overload", ["foudre", "chancellement"])
+CN("speak-with-waves", "eau")
+
+# ----- Passe fine Pathfinder 1, lot X : Enchantement -----
+SENSL({"abadars-truthtelling": ("vue", ["aura"]), "aura-of-distraction": ("ouïe", ["bourdonnement"]), "reinvigorating-wind": ("toucher", ["souffle"]),
+       "debilitating-portent": ("vue", ["lueur", "vert"]), "moonstruck": ("vue", ["griffes", "crocs"]), "cloak-of-dreams": ("odorat", ["parfum"]),
+       "compelling-rant": ("ouïe", ["discours"]), "debilitating-speech": ("ouïe", ["discours"]), "denounce": ("ouïe", ["voix"]),
+       "forced-repentance": ("ouïe", ["aveux"]), "waves-of-ecstasy": ("toucher", ["frisson"])})
+MOVE("tactical-acumen", "garde"); ETRE("blood-rage", "force")
+for _d in _dicts(FICHES["thought-worm-i"]):
+    if _d.get("cible_note"): _d["cible_note"] = ["lucidité" if _nrm(w) == "VOLONTE" else w for w in _d["cible_note"]]
+IMPW("thought-worm-i", ["faiblesse"]); IMPW("id-insinuation-i", ["confusion"])
+ETRE("martial-marionette", "membres"); ETRE("animal-ambassador", "raison")
+CN("psychic-surgery", "raison", "lucidité", "prestance")
+
+# ----- Passe fine Pathfinder 1, lot Y : Illusion -----
+def TROMPE(k, n):
+    """illusion : le Cosmétique compte les sens trompés"""
+    for d in [FICHES[k]] + [x for x in _dicts(FICHES[k]) if "cosm" in x]:
+        d["cosm"] = (n, "sens trompé")
+for _k, _n in [("haunted-fey-aspect", 2), ("incessant-buzzing", 2), ("illusory-maze", 1), ("display-aversion", 2), ("hide-bruises", 1),
+               ("raiment-of-command", 1), ("body-double", 3), ("appearance-of-life", 1), ("mirror-mantis", 1), ("blend", 1),
+               ("chameleon-stride", 1), ("blurred-movement", 1), ("twilight-haze", 1), ("trail-of-the-rose", 2), ("dreadscape", 2),
+               ("fearsome-duplicate", 2), ("illusion-of-treachery", 1), ("illusory-poison", 1), ("impossible-angles", 1),
+               ("shroud-of-innocuity", 1), ("vision-of-hell", 1), ("dirge-of-the-victorious-knights", 2), ("fable-tapestry", 2),
+               ("psychic-image", 3), ("phantasmal-revenge", 2), ("illusion-of-calm", 1), ("ghostly-disguise", 1), ("instant-fake", 1),
+               ("familiar-figment", 1), ("familiar-double", 2), ("darting-duplicate", 1), ("horrific-doubles", 1), ("shadow-jaunt", 1)]:
+    FICHES[_k].pop("sens", None); TROMPE(_k, _n)
+DROP("illusory-maze", "verre"); DROP("trail-of-the-rose", "sillage")
+IMPW("appearance-of-life", ["apparence", "vie"]); FICHES["appearance-of-life"]["cond"] = ["mort-vivant"]
+SENSL({"cackling-skull": ("ouïe", ["ricanement"]), "loathsome-veil": ("vue", ["couleurs"]), "wall-of-nausea": ("vue", ["mur", "distorsion"])})
+IMPW("phantasmal-asphyxiation", ["étouffement"])
+IMPW("lunar-veil", ["obscurité"]); IMPW("cloak-of-shadows", ["ombre", "protection"])
+
+# ----- Passe fine Pathfinder 1, lot Z : Invocation -----
+# les êtres appelés d'ailleurs : Cible 9 ; les êtres faits de force, d'ombre ou de fantasme : Cible 7
+for _k in ("aquatic-cavalry", "eagle-aerie", "mad-monkeys", "release-the-hounds", "rain-of-frogs", "summon-elder-worm", "summon-flight-of-eagles",
+           "summon-froghemoth", "summon-minor-ally", "summon-stampede", "calistrias-guardian-wasps", "cape-of-wasps", "summon-infernal-host",
+           "leshy-swarm", "murderous-crow", "vomit-swarm"):
+    for _d in _dicts(FICHES[_k]):
+        if _d is FICHES[_k] or "cible" in _d: _d["cible"] = 9
+for _k in ("flame-steed", "ghost-wolf", "phantom-chariot", "phantom-driver", "draconic-ally", "spectral-scout", "summon-ancestral-guardian",
+           "bow-spirit", "call-spirit", "pernicious-pranksters", "swarm-of-fangs", "unseen-crew"):
+    for _d in _dicts(FICHES[_k]):
+        if _d is FICHES[_k] or "cible" in _d: _d["cible"] = 7
+SENSL({"ancestral-gift": ("vue", ["spectre"]), "blood-mist": ("vue", ["brume", "rouge"]), "bountiful-banquet": ("vue", "odorat", "goût", ["festin"]),
+       "cloud-of-seasickness": ("vue", "odorat", ["vapeurs"]), "curse-of-dragonflies": ("vue", ["libellules"]), "euphoric-cloud": ("vue", "odorat", ["brume"]),
+       "evaluators-lens": ("vue", ["lentille"]), "pillar-of-life": ("vue", ["lumière"]), "poisonous-cloud": ("vue", ["brume"]),
+       "spectral-scout": ("vue", ["lueur"]), "spiral-ascent": ("vue", ["rayon"]), "storm-step": ("vue", "ouïe", ["éclair", "grésillement"]),
+       "summon-ancestral-guardian": ("vue", ["spectres"]), "unleash-pandemonium": ("ouïe", ["hurlements"]), "light-of-iomedae": ("vue", ["lumière", "bleu"])})
+DROP("euphoric-cloud", "brume"); DROP("evaluators-lens", "lentille"); DROP("poisonous-cloud", "brume")
+IMPW("damnation-stride", ["téléportation"]); IMPW("phase-step", ["téléportation"]); IMPW("urban-step", ["téléportation"]); CN("urban-step", "porte")
+ETRE("expel-blood", "élémentaire"); ETRE("fleshworm-infestation", "chair")
+IMPW("holy-javelin", ["javelot"]); SI("holy-javelin", "hostile")
+IMPW("healing-flames", ["vie"]); SI("healing-flames", "hostile")
+IMPW("blaze-of-glory", ["vie"]); SI("blaze-of-glory", "hostile")
+NOCOND("instant-restoration", "invoqué")
+IMPW("life-shield", ["vie", "riposte"]); SI("life-shield", "mort-vivant")
+IMPW("light-of-iomedae", ["révélation"]); SI("light-of-iomedae", "mort-vivant")
+IMPW("pillar-of-life", ["vie"]); IMPW("waves-of-blood", ["sang", "recul", "nausée"])
+
+# ----- Passe fine Pathfinder 1, lot AA : Nécromancie -----
+for _d in _dicts(FICHES["black-mark"]):
+    if _d.get("impact_sats"): _d["impact_sats"] = [st for st in _d["impact_sats"] if not isinstance(st[0], tuple)]
+    if _d.get("impact_add"): _d["impact_add"] = [w for w in _d["impact_add"] if _nrm(w) != "EAU"]
+IMPW("black-mark", ["peur", "malédiction"])
+SENSL({"black-mark": ("vue", ["marque"]), "black-spot": ("vue", ["tache"]), "bone-fists": ("vue", ["os"]),
+       "curse-of-unexpected-death": ("vue", ["flamme", "gris"]), "death-clutch": ("vue", ["cœur"]), "death-knell-aura": ("vue", ["aura", "gris"]),
+       "decollate": ("vue", ["ligne", "rouge"]), "fungal-infestation": ("vue", ["champignons"]), "grave-words": ("ouïe", ["babil"]),
+       "lash-of-the-astradaemon": ("vue", ["griffes", "lueur"]), "necrostasis": ("vue", ["volutes"]), "persuasive-goad": ("vue", ["regard"]),
+       "red-hand-of-the-killer": ("vue", ["main", "rouge"]), "scarify": ("vue", ["cicatrices"]), "stricken-heart": ("vue", ["aura", "noir"]),
+       "touch-of-blindness": ("vue", ["ténèbres"]), "vampiric-hunger": ("vue", ["crocs"]), "wall-of-blindness-deafness": ("vue", ["visages"]),
+       "withdraw-affliction": ("vue", ["chair"]), "symbol-of-exsanguination": ("vue", ["glyphe", "sang"])})
+IMPW("barrow-haze", ["obscurité"]); IMPW("bloodbath", ["saignement"]); ETRE("bone-fists", "os")
+IMPW("decollate", ["détachement"]); IMPW("decompose-corpse", ["décomposition"])
+ETRE("death-candle", "élémentaire")
+IMPW("khains-army", ["animation"]); IMPW("skeleton-crew", ["animation"]); CN("skeleton-crew", "cadavre")
+IMPW("phantom-limb", ["remplacement"])
+IMPW("positive-pulse", ["vie"]); SI("positive-pulse", "mort-vivant")
+IMPW("repair-undead", ["nécrose"]); IMPW("sands-of-time", ["vieillissement"])
+IMPW("spawn-ward", ["résistance"]); CN("spawn-ward", "vie", "sang"); SI("spawn-ward", "mort-vivant")
+IMPW("stricken-heart", ["nécrose", "chancellement"]); IMPW("symbol-of-exsanguination", ["saignement"])
+IMPW("undines-curse", ["malédiction"]); IMPW("unliving-rage", ["rage"]); IMPW("undeath-inversion", ["vie", "nécrose", "inversion"])
+IMPW("wither-limb", ["flétrissement"], value=7, why="2d6 en moyenne, perdus jusqu'à la guérison du membre")
+
+# ----- Passe fine Pathfinder 1, lot AB : Transmutation -----
+SENSL({"alchemical-allocation": ("vue", ["aura"]), "aspect-of-the-falcon": ("vue", ["plumes", "yeux"]), "aspect-of-the-nightingale": ("ouïe", ["voix"]),
+       "aspect-of-the-stag": ("vue", ["bois"]), "aspect-of-the-wolf": ("vue", ["crocs", "fourrure"]), "baphomets-blessing": ("vue", ["taureau"]),
+       "brand": ("vue", ["marque"]), "countless-eyes": ("vue", ["yeux"]), "face-of-the-devourer": ("vue", ["visage"]),
+       "fiery-body": ("vue", ["flammes"]), "fire-trail": ("vue", ["flammes"]), "firebrand": ("vue", ["rune", "flamme"]),
+       "flames-of-the-faithful": ("vue", ["rune", "lueur"]), "funereal-weapon": ("vue", ["lueur", "argent"]), "fungal-blisters": ("vue", ["cloques"]),
+       "golden-guise": ("vue", ["or"]), "gorums-armor": ("vue", ["pointes"]), "hide-weapon": ("ouïe", ["succion"]), "ironbeard": ("vue", ["barbe"]),
+       "instrument-of-agony": ("vue", ["aura"]), "mantle-of-the-magic-warriors": ("vue", ["masques", "or"]), "parchment-swarm": ("vue", ["parchemins"]),
+       "ravens-flight": ("vue", ["plumes"]), "resonating-word": ("ouïe", ["parole"]), "rune-of-durability": ("vue", ["rune"]),
+       "savage-maw": ("vue", "ouïe", ["crocs", "rugissement"]), "scorching-ash-form": ("vue", ["cendre", "fumée"]), "serrens-armor-lock": ("vue", ["chaînes"]),
+       "sky-steed": ("vue", ["ailes"]), "sun-metal": ("vue", ["flamme"]), "thorn-body": ("vue", ["épines"]), "vocal-alteration": ("ouïe", ["voix"]),
+       "weapons-against-evil": ("vue", ["lueur"]), "swarm-skin": ("vue", ["nuée"]), "tail-strike": ("vue", ["queue"]), "vengeful-stinger": ("vue", ["dard"])})
+CN("abstemiousness", "nourriture"); IMPW("abstemiousness", ["satiété"])
+IMPW("acid-maw", ["croc", "acide"]); IMPW("aspect-of-the-nightingale", ["mélodie"]); ETRE("baphomets-blessing", "tête"); DROP("baphomets-blessing", "taureau")
+IMPW("blade-of-light", ["soleil"]); SI("blade-of-light", "mort-vivant"); IMPW("blood-armor", ["durcissement"])
+CN("burning-disarm", "métal"); IMPW("burning-disarm", ["feu", "lâcher"]); IMPW("caustic-blood", ["acide", "riposte"])
+IMPW("concealed-breath", ["apnée"]); IMPW("curse-of-burning-sleep", ["sommeil", "feu"])
+for _k in ("divine-arrow", "empower-holy-water"):
+    IMPW(_k, ["lumière"]); FICHES[_k]["rayonnement"] = True; SI(_k, "mort-vivant")
+IMPW("erode-defenses", ["érosion"]); IMPW("face-of-the-devourer", ["difformité"]); IMPW("fiery-body", ["feu"]); IMPW("fire-trail", ["feu", "trace"])
+IMPW("flames-of-the-faithful", ["feu"]); IMPW("funereal-weapon", ["faille"]); SI("funereal-weapon", "mort-vivant")
+ETRE("hellmouth-lash", "langue"); IMPW("heart-of-the-mammoth", ["vigueur"]); IMPW("hidden-knowledge", ["oubli"]); IMPW("inheritors-smite", ["coup"])
+IMPW("magnifying-chime", ["tonnerre"]); IMPW("mirror-transport", ["téléportation"]); IMPW("obsidian-flow", ["sol", "verre", "feu"])
+IMPW("resonating-word", ["tonnerre", "étourdissement"]); CN("resounding-clang", "métal"); IMPW("resounding-clang", ["vibration"])
+IMPW("rune-of-durability", ["solidité"]); IMPW("savage-maw", ["croc"]); IMPW("snapdragon-fireworks", ["feu"])
+IMPW("steal-breath", ["mutisme"]); IMPW("stoke-the-inner-fire", ["feu", "arme"]); IMPW("sun-metal", ["feu"])
+IMPW("tar-ball", ["goudron", "feu"]); IMPW("tar-pool", ["goudron", "sol", "feu"]); IMPW("transmute-blood-to-acid", ["acide", "chancellement"])
+IMPW("vocal-alteration", ["changement"]); IMPW("weapons-against-evil", ["arme"]); SI("weapons-against-evil", "hostile")
+
+# ----- Passe fine Pathfinder 1, lot AC : Évocation -----
+SENSL({"apsus-shining-scales": ("vue", ["écailles", "argent"]), "battering-blast": ("vue", ["boule", "pointes"]),
+       "betraying-sting": ("vue", "ouïe", ["éclair", "bourdonnement"]), "blood-crow-strike": ("vue", ["corbeaux"]),
+       "burn-corruption": ("vue", ["flammes", "violet"]), "campfire-wall": ("vue", "ouïe", ["flammes", "crépitement"]),
+       "cleansing-fire": ("vue", ["cercle", "flammes"]), "fires-friend": ("vue", ["flammes"]), "frigid-touch": ("vue", ["lueur", "bleu"]),
+       "heatstroke": ("vue", ["rayon", "rouge"]), "jolting-portent": ("vue", ["aura", "rouge"]), "pale-flame": ("vue", ["flamme"]),
+       "sacred-nimbus": ("vue", ["nimbe", "or"]), "sign-of-wrath": ("vue", ["symbole"]), "twilight-knife": ("vue", ["couteau"]),
+       "vengeful-comets": ("vue", ["comètes"]), "vitriolic-mist": ("vue", ["brume"]), "piercing-shriek": ("vue", ["cri"]),
+       "spiritual-ally": ("vue", ["silhouette"]), "spiritual-squire": ("vue", ["silhouette"])})
+IMPW("burn-corruption", ["purification"])
+for _k in ("burning-arc-keleshite", "chains-of-fire", "contagious-flame", "ricochet-shot"):
+    DROP(_k, "rebond"); CN(_k, "rebond")
+IMPW("decapitate", ["décapitation"]); IMPW("heatstroke", ["feu", "fatigue"])
+IMPW("holy-whisper", ["parole"]); SI("holy-whisper", "hostile")
+IMPW("incorporeal-chains", ["chaîne"]); SI("incorporeal-chains", "intangible")
+IMPW("litany-of-righteousness", ["faiblesse"]); IMPW("pale-flame", ["flamme"]); IMPW("rebuke", ["colère"])
+NOCOND("sacred-nimbus", "hostile"); IMPW("sacred-nimbus", ["riposte"]); SI("sacred-nimbus", "hostile")
+IMPW("screaming-flames", ["peur"]); DROP("sign-of-wrath", "symbole")
+for _k, _n in (("spiritual-ally", "allié"), ("spiritual-squire", "écuyer")):
+    FICHES[_k]["cible"] = 7; CN(_k, _n); IMPW(_k, ["force"])
+IMPW("suppressing-stone", ["protection"])
+for _k in ("discordant-blast", "ear-piercing-scream", "tamers-lash", "sonic-scream", "wall-of-sound"): DROP(_k, "son")
+for _k in ("piercing-shriek", "sonic-thrust", "distressing-tone"):
+    for _d in _dicts(FICHES[_k]):
+        if _d.get("impact") and isinstance(_d["impact"][1], list):
+            _d["impact"] = (_d["impact"][0], ["tonnerre" if _nrm(w) == "SON" else w for w in _d["impact"][1]], _d["impact"][2] if len(_d["impact"]) > 2 else "")
+IMPW("healing-flames", ["vie", "feu"]); IMPW("blaze-of-glory", ["vie", "lumière"]); FICHES["blaze-of-glory"]["rayonnement"] = True
+def _REFACE(k):
+    """les formes lumineuse et ténébreuse gardent leur face après une réécriture de l'Impact"""
+    for _d in _dicts(FICHES[k]):
+        lab = _nrm(_d.get("label", ""))
+        f_ = "lumineux" if "LUMINEU" in lab else "ténébreux" if "TENEBREU" in lab else None
+        if f_ and _d.get("impact"): _d["impact"] = (_d["impact"][0], list(_d["impact"][1]) + [f_], _d["impact"][2] if len(_d["impact"]) > 2 else "")
+for _k in ("cloak-of-shadows", "lunar-veil"): _REFACE(_k)
+
+# ----- Décisions du 14 novembre -----
+# Les êtres créés, même pourvus d'un corps, sont faits d'une matière tirée de la trame : Cible 7
+for _k, _w in [("simulacrum", "double"), ("frost-mammoth", "mammouth"), ("wooden-phalanx", "golem"), ("wicker-horse", "monture"),
+               ("twine-double", "double"), ("snake-staff", "serpent")]:
+    for _d in _dicts(FICHES[_k]):
+        if _d is FICHES[_k] or "cible" in _d: _d["cible"] = 7
+    ETRE(_k, _w); CN(_k, _w)
+# (aveuglement et surdité passent d'office en Cosmétique « sens éteint » : moteur)

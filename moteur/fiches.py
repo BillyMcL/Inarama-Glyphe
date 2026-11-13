@@ -60,7 +60,7 @@ FICHES = {
 "guiding-bolt": dict(fr="Éclair traçant", verb=V("existence", True), cible=3),
 "healing-word": dict(fr="Mot de guérison", verb=V("existence"), cible=2),
 "hellish-rebuke": dict(fr="Représailles infernales", cible=3, cond=["COUP"]),
-"heroism": dict(fr="Héroïsme", verb=V("intensite"), cible=2, impact=(3, "COURAGE", "le modificateur, +3")),
+"heroism": dict(fr="Héroïsme", verb=V("intensite"), cible=2, impact=(3, "COURAGE", "un courage qui se renouvelle (+3, le modificateur du lanceur)")),
 "hideous-laughter": dict(fr="Fou rire", verb=V("ordre", True), cible=3),
 "hunters-mark": dict(fr="Marque du chasseur", verb=V("visibilite"), cible=3, impact=(4, None, "1d6 à chaque coup")),
 "identify": dict(fr="Identification", verb=V("visibilite"), cible=1, cible_obj=["OBJET"], comp=["PERLE"]),
@@ -68,13 +68,13 @@ FICHES = {
 "inflict-wounds": dict(fr="Blessure", verb=V("existence", True), cible=3, notes=["Comme la planche Blessure : 3d10 nécrotiques, 17 en moyenne."]),
 "jump": dict(fr="Saut", verb=V("intensite"), cible=2, impact=(3, "SAUT", "la distance de saut triplée")),
 "longstrider": dict(fr="Grande foulée", verb=V("mouvement"), cible=2, impact=(3, "PAS", "+3 m de vitesse")),
-"mage-armor": dict(fr="Armure de mage", verb=V("existence"), cible=2, impact=(3, "GARDE", "CA 13 + Dex : +3")),
+"mage-armor": dict(fr="Armure de mage", verb=V("existence"), cible=2, impact=(3, "GARDE", "une armure de force sur qui n'en porte pas (CA 13 + Dex : +3)")),
 "magic-missile": dict(fr="Projectile magique", verb=V("existence", True), cible=3, impact=(3, None, "1d4 + 1 ; 3 comme sur la planche"), qty=3),
 "protection-from-evil-and-good": dict(fr="Protection contre le mal et le bien", verb=V("relation", True), cible=2, comp=["ARGENT", "FER"]),
 "purify-food-and-drink": dict(fr="Purification de nourriture et d'eau", verb=V("qualite"), cible=1, cible_obj=["NOURRITURE"], aoe={"type": "sphere", "size": 5}),
 "sanctuary": dict(fr="Sanctuaire", verb=V("relation", True), cible=2, cond=["ATTAQUE"]),
 "shield": dict(fr="Bouclier", grimoire="Bouclier"),
-"shield-of-faith": dict(fr="Bouclier de la foi", verb=V("intensite"), cible=2, impact=(2, "GARDE", "+2 à la CA")),
+"shield-of-faith": dict(fr="Bouclier de la foi", verb=V("intensite"), cible=2, impact=(2, "GARDE", "plus difficile à atteindre (+2 à la CA)")),
 "silent-image": dict(fr="Image silencieuse", grimoire="Image silencieuse"),
 "sleep": dict(fr="Sommeil", verb=V("intensite", True), cible="plein", impact=(23, None, "5d8 points de vie de créatures endormies")),
 "speak-with-animals": dict(fr="Communication avec les animaux", verb=V("relation"), cible=1),
@@ -83,7 +83,7 @@ FICHES = {
 }
 
 # ----- variantes des sorts du lot 1 : les deux pratiques inscrivent le même sort -----
-FICHES["shield"]["alt"] = [dict(fam="A", verb=V("ordre"), cible=1, cond=["COUP"], impact=(5, "GARDE", "+5 à la CA"), label="Forme arcane")]
+FICHES["shield"]["alt"] = [dict(fam="A", verb=V("ordre"), cible=1, cond=["COUP"], impact=(5, "GARDE", "un écran qui détourne le coup (+5 à la CA)"), label="Forme arcane")]
 FICHES["silent-image"]["alt"] = [dict(fam="A", verb=V("existence"), aoe={"type": "cube", "size": 15}, cosm=("plein", "IMAGE"), label="Forme arcane")]
 FICHES["charm-person"]["alt"] = [dict(fam="A", verb=V("relation"), cible=3, label="Forme arcane")]
 FICHES["thunderwave"]["alt"] = [dict(fam="H", comb="Orage", why="le tonnerre", cible="plein", label="Forme hybride")]
@@ -97,7 +97,7 @@ FICHES.update({
 "arcane-lock": dict(fr="Verrou magique", verb=V("ordre"), cible=1, cible_obj=["PORTE"], comp=["OR"]),
 "arcanists-magic-aura": dict(fr="Aura magique", verb=V("visibilite", True), cible=1, cible_obj=["OBJET"]),
 "augury": dict(fr="Augure", verb=V("visibilite"), comp=["OSSELETS"]),
-"barkskin": dict(fr="Peau d'écorce", comb="Bois", why="l'écorce", cible=2, impact=(16, "GARDE", "CA d'au moins 16")),
+"barkskin": dict(fr="Peau d'écorce", comb="Bois", why="l'écorce", cible=2, impact=(16, "GARDE", "une peau dure comme l'écorce (CA d'au moins 16)")),
 "blindness-deafness": dict(fr="Cécité/surdité", verb=V("visibilite", True), cible=3),
 "blur": dict(fr="Flou", verb=V("visibilite", True), cible=1),
 "branding-smite": dict(fr="Châtiment marquant", verb=V("existence", True), cible=3, cond=["COUP"]),
@@ -106,7 +106,7 @@ FICHES.update({
 "darkness": dict(fr="Ténèbres", verb=V("visibilite", True), cible="plein"),
 "darkvision": dict(fr="Vision dans le noir", verb=V("visibilite"), cible=2),
 "detect-thoughts": dict(fr="Détection des pensées", verb=V("visibilite"), cible=3),
-"enhance-ability": dict(fr="Amélioration de caractéristique", verb=V("intensite"), cible=2),
+"enhance-ability": dict(fr="Amélioration des facultés", verb=V("intensite"), cible=2),
 "enlarge-reduce": dict(fr="Agrandissement/rapetissement", grimoire="Agrandissement", label="Agrandir",
                        alt=[dict(grimoire="Rapetissement", label="Rapetisser")]),
 "enthrall": dict(fr="Discours captivant", verb=V("relation"), cible=3),
@@ -418,12 +418,12 @@ P = "plein"
 LOT1 = {
 "vicious-mockery": dict(impact=(3, ["ESPRIT", "MALADRESSE"], "1d4 en moyenne, puis une attaque maladroite"), cond=["ECOUTE"]),
 "animal-friendship": dict(cible_obj=[], cond=["BETE", "INSTINCT"], impact=(P, ["CHARME"], "charmée entièrement"), fin=["OFFENSE"]),
-"bane": dict(impact=(3, ["CHANCE", "COUP", "RESISTANCE"], "1d4 retranché aux attaques et aux sauvegardes")),
-"bless": dict(impact=(3, ["CHANCE", "COUP", "RESISTANCE"], "1d4 ajouté aux attaques et aux sauvegardes")),
+"bane": dict(impact=(3, ["CHANCE", "COUP", "RESISTANCE"], "les coups moins sûrs, la résistance amoindrie (1d4 retranché aux attaques et aux sauvegardes)")),
+"bless": dict(impact=(3, ["CHANCE", "COUP", "RESISTANCE"], "les coups plus sûrs, la résistance affermie (1d4 ajouté aux attaques et aux sauvegardes)")),
 "charm-person": dict(grimoire=None, fam="H", comb="Pollen", why="ce qui se respire et charme", cible=3,
                      cond=["HUMANOIDE"], impact=(P, ["CHARME"], "charmée entièrement"), fin=["OFFENSE"]),
 "command": dict(cond=["COMPREHENSION", "VIVANT"]),
-"heroism": dict(impact=(3, ["VIE", "TEMPORAIRE"], "le modificateur, +3, à chaque tour"), impact_sats=[(P, ["INTREPIDITE"])]),
+"heroism": dict(impact=(3, ["VIE", "TEMPORAIRE"], "un courage qui se renouvelle sans cesse (+3 points de vie temporaires par tour)"), impact_sats=[(P, ["INTREPIDITE"])]),
 "hideous-laughter": dict(cond=["RAISON"], impact=(P, ["RIRE", "CHUTE"], "à terre, secouée de rire")),
 "sleep": dict(impact=(23, ["SOMMEIL", "VIE"], "5d8 points de vie de créatures endormies"), cond=["VIVANT"], fin=["BLESSURE", "REVEIL"]),
 "animal-messenger": dict(cond=["BETE", "MINUSCULE"], impact=(P, ["MESSAGE"], "le message porté"), impact_sats=[(25, ["MOTS"])]),
@@ -463,7 +463,7 @@ def apply(lot):
         if alt_upd:
             for a, au in zip(FICHES[k].get("alt", []), alt_upd): a.update(au)
 LOT2 = {
-"guidance": dict(impact=(3, ["CHANCE", "APTITUDE"], "1d4 ajouté à un test"), fin=["USAGE"]),
+"guidance": dict(impact=(3, ["CHANCE", "APTITUDE"], "un coup de pouce à ce qu'on entreprend (1d4 ajouté à un test)"), fin=["USAGE"]),
 "true-strike": dict(impact=(P, ["FAILLE"], "la défense percée à jour"), fin=["COUP"]),
 "comprehend-languages": dict(impact=(P, ["SENS", "LANGUE"], "le sens littéral de toute langue")),
 "detect-evil-and-good": dict(cible_note=["ABERRATION", "CELESTE", "ELEMENTAIRE", "FEE", "FIELON", "MORTVIVANT"], impact=(P, ["PRESENCE", "LIEU"], "présence et position")),
@@ -501,7 +501,7 @@ FICHES["clairvoyance"]["alt"][0]["comp"] = []
 # mots en minuscules accentuées : affichés tels quels, translittérés en Alde sans accents ; jamais d'espace (trait d'union)
 VIV = ["vivant"]
 LOT3 = {  # Abjuration
-"resistance": dict(impact=(3, ["garde", "résistance"], "1d4 ajouté à une sauvegarde"), fin=["usage"]),
+"resistance": dict(impact=(3, ["garde", "résistance"], "une résistance affermie un instant (1d4 ajouté à une sauvegarde)"), fin=["usage"]),
 "alarm": dict(impact=(P, ["alerte"], "une alerte mentale ou sonore")),
 "mage-armor": dict(impact=(3, ["garde"], "défense de base 13 + Dex"), cond=["sans-armure"], fin=["armure"]),
 "protection-from-evil-and-good": dict(impact=(P, ["garde", "aberration", "céleste", "élémentaire", "fée", "fiélon", "mort-vivant"], "ni attaque franche, ni charme, ni peur, ni possession")),
@@ -513,8 +513,8 @@ LOT3 = {  # Abjuration
 "lesser-restoration": dict(impact=(P, ["maladie", "aveuglement", "surdité", "paralysie", "poison"], "une maladie ou un état levé")),
 "pass-without-trace": dict(qty_cible=P, impact=(10, ["discrétion", "sans-trace"], "+10 en discrétion, aucune trace")),
 "protection-from-poison": dict(impact=(P, ["poison", "résistance"], "le poison neutralisé, puis la résistance")),
-"warding-bond": dict(impact=(1, ["garde", "résistance"], "+1 à la défense et aux sauvegardes"), impact_sats=[(P, ["partage"])], fin=["distance"]),
-"beacon-of-hope": dict(qty_cible=P, impact=(P, ["espoir", "guérison"], "avantage, soins au maximum")),
+"warding-bond": dict(impact=(1, ["garde", "résistance"], "mieux gardée et plus résistante (+1 à la CA et aux sauvegardes)"), impact_sats=[(P, ["partage"])], fin=["distance"]),
+"beacon-of-hope": dict(qty_cible=P, impact=(P, ["espoir", "guérison"], "l'espoir qui raffermit, les soins pleinement reçus (avantage aux sauvegardes de Sagesse et contre la mort)")),
 "counterspell": dict(impact=(3, ["sort", "interruption"], "un sort de niveau 3 ou moins échoue")),
 "dispel-magic": dict(impact=(3, ["sort", "dissipation"], "les sorts de niveau 3 ou moins prennent fin")),
 "glyph-of-warding": dict(impact=(23, ["piège", "explosion"], "5d8 en moyenne"), impact_sats=[(P, ["sort"])]),
@@ -535,7 +535,7 @@ LOT3 = {  # Abjuration
 "globe-of-invulnerability": dict(impact=(5, ["sort", "barrière"], "les sorts de niveau 5 ou moins sans effet")),
 "guards-and-wards": dict(impact=(P, ["brouillard", "porte", "toile", "confusion"], "les sceaux du lieu")),
 "antimagic-field": dict(impact=(P, ["magie", "suspension"], "toute magie suspendue")),
-"holy-aura": dict(qty_cible=P, impact=(P, ["garde", "lumière"], "avantage aux sauvegardes"), impact_sats=[(P, ["aveuglement"])]),
+"holy-aura": dict(qty_cible=P, impact=(P, ["garde", "lumière"], "une lumière qui protège de tout (avantage aux sauvegardes)"), impact_sats=[(P, ["aveuglement"])]),
 "mind-blank": dict(impact=(P, ["esprit", "divination", "charme"], "l'esprit inviolable")),
 "imprisonment": dict(impact=(P, ["prison"], "l'une des prisons au choix")),
 "prismatic-wall": dict(impact=(P, ["prisme"], "sept couches de couleurs")),
@@ -556,7 +556,7 @@ LOT4 = {  # Invocation
 "revivify": dict(cond=["mort"], cond_sats=[(1, ["minute"])], impact=(1, ["vie"], "revient avec 1 point de vie")),
 "sleet-storm": dict(impact=(P, ["verglas", "chute", "obscurité"], "verglas, chute, obscurité")),
 "spirit-guardians": dict(impact_sats=[(P, ["lenteur"])]),
-"stinking-cloud": dict(cond=["souffle"], impact=(P, ["nausée"], "action perdue à vomir")),
+"stinking-cloud": dict(cond=["souffle"], impact=(P, ["nausée"], "pliée en deux à vomir")),
 "black-tentacles": dict(impact_sats=[(P, ["entrave"])]),
 "conjure-minor-elementals": dict(impact=(2, ["élémentaire"], "un élémentaire de puissance 2")),
 "conjure-woodland-beings": dict(impact=(2, ["fée"], "une fée de puissance 2")),
@@ -590,7 +590,7 @@ LOT5 = {  # Évocation
 "dancing-lights": dict(impact=(P, ["lueur", "mobile"], "quatre lueurs mobiles")),
 "fire-bolt": dict(impact_add=["embrasement"]),
 "ray-of-frost": dict(impact_sats=[(3, ["lenteur", "mètres"])]),
-"shocking-grasp": dict(impact_sats=[(P, ["sans-réaction"])]),
+"shocking-grasp": dict(impact_sats=[(P, ["stupeur"])]),
 "burning-hands": dict(impact_add=["embrasement"]),
 "cure-wounds": dict(cond=VIV), "healing-word": dict(cond=VIV), "prayer-of-healing": dict(cond=VIV), "mass-healing-word": dict(cond=VIV),
 "divine-favor": dict(cond=["coup"]),
@@ -644,7 +644,7 @@ LOT6 = {  # Illusion
 "disguise-self": dict(impact=(P, ["apparence"], "une autre apparence")),
 "illusory-script": dict(impact=(P, ["écriture", "secret"], "un texte lisible des seuls élus")),
 "arcanists-magic-aura": dict(impact=(P, ["fausse-aura"], "la divination trompée")),
-"blur": dict(impact=(P, ["flou"], "désavantage pour qui l'attaque")),
+"blur": dict(impact=(P, ["flou"], "une silhouette floue, difficile à frapper (désavantage pour qui l'attaque)")),
 "invisibility": dict(impact=(P, ["invisibilité"], "invisible"), fin=["attaque"]),
 "greater-invisibility": dict(impact=(P, ["invisibilité"], "invisible, même en attaquant")),
 "magic-mouth": dict(impact=(P, ["message"], "une bouche qui parle"), impact_sats=[(25, ["mots"])]),
@@ -696,8 +696,8 @@ LOT8 = {  # Transmutation
 "shillelagh": dict(impact=(5, ["arme", "bois"], "1d8 en moyenne")),
 "thaumaturgy": dict(impact=(P, ["prodige"], "un signe surnaturel")),
 "create-or-destroy-water": dict(impact=(40, ["eau", "litres"], "40 litres créés ou détruits")),
-"expeditious-retreat": dict(impact=(P, ["course"], "sprinter à chaque tour")),
-"feather-fall": dict(impact=(18, ["chute", "mètres"], "18 m par round")),
+"expeditious-retreat": dict(impact=(P, ["course"], "courir sans cesse plus vite")),
+"feather-fall": dict(impact=(18, ["chute", "mètres"], "une chute lente comme une plume (18 m par round)")),
 "goodberry": dict(impact=(1, ["vie", "nourriture"], "1 point de vie et un jour de vivres")),
 "purify-food-and-drink": dict(impact=(P, ["poison", "maladie"], "purifiés")),
 "alter-self": dict(impact=(P, ["apparence", "adaptation", "arme"], "l'une des trois métamorphoses")),
@@ -757,35 +757,35 @@ opts("alarm", O("Alarme mentale", **I("alerte", "pensée", why="un tintement dan
 opts("calm-emotions", O("Apaisement", **I("calme", "charme", "peur", why="charme et peur suspendus")), O("Indifférence", **I("calme", "hostilité", why="l'hostilité éteinte")))
 opts("minor-illusion", O("Son", cosm=("plein", "son"), **I("son", why="un son")), O("Image", **I("image", why="l'image d'un objet")))
 opts("alter-self", O("Adaptation aquatique", **I("adaptation", "eau", why="branchies et palmes")), O("Changement d'apparence", **I("apparence", why="un autre visage")), O("Armes naturelles", **I("arme", "griffe", why="griffes, crocs, cornes")))
-opts("enhance-ability", O("Endurance de l'ours", impact=(7, ["endurance", "vie"], "2d6 points de vie temporaires")), O("Force du taureau", **I("force", "charge", why="avantage en Force, charge doublée")),
-     O("Grâce du félin", **I("grâce", "chute", why="avantage en Dextérité, nulle chute blessante")), O("Splendeur de l'aigle", **I("splendeur", why="avantage en Charisme")),
-     O("Ruse du renard", **I("ruse", why="avantage en Intelligence")), O("Sagesse du hibou", **I("sagesse", why="avantage en Sagesse")))
-opts("eyebite", O("Sommeil", **I("sommeil", why="endormie")), O("Panique", **I("panique", "fuite", why="effrayée, elle fuit")), O("Malaise", **I("malaise", why="désavantage aux attaques et aux tests")))
+opts("enhance-ability", O("Endurance de l'ours", impact=(7, ["endurance", "vie"], "2d6 points de vie temporaires")), O("Force du taureau", **I("force", "charge", why="plus forte, deux fois plus chargée (avantage en Force)")),
+     O("Grâce du félin", **I("grâce", "chute", why="plus agile, aucune chute ne la blesse (avantage en Dextérité)")), O("Splendeur de l'aigle", **I("splendeur", why="plus rayonnante (avantage en Charisme)")),
+     O("Ruse du renard", **I("ruse", why="plus vive d'esprit (avantage en Intelligence)")), O("Sagesse du hibou", **I("sagesse", why="plus sage et plus perspicace (avantage en Sagesse)")))
+opts("eyebite", O("Sommeil", **I("sommeil", why="endormie")), O("Panique", **I("panique", "fuite", why="effrayée, elle fuit")), O("Malaise", **I("malaise", why="mal en point, tout lui coûte (désavantage aux attaques et aux tests)")))
 opts("protection-from-energy", *[O(n, **I("résistance", w, why=f"résistance {d}")) for n, w, d in
      [("Acide", "acide", "à l'acide"), ("Froid", "froid", "au froid"), ("Feu", "feu", "au feu"), ("Foudre", "foudre", "à la foudre"), ("Tonnerre", "tonnerre", "au tonnerre")]])
 opts("control-water", O("Inondation", **I("inondation", why="l'eau monte de 6 m")), O("Partage des eaux", **I("partage", why="un passage à sec")),
      O("Détournement du courant", **I("courant", why="le flot change de sens")), O("Tourbillon", impact=(9, ["tourbillon", "choc"], "2d8 en moyenne")))
-opts("bestow-curse", O("Faiblesse", **I("malédiction", "aptitude", why="désavantage sur une caractéristique")), O("Maladresse", **I("malédiction", "maladresse", why="désavantage contre toi")),
-     O("Torpeur", **I("malédiction", "torpeur", why="l'action perdue")), O("Châtiment", impact=(5, ["malédiction", "nécrose"], "1d8 à chacun de tes coups")))
+opts("bestow-curse", O("Faiblesse", **I("malédiction", "aptitude", why="une faculté affaiblie (désavantage sur une caractéristique)")), O("Maladresse", **I("malédiction", "maladresse", why="maladroite face à toi (désavantage contre toi)")),
+     O("Torpeur", **I("malédiction", "torpeur", why="figée de torpeur, un instant sur deux")), O("Châtiment", impact=(5, ["malédiction", "nécrose"], "1d8 à chacun de tes coups")))
 opts("imprisonment", *[O(n, **I("prison", w, why=d)) for n, w, d in [("Ensevelissement", "ensevelissement", "enfouie sous la terre"), ("Enchaînement", "chaînes", "enchaînée au sol"),
      ("Prison close", "demi-plan", "enclose dans un demi-plan"), ("Confinement minuscule", "gemme", "rétrécie dans une gemme"), ("Sommeil", "sommeil", "endormie")]])
 opts("blindness-deafness", O("Cécité", **I("aveuglement", why="aveugle")), O("Surdité", **I("surdité", why="sourde")))
 opts("lesser-restoration", *[O(n, **I(w, why=d)) for n, w, d in [("Maladie", "maladie", "une maladie levée"), ("Cécité", "aveuglement", "la cécité levée"),
      ("Surdité", "surdité", "la surdité levée"), ("Paralysie", "paralysie", "la paralysie levée"), ("Poison", "poison", "l'empoisonnement levé")]])
 opts("greater-restoration", O("Épuisement", impact=(1, ["épuisement"], "un niveau d'épuisement retiré")), O("Charme ou pétrification", **I("charme", "pétrification", why="l'effet levé")),
-     O("Malédiction", **I("malédiction", why="la malédiction levée")), O("Caractéristique", **I("aptitude", why="la caractéristique rendue")), O("Vie maximum", **I("vie", "maximum", why="le maximum rendu")))
+     O("Malédiction", **I("malédiction", why="la malédiction levée")), O("Faculté", **I("aptitude", why="une faculté rendue")), O("Vie maximum", **I("vie", "maximum", why="le maximum rendu")))
 opts("create-or-destroy-water", O("Création", impact=(40, ["eau", "litres", "création"], "40 litres créés")), O("Destruction", impact=(40, ["eau", "litres", "destruction"], "40 litres détruits")))
 opts("druidcraft", O("Présage du temps", **I("présage", "climat")), O("Floraison", **I("floraison")), O("Effet sensoriel", **I("sensation")), O("Flamme", **I("flamme")))
 opts("prestidigitation", O("Effet sensoriel", **I("sensation")), O("Flamme", **I("flamme")), O("Nettoyage", **I("propreté")), O("Saveur et température", **I("saveur", "chaleur")),
      O("Marque", **I("marque")), O("Babiole", **I("babiole")))
 opts("thaumaturgy", O("Voix tonnante", **I("voix")), O("Flammes", **I("flamme")), O("Tremblements", **I("tremblement")), O("Son", **I("son")), O("Porte", **I("porte")), O("Regard", **I("regard")))
 opts("glyph-of-warding", O("Runes explosives", impact=(23, ["piège", "explosion"], "5d8 en moyenne"), impact_sats=[]), O("Glyphe de sort", impact=(P, ["piège", "sort"], "un sort enfermé"), impact_sats=[]))
-opts("contagion", *[O(n, **I("maladie", w, why=d)) for n, w, d in [("Mal aveuglant", "aveuglement", "aveugle"), ("Fièvre des ordures", "faiblesse", "désavantage en Force"),
+opts("contagion", *[O(n, **I("maladie", w, why=d)) for n, w, d in [("Mal aveuglant", "aveuglement", "aveugle"), ("Fièvre des ordures", "faiblesse", "le corps affaibli (désavantage en Force)"),
      ("Chair pourrissante", "pourriture", "la chair qui pourrit"), ("Feu de l'esprit", "démence", "l'esprit en fièvre"), ("Crises", "convulsion", "secouée de spasmes"), ("Mort visqueuse", "hémorragie", "le sang qui fuit")]])
 for k, w in (("conjure-animals", "bête"), ("conjure-minor-elementals", "élémentaire"), ("conjure-woodland-beings", "fée")):
     opts(k, O(f"Un être de puissance 2", impact=(2, [w], "puissance 2")), O("Deux êtres de puissance 1", impact=(1, [w], "puissance 1"), impact_sats=[(2, ["nombre"])]),
-         O("Quatre êtres de puissance ½", impact=(1, [w, "moitié"], "puissance ½"), impact_sats=[(4, ["nombre"])]),
-         O("Huit êtres de puissance ¼", impact=(1, [w, "quart"], "puissance ¼"), impact_sats=[(8, ["nombre"])]))
+         O("Quatre êtres de puissance ½", impact=(2, [w, "fractionné"], "puissance ½"), impact_sats=[(4, ["nombre"])]),
+         O("Huit êtres de puissance ¼", impact=(4, [w, "fractionné"], "puissance ¼"), impact_sats=[(8, ["nombre"])]))
 opts("hallow", *[O(n, impact_sats=[(P, ws)]) for n, ws in [("Courage", ["courage"]), ("Ténèbres", ["ténèbres"]), ("Lumière du jour", ["jour"]), ("Protection contre l'énergie", ["résistance"]),
      ("Vulnérabilité à l'énergie", ["vulnérabilité"]), ("Repos éternel", ["repos"]), ("Interférence extradimensionnelle", ["passage"]), ("Peur", ["peur"]), ("Silence", ["silence"]), ("Langues", ["langue"])]])
 opts("telekinesis", O("Créature", cible=3, **I("déplacement", why="déplacer une créature")), O("Objet", cible=1, cible_obj=["objet"], **I("déplacement", why="déplacer un objet")))
@@ -822,7 +822,7 @@ V24 = {
 "jump": dict(impact=(9, ["saut", "mètres"], "bonds de 9 m")),
 "power-word-kill": dict(impact_sats=[(78, ["esprit"])]),
 "prismatic-spray": dict(impact=(42, ["feu", "acide", "foudre", "poison", "froid", "pétrification", "bannissement"], "12d6 en moyenne, selon la couleur")),
-"ray-of-enfeeblement": dict(impact=(P, ["faiblesse"], "désavantage en Force"), impact_sats=[(5, ["dégâts"])]),
+"ray-of-enfeeblement": dict(impact=(P, ["faiblesse"], "le corps affaibli (désavantage en Force)"), impact_sats=[(5, ["blessure"])]),
 "sleep": dict(aoe={"type": "sphere", "size": 5}, impact=(P, ["sommeil"], "neutralisée, puis endormie")),
 "color-spray": dict(impact=(P, ["aveuglement"], "aveuglée jusqu'à ton prochain tour")),
 "storm-of-vengeance": dict(aoe={"type": "sphere", "size": 300}),
@@ -909,20 +909,20 @@ def F35(base, fr, **kw):
 CMD35 = [O(n, **I("mot", w, why=d)) for n, w, d in [("Approche", "approche", "venir à moi"), ("Lâche", "lâcher", "lâcher ce qu'elle tient"),
          ("À terre", "chute", "tomber à terre"), ("Fuis", "fuite", "fuir"), ("Halte", "halte", "rester immobile")]]
 V35 = {
-"bane": dict(qty_cible=P, impact=(1, ["chance", "coup", "peur"], "1 retranché aux attaques et aux sauvegardes contre la peur")),
-"bless": dict(qty_cible=P, impact=(1, ["chance", "coup", "peur"], "1 ajouté aux attaques et aux sauvegardes contre la peur")),
+"bane": dict(qty_cible=P, impact=(1, ["chance", "coup", "peur"], "les coups moins sûrs, la peur plus proche (1 retranché aux attaques et aux sauvegardes contre la peur)")),
+"bless": dict(qty_cible=P, impact=(1, ["chance", "coup", "peur"], "les coups plus sûrs, la peur tenue à distance (1 ajouté aux attaques et aux sauvegardes contre la peur)")),
 "charm-person": {}, "suggestion": {}, "confusion": {}, "dominate-person": {},
 "irresistible-dance": {}, "power-word-stun": {}, "dominate-monster": {}, "power-word-kill": {},
 "enthrall": {}, "hideous-laughter": {}, "zone-of-truth": {}, "animal-messenger": {},
 "command": dict(options=CMD35 + [dict(o, label=o["label"] + " — suprême", src_idx="command-greater", qty_cible=9) for o in CMD35]),
-"sleep": dict(options=[O("Sommeil", impact=(18, ["sommeil", "vie"], "4 DV, soit 18 points de vie de créatures endormies")),
-                       O("Sommeil profond", src_idx="deep-slumber", impact=(45, ["sommeil", "vie"], "10 DV, soit 45 points de vie de créatures endormies"))]),
+"sleep": dict(options=[O("Sommeil", impact=(18, ["sommeil", "vie"], "jusqu'à 18 points de vie de créatures endormies (4 DV)")),
+                       O("Sommeil profond", src_idx="deep-slumber", impact=(45, ["sommeil", "vie"], "jusqu'à 45 points de vie de créatures endormies (10 DV)"))]),
 "hold-person": dict(options=[O("Immobilisation de personne"), O("Immobilisation de personnes", src_idx="hold-person-mass", qty_cible=P)]),
 "hold-monster": dict(options=[O("Immobilisation de monstre"), O("Immobilisation de monstres", src_idx="hold-monster-mass", qty_cible=P)]),
-"charm-monster": dict(options=[O("Charme-monstre"), O("Charme-monstre de groupe", src_idx="charm-monster-mass", impact=(135, ["charme", "vie"], "30 DV, soit 135 points de vie de créatures charmées"))]),
+"charm-monster": dict(options=[O("Charme-monstre"), O("Charme-monstre de groupe", src_idx="charm-monster-mass", impact=(135, ["charme", "vie"], "jusqu'à 135 points de vie de créatures charmées (30 DV)"))]),
 "aid": dict(qty_cible=None, impact=(8, ["vie", "temporaire"], "1d8 + 3 en moyenne"), impact_sats=[(1, ["courage"])]),
 "calm-emotions": dict(cond=[], options=None, impact=(P, ["calme", "fureur", "peur", "confusion"], "fureur, peur et confusion suspendues")),
-"heroism": dict(impact=(2, ["courage", "coup", "résistance", "aptitude"], "+2 aux attaques, sauvegardes et compétences"), impact_sats=[]),
+"heroism": dict(impact=(2, ["courage", "coup", "résistance", "aptitude"], "plus sûre en tout ce qu'elle tente (+2 aux attaques, sauvegardes et compétences)"), impact_sats=[]),
 "modify-memory": dict(cond_sats=[], impact_sats=[(5, ["minutes"])]),
 "feeblemind": dict(impact=(P, ["intellect", "charisme"], "Intelligence et Charisme ramenés à 1"), impact_sats=[]),
 "geas": dict(src_idx="geas-quest", name="Geas/Quest", dur=(11, "JOURS"), fin=["accomplissement"], impact_sats=[(11, ["blessure", "jour"])]),
@@ -934,25 +934,25 @@ for k, v in V35.items(): FICHES[k]["v35"] = v
 SYM = lambda fr, **kw: {**dict(src="3.5", fr=fr, verb=V("visibilite"), cible=P, aoe={"type": "sphere", "size": 60}, cond=["déclencheur"],
                             dur=(P, None), fin=["déclenchement"]), **kw}
 NEW35 = {
-"daze": dict(src="3.5", fr="Hébétement", verb=V("ordre", True), cible=3, cond=["humanoïde", "seuil"], cond_sats=[(18, ["vie"])], impact=(P, ["hébétude"], "privée d'action")),
-"daze-monster": dict(src="3.5", fr="Hébétement de monstre", verb=V("ordre", True), cible=3, cond=["vivant", "seuil"], cond_sats=[(27, ["vie"])], impact=(P, ["hébétude"], "privée d'action")),
-"lullaby": dict(src="3.5", fr="Berceuse", verb=V("intensite", True), cible=P, impact=(5, ["torpeur", "vigilance"], "5 retranché à la vigilance, 2 aux sauvegardes contre le sommeil"),
+"daze": dict(src="3.5", fr="Hébétement", verb=V("ordre", True), cible=3, cond=["humanoïde", "seuil"], cond_sats=[(18, ["vie"])], impact=(P, ["hébétude"], "hébétée, elle reste sans rien faire un instant")),
+"daze-monster": dict(src="3.5", fr="Hébétement de monstre", verb=V("ordre", True), cible=3, cond=["vivant", "seuil"], cond_sats=[(27, ["vie"])], impact=(P, ["hébétude"], "hébétée, elle reste sans rien faire un instant")),
+"lullaby": dict(src="3.5", fr="Berceuse", verb=V("intensite", True), cible=P, impact=(5, ["torpeur", "vigilance"], "moins vigilante, plus prompte au sommeil (5 retranché à la Perception, 2 aux sauvegardes contre le sommeil)"),
     alt=[H("Pollen", "ce qui se respire et assoupit")]),
-"calm-animals": dict(src="3.5", fr="Apaisement des animaux", verb=V("ordre"), cible=P, cond=["bête", "instinct"], impact=(27, ["calme", "vie"], "2d4 + 1 DV, soit 27 points de vie d'animaux apaisés")),
+"calm-animals": dict(src="3.5", fr="Apaisement des animaux", verb=V("ordre"), cible=P, cond=["bête", "instinct"], impact=(27, ["calme", "vie"], "jusqu'à 27 points de vie d'animaux apaisés (2d4 + 1 DV)")),
 "charm-animal": F35("charm-person", "Charme-animal", cond=["bête"]),
 "confusion-lesser": F35("confusion", "Confusion mineure", cible=3),
-"hypnotism": dict(src="3.5", fr="Hypnose", verb=V("relation"), cible=P, cond=["vivant"], impact=(23, ["fascination", "vie"], "2d4 DV, soit 23 points de vie de créatures fascinées")),
-"animal-trance": dict(src="3.5", fr="Transe animale", verb=V("relation"), cible=P, cond=["bête", "instinct"], impact=(32, ["fascination", "vie"], "2d6 DV, soit 32 points de vie d'animaux fascinés")),
+"hypnotism": dict(src="3.5", fr="Hypnose", verb=V("relation"), cible=P, cond=["vivant"], impact=(23, ["fascination", "vie"], "jusqu'à 23 points de vie de créatures fascinées (2d4 DV)")),
+"animal-trance": dict(src="3.5", fr="Transe animale", verb=V("relation"), cible=P, cond=["bête", "instinct"], impact=(32, ["fascination", "vie"], "jusqu'à 32 points de vie d'animaux fascinés (2d6 DV)")),
 "hold-animal": F35("hold-person", "Immobilisation d'animal", cond=["bête"]),
 "touch-of-idiocy": dict(src="3.5", fr="Contact débilitant", verb=V("intensite", True), cible=3, impact=(4, ["intellect", "sagesse", "charisme"], "1d6 retranché à chacune")),
-"good-hope": dict(src="3.5", fr="Espoir", verb=V("intensite"), cible=2, qty_cible=7, impact=(2, ["espoir", "coup", "résistance", "aptitude", "dégâts"], "+2 aux attaques, dégâts, sauvegardes et tests")),
-"prayer": dict(src="3.5", fr="Prière", verb=V("intensite"), cible=P, impact=(1, ["chance", "coup", "résistance", "aptitude", "dégâts"], "+1 aux alliés, 1 retranché aux ennemis")),
+"good-hope": dict(src="3.5", fr="Espoir", verb=V("intensite"), cible=2, qty_cible=7, impact=(2, ["espoir", "coup", "résistance", "aptitude", "blessure"], "l'espoir qui porte en toute chose (+2 aux attaques, dégâts, sauvegardes et tests)")),
+"prayer": dict(src="3.5", fr="Prière", verb=V("intensite"), cible=P, impact=(1, ["chance", "coup", "résistance", "aptitude", "blessure"], "+1 aux alliés, 1 retranché aux ennemis")),
 "rage": dict(src="3.5", fr="Rage", verb=V("intensite"), cible=2, qty_cible=1, impact=(2, ["fureur", "force", "constitution"], "+2 en Force et en Constitution, la garde baissée")),
-"crushing-despair": dict(src="3.5", fr="Désespoir foudroyant", verb=V("intensite", True), cible=P, impact=(2, ["désespoir", "coup", "résistance", "aptitude", "dégâts"], "2 retranché aux attaques, dégâts, sauvegardes et tests")),
+"crushing-despair": dict(src="3.5", fr="Désespoir foudroyant", verb=V("intensite", True), cible=P, impact=(2, ["désespoir", "coup", "résistance", "aptitude", "blessure"], "le désespoir qui pèse sur toute chose (2 retranché aux attaques, dégâts, sauvegardes et tests")),
 "geas-lesser": F35("geas", "Quête mineure", cond=["compréhension", "seuil"], cond_sats=[(32, ["vie"])], impact_sats=[(2, ["aptitude", "jour"])]),
 "mind-fog": dict(src="3.5", fr="Brume mentale", verb=V("intensite", True), cible=P, impact=(10, ["brume", "sagesse", "volonté"], "10 retranché à la Sagesse et à la volonté")),
-"song-of-discord": dict(src="3.5", fr="Chant de discorde", verb=V("relation", True), cible=P, impact=(1, ["discorde", "moitié"], "une chance sur deux de frapper son voisin")),
-"heroism-greater": F35("heroism", "Héroïsme suprême", impact=(4, ["courage", "coup", "résistance", "aptitude"], "+4 aux attaques, sauvegardes et compétences"),
+"song-of-discord": dict(src="3.5", fr="Chant de discorde", verb=V("relation", True), cible=P, impact=(2, ["discorde", "fractionné"], "une chance sur deux de frapper son voisin")),
+"heroism-greater": F35("heroism", "Héroïsme suprême", impact=(4, ["courage", "coup", "résistance", "aptitude"], "bien plus sûre en tout ce qu'elle tente (+4 aux attaques, sauvegardes et compétences)"),
     impact_sats=[(11, ["vie", "temporaire"]), (P, ["intrépidité"])]),
 "insanity": F35("confusion", "Aliénation mentale", cible=3, dur=(P, None)),
 "power-word-blind": F35("power-word-stun", "Mot de pouvoir aveuglant", dur=(P, "VIE"), cond_sats=[(200, ["vie"])], impact=(P, ["aveuglement"], "aveuglée")),
@@ -977,7 +977,7 @@ V35b = {
 "detect-magic": {}, "comprehend-languages": {}, "identify": {}, "speak-with-animals": {}, "augury": {}, "detect-thoughts": {},
 "locate-object": {}, "see-invisibility": {}, "speak-with-plants": {}, "tongues": {}, "arcane-eye": {}, "divination": {},
 "locate-creature": {}, "telepathic-bond": {}, "find-the-path": {}, "legend-lore": {}, "true-seeing": {},
-"guidance": dict(impact=(1, ["chance", "aptitude"], "1 ajouté à un test")),
+"guidance": dict(impact=(1, ["chance", "aptitude"], "un léger coup de pouce à ce qu'on entreprend (1 ajouté à un test)")),
 "true-strike": dict(impact=(20, ["faille", "coup"], "20 ajouté à la prochaine attaque")),
 "find-traps": dict(impact=(1, ["piège", "fouille"], "la moitié du niveau ajoutée à la fouille des pièges")),
 "scrying": dict(loc=(P, None, "n'importe où")),
@@ -1014,7 +1014,7 @@ NEW35b = {
 "scrying-greater": F35("scrying", "Scrutation suprême", impact=(P, ["vue", "ouïe", "sort"], "voir et entendre la cible, et lancer des détections à travers")),
 "vision": F35("legend-lore", "Vision", comp=[], impact=(P, ["légende", "vision"], "le savoir légendaire, en une vision")),
 "discern-location": dict(src="3.5", fr="Localisation infaillible", verb=V("visibilite"), cible=4, impact=(P, ["lieu", "nom"], "le nom exact du lieu où se trouve la cible")),
-"moment-of-prescience": dict(src="3.5", fr="Moment de prescience", fam="R", art="chronomancie", verb=V("visibilite"), cible=1, impact=(15, ["avenir", "chance"], "15 ajouté à un seul jet"), fin=["usage"]),
+"moment-of-prescience": dict(src="3.5", fr="Moment de prescience", fam="R", art="chronomancie", verb=V("visibilite"), cible=1, impact=(15, ["avenir", "chance"], "un instant d'avenir entrevu, au moment décisif (15 ajouté à un seul jet)"), fin=["usage"]),
 }
 FICHES.update(NEW35b)
 
@@ -1022,7 +1022,7 @@ FICHES.update(NEW35b)
 # Un sort « contre » l'alignement est un seul sort en trois formes, qui ne diffèrent que par la catégorie visée (Condition) :
 # l'hostile (contre le mal comme contre le bien : même glyphe), le lumineux (contre la loi), le ténébreux (contre le chaos).
 SEP = V("relation", True)
-GARDE = lambda n: (n, ["garde", "résistance"], f"{n} ajouté à la défense et aux sauvegardes")
+GARDE = lambda n: (n, ["garde", "résistance"], f"mieux gardée et plus résistante ({n} ajouté à la CA et aux sauvegardes)")
 EN35 = [("Acide", "acide"), ("Froid", "froid"), ("Foudre", "foudre"), ("Feu", "feu"), ("Tonnerre", "tonnerre")]
 TRI = lambda hos, lum, ten: [O("Contre l'hostile", src_idx=hos, cond=["hostile"]), O("Contre le lumineux", src_idx=lum, cond=["lumineux"]),
                             O("Contre le ténébreux", src_idx=ten, cond=["ténébreux"])]
@@ -1030,7 +1030,7 @@ V35c = {
 "alarm": {}, "sanctuary": {}, "shield": dict(impact=(4, ["garde", "projectile"], "4 ajouté à la défense, insensible au projectile magique")), "shield-of-faith": {}, "arcane-lock": {}, "dispel-magic": {}, "nondetection": {},
 "freedom-of-movement": {}, "remove-curse": {}, "antilife-shell": {}, "antimagic-field": {}, "guards-and-wards": {},
 "banishment": {}, "sequester": {}, "mind-blank": {}, "imprisonment": {},
-"resistance": dict(impact=(1, ["garde", "résistance"], "1 ajouté aux sauvegardes"), fin=[]),
+"resistance": dict(impact=(1, ["garde", "résistance"], "une résistance affermie (1 ajouté aux sauvegardes)"), fin=[]),
 "glyph-of-warding": dict(options=[O("Glyphe explosif", impact=(9, ["piège", "explosion"], "2d8 en moyenne"), impact_sats=[]),
                                   O("Glyphe de sort", impact=(P, ["piège", "sort"], "un sort enfermé"), impact_sats=[(3, ["seuil", "niveau"])]),
                                   O("Glyphe explosif suprême", src_idx="glyph-of-warding-greater", impact=(23, ["piège", "explosion"], "5d8 en moyenne"), impact_sats=[]),
@@ -1056,7 +1056,7 @@ V35c = {
 for k, v in V35c.items(): FICHES[k]["v35"] = v
 NEW35c = {
 "endure-elements": dict(src="3.5", fr="Endurance aux énergies destructives", verb=SEP, cible=2, impact=(P, ["chaleur", "froid", "climat"], "à l'aise par tout climat")),
-"entropic-shield": dict(src="3.5", fr="Bouclier entropique", verb=SEP, cible=1, impact=(1, ["garde", "trait", "cinquième"], "une chance sur cinq de manquer à distance")),
+"entropic-shield": dict(src="3.5", fr="Bouclier entropique", verb=SEP, cible=1, impact=(5, ["garde", "trait", "fractionné"], "une chance sur cinq de manquer à distance")),
 "hide-from-animals": dict(src="3.5", fr="Invisibilité pour les animaux", verb=V("visibilite", True), cible=2, cond=["bête"], impact=(P, ["dissimulation"], "ni vue, ni ouïe, ni odorat"), fin=["agression"]),
 "hide-from-undead": dict(src="3.5", fr="Invisibilité pour les morts-vivants", verb=V("visibilite", True), cible=2, cond=["MORTVIVANT"], impact=(P, ["dissimulation"], "ni vue, ni ouïe, ni odorat"), fin=["agression"]),
 "hold-portal": dict(src="3.5", fr="Verrouillage", verb=V("ordre"), cible=1, cible_obj=["porte"], impact=(P, ["verrou"], "fermée comme à clé")),
@@ -1077,13 +1077,13 @@ NEW35c = {
              O("Immunité contre les sorts suprême", src_idx="spell-immunity-greater", impact=(3, ["immunité", "sort"], "trois sorts désignés sans effet"), impact_sats=[(8, ["seuil", "niveau"])])]),
 "atonement": dict(src="3.5", fr="Pénitence", verb=V("qualite"), cible=2, comp=["chapelet"], cond=["repentir"], impact=(P, ["faute", "pardon"], "la faute levée, les dons rendus")),
 "break-enchantment": dict(src="3.5", fr="Délivrance", verb=V("qualite"), cible=2, qty_cible=9, impact=(P, ["enchantement", "transmutation", "malédiction"], "libérée des sorts et des malédictions")),
-"dismissal": dict(src="3.5", fr="Renvoi", verb=V("trame", True), cible=9, impact=(P, ["exil"], "renvoyée sur son plan"), impact_sats=[(1, ["égarement", "cinquième"])]),
+"dismissal": dict(src="3.5", fr="Renvoi", verb=V("trame", True), cible=9, impact=(P, ["exil"], "renvoyée sur son plan"), impact_sats=[(5, ["égarement", "fractionné"])]),
 "spell-resistance": dict(src="3.5", fr="Résistance à la magie", verb=SEP, cible=2, impact=(21, ["résistance", "magie"], "résistance à la magie de 21")),
 "dispel-magic-greater": dict(src="3.5", fr="Dissipation suprême", verb=SEP, cible=P, impact=(P, ["sort", "dissipation", "malédiction"], "les sorts prennent fin, malédictions comprises")),
 "repulsion": dict(src="3.5", fr="Répulsion", verb=V("force", True), cible=P, comp=["fer"], impact=(P, ["répulsion"], "nul ne peut s'approcher")),
 "spell-turning": dict(src="3.5", fr="Renvoi des sorts", verb=V("force", True), cible=1, impact=(9, ["sort", "renvoi"], "1d4 + 6 niveaux de sorts renvoyés")),
 "dimensional-lock": dict(src="3.5", fr="Verrou dimensionnel", verb=V("mouvement", True), cible=P, impact=(P, ["passage", "plan"], "nul voyage extradimensionnel dans la zone")),
-"protection-from-spells": dict(src="3.5", fr="Protection contre les sorts", verb=SEP, cible=2, qty_cible=3, comp=["diamant"], consumed=True, impact=(8, ["résistance", "sort"], "8 ajouté aux sauvegardes contre les sorts")),
+"protection-from-spells": dict(src="3.5", fr="Protection contre les sorts", verb=SEP, cible=2, qty_cible=3, comp=["diamant"], consumed=True, impact=(8, ["résistance", "sort"], "une résistance accrue à la magie (8 ajouté aux sauvegardes contre les sorts)")),
 "repel-metal-or-stone": dict(src="3.5", fr="Répulsion du métal et de la pierre", verb=V("force", True), cible=1, cible_obj=["métal", "pierre"], impact=(P, ["répulsion"], "repoussés jusqu'au bout de la portée")),
 "freedom": dict(src="3.5", fr="Liberté", verb=V("mouvement"), cible=2, impact=(P, ["libération", "entrave", "prison"], "délivrée de toute entrave, même emprisonnée")),
 "mages-disjunction": dict(src="3.5", fr="Disjonction", verb=V("ordre", True), cible=P, impact=(P, ["magie", "disjonction"], "sorts défaits, objets magiques éteints")),
@@ -1097,7 +1097,7 @@ FICHES.update(NEW35c)
 ROM = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"]
 CR35 = [0.5, 1, 2, 4, 5, 7, 9, 11, 12]
 def _pw(p, w):
-    return (1, w + ["moitié"], "puissance ½") if p == 0.5 else (p, w, f"puissance {p}")
+    return (2, w + ["fractionné"], "puissance ½") if p == 0.5 else (p, w, f"puissance {p}")
 def SUMMON(prefix, kinds):
     out = []
     for n in range(1, 10):
@@ -1123,7 +1123,7 @@ V35d = {
 "acid-splash": {}, "grease": {}, "mage-armor": {}, "unseen-servant": {}, "acid-arrow": {}, "web": {}, "create-food-and-water": {},
 "phantom-steed": {}, "sleet-storm": {}, "stinking-cloud": {}, "dimension-door": {}, "raise-dead": {}, "secret-chest": {},
 "tree-stride": {}, "wall-of-stone": {},
-"black-tentacles": dict(impact=(8, ["étreinte", "choc"], "1d6 + 4 en moyenne, à chaque tour")),
+"black-tentacles": dict(impact=(8, ["étreinte", "choc"], "une étreinte qui broie sans relâche (1d6 + 4 en moyenne par tour)")),
 "cloudkill": dict(impact=(P, ["mort", "poison"], "les plus faibles tués"), impact_sats=[(27, ["seuil", "vie"]), (3, ["constitution"])]),
 "insect-plague": dict(impact=(P, ["nuée", "insectes"], "des nuées de criquets"), impact_sats=[(3, ["nombre"])]),
 "wall-of-thorns": dict(impact=(P, ["épine", "mur"], "un mur de ronces qui déchire et entrave")),
@@ -1135,7 +1135,7 @@ V35d = {
 "mass-cure-wounds": dict(src_idx="cure-light-wounds-mass", name="Mass Cure Wounds", no_aoe=True, options=CUREM()),
 "mass-heal": dict(src_idx="heal-mass", name="Mass Heal", impact=(170, None, "10 par niveau, soit 170 points de vie chacun")),
 "lesser-restoration": dict(src_idx="restoration-lesser", options=[
-    O("Caractéristique", impact=(P, ["aptitude", "fatigue"], "une caractéristique rendue, la fatigue levée")),
+    O("Faculté", impact=(P, ["aptitude", "fatigue"], "une faculté rendue, la fatigue levée")),
     O("Maladie", src_idx="remove-disease", impact=(P, ["maladie"], "toutes les maladies levées")),
     O("Cécité", src_idx="remove-blindness-deafness", impact=(P, ["aveuglement"], "la cécité levée")),
     O("Surdité", src_idx="remove-blindness-deafness", impact=(P, ["surdité"], "la surdité levée")),
@@ -1145,12 +1145,12 @@ V35d = {
     O("Restauration", impact=(1, ["aptitude", "niveau"], "un niveau perdu rendu")),
     O("Restauration suprême", src_idx="restoration-greater", comp=[], impact=(P, ["aptitude", "niveau"], "tous les niveaux perdus rendus"))]),
 "teleport": dict(options=[O("Téléportation"), O("Téléportation suprême", src_idx="teleport-greater")]),
-"planar-ally": dict(src_idx="planar-ally-lesser", options=[O("Allié planaire mineur", impact=(27, ["être", "vie"], "6 DV, soit 27 points de vie")),
-    O("Allié planaire", src_idx="planar-ally", impact=(54, ["être", "vie"], "12 DV, soit 54 points de vie")),
-    O("Allié planaire majeur", src_idx="planar-ally-greater", impact=(81, ["être", "vie"], "18 DV, soit 81 points de vie"))]),
-"planar-binding": dict(src_idx="planar-binding-lesser", comp=[], options=[O("Lien planaire mineur", impact=(27, ["service", "vie"], "6 DV, soit 27 points de vie")),
-    O("Lien planaire", src_idx="planar-binding", impact=(54, ["service", "vie"], "12 DV, soit 54 points de vie")),
-    O("Lien planaire majeur", src_idx="planar-binding-greater", impact=(81, ["service", "vie"], "18 DV, soit 81 points de vie"))]),
+"planar-ally": dict(src_idx="planar-ally-lesser", options=[O("Allié planaire mineur", impact=(27, ["être", "vie"], "jusqu'à 27 points de vie (6 DV)")),
+    O("Allié planaire", src_idx="planar-ally", impact=(54, ["être", "vie"], "jusqu'à 54 points de vie (12 DV)")),
+    O("Allié planaire majeur", src_idx="planar-ally-greater", impact=(81, ["être", "vie"], "jusqu'à 81 points de vie (18 DV)"))]),
+"planar-binding": dict(src_idx="planar-binding-lesser", comp=[], options=[O("Lien planaire mineur", impact=(27, ["service", "vie"], "jusqu'à 27 points de vie (6 DV)")),
+    O("Lien planaire", src_idx="planar-binding", impact=(54, ["service", "vie"], "jusqu'à 54 points de vie (12 DV)")),
+    O("Lien planaire majeur", src_idx="planar-binding-greater", impact=(81, ["service", "vie"], "jusqu'à 81 points de vie (18 DV)"))]),
 "create-or-destroy-water": dict(src_idx="create-water", name="Create Water", options=None, impact=(8, ["eau", "litres", "création"], "8 litres créés")),
 "fog-cloud": dict(options=[O("Nappe de brouillard"), O("Brume de dissimulation", src_idx="obscuring-mist")]),
 "faithful-hound": dict(src_idx="mages-faithful-hound", name="Mage's Faithful Hound", impact=(10, ["morsure"], "2d6 + 3 en moyenne")),
@@ -1168,14 +1168,14 @@ NEW35d = {
 "creeping-doom": INV(fr="Fléau rampant", cible=P, qty=6, impact=(P, ["nuée", "mille-pattes"], "six nuées de mille-pattes")),
 "elemental-swarm": dict(src="3.5", fr="Nuée d'élémentaires", fam="H", cible=P, options=[O(n, comb=c, why=f"les élémentaires de {d}", impact=(9, ["élémentaire"], "2d4 grands, puis 1d4 énormes, puis un supérieur"))
     for n, c, d in [("Air", "Air", "l'air"), ("Terre", "Terre", "la terre"), ("Feu", "Feu", "feu"), ("Eau", "Eau", "l'eau")]]),
-"shambler": dict(src="3.5", fr="Tertres errants", comb="Plante", why="les plantes", cible=P, impact=(50, ["tertre", "vie"], "11 DV chacun, soit 50 points de vie"), impact_sats=[(5, ["nombre"])]),
+"shambler": dict(src="3.5", fr="Tertres errants", comb="Plante", why="les plantes", cible=P, impact=(50, ["tertre", "vie"], "des tertres de 50 points de vie chacun (11 DV)"), impact_sats=[(5, ["nombre"])]),
 "delay-poison": dict(src="3.5", fr="Ralentissement du poison", verb=V("nature", True), cible=2, impact=(P, ["poison", "sursis"], "le poison sans effet jusqu'au terme")),
 "glitterdust": dict(src="3.5", fr="Poussière scintillante", verb=V("visibilite"), cible=P, impact=(P, ["aveuglement", "invisible"], "aveuglées, l'invisible révélé")),
 "heal-mount": dict(src="3.5", fr="Guérison de la monture", verb=V("existence"), cible=2, cond=["monture"], impact=(P, ["vie", "maladie", "aveuglement"], "sa monture entièrement guérie"), alt=[H("Sang", "le fluide vital")]),
 "sepia-snake-sigil": dict(src="3.5", fr="Sceau du serpent", verb=V("mouvement", True), cible=1, cible_obj=["écrit"], cond=["lecture"], comp=["ambre"], impact=(P, ["paralysie", "serpent"], "le lecteur figé dans l'ambre")),
 "secure-shelter": dict(src="3.5", fr="Abri", verb=V("existence"), cible=P, impact=(P, ["abri", "chaumière"], "une chaumière solide")),
 "solid-fog": dict(src="3.5", fr="Brouillard dense", comb="Brume", why="le brouillard", cible=P, impact=(P, ["brouillard", "obscurité", "lenteur"], "zone obscurcie où l'on avance à peine")),
-"acid-fog": dict(src="3.5", fr="Brouillard acide", comb="Acide sulfurique", why="l'acide", cible=P, impact=(7, ["acide", "brouillard", "lenteur"], "2d6 en moyenne à chaque tour")),
+"acid-fog": dict(src="3.5", fr="Brouillard acide", comb="Acide sulfurique", why="l'acide", cible=P, impact=(7, ["acide", "brouillard", "lenteur"], "un brouillard qui ronge sans relâche (2d6 en moyenne par tour)")),
 "fire-seeds": dict(src="3.5", fr="Graines de feu", comb="Feu", why="le feu", cible=1, cible_obj=["graine"],
     options=[O("Glands explosifs", impact=(39, ["feu", "jet"], "11d6 en moyenne, en quatre glands")), O("Baies explosives", impact=(16, ["feu", "explosion"], "1d8 + 11 en moyenne par baie"), impact_sats=[(8, ["nombre"])])]),
 "wall-of-iron": dict(src="3.5", fr="Mur de fer", comb="Acier", why="le métal du mur", cible=P, comp=["fer", "or"], impact=(P, ["fer", "mur"], "un mur de fer"), impact_sats=[(35, ["chute"])]),
@@ -1226,7 +1226,7 @@ NEW35e = {
 "invisibility-purge": dict(src="3.5", fr="Purge d'invisibilité", verb=V("visibilite"), cible=P, aoe={"type": "sphere", "size": 25}, impact=(P, ["invisible", "révélation"], "tout l'invisible rendu visible")),
 "searing-light": dict(src="3.5", fr="Lumière brûlante", verb=V("existence", True), cible=3, impact=(9, ["lumière"], "2d8 en moyenne"), impact_sats=[(18, ["mort-vivant"])], alt=LUMH()),
 "divine-power": dict(src="3.5", fr="Force divine", verb=V("intensite"), cible=1, impact=(6, ["force", "coup"], "6 ajouté à la Force, l'attaque d'un guerrier"), impact_sats=[(7, ["vie", "temporaire"])]),
-"holy-sword": dict(src="3.5", fr="Arme sacrée", verb=V("intensite"), cible=1, cible_obj=["arme"], cond=["hostile"], impact=(5, ["arme"], "5 ajouté à l'arme"), impact_sats=[(7, ["dégâts"]), (P, ["cercle"])]),
+"holy-sword": dict(src="3.5", fr="Arme sacrée", verb=V("intensite"), cible=1, cible_obj=["arme"], cond=["hostile"], impact=(5, ["arme"], "5 ajouté à l'arme"), impact_sats=[(7, ["blessure"]), (P, ["cercle"])]),
 "imbue-with-spell-ability": dict(src="3.5", fr="Transfert de sorts", verb=V("relation"), cible=2, impact=(P, ["sort", "transfert"], "des sorts confiés à autrui"), impact_sats=[(4, ["seuil", "niveau"])]),
 "shout": dict(src="3.5", fr="Cri", cible=P, impact=(18, ["tonnerre"], "5d6 en moyenne"), impact_sats=[(P, ["surdité"])]),
 "shout-greater": dict(src="3.5", fr="Cri suprême", cible=P, impact=(35, ["tonnerre"], "10d6 en moyenne"), impact_sats=[(P, ["surdité"]), (P, ["étourdissement"])]),
@@ -1235,7 +1235,7 @@ NEW35e = {
     SMITE("Fléau impie — contre l'hostile", "unholy-blight", "hostile", "nausée", "nauséeuse"),
     SMITE("Marteau du chaos — contre le lumineux", "chaos-hammer", "lumineux", "lenteur", "ralentie"),
     SMITE("Colère de l'ordre — contre le ténébreux", "orders-wrath", "ténébreux", "hébétude", "hébétée")]),
-"sympathetic-vibration": dict(src="3.5", fr="Vibration sympathique", verb=V("existence", True), cible=1, cible_obj=["structure"], impact=(11, ["vibration", "choc"], "2d10 à chaque tour")),
+"sympathetic-vibration": dict(src="3.5", fr="Vibration sympathique", verb=V("existence", True), cible=1, cible_obj=["structure"], impact=(11, ["vibration", "choc"], "une vibration qui ébranle sans relâche (2d10 par tour)")),
 "polar-ray": dict(src="3.5", fr="Rayon polaire", cible=3),
 "telekinetic-sphere": F35("resilient-sphere", "Sphère télékinésique", impact=(P, ["prison", "barrière", "apesanteur"], "une sphère close, son contenu presque sans poids")),
 "whirlwind": dict(src="3.5", fr="Tornade", comb="Tempête", why="le cyclone", cible=P, impact=(11, ["choc", "tourbillon"], "3d6 en moyenne, emportée")),
@@ -1250,14 +1250,14 @@ FICHES.update(NEW35e)
 ILLH = lambda: [H("Plasma", ILL)]
 # L'un n'existe pas sans sa réciproque : chaque sort d'ombre a sa forme lumineuse et sa forme ténébreuse.
 ASTR = [("lumineux", "lumineuse"), ("ténébreux", "ténébreuse")]
-SHADOW = lambda base, rows: [O(f"{lab} — {e}", src_idx=idx, impact=(n, [e, "cinquième"], f"{n} cinquième{'s' if n > 1 else ''} de réalité, tirée de l'énergie {ef}"),
-                               impact_sats=[(lv, ["seuil", "niveau"])]) for lab, idx, n, lv in rows for e, ef in ASTR]
+SHADOW = lambda base, rows: [O(f"{lab} — {e}", src_idx=idx, impact=(n, [e], f"{n} cinquième{'s' if n > 1 else ''} de réalité, tirée de l'énergie {ef}"),
+                               impact_sats=[(lv, ["seuil", "niveau"]), (5, ["fractionné"])]) for lab, idx, n, lv in rows for e, ef in ASTR]
 V35f = {k: {} for k in ["disguise-self", "silent-image", "magic-mouth", "silence", "illusory-script", "major-image", "hallucinatory-terrain",
     "phantasmal-killer", "dream", "mislead", "project-image", "weird", "simulacrum"]}
 V35f.update({
 "color-spray": dict(impact=(P, ["inconscience", "aveuglement", "étourdissement"], "selon la vie qui reste")),
-"hypnotic-pattern": dict(impact=(36, ["fascination", "vie"], "2d4 + 3 DV, soit 36 points de vie de créatures fascinées")),
-"blur": dict(impact=(1, ["flou", "cinquième"], "une chance sur cinq d'être manquée")),
+"hypnotic-pattern": dict(impact=(36, ["fascination", "vie"], "jusqu'à 36 points de vie de créatures fascinées (2d4 + 3 DV)")),
+"blur": dict(impact=(5, ["flou", "fractionné"], "une chance sur cinq d'être manquée")),
 "mirror-image": dict(impact=(4, ["image"], "1d4 + 1 doubles")),
 "minor-illusion": dict(src_idx="ghost-sound", name="Ghost Sound", options=None, cosm=(P, "son"), impact=(P, ["son"], "un son illusoire")),
 "invisibility": dict(options=[O("Invisibilité"), O("Sphère d'invisibilité", src_idx="invisibility-sphere", aoe={"type": "sphere", "size": 10}),
@@ -1276,10 +1276,10 @@ NEW35f = {
 "permanent-image": IMG("Image permanente", "son", "odeur", "chaleur", comp=["jade"]),
 "misdirection": dict(src="3.5", fr="Détournement", verb=V("visibilite", True), cible=1, impact=(P, ["aura", "leurre"], "les détections lisent un autre objet"), alt=ILLH()),
 "phantom-trap": dict(src="3.5", fr="Piège illusoire", verb=V("visibilite", True), cible=1, cible_obj=["mécanisme"], comp=["pyrite"], impact=(P, ["piège", "faux-semblant"], "un piège qui n'existe pas")),
-"displacement": dict(src="3.5", fr="Déplacement", verb=V("visibilite", True), cible=2, impact=(1, ["leurre", "moitié"], "une chance sur deux d'être manquée"), alt=ILLH()),
+"displacement": dict(src="3.5", fr="Déplacement", verb=V("visibilite", True), cible=2, impact=(2, ["leurre", "fractionné"], "une chance sur deux d'être manquée"), alt=ILLH()),
 "illusory-wall": dict(src="3.5", fr="Mur illusoire", verb=V("existence"), cible=P, cosm=(P, "IMAGE"), impact=(P, ["mur", "image"], "un mur qu'on traverse"), alt=ILLH()),
-"rainbow-pattern": dict(src="3.5", fr="Motif chatoyant", verb=V("mouvement", True), cible=P, cosm=(P, "COULEURS"), impact=(108, ["fascination", "vie"], "24 DV, soit 108 points de vie de créatures fascinées"), alt=ILLH()),
-"scintillating-pattern": dict(src="3.5", fr="Motif scintillant", verb=V("ordre", True), cible=P, cosm=(P, "COULEURS"), impact=(68, ["confusion", "étourdissement", "vie"], "15 DV, soit 68 points de vie de créatures frappées"), alt=ILLH()),
+"rainbow-pattern": dict(src="3.5", fr="Motif chatoyant", verb=V("mouvement", True), cible=P, cosm=(P, "COULEURS"), impact=(108, ["fascination", "vie"], "jusqu'à 108 points de vie de créatures fascinées (24 DV)"), alt=ILLH()),
+"scintillating-pattern": dict(src="3.5", fr="Motif scintillant", verb=V("ordre", True), cible=P, cosm=(P, "COULEURS"), impact=(68, ["confusion", "étourdissement", "vie"], "jusqu'à 68 points de vie de créatures frappées (15 DV)"), alt=ILLH()),
 "zone-of-silence": dict(src="3.5", fr="Zone de silence", verb=V("visibilite", True), cible=P, impact=(P, ["silence", "secret"], "nul son ne sort de la zone"), alt=[H("Air", "l'air qui ne porte plus le son")]),
 "false-vision": dict(src="3.5", fr="Vision mensongère", verb=V("visibilite", True), cible=P, comp=["jade"], impact=(P, ["divination", "leurre"], "la scrutation voit une fausse image"), alt=ILLH()),
 "nightmare": dict(src="3.5", fr="Cauchemar", verb=V("relation", True), cible=3, loc=(P, None, "illimitée"), cond=["sommeil"], impact=(6, ["esprit", "fatigue"], "1d10 en moyenne, le repos ruiné")),
@@ -1304,7 +1304,7 @@ V35g.update({
 "false-life": dict(impact=(9, ["vie", "temporaire"], "1d10 + 3 en moyenne")),
 "harm": dict(impact=(110, ["nécrose"], "10 par niveau, soit 110 points de vie retirés")),
 "finger-of-death": dict(impact=(P, ["mort"], "morte"), impact_sats=[(24, ["nécrose"])]),
-"circle-of-death": dict(impact=(124, ["mort", "vie"], "1d4 DV par niveau, soit 124 points de vie de créatures tuées")),
+"circle-of-death": dict(impact=(124, ["mort", "vie"], "jusqu\'à 124 points de vie de créatures tuées (1d4 DV par niveau)")),
 "inflict-wounds": dict(src_idx="inflict-light-wounds", name="Inflict Wounds", options=[
     O("Blessure mineure", src_idx="inflict-minor-wounds", impact=(1, ["nécrose"], "1 point de vie")),
     O("Blessure légère", impact=(6, ["nécrose"], "1d8 + 1 en moyenne")),
@@ -1334,7 +1334,7 @@ NEW35g = {
 "doom": NEC(fr="Malédiction funeste", verb=V("intensite", True), impact=(2, ["peur", "coup", "résistance", "aptitude"], "2 retranché, secouée")),
 "command-undead": dict(src="3.5", fr="Contrôle des morts-vivants", verb=V("relation"), cible=3, cond=["MORTVIVANT"], options=[
     O("Injonction aux morts-vivants", impact=(P, ["amitié"], "un mort-vivant amical")),
-    O("Contrôle des morts-vivants", src_idx="control-undead", impact=(117, ["domination", "vie"], "26 DV, soit 117 points de vie de morts-vivants commandés"))]),
+    O("Contrôle des morts-vivants", src_idx="control-undead", impact=(117, ["domination", "vie"], "jusqu'à 117 points de vie de morts-vivants commandés (26 DV)"))]),
 "death-knell": NEC(fr="Glas", cond=["mourant"], impact=(P, ["mort"], "achevée, sa vie prise"), impact_sats=[(5, ["vie", "temporaire"]), (2, ["force"])]),
 "ghoul-touch": NEC(fr="Caresse de la goule", verb=V("mouvement", True), cond=["humanoïde"], impact=(P, ["paralysie"], "paralysée"), impact_sats=[(P, ["nausée"])]),
 "spectral-hand": dict(src="3.5", fr="Main spectrale", verb=V("existence"), cible=1, impact=(P, ["main", "contact"], "les sorts de contact portés au loin"), impact_sats=[(3, ["vie"])]),
@@ -1345,11 +1345,11 @@ NEW35g = {
 "mark-of-justice": NEC(fr="Marque de la justice", verb=V("qualite", True), cond=["transgression"], impact=(P, ["malédiction", "marque"], "maudite si elle transgresse")),
 "slay-living": NEC(fr="Mise à mort", cond=["vivant"], impact=(P, ["mort"], "morte"), impact_sats=[(20, ["nécrose"])], alt=SANGH()),
 "destruction": NEC(fr="Destruction", comp=["symbole"], impact=(P, ["mort", "anéantissement"], "morte, sa dépouille consumée"), impact_sats=[(35, ["nécrose"])]),
-"undeath-to-death": NEC(fr="Mort des morts-vivants", cible=P, cond=["MORTVIVANT"], comp=["diamant"], impact=(124, ["destruction", "vie"], "1d4 DV par niveau, soit 124 points de vie de morts-vivants détruits")),
+"undeath-to-death": NEC(fr="Mort des morts-vivants", cible=P, cond=["MORTVIVANT"], comp=["diamant"], impact=(124, ["destruction", "vie"], "jusqu\'à 124 points de vie de morts-vivants détruits (1d4 DV par niveau)")),
 "horrid-wilting": NEC(fr="Flétrissure", cible=P, cond=["vivant"], impact=(53, ["dessèchement"], "15d6 en moyenne")),
 "soul-bind": NEC(fr="Âme liée", verb=V("mouvement", True), cible=7, comp=["saphir"], impact=(P, ["âme", "gemme"], "l'âme enfermée dans la gemme")),
 "wail-of-the-banshee": NEC(fr="Plainte d'outre-tombe", cible=P, qty_cible=17, cond=["écoute"], impact=(P, ["mort"], "morte")),
-"symbol-of-pain": SYM("Symbole de douleur", impact=(4, ["douleur", "coup", "aptitude"], "4 retranché aux attaques et aux tests")),
+"symbol-of-pain": SYM("Symbole de douleur", impact=(4, ["douleur", "coup", "aptitude"], "la douleur gêne tout geste (4 retranché aux attaques et aux tests)")),
 "symbol-of-fear": SYM("Symbole de terreur", impact=(P, ["panique"], "paniquée")),
 "symbol-of-weakness": SYM("Symbole de faiblesse", impact=(11, ["force", "faiblesse"], "3d6 en moyenne retirés à la Force")),
 "symbol-of-death": SYM("Symbole de mort", cond=["déclencheur", "seuil"], cond_sats=[(150, ["vie"])], impact=(P, ["mort"], "mortes")),
@@ -1395,7 +1395,7 @@ NEW35h = {
 "whispering-wind": T35(fr="Murmure du vent", comb="Air", why="le vent", cible=P, impact=(P, ["message", "vent"], "un message porté par le vent")),
 "wood-shape": T35(fr="Façonnage du bois", comb="Bois", why="le bois", cible=1, cible_obj=["bois"], impact=(P, ["façonnage"], "le bois façonné")),
 "flame-arrow": T35(fr="Flèches enflammées", comb="Feu", why="le feu", cible=1, cible_obj=["projectile"], impact=(4, ["feu"], "1d6 par trait"), impact_sats=[(50, ["nombre"])]),
-"keen-edge": T35(fr="Arme acérée", verb=V("intensite"), cible=1, cible_obj=["arme"], impact=(2, ["critique"], "les coups critiques deux fois plus fréquents")),
+"keen-edge": T35(fr="Arme acérée", verb=V("intensite"), cible=1, cible_obj=["arme"], impact=(2, ["faille"], "une lame qui trouve deux fois plus souvent la faille (zone de critique doublée)")),
 "quench": T35(fr="Extinction des feux", comb="Eau", why="l'eau", cible=P, impact=(P, ["extinction", "feu"], "tous les feux éteints"), impact_sats=[(18, ["élémentaire"])]),
 "sculpt-sound": T35(fr="Sculpteur de sons", verb=V("nature"), cible=2, qty_cible=7, impact=(P, ["son", "transformation"], "les sons changés")),
 "secret-page": T35(fr="Page secrète", verb=V("visibilite", True), cible=1, cible_obj=["écrit"], impact=(P, ["écrit", "déguisement"], "la page qui montre autre chose")),
@@ -1403,7 +1403,7 @@ NEW35h = {
 "snare": T35(fr="Collet", comb="Plante", why="la liane", cible=1, cible_obj=["corde"], cond=["passage"], impact=(P, ["entrave", "collet"], "pris au collet")),
 "air-walk": T35(fr="Marche dans les airs", comb="Air", why="l'air qui porte", cible=2, impact=(P, ["vol", "marche"], "marcher sur l'air"), alt=[A("mouvement")]),
 "command-plants": T35(fr="Contrôle des plantes", comb="Plante", why="les plantes", cible=3, cond=["plante"], options=[O("Injonction aux plantes", **I("amitié", why="des plantes amicales")),
-    O("Contrôle des plantes", src_idx="control-plants", impact=(135, ["domination", "vie"], "30 DV, soit 135 points de vie de plantes commandées"))]),
+    O("Contrôle des plantes", src_idx="control-plants", impact=(135, ["domination", "vie"], "jusqu'à 135 points de vie de plantes commandées (30 DV)"))]),
 "giant-vermin": T35(fr="Vermine géante", verb=V("intensite"), cible=1, cible_obj=["vermine"], qty_cible=3, impact=(P, ["croissance"], "la vermine devenue géante")),
 "mnemonic-enhancer": T35(fr="Amélioration de mémoire", verb=V("intensite"), cible=1, comp=["ivoire"], options=[O("Préparation", **I("mémoire", "sort", why="trois niveaux de sorts en plus")),
     O("Rétention", **I("mémoire", "rappel", why="un sort lancé retenu"))]),
@@ -1472,7 +1472,7 @@ FICHES["creation"]["v35"] = dict(src_idx="minor-creation", options=[
 # Création (5e) tire son objet du plan de l'Ombre : énergie astrale, donc une forme lumineuse et une forme ténébreuse
 FICHES["creation"]["options"] = [O(f"Forme {ef}", impact=(P, ["matière", e], f"un objet tiré de l'énergie {ef}")) for e, ef in ASTR]
 # formes 3.5 dont les données ne disent pas l'effet
-for k, v in {"divine-favor": dict(impact=(1, ["chance", "coup", "dégâts"], "+1 aux attaques et aux dégâts")),
+for k, v in {"divine-favor": dict(impact=(1, ["chance", "coup", "blessure"], "+1 aux attaques et aux dégâts")),
              "heat-metal": dict(impact=(5, ["feu"], "jusqu'à 2d4 au plus fort")),
              "spiritual-weapon": dict(impact=(6, None, "1d8 + 1 en moyenne, de force")),
              "wind-wall": dict(impact=(P, ["vent", "trait"], "les projectiles déviés")),
@@ -1538,7 +1538,7 @@ NEWPF_ENCH1 = {
 "delusional-pride": EP("Orgueil délirant", NINT, 3, ["orgueil", "coup", "aptitude"], 2, "2 retranché, mais mieux protégée des charmes"),
 "demand-offering": EP("Offrande exigée", REL, 3, ["offrande"], why="te donne l'objet qu'elle tient"),
 "fairness": EP("Équité", REL, 3, ["échange", "justice"], why="commercer équitablement", qty_cible=1, cond=["humanoïde"]),
-"forbid-action": EP("Interdiction d'agir", NREL, 3, ["interdit"], why="ne fait pas l'action interdite", cond=["COMPREHENSION"]),
+"forbid-action": EP("Interdiction d'agir", NREL, 3, ["interdit"], why="ne peut accomplir le geste interdit", cond=["COMPREHENSION"]),
 "fumbletongue": EP("Langue embrouillée", NREL, 3, ["parole"], why="ne parle plus intelligiblement"),
 "haunting-reminder": EP("Rappel obsédant", V("force", True), 3, ["peur", "représailles"], why="la crainte de tes représailles"),
 "haze-of-dreams": EP("Brume de rêves", NINT, 3, ["rêve", "lenteur"], why="ralentie par des rêves éveillés"),
@@ -1552,7 +1552,7 @@ NEWPF_ENCH1 = {
 "make-lost": EP("Égarement", NREL, 3, ["égarement"], why="perdent leur chemin", qty_cible=1),
 "memorize-page": EP("Page mémorisée", INT, 2, ["mémoire", "page"], why="une page apprise par cœur"),
 "memory-lapse": EP("Trou de mémoire", NREL, 3, ["mémoire", "oubli"], why="oublie le dernier instant"),
-"moment-of-greatness": EP("Instant de grandeur", INT, 2, ["courage", "doublement"], 2, "le bonus de moral doublé", qty_cible=P),
+"moment-of-greatness": EP("Instant de grandeur", INT, 2, ["courage", "doublement"], 2, "l'élan qui l'anime doublé", qty_cible=P),
 "murderous-command": EP("Ordre meurtrier", REL, 3, ["meurtre", "allié"], why="pousse à tuer son allié", cond=["vivant"]),
 "opportunistic-loyalty": EP("Loyauté opportune", REL, 1, ["alliance", "sort"], why="tenu pour allié des sorts d'autrui"),
 "rally-point": EP("Point de ralliement", INT, P, ["ralliement"], why="le lieu soutient les alliés", cond=["allié"]),
@@ -1565,7 +1565,7 @@ NEWPF_ENCH1 = {
 "unnatural-lust": EP("Désir contre nature", REL, 3, ["désir"], why="poussée à embrasser quelqu'un"),
 "unprepared-combatant": EP("Combattant pris de court", NINT, 3, ["vivacité", "réflexe"], why="lent à réagir"),
 "wartrain-mount": EP("Monture aguerrie", V("nature"), 3, ["dressage", "combat"], why="un animal dressé au combat"),
-"wrath": EP("Courroux", INT, 1, ["coup", "dégâts"], 1, "+1 contre une créature désignée"),
+"wrath": EP("Courroux", INT, 1, ["coup", "blessure"], 1, "+1 contre une créature désignée"),
 "alpha-instinct": EP("Instinct dominant", INT, 1, ["bête", "ascendant"], why="ascendant sur les animaux"),
 "anonymous-interaction": EP("Anonymat", NREL, 3, ["oubli", "visage"], why="oublient qui tu es et ce que tu as dit", qty_cible=3),
 "arcane-disruption": EP("Perturbation arcanique", NREL, 3, ["sort", "gêne"], why="lancer devient difficile autour d'elle"),
@@ -1585,7 +1585,7 @@ NEWPF_ENCH1 = {
 "cognitive-block": EP("Blocage cognitif", NREL, 3, ["sort", "pensée"], why="ses sorts exigent une pensée claire"),
 "compassionate-ally": EP("Allié compatissant", REL, 3, ["compassion", "soin"], why="court aider un allié blessé"),
 "confess": EP("Aveux", REL, 3, ["vérité", "aveu"], why="répond vrai ou souffre", impact_sats=[(4, ["esprit"])], cond=["COMPREHENSION"]),
-"contagious-zeal": EP("Zèle contagieux", INT, 2, ["zèle", "vie", "contagion"], why="bonus et vie qui passent de proche en proche"),
+"contagious-zeal": EP("Zèle contagieux", INT, 2, ["zèle", "vie", "contagion"], why="élan et vie qui passent de proche en proche"),
 "covetous-urge": EP("Convoitise", REL, 3, ["vol", "convoitise"], why="poussée à voler", cond=["seuil"], cond_sats=[(32, ["vie"])]),
 "curse-of-keeping": EP("Malédiction de possession", V("qualite", True), 3, ["malédiction", "possession"], why="ne peut se défaire de ses biens"),
 "deflect-blame": EP("Faute rejetée", REL, 3, ["blâme"], why="un autre accusé de tes actes"),
@@ -1598,7 +1598,7 @@ NEWPF_ENCH1 = {
 "hoodwink": EP("Embrouille", NORD, 3, ["sens", "confusion"], why="tous leurs sens faussés", qty_cible=3),
 "id-insinuation-i": EP("Insinuation", NORD, 3, ["confusion", "ça"], why="confuse tant que tu te concentres",
     options=[O(f"Échelon {r}", src_idx=f"id-insinuation-{r.lower()}", qty_cible=q) for r, q in [("I", 1), ("II", 2), ("III", 3), ("IV", 4)]]),
-"inflict-pain": EP("Infliger la douleur", NINT, 3, ["douleur", "coup", "aptitude"], 4, "4 retranché aux attaques et aux tests",
+"inflict-pain": EP("Infliger la douleur", NINT, 3, ["douleur", "coup", "aptitude"], 4, "4 retranché à ses coups et à ses entreprises",
     options=[O("Infliger la douleur"), O("Infliger la douleur de groupe", src_idx="inflict-pain-mass", qty_cible=P)]),
 "investigative-mind": EP("Esprit d'enquêteur", INT, 1, ["enquête", "clairvoyance"], why="l'esprit qui voit juste"),
 "jealous-rage": EP("Rage jalouse", NINT, 3, ["jalousie", "orgueil"], why="un orgueil blessé et envieux"),
@@ -1606,7 +1606,7 @@ NEWPF_ENCH1 = {
 "mantle-of-calm": EP("Manteau de calme", ORD, 1, ["calme", "fureur"], why="apaise la rage de qui t'attaque"),
 "miasmal-dread": EP("Effroi méphitique", V("force", True), P, ["peur", "brume"], why="un nuage verdâtre qui démoralise"),
 "mindlocked-messenger": EP("Messager scellé", REL, 2, ["message", "secret"], why="un message pour son seul destinataire"),
-"oppressive-boredom": EP("Ennui accablant", NINT, 3, ["ennui"], why="perd sa prochaine action"),
+"oppressive-boredom": EP("Ennui accablant", NINT, 3, ["ennui"], why="reste un moment sans rien faire"),
 "passing-fancy": EP("Lubie passagère", REL, 3, ["conversation"], why="tu choisis le sujet de la conversation"),
 "peacemakers-parley": EP("Pourparlers", REL, P, ["paix", "parole"], why="apaise des créatures hostiles", cond=["COMPREHENSION"]),
 "psychic-leech": EP("Sangsue psychique", V("flux"), 3, ["fatigue", "force"], why="sa vigueur prise pour la tienne"),
@@ -1881,7 +1881,7 @@ NEWPF_ILL = {
 "isolate": IL("Isolement", NVIS, 3, ["isolement"], why="invisible et muette pour ses alliés"),
 "loathsome-veil": IL("Voile répugnant", NINT, P, ["nausée"], why="les plus faibles nauséeux"),
 "mindscape-door": EP("Porte de l'esprit", V("relation"), P, ["passage", "esprit"], why="une porte vers un monde intérieur"),
-"mirage": IL("Mirage", NVIS, P, ["terrain"], why="un paysage illusoire"),
+"mirage": IL("Paysage trompeur", NVIS, P, ["terrain"], why="un paysage illusoire"),
 "phantasmal-asphyxiation": IL("Asphyxie fantasmatique", V("existence", True), 3, ["souffle"], why="croit ne plus pouvoir respirer"),
 "phantasmal-reminder": IL("Souvenir fantasmatique", V("existence", True), 3, ["blessure", "souvenir"], 18, "revit une blessure, 1d6 par niveau"),
 "quieting-weapons": IL("Armes silencieuses", NVIS, 1, ["arme", "silence"], why="des armes muettes qui font taire", cible_obj=["arme"]),
@@ -1979,7 +1979,7 @@ PF1_RELECTURE.update({
 DIV = lambda fr, cible, words, v=None, why="", **kw: EP(fr, VIS, cible, words, v, why, **kw)
 NEWPF_DIV = {
 "detect-psychic-significance": DIV("Détection de l'empreinte psychique", P, ["empreinte", "objet"], why="les objets chargés de souvenirs"),
-"enhanced-diplomacy": EP("Éloquence", INT, 2, ["éloquence"], why="plus persuasive ou plus intimidante"),
+"enhanced-diplomacy": EP("Parole persuasive", INT, 2, ["éloquence"], why="plus persuasive ou plus intimidante"),
 "sift": DIV("Tamisage", P, ["examen"], why="examiner la zone à distance"),
 "anticipate-peril": DIV("Danger pressenti", 2, ["danger", "vigilance"], why="pressent le danger"),
 "authenticating-gaze": DIV("Regard authentificateur", 1, ["authenticité", "écrit"], why="voit le faux dans les livres et les parchemins"),
@@ -2099,7 +2099,7 @@ NEWPF_DIV = {
 "mind-probe": DIV("Sonde mentale", 3, ["mémoire", "réponse"], why="ses souvenirs interrogés"),
 "mnemonic-siphon": EP("Siphon mnémonique", V("flux"), 1, ["sort", "vol"], why="voler les sorts de qui porte l'objet", cible_obj=["objet"]),
 "named-bullet": EP("Projectile nommé", INT, 1, ["projectile", "désigné"], why="un projectile qui cherche une sorte de créature", cible_obj=["projectile"],
-    options=[O("Projectile nommé"), O("Projectile nommé suprême", src_idx="named-bullet-greater", impact=(P, ["projectile", "désigné", "dégâts"], "et plus meurtrier"))]),
+    options=[O("Projectile nommé"), O("Projectile nommé suprême", src_idx="named-bullet-greater", impact=(P, ["projectile", "désigné", "blessure"], "et plus meurtrier"))]),
 "pierce-disguise": DIV("Déguisement percé", 1, ["déguisement", "magie"], why="voir à travers les déguisements magiques"),
 "retrocognition": DIV("Rétrocognition", P, ["passé", "lieu"], why="les échos des événements passés"),
 "reveal-emotions": DIV("Émotions révélées", P, ["émotion"], why="l'état d'âme de chacun"),
@@ -2265,9 +2265,10 @@ NEWPF_ABJ = {
 "magnetic-field": GA("Champ magnétique", 1, ["métal", "attraction"], why="le métal attiré vers toi"),
 "marks-of-forbiddance": EP("Marques d'interdit", NREL, 3, ["marque", "agression"], why="deux êtres qui peinent à s'attaquer", qty_cible=2),
 "medusas-bane": GA("Fléau du regard", 1, ["regard", "renvoi"], why="insensible aux regards, qui se retournent"),
-"mental-barrier-i": GA("Barrière mentale", 1, ["garde"], 4, "4 ajouté à la défense", options=[O(f"Barrière mentale {r}", src_idx=f"mental-barrier-{r.lower()}", impact=(n, ["garde"] + x, d))
-    for r, n, x, d in [("I", 4, [], "4 ajouté à la défense"), ("II", 6, [], "6 ajouté à la défense"), ("III", 8, [], "8 ajouté à la défense"),
-                       ("IV", 8, ["vital", "quart"], "8 ajouté, une chance sur quatre de protéger les points vitaux"), ("V", 8, ["vital", "moitié"], "8 ajouté, une chance sur deux de protéger les points vitaux")]]),
+"mental-barrier-i": GA("Barrière mentale", 1, ["garde"], 4, "4 ajouté à la défense", options=[O(f"Barrière mentale {r}", src_idx=f"mental-barrier-{r.lower()}", impact=(n, ["garde"], d),
+    **({"impact_sats": [(q, ["vital", "fractionné"])]} if q else {}))
+    for r, n, q, d in [("I", 4, 0, "4 ajouté à la défense"), ("II", 6, 0, "6 ajouté à la défense"), ("III", 8, 0, "8 ajouté à la défense"),
+                       ("IV", 8, 4, "8 ajouté ; une chance sur quatre de protéger les points vitaux"), ("V", 8, 2, "8 ajouté ; une chance sur deux de protéger les points vitaux")]]),
 "miserable-pity": GA("Pitié misérable", 2, ["pitié"], why="trop pitoyable pour qu'on la frappe"),
 "nereids-grace": GA("Grâce de la néréide", 1, ["grâce", "garde"], why="ta grâce te garde quand tu ne portes pas d'armure"),
 "nine-lives": GA("Neuf vies", 1, ["chance", "évitement"], 9, "neuf fois échapper au malheur"),
@@ -2298,8 +2299,8 @@ NEWPF_ABJ = {
     O("Vie scellée"), O("Vie scellée suprême", src_idx="sealed-life-greater", impact=(P, ["vie", "transfert", "mort", "âme"], "et la mort et le vol d'âme sans prise"))]),
 "seers-bane": GA("Fléau des devins", 2, ["divination", "riposte"], why="insaisissable, et qui la cherche en souffre"),
 "selective-alarm": EP("Alarme sélective", VIS, P, ["alerte", "désigné"], why="une alarme pour certains seulement", cond=["INTRUS"]),
-"shield-of-fortification": GA("Bouclier de fortification", 2, ["vital", "quart"], 1, "une chance sur quatre de protéger les points vitaux", options=[
-    O("Bouclier de fortification"), O("Bouclier de fortification suprême", src_idx="shield-of-fortification-greater", impact=(1, ["vital", "moitié"], "une chance sur deux de protéger les points vitaux"))]),
+"shield-of-fortification": GA("Bouclier de fortification", 2, ["vital", "fractionné"], 4, "une chance sur quatre de protéger les points vitaux", options=[
+    O("Bouclier de fortification"), O("Bouclier de fortification suprême", src_idx="shield-of-fortification-greater", impact=(2, ["vital", "fractionné"], "une chance sur deux de protéger les points vitaux"))]),
 "shield-speech": EP("Parole gardée", NVIS, 2, ["parole", "secret"], why="parler sans être entendu des autres", options=[
     O("Parole gardée"), O("Parole gardée de groupe", src_idx="shield-speech-greater", qty_cible=P)]),
 "shock-shield": GA("Bouclier électrique", 1, ["garde", "foudre"], why="un bouclier de force qui éclate en foudre"),
@@ -2327,7 +2328,7 @@ NEWPF_ABJ = {
 "symbol-of-sealing": SYMP("Symbole de scellement", verb=SEP, impact=(P, ["mur", "force"], "un mur de force se dresse")),
 "symbol-of-vulnerability": SYMP("Symbole de vulnérabilité", verb=NINT, impact=(P, ["faiblesse"], "chacun affaibli")),
 "tactical-formation": GA("Formation", P, ["formation", "garde"], why="gardés tant qu'ils tiennent les rangs"),
-"talisman-of-reprieve": GA("Talisman de répit", 1, ["plan", "charge"], why="protège d'un hémisphère", cible_obj=["talisman"], options=[
+"talisman-of-reprieve": GA("Talisman de répit", 1, ["plan", "charge"], why="protège d'une face du plan astral", cible_obj=["talisman"], options=[
     O("Talisman de répit lumineux", cond=["lumineux"]), O("Talisman de répit ténébreux", cond=["ténébreux"])]),
 "thaumaturgic-circle": GA("Cercle thaumaturgique", P, ["cercle", "espèce"], why="un cercle de protection contre une espèce choisie"),
 "theft-ward": GA("Garde contre le vol", 1, ["vol", "vigilance"], why="sentir la main qui prend ton bien"),
@@ -2413,7 +2414,7 @@ NEWPF_NEC = {
 "boneshaker": EP("Secoue-os", ID, 3, ["os", "contrôle"], why="son squelette commandé un instant"),
 "boneshatter": NC("Brise-os", 3, ["os", "fracture"], why="ses os fêlés et éclatés"),
 "brow-gasher": EP("Entaille au front", INT, 1, ["arme", "sang", "front"], why="une plaie au front qui aveugle de sang", cible_obj=["arme"]),
-"calamitous-flailing": CU("Gesticulation calamiteuse", 3, ["coup", "écart", "cinquième"], why="ses coups s'égarent souvent"),
+"calamitous-flailing": CU("Gesticulation calamiteuse", 3, ["coup", "écart", "fractionné"], 5, why="ses coups s'égarent souvent"),
 "calm-spirit": EP("Esprit apaisé", V("qualite"), 3, ["esprit", "hantise"], why="une hantise ou un esprit retenu", cond=["MORTVIVANT"]),
 "catatonia": EP("Catatonie", NE, 2, ["mort", "apparence"], why="d'apparence morte"),
 "companion-life-link": EP("Lien vital du compagnon", REL, 2, ["lien", "blessure"], why="tu sens ses blessures et l'appelles", cond=["compagnon"]),
@@ -2457,7 +2458,7 @@ NEWPF_NEC = {
 "grave-words": EP("Paroles d'outre-tombe", REL, 1, ["cadavre", "parole"], why="un cadavre qui babille", cible_obj=["cadavre"]),
 "grim-stalker": EP("Traqueur sinistre", EXI, 3, ["sommeil", "tourment"], why="une créature qui trouble son sommeil"),
 "haunting-choir": NC("Chœur hanté", P, ["esprit", "douleur", "chant"], why="des esprits chantent la douleur"),
-"healing-thief": EP("Voleur de soins", V("flux"), 3, ["soins", "vol", "moitié"], why="la moitié de ses soins pour toi"),
+"healing-thief": EP("Voleur de soins", V("flux"), 3, ["soins", "vol", "fractionné"], 2, why="la moitié de ses soins pour toi"),
 "hibernate": EP("Hibernation", NINT, 2, ["catalepsie"], why="plongée dans un sommeil de mort"),
 "howling-agony": NC("Agonie hurlante", 3, ["douleur", "cri"], why="la douleur la fait hurler"),
 "hydrophobia": CU("Hydrophobie", 3, ["eau", "peur"], why="terrifiée par l'eau", qty_cible=P),
@@ -2468,7 +2469,7 @@ NEWPF_NEC = {
 "languid-venom": EP("Venin langoureux", V("ordre"), 2, ["poison", "retard"], why="un poison retardé et caché", options=[
     O("Venin langoureux"), O("Venin conditionnel", src_idx="contingent-venom", cond=["déclencheur"])]),
 "lash-of-the-astradaemon": EP("Griffes avaleuses d'âmes", INT, 1, ["griffe", "nécrose", "vie"], why="des griffes qui volent la vie durable"),
-"life-blast": EP("Souffle de vie", V("flux"), P, ["plante", "vie"], why="la vie des plantes lancée en souffle"),
+"life-blast": EP("Souffle de sève", V("flux"), P, ["plante", "vie"], why="la vie des plantes lancée en souffle"),
 "life-pact": EP("Pacte de vie", REL, P, ["vie", "partage"], why="les liés donnent leur vie au mourant"),
 "lipstitch": CU("Lèvres cousues", 3, ["lèvre", "silence"], why="les lèvres cousues"),
 "litany-of-admonition": EP("Litanie de remontrance", NINT, 3, ["faute", "chancellement"], why="ses fautes la font chanceler"),
@@ -2502,7 +2503,7 @@ NEWPF_NEC = {
 "plague-storm": CU("Tempête de peste", P, ["maladie", "nuage"], why="un nuage qui infecte"),
 "positive-pulse": EP("Pulsation de vie", V("flux"), P, ["vie", "mort-vivant"], 4, "blesse les morts-vivants, fortifie les vivants", options=[
     O("Pulsation de vie"), O("Pulsation de vie suprême", src_idx="positive-pulse-greater", impact=(14, ["vie", "mort-vivant"], "une vaste pulsation"))]),
-"possession": EP("Possession", ID, 3, ["âme", "corps", "contrôle"], why="ton âme dans son corps", options=[
+"possession": EP("Possession d'un corps", ID, 3, ["âme", "corps", "contrôle"], why="ton âme dans son corps", options=[
     O("Possession"), O("Possession suprême", src_idx="possession-greater", impact=(P, ["âme", "corps", "contrôle", "disparition"], "et ton corps disparaît")),
     O("Possession d'observation", src_idx="riding-possession", impact=(P, ["âme", "corps", "observation"], "voir par ses yeux sans la mener")),
     O("Possession à vue", src_idx="marionette-possession", impact=(P, ["âme", "corps", "contrôle", "vue"], "tant qu'elle reste en vue"))]),
@@ -2730,7 +2731,7 @@ NEWPF_EVO = {
 "neutral-buoyancy": EP("Flottaison neutre", V("mouvement"), 2, ["eau", "aisance"], why="à l'aise entre deux eaux"),
 "night-of-blades": EV("Nuit de lames", P, ["lame", "mur"], why="un mur de petites lames noires"),
 "numerological-evocation": EV("Rayons calculés", 3, ["énergie", "rayon"], why="des rayons d'énergie élémentaire"),
-"pain-strike": EV("Frappe de douleur", 3, ["douleur", "durée"], 4, "1d6 qui assomme, chaque round", options=[O("Frappe de douleur"), O("Frappe de douleur de groupe", src_idx="pain-strike-mass", qty_cible=P)]),
+"pain-strike": EV("Frappe de douleur", 3, ["douleur", "durée"], 4, "1d6 qui assomme, à chaque instant", options=[O("Frappe de douleur"), O("Frappe de douleur de groupe", src_idx="pain-strike-mass", qty_cible=P)]),
 "pale-flame": EP("Flamme pâle", FO, 1, ["feu", "plante", "pâle"], why="une flamme pâle qui brûle surtout les plantes"),
 "path-of-the-winds": EV("Chemin des vents", P, ["vent", "chemin"], why="des vents qui dégagent ta route"),
 "piercing-shriek": EV("Hurlement perçant", 3, ["son", "chancellement"], why="un son qui fait chanceler"),
@@ -2739,7 +2740,7 @@ NEWPF_EVO = {
 "poison-breath": EV("Souffle empoisonné", P, ["poison", "souffle"], why="un cône de poison", aoe={"type": "cone", "size": 60}),
 "protective-penumbra": GA("Pénombre protectrice", 2, ["ombre", "lumière"], why="une ombre qui garde de la lumière"),
 "pyrotechnic-eruption": EV("Éruption pyrotechnique", 3, ["feu", "répétition"], why="des flammes qui brûlent encore et encore"),
-"rebuke": EV("Réprimande", P, ["colère", "son"], 22, "1d8 par deux niveaux"),
+"rebuke": EV("Semonce", P, ["colère", "son"], 22, "1d8 par deux niveaux"),
 "reflexive-barrier": GA("Barrière réflexe", 1, ["force", "garde"], 5, "un éclat de force qui garde"),
 "rend-body-i": EV("Corps déchiré", 3, ["force", "membre"], why="la force arrache les membres", options=[
     O(f"Corps déchiré {r}", src_idx=f"rend-body-{r.lower()}", impact=(n, ["force", "membre"] + x, d)) for r, n, x, d in [
@@ -2749,12 +2750,12 @@ NEWPF_EVO = {
 "ricochet-shot": EP("Tir en ricochet", INT, 1, ["trait", "rebond"], why="des traits qui ricochent", cible_obj=["trait"]),
 "ride-the-lightning": EP("Chevaucher la foudre", ID, 1, ["foudre", "forme"], why="devenir la foudre"),
 "river-of-wind": EV("Rivière de vent", P, ["vent", "chute"], 14, "4d6 qui assomment, renversés ou poussés", aoe={"type": "line", "size": 120}),
-"rope-tornado": EV("Tornade", P, ["vent", "chute"], why="des vents qui jettent à terre"),
+"rope-tornado": EV("Tornade furieuse", P, ["vent", "chute"], why="des vents qui jettent à terre"),
 "runic-overload": EV("Surcharge runique", P, ["rune", "explosion"], why="les runes chargées jusqu'à l'explosion"),
 "sacred-nimbus": GA("Nimbe sacré", 1, ["aura", "riposte", "hostile"], why="frappe l'hostile qui te frappe, te garde de lui", cond=["hostile"]),
 "sacred-space": GA("Espace consacré", P, ["sacré", "lieu"], why="un lieu sanctifié"),
 "sanctify-corpse": GA("Corps sanctifié", 1, ["cadavre", "repos"], why="un corps qui ne se relèvera pas", cible_obj=["cadavre"]),
-"scouring-winds": EV("Vents récurants", P, ["vent", "sable"], 11, "3d6 par round, la vue bouchée"),
+"scouring-winds": EV("Vents récurants", P, ["vent", "sable"], 11, "3d6 à chaque instant, la vue bouchée"),
 "screaming-flames": EV("Flammes hurlantes", P, ["feu", "cri"], why="une vague de flammes qui hurlent", aoe={"type": "cone", "size": 30}),
 "sheet-lightning": EV("Nappe d'éclairs", P, ["foudre", "hébétude"], why="tous hébétés"),
 "shield-of-darkness": GA("Bouclier de ténèbres", 1, ["ténèbres", "dissimulation"], why="tout entier caché dans le noir"),
@@ -2807,7 +2808,7 @@ NEWPF_EVO = {
 "wall-of-sound": EP("Mur de son", FO, P, ["mur", "son"], why="un mur de son qui dévie et blesse"),
 "wall-of-split-illumination": EP("Mur de clair-obscur", VIS, P, ["mur", "lumière", "ténèbres"], why="lumière d'un côté, ténèbres de l'autre"),
 "winds-of-vengeance": EP("Vents de vengeance", ID, 1, ["vent", "vol"], why="voler et frapper avec le vent"),
-"wrathful-mantle": GA("Manteau de courroux", 2, ["lumière", "résistance"], 5, "jusqu'à 5 ajouté aux sauvegardes"),
+"wrathful-mantle": GA("Manteau de courroux", 2, ["lumière", "résistance"], 5, "jusqu'à 5 ajouté à sa résistance"),
 }
 FICHES.update(NEWPF_EVO)
 PFV("Evocation")
@@ -2884,7 +2885,7 @@ NEWPF_CONJ = {
 "bards-escape": TL("Fuite du ménestrel", P, ["fuite", "abri"], why="toi et tes alliés à l'abri d'un coup"),
 "bilocation": CR("Bilocation", 1, ["double", "lieu"], why="être en deux lieux à la fois"),
 "bind-sage": CN("Sage lié", 9, ["savant", "réponse"], why="un savant d'ailleurs convoqué pour répondre"),
-"blaze-of-glory": SO("Éclat de gloire", P, ["bienveillant", "hostile"], why="ton dernier élan soigne le bienveillant, frappe l'hostile"),
+"blaze-of-glory": SO("Flamme de gloire", P, ["bienveillant", "hostile"], why="ton dernier élan soigne le bienveillant, frappe l'hostile"),
 "blessing-of-courage-and-life": GA("Bénédiction de courage et de vie", 2, ["peur", "mort"], 2, "2 ajouté contre la peur et la mort"),
 "blood-mist": CR("Brume de sang", P, ["sang", "sagesse", "rage"], why="une brume qui rend fou de rage"),
 "bountiful-banquet": CR("Banquet abondant", P, ["festin"], why="un festin pour beaucoup"),
@@ -2915,7 +2916,7 @@ NEWPF_CONJ = {
 "corrosive-consumption": CR("Consomption corrosive", 3, ["acide", "extension"], why="une tache d'acide qui ronge"),
 "corrosive-touch": CR("Toucher corrosif", 3, ["acide", "toucher"], 13, "1d4 par niveau"),
 "create-armaments": CR("Armement", 1, ["arme", "armure"], why="une arme, un bouclier ou une armure"),
-"create-demiplane-lesser": CR("Demi-plan", P, ["plan", "création"], why="un demi-plan à toi", options=[
+"create-demiplane-lesser": CR("Création de demi-plan", P, ["plan", "création"], why="un demi-plan à toi", options=[
     O("Demi-plan mineur"), O("Demi-plan", src_idx="create-demiplane", impact=(P, ["plan", "création", "trait"], "plus vaste, avec ses lois")),
     O("Demi-plan suprême", src_idx="create-demiplane-greater", impact=(P, ["plan", "création", "trait", "vastitude"], "plus vaste encore"))]),
 "create-pit": CR("Fosse", P, ["fosse"], why="une fosse extradimensionnelle", options=[
@@ -2934,7 +2935,7 @@ NEWPF_CONJ = {
 "dimensional-bounce": TL("Rebond dimensionnel", 1, ["lieu", "aller-retour"], why="sauter entre deux lieux"),
 "draconic-ally": CR("Allié draconique", P, ["dragon", "serviteur"], why="un serviteur draconique fidèle"),
 "dream-feast": CR("Festin de rêve", 2, ["sommeil", "nourriture"], why="nourrie pendant son sommeil"),
-"duplicate-familiar": CR("Double du familier", 1, ["compagnon", "double"], why="un double de ton familier", cond=["compagnon"]),
+"duplicate-familiar": CR("Familier dédoublé", 1, ["compagnon", "double"], why="un double de ton familier", cond=["compagnon"]),
 "dust-of-twilight": CR("Poussière crépusculaire", P, ["poussière", "lumière", "extinction"], why="les lumières éteintes"),
 "eagle-aerie": CN("Aire des aigles", P, ["aigle", "monture"], why="des aigles géants"),
 "eaglesoul": CN("Âme d'aigle", 1, ["bienveillant", "pouvoir"], why="la force d'un être d'ailleurs bienveillant"),
@@ -3220,7 +3221,7 @@ NEWPF_TRA1 = {
 "blood-sentinel": TM("Sentinelle de sang", 1, ["sculpture", "compagnon"], why="une sculpture animale devenue familier"),
 "bloodhound": EN("Limier", 1, ["odorat"], why="le flair d'un chien"),
 "body-capacitance": TM("Capacité du corps", 1, ["foudre", "stockage"], why="la foudre reçue gardée puis rendue"),
-"boiling-blood": EP("Sang bouillant", NE, 3, ["sang", "feu"], why="le sang bouillonne et brûle"),
+"boiling-blood": EP("Sang ardent", NE, 3, ["sang", "feu"], why="le sang bouillonne et brûle"),
 "bombers-eye": EN("Œil du lanceur", 1, ["lancer", "portée"], why="tes lancers vont plus loin"),
 "bone-flense": EP("Écorchure des os", NE, 3, ["os", "sang"], why="ses os jaillissent en pointes"),
 "bowstaff": TM("Arc-bâton", 1, ["arc", "bâton"], why="un arc qui sert de bâton", cible_obj=["arc"]),
@@ -3360,7 +3361,7 @@ NEWPF_TRA2 = {
 "magical-beast-shape": SH("Forme de créature magique", 1, ["créature", "forme"], why="la forme d'une créature magique"),
 "fickle-winds": TM("Vents capricieux", P, ["vent", "garde"], why="des murs de vent qui choisissent quoi arrêter"),
 "fiery-body": SH("Corps de feu", 1, ["feu", "corps"], why="un corps de flammes"),
-"film-of-filth": CU("Pellicule d'ordure", 3, ["vase", "puanteur"], why="une bave putride sur la peau"),
+"film-of-filth": CU("Pellicule d'ordure", 3, ["bave", "puanteur"], why="une bave putride sur la peau"),
 "fins-to-feet": SH("Nageoires en pieds", 2, ["jambe", "terre"], why="des jambes pour marcher"),
 "fire-trail": TM("Traînée de feu", 1, ["feu", "trace"], why="une traînée de feu derrière toi"),
 "firebrand": EN("Brandon", P, ["arme", "feu"], why="des armes enflammées, épargnées par ton feu"),
@@ -3373,7 +3374,7 @@ NEWPF_TRA2 = {
 "flexile-curse": CU("Malédiction de souplesse", 1, ["armure", "ramollissement"], why="armure et bouclier ramollissent", cible_obj=["armure"]),
 "fluid-form": SH("Forme fluide", 1, ["eau", "corps"], why="un corps d'eau"),
 "forced-quiet": CU("Silence forcé", 3, ["bruit", "silence"], why="ne peut faire de bruit"),
-"fractions-of-heal-and-harm": EP("Part des soins et des maux", V("flux"), 1, ["vie", "dégâts"], why="ton prochain sort blessant te soigne"),
+"fractions-of-heal-and-harm": EP("Part des soins et des maux", V("flux"), 1, ["vie", "blessure"], why="ton prochain sort blessant te soigne"),
 "frightful-aspect": SH("Aspect terrifiant", 1, ["peur", "grand"], why="une forme grande et terrifiante"),
 "frostbite": EP("Engelure", NE, 3, ["froid", "fatigue"], 5, "1d6 + 1 par niveau, fatiguée"),
 "full-pouch": TM("Bourse pleine", 1, ["objet", "double"], why="un objet alchimique dédoublé", cible_obj=["objet"]),
@@ -3407,10 +3408,14 @@ NEWPF_TRA2 = {
 "hidden-speech": EP("Parole cachée", NVIS, P, ["message", "secret"], why="des messages cachés dans la parole"),
 "hidden-spring": TM("Source cachée", P, ["eau", "source"], why="une source d'eau douce"),
 "hide-weapon": TM("Arme cachée", 1, ["arme", "bras"], why="une arme cachée dans ton bras"),
-"hobble": CU("Entrave", 3, ["lenteur"], why="ralentie"),
+"hobble": CU("Pas entravé", 3, ["lenteur"], why="ralentie"),
 "hollow-blades": CU("Lames creuses", 3, ["arme", "faiblesse"], why="ses armes frappent mollement"),
-"holy-ice": TM("Glace sacrée", P, ["glace", "sacré"], why="un mur ou des javelots d'eau bénite gelée"),
-"holy-ice-weapon": TM("Arme de glace sacrée", 1, ["arme", "glace", "sacré"], why="une arme d'eau bénite gelée"),
+"holy-ice": TM("Glace bénite", P, ["glace"], why="un mur ou des javelots d'eau bénite gelée", options=[
+    O("Glace bénite — lumineux", impact=(P, ["glace", "lumineux"], "eau chargée d'énergie lumineuse, gelée en mur ou en javelots")),
+    O("Glace maudite — ténébreux", src_idx="unholy-ice", impact=(P, ["glace", "ténébreux"], "eau chargée d'énergie ténébreuse, gelée en mur ou en javelots"))]),
+"holy-ice-weapon": TM("Arme de glace bénite", 1, ["arme", "glace"], why="une arme d'eau bénite gelée", options=[
+    O("Arme de glace bénite — lumineux", impact=(P, ["arme", "glace", "lumineux"], "une arme d'eau lumineuse gelée")),
+    O("Arme de glace maudite — ténébreux", src_idx="unholy-ice-weapon", impact=(P, ["arme", "glace", "ténébreux"], "une arme d'eau ténébreuse gelée"))]),
 "hostile-levitation": EP("Lévitation hostile", TP, 3, ["lévitation"], why="soulevée du sol"),
 "human-potential": EN("Potentiel humain", 2, ["faculté"], 2, "2 ajouté à une faculté", options=[O("Potentiel humain"), O("Potentiel humain de groupe", src_idx="human-potential-mass", qty_cible=P)]),
 "hungry-earth": TM("Terre affamée", P, ["terre", "engloutissement"], why="la terre avale"),
@@ -3509,7 +3514,6 @@ PF1_RELECTURE.update({
 "virtuoso-performance": f"double la « représentation bardique » : {_cls}",
 "widen-auras": f"élargit les « auras de classe » : {_cls}",
 })
-PF1_MEME.update({"unholy-ice": "holy-ice", "unholy-ice-weapon": "holy-ice-weapon"})
 NEWPF_TRA3 = {
 "raging-rubble": TM("Éboulis enragés", P, ["roche", "roulement"], why="des pierres qui roulent et broient"),
 "rags-to-riches": EN("Haillons en richesses", 1, ["objet", "qualité"], why="un objet qui vaut un chef-d'œuvre", cible_obj=["objet"]),
@@ -3697,3 +3701,255 @@ for k in _MONDES:
     FICHES.pop(k, None); PF1_RELECTURE[k] = "suppose d'autres mondes, absents de la cosmologie d'Inarama"
 FICHES["planar-adaptation"]["options"] = [o for o in FICHES["planar-adaptation"]["options"] if o.get("src_idx") not in _MONDES]
 FICHES["alchemical-tinkering"]["impact"] = (P, ["objet", "transformation"], "un objet alchimique changé en un autre")
+
+# ===== Nettoyage validé : sous-systèmes, créatures, peuples =====
+# Sous-systèmes de règles propres à Pathfinder : écartés. Ce qui existe hors Pathfinder (hantises, empreintes psychiques,
+# ectoplasme, mémoire akashique, folie) reste.
+_SOUS = {
+"alleviate-corruption": "repose sur la « corruption », sous-système de règles propre à Pathfinder",
+"ban-corruption": "repose sur la « corruption », sous-système de règles propre à Pathfinder",
+"stave-off-corruption": "repose sur la « corruption », sous-système de règles propre à Pathfinder",
+"suppress-primal-magic": "repose sur la « magie primitive », sous-système de règles propre à Pathfinder",
+"alaznists-jinx": "repose sur les « fléaux des sorts » (spellblights), sous-système de règles propre à Pathfinder",
+"microcosm": "repose sur les « mondes intérieurs » (mindscapes), sous-système de règles propre à Pathfinder",
+"psychic-asylum": "repose sur les « mondes intérieurs » (mindscapes), sous-système de règles propre à Pathfinder",
+"mindscape-door": "repose sur les « mondes intérieurs » (mindscapes), sous-système de règles propre à Pathfinder",
+"detect-mindscape": "repose sur les « mondes intérieurs » (mindscapes), sous-système de règles propre à Pathfinder",
+"anywhere-but-here": "mène au hasard vers les plans de la cosmologie de Golarion",
+}
+# Créatures : pas de vases à Inarama ; les classes de dragons de Pathfinder sont retirées (le dragon reste).
+_CREA = {k: "met en jeu les vases, absentes d'Inarama" for k in ("conjure-black-pudding", "ooze-form-i", "ooze-form-ii", "ooze-form-iii", "touch-of-slime", "flesh-to-ooze")}
+_CREA.update({k: "classe de dragons propre à Pathfinder (le dragon reste, sans ces titres)" for k in
+    ("form-of-the-exotic-dragon-i", "form-of-the-exotic-dragon-ii", "form-of-the-exotic-dragon-iii", "form-of-the-alien-dragon-i", "form-of-the-alien-dragon-ii")})
+# Peuples : mis de côté, à reprendre avec l'étude des sorts peuple par peuple.
+_PEUP = {k: "propre à un peuple : à reprendre avec les sorts peuple par peuple" for k in
+    ("halfling-vengeance", "halfling-vengeance-mass", "human-potential", "human-potential-mass", "guardian-monument-lesser", "guardian-monument-greater")}
+for d in (_SOUS, _CREA, _PEUP):
+    for k, why in d.items():
+        FICHES.pop(k, None); PF1_RELECTURE[k] = why
+FICHES["form-of-the-dragon-i"]["options"] = [o for o in FICHES["form-of-the-dragon-i"]["options"] if o.get("src_idx") not in _CREA]
+
+# Êtres d'ailleurs rattachés aux plans : les « angéliques » au plan astral lumineux, les « démoniaques » (démons, diables, fiélons)
+# au plan astral ténébreux ; chaque sort lié à l'un reçoit sa forme réciproque (règle de réciprocité).
+AST = lambda lab, words, why: [O(f"{lab} — {e}", impact=(P, list(words) + [e], f"{why} de la face {ef} du plan astral")) for e, ef in ASTR]
+FICHES["angelic-aspect-lesser"].update(fr="Aspect astral", impact=(P, ["aspect"], "un peu de la nature des êtres astraux"), options=[
+    O(f"{lab} — {e}", src_idx=k, impact=(P, ["aspect", e] + x, f"{d}, de la face {ef} du plan astral")) for lab, k, x, d in [
+        ("Aspect astral mineur", "angelic-aspect-lesser", [], "un peu de la nature astrale"), ("Aspect astral", "angelic-aspect", ["aile"], "davantage, et des ailes"),
+        ("Aspect astral suprême", "angelic-aspect-greater", ["aile", "gloire"], "la pleine nature astrale")] for e, ef in ASTR])
+FICHES["sky-steed"].update(fr="Monture ailée", impact=(P, ["monture", "aile"], "des ailes pour ta monture"), options=AST("Monture ailée", ["monture", "aile"], "des ailes d'être astral"))
+FICHES["archons-aura"].update(fr="Aura astrale", options=AST("Aura astrale", ["aura", "faiblesse"], "une aura qui affaiblit tes ennemis, venue"))
+FICHES["archons-trumpet"].update(fr="Trompette astrale", options=AST("Trompette astrale", ["son", "paralysie"], "une sonnerie qui paralyse, venue"))
+FICHES["summon-infernal-host"].update(fr="Légion astrale", cond=[], impact=(P, ["légion"], "une légion d'êtres astraux"), options=AST("Légion astrale", ["légion"], "une légion d'êtres"))
+FICHES["devil-snare"].update(fr="Piège astral", impact=(P, ["cercle", "piège"], "un cercle invisible qui retient les êtres astraux"), options=AST("Piège astral", ["cercle", "piège"], "retient les êtres"))
+FICHES["sanctify-weapons"].update(fr="Armes contre les êtres astraux", impact=(P, ["arme"], "des armes qui mordent les êtres astraux"), options=[
+    O(f"Contre le {e}", impact=(P, ["arme", e], f"des armes qui mordent les êtres de la face {ef} du plan astral")) for e, ef in ASTR])
+FICHES["contact-nalfeshnee"].update(fr="Contact astral", impact=(9, ["savoir"], "consulter un savant être astral"), options=AST("Contact astral", ["savoir"], "consulter un savant être"))
+FICHES["barbed-chains"].update(impact=(P, ["chaîne", "peur"], "des chaînes barbelées qui frappent et effraient"), options=AST("Chaînes barbelées", ["chaîne", "peur"], "des chaînes qui frappent et effraient, venues"))
+FICHES["vision-of-hell"].update(fr="Vision du plan astral", impact=(P, ["vision", "peur"], "un paysage du plan astral qui accable"), options=AST("Vision du plan astral", ["vision", "peur"], "un paysage accablant"))
+FICHES["eaglesoul"].update(fr="Âme astrale", impact=(P, ["pouvoir"], "la force d'un être astral"), options=AST("Âme astrale", ["pouvoir"], "la force d'un être"))
+FICHES["veil-of-heaven"].update(fr="Voile astral", cond=[], impact=(P, ["garde"], "protégé des êtres astraux"), options=[
+    O(f"Contre le {e}", cond=[e], impact=(P, ["garde", e], f"protégé des êtres de la face {ef} du plan astral")) for e, ef in ASTR])
+FICHES["songbird"].update(fr="Chant astral", impact=(P, ["musique"], "une musique venue du plan astral"), options=AST("Chant astral", ["musique"], "une musique"))
+FICHES["burn-corruption"].update(fr="Purge par le feu", impact=(P, ["vie", "feu"], "des flammes violettes qui récurent toute vie du lieu"))
+# Guérison céleste et guérison infernale : un même sort, une forme lumineuse et une forme ténébreuse.
+FICHES["celestial-healing"].update(fr="Guérison astrale", options=[
+    O("Guérison astrale — lumineux", impact=(1, ["vie", "régénération", "lumineux"], "1 point par instant, puisé à l'énergie lumineuse")),
+    O("Guérison astrale suprême — lumineux", src_idx="celestial-healing-greater", impact=(4, ["vie", "régénération", "lumineux"], "4 points par instant, puisés à l'énergie lumineuse")),
+    O("Guérison astrale — ténébreux", src_idx="infernal-healing", impact=(1, ["vie", "régénération", "ténébreux"], "1 point par instant, puisé à l'énergie ténébreuse")),
+    O("Guérison astrale suprême — ténébreux", src_idx="infernal-healing-greater", impact=(4, ["vie", "régénération", "ténébreux"], "4 points par instant, puisés à l'énergie ténébreuse"))])
+FICHES.pop("infernal-healing", None)
+
+# ===== Nettoyage validé (2) =====
+# Ectoplasme et mémoire akashique : retirés (seuls hantises, empreintes psychiques et folie restent).
+for k in ("ectoplasmic-eruption", "ectoplasmic-hand", "ectoplasmic-snare", "wall-of-ectoplasm", "fumblestep", "spirit-bound-blade"):
+    FICHES.pop(k, None); PF1_RELECTURE[k] = "repose sur l'ectoplasme, notion occulte reprise par Pathfinder"
+for k in ("akashic-communion", "akashic-form", "greater-reversion", "minor-reversion", "minor-reversion-mass"):
+    FICHES.pop(k, None); PF1_RELECTURE[k] = "repose sur la mémoire akashique, notion occulte reprise par Pathfinder"
+# Géants : le géant du peuple reste une forme ; les géants « de feu, de givre, de nuage… » sont une transformation
+# élémentaire (comme la forme de dragon) : un géant fait d'un élément, non un individu. Allié géant, qui fait venir
+# un individu d'un peuple, est mis de côté avec les autres sorts de peuples.
+FICHES["giant-form-i"].update(options=[O("Forme de géant", src_idx="giant-form-i", impact=(P, ["géant", "forme", "grand"], "la forme d'un géant"))] + [
+    O(f"Forme de géant élémentaire — {n}", src_idx="giant-form-ii", fam="H", comb=c, why=f"l'élément {n.lower()}", impact=(P, ["géant", "forme", "élémentaire", w], f"un géant fait de {d}"))
+    for n, c, w, d in [("Feu", "Feu", "feu", "feu"), ("Glace", "Glace", "glace", "glace"), ("Brume", "Brume", "nuage", "nuée"), ("Tempête", "Tempête", "tempête", "tempête"), ("Roche", "Roche", "roche", "roche")]])
+for k in ("summon-giant-ally-i", "summon-giant-ally-ii", "summon-giant-ally-iii"):
+    PF1_RELECTURE[k] = "fait venir un individu du peuple des géants : à reprendre avec les sorts peuple par peuple"
+FICHES.pop("summon-giant-ally-i", None)
+# Anciens lots D&D : céleste -> être de la face lumineuse du plan astral, fiélon -> être de sa face ténébreuse.
+def _astr(ws): return [{"céleste": "lumineux", "fiélon": "ténébreux"}.get(w, w) for w in ws]
+FICHES["detect-evil-and-good"]["notes"] = ["Êtres des deux faces du plan astral, élémentaires, fées, morts-vivants : des êtres qui relèvent d'un plan (Cible 9)."]
+for k in ("protection-from-evil-and-good", "magic-circle", "planar-binding", "planar-ally"):
+    v = FICHES[k].get("v24") if False else None
+for k, key in (("protection-from-evil-and-good", "impact"), ("planar-ally", "impact")):
+    for d in (FICHES[k], FICHES[k].get("v35") or {}, FICHES[k].get("vpf") or {}):
+        if d.get(key) and d[key][1]: d[key] = (d[key][0], _astr(d[key][1]), d[key][2])
+for k in ("magic-circle", "planar-binding"):
+    for d in (FICHES[k], FICHES[k].get("v35") or {}, FICHES[k].get("vpf") or {}):
+        if d.get("cible_note"): d["cible_note"] = _astr(d["cible_note"])
+FICHES["divine-smite"]["impact_sats"] = [(5, ["ténébreux", "mort-vivant"])]
+# Avec la règle de réciprocité : chaque sort lié à une face du plan astral reçoit sa forme réciproque.
+FICHES["conjure-celestial"].update(fr="Invocation d'être astral", impact=(4, ["être"], "un être astral de puissance 4"),
+    options=[O(f"Être {e}", impact=(4, ["être", e], f"un être de la face {ef} du plan astral, de puissance 4")) for e, ef in ASTR])
+FICHES["conjure-celestial-2024"].update(fr="Invocation d'être astral (2024)", options=[
+    O(f"Colonne {ef}", impact_sats=[(39, [e])]) for e, ef in ASTR])
+FICHES["hellish-rebuke"].update(fr="Représailles astrales", options=[O(f"Représailles — {e}", impact_sats=[(P, [e])]) for e, ef in ASTR])
+
+# ===== Essai de méthode (validé) : le glyphe dit le sort par ses mécaniques, l'annotation précise =====
+# Protection contre le mal et le bien : le verbe Séparer dit la garde ; ceux dont on est gardé sont les êtres qui relèvent
+# d'un plan (satellite de Cible 9 greffé sur l'Impact) et les aberrations, œuvres de magie.
+FICHES["protection-from-evil-and-good"].update(impact=(P, [], "ni attaque franche, ni charme, ni peur, ni possession"),
+    impact_sats=[(9, ["cible"]), (P, ["aberration"])])
+# Image majeure : la Cosmétique annotée « sens trompé » compte les sens que l'illusion trompe (plein : tous).
+FICHES["major-image"].update(impact=(P, ["image"], "une illusion qui trompe tous les sens"), cosm=(P, "sens trompé"))
+# Esprit apaisé : on stabilise un être sans corps (Cible 7) ; toute agression rompt l'apaisement.
+FICHES["calm-spirit"].update(verb=V("ordre"), cible=7, cond=[], impact=(P, ["paix"], "il ne peut plus rien faire de violent"), fin=["agression"])
+# Coup repoussant : le verbe Repousser, et un Impact nu qui délivre sa force brute, au prochain coup.
+FICHES["inheritors-smite"].update(verb=V("force", True), cible=3, cond=["coup"], impact=(P, [], "le coup frappe plus juste et repousse l'adversaire"))
+# Glace bénite : mur ou javelots, deux options, chacune en forme lumineuse et ténébreuse.
+FICHES["holy-ice"].update(impact=(P, ["glace"], "eau bénite gelée"), options=[
+    O(f"Mur de glace {'bénite' if e == 'lumineux' else 'maudite'} — {e}", src_idx=k, aoe={"type": "line", "size": 90}, impact=(P, ["glace", e], f"un mur de glace d'eau chargée d'énergie {ef}"))
+    for e, ef, k in (("lumineux", "lumineuse", "holy-ice"), ("ténébreux", "ténébreuse", "unholy-ice"))] + [
+    O(f"Javelots de glace {'bénite' if e == 'lumineux' else 'maudite'} — {e}", src_idx=k, cible=3, impact=(5, ["glace", e], "1d6 + 2 par javelot (eau chargée d'énergie " + ef + ")"), impact_sats=[(9, ["nombre"])])
+    for e, ef, k in (("lumineux", "lumineuse", "holy-ice"), ("ténébreux", "ténébreuse", "unholy-ice"))])
+
+# ===== Relecture des glyphes, lot 1 : Abjuration (D&D 5e, 2024, 3.5) =====
+FICHES["resistance"]["verb"] = V("intensite")                 # on amplifie la résistance, on ne la stabilise pas
+FICHES["resistance"]["impact"] = (3, ["résistance"], "une résistance affermie un instant (1d4 ajouté à une sauvegarde)")
+FICHES["aid"]["qty_cible"] = 3                                 # jusqu'à trois alliés
+FICHES["pass-without-trace"]["qty_cible"] = P                  # le lanceur et tous ses compagnons proches
+FICHES["beacon-of-hope"]["qty_cible"] = P                      # autant d'alliés que voulu
+FICHES["magic-circle"]["cible_note"] = []                      # Cible 9 : tous les êtres qui relèvent d'un plan, sans liste
+# Les aberrations relèvent elles aussi d'un plan : la Cible 9 suffit.
+FICHES["protection-from-evil-and-good"]["impact_sats"] = [(9, ["cible"])]
+
+# ===== Relecture des glyphes, lot 2 : Abjuration de Pathfinder 1 (1/3) =====
+FICHES["abeyance"]["cible"] = 2
+FICHES["ablative-sphere-garundi"].update(aoe={"type": "sphere", "size": 5}, impact=(P, ["abri"], "une sphère de cristal qui encaisse les coups à ta place"))
+FICHES["allied-cloak"].update(cible_obj=["cape"], impact=(2, ["garde", "aide"], "une cape animée qui te garde et te prête main-forte"))
+FICHES["animus-mine"].update(verb=V("force", True), cond=["esprit"], impact=(11, ["esprit", "chancellement"], "qui touche ton esprit en paie le prix (3d6), et chancelle"))
+FICHES["anti-incorporeal-shell"].update(verb=V("force", True), aoe={"type": "sphere", "size": 10}, impact=(P, ["barrière"], "un dôme que les êtres sans corps ne peuvent franchir"), impact_sats=[(7, ["cible"])])
+FICHES["arcana-theft"]["verb"] = V("flux")
+FICHES["aura-of-inviolate-ownership"].update(cible=2, qty_cible=P)
+FICHES["banishing-blade"].update(verb=V("force", True), cond=["coup"], impact=(P, [], "chaque coup de l'arme repousse l'adversaire"))
+FICHES["bestow-grace"]["verb"] = INT
+FICHES["blade-snare"].update(verb=REL, cond=["coup"], impact=(P, ["arme"], "l'arme qui te frappe reste prise"))
+FICHES["blessing-of-liberty"]["cible"] = 1
+FICHES["clay-skin"]["impact_sats"] = [(15, ["plafond"])]
+FICHES["deflection"].update(verb=V("force", True), impact=(P, ["coup"], "les coups manqués reviennent sur leur auteur"))
+# (lot 2, 2/3)
+FICHES["free-spirit"]["cible"] = 1
+FICHES["globe-of-tranquil-water"].update(aoe={"type": "sphere", "size": 20}, impact=(P, ["pluie", "brume"], "ni pluie, ni neige, ni brume n'entrent"))
+FICHES["harvest-season"]["impact"] = (P, ["plante", "nourriture"], "une plante qui fleurit et fructifie d'un coup")
+FICHES["homeward-bound"].update(verb=V("trame", True), cible=9)
+FICHES["impenetrable-veil"]["verb"] = NVIS
+FICHES["life-bubble"]["qty_cible"] = P
+FICHES["magnetic-field"].update(verb=V("force"), aoe={"type": "sphere", "size": 30}, impact=(P, ["métal"], "le métal alentour attiré vers toi"))
+FICHES["oath-of-peace"].update(impact=(5, ["paix", "garde", "résistance"], "mieux gardé et plus résistant, mais sans frapper (+5 à la CA et aux sauvegardes)"), fin=["agression"])
+FICHES["rite-of-bodily-purity"]["cible"] = 1
+FICHES["rite-of-centered-mind"]["cible"] = 1
+FICHES["sacrificial-oath"]["impact"] = (P, ["sacrifice", "partage"], "tu prends ses blessures, longtemps")
+# (lot 2, 3/3)
+for k, why in {"word-of-resolve": "n'agit qu'avec les « auras de courage et de résolution » du paladin : pure mécanique de classe",
+               "talisman-of-reprieve": "repose sur les « traits d'alignement » des plans, règle propre à la cosmologie de Pathfinder",
+               "source-severance": "distingue magie profane et divine, distinction absente d'Inarama où la religion passe par l'Arcane",
+               "numerological-resistance": "repose sur la « Voie des Nombres » de Golarion et sur des tirages de dés, comme les autres sorts de numérologie"}.items():
+    FICHES.pop(k, None); PF1_RELECTURE[k] = why
+FICHES["sphere-of-warding"].update(impact=(P, ["possession"], "les êtres sans corps arrêtés et chassés des corps volés"), impact_sats=[(7, ["cible"])])
+FICHES["waterproof"].update(cible=1, cible_obj=["objet"])
+FICHES["theft-ward"]["cible_obj"] = ["objet"]
+
+# ===== Relecture des glyphes, lot 3 : Divination de D&D =====
+FICHES["detect-evil-and-good"]["cible_note"] = []
+
+# ===== Relecture des glyphes, lot 4 : Enchantement de D&D =====
+# Le verbe d'un symbole suit l'effet qu'il déchaîne.
+FICHES["symbol-of-sleep"]["verb"] = V("intensite", True)
+FICHES["symbol-of-persuasion"]["verb"] = V("relation")
+FICHES["symbol-of-stunning"]["verb"] = V("mouvement", True)
+FICHES["symbol-of-insanity"]["verb"] = V("ordre", True)
+FICHES["rage"]["impact"] = (2, ["fureur", "force", "endurance"], FICHES["rage"]["impact"][2])
+
+# ===== Relecture des glyphes, lot 5 : Illusion de D&D =====
+# La Cosmétique « sens trompé » compte les sens que l'illusion trompe ; l'Impact garde ce qu'on voit.
+for k, n, imp in [("silent-image", 1, ["image"]), ("minor-image", 2, ["image"]), ("persistent-image", P, ["image", "scénario"]),
+                  ("permanent-image", P, ["image"]), ("programmed-illusion", 2, ["image", "scénario"]), ("illusory-wall", 1, ["mur"]),
+                  ("project-image", 2, ["double", "vue"]), ("disguise-self", 1, ["apparence"])]:
+    old = FICHES[k].get("impact")
+    FICHES[k]["impact"] = (P, imp, old[2] if old else "")
+    FICHES[k]["cosm"] = (n, "sens trompé")
+    for v in ("v35", "vpf", "v24"):
+        if isinstance(FICHES[k].get(v), dict) and "cosm" in FICHES[k][v]: FICHES[k][v]["cosm"] = (n, "sens trompé")
+
+# ===== Relecture des glyphes, lot 6 : Invocation de D&D =====
+FICHES["conjure-animals"].update(cible=9, cible_note=["bête"])
+FICHES["spirit-guardians"]["options"] = [O("Esprits gardiens — lumineux", impact=(14, ["lumière"], "3d8, la lumière des esprits de la face lumineuse")),
+                                         O("Esprits gardiens — ténébreux", impact=(14, ["nécrose"], "3d8, la nécrose des esprits de la face ténébreuse"))]
+FICHES["guardian-of-faith"]["impact_sats"] = [(60, ["plafond"])]
+
+# ===== Relecture des glyphes, lot 7 : Nécromancie de D&D =====
+FICHES["symbol-of-pain"]["verb"] = V("intensite", True)
+FICHES["symbol-of-fear"]["verb"] = V("force", True)
+FICHES["symbol-of-weakness"]["verb"] = V("intensite", True)
+FICHES["symbol-of-death"]["verb"] = V("existence", True)
+_p = FICHES["poison"].get("impact")
+if _p: FICHES["poison"]["impact"] = (_p[0], ["poison", "endurance"], _p[2])
+
+# ===== Relecture des glyphes, lot 8 : Transmutation de D&D =====
+FICHES["control-water"]["impact"] = (P, ["inondation"], (FICHES["control-water"].get("impact") or (0, 0, ""))[2])
+_s = FICHES["shrink-item"]["impact"]; FICHES["shrink-item"]["impact"] = (16, ["taille", "fractionné"], _s[2])
+_t = FICHES["transformation"]["impact"]; FICHES["transformation"]["impact"] = (_t[0], ["force", "adresse", "endurance", "garde"], _t[2])
+
+# ===== Relecture des glyphes, lot 9 : Évocation de D&D =====
+FICHES["arcane-hand"]["impact"] = (18, [], "4d8 de force")
+FICHES["sorcerous-burst"]["options"] = [dict(o, impact_sats=[(3, ["surcroît"])]) for o in FICHES["sorcerous-burst"]["options"]]
+
+# ===== Relecture des glyphes, lot 10 : Divination de Pathfinder 1 =====
+FICHES["create-treasure-map"].update(cible=1, cible_obj=["cadavre"], cond=[])
+for _k, _w in [("heightened-awareness", ["perception", "mémoire"]), ("sensory-amplifier", ["perception", "vue"]),
+               ("sarzari-shadow-memory", ["victime", "savoir"]), ("tap-inner-beauty", ["prestance"])]:
+    _i = FICHES[_k]["impact"]; FICHES[_k]["impact"] = (_i[0], _w, _i[2])
+
+# ===== Relecture des glyphes, lot 11 : Enchantement de Pathfinder 1 =====
+for _k in ("charm-fey", "hold-fey"): FICHES[_k].update(cible=9, cible_note=["fée"], cond=[])
+FICHES["covetous-urge"]["cond_sats"] = [(32, ["valeur"])]
+FICHES["symbol-of-laughter"]["verb"] = V("ordre", True)
+FICHES["symbol-of-distraction"]["verb"] = V("relation")
+FICHES["symbol-of-strife"]["verb"] = V("relation", True)
+FICHES["symbol-of-debauchery"]["verb"] = V("relation")
+_i = FICHES["planeslayers-call"]["impact"]; FICHES["planeslayers-call"].update(impact=(_i[0], ["coup"], _i[2]), impact_sats=[(9, ["cible"])])
+FICHES.pop("mad-sultans-melody", None)
+PF1_RELECTURE["mad-sultans-melody"] = "ne touche que les vases, écartées, et imite les serviteurs d'un Dieu Extérieur de Golarion"
+
+# ===== Relecture des glyphes, lot 12 : Illusion de Pathfinder 1 =====
+_i = FICHES["haunting-mists"]["impact"]; FICHES["haunting-mists"]["impact"] = (_i[0], ["peur", "lucidité"], _i[2])
+FICHES["phantasmal-revenge"].update(cible=1, cible_obj=["cadavre"], cond=[])
+for _k, _n in [("vacuous-vessel", 2), ("alter-musical-instrument", 1), ("disguise-weapon", 1), ("adjustable-disguise", 1),
+               ("shifted-steps", 1), ("illusory-hoard", P)]:
+    FICHES[_k]["cosm"] = (_n, "sens trompé")
+
+# ===== Relecture des glyphes, lot 13 : Invocation de Pathfinder 1 =====
+_i = FICHES["blood-mist"]["impact"]; FICHES["blood-mist"]["impact"] = (_i[0], ["sang", "lucidité", "rage"], _i[2])
+_i = FICHES["planar-inquiry"]["impact"]; FICHES["planar-inquiry"]["impact"] = (_i[0], ["savoir", "réponse"], _i[2])
+FICHES["entice-fey-lesser"].update(cible_note=["fée"], cond=[])
+FICHES["entice-fey-lesser"]["options"] = [dict(o, cond=[]) if isinstance(o, dict) and "cond" in o else o for o in FICHES["entice-fey-lesser"].get("options", [])]
+
+# ===== Relecture des glyphes, lot 14 : Nécromancie de Pathfinder 1 =====
+for _k, _w in [("blood-boil", ["sang", "endurance", "fatigue"]), ("phantom-blood", ["vie", "endurance"])]:
+    _i = FICHES[_k]["impact"]; FICHES[_k]["impact"] = (_i[0], _w, _i[2])
+_i = FICHES["calamitous-flailing"]["impact"]; FICHES["calamitous-flailing"]["impact"] = (4, _i[1], _i[2])
+
+# ===== Relecture des glyphes, lot 15 : Évocation de Pathfinder 1 =====
+# La force brute est un Impact nu (règle du lot 9) : le mot « force » ne s'écrit plus quand il dit des dégâts.
+for _k in ("admonishing-ray", "battering-blast", "burst-of-force", "force-punch", "rend-body-i", "telekinetic-storm"):
+    _i = FICHES[_k]["impact"]; FICHES[_k]["impact"] = (_i[0], [w for w in _i[1] if w != "force"], _i[2])
+_i = FICHES["agonize"]["impact"]; FICHES["agonize"].update(cible=9, cond=[], impact=(_i[0], ["douleur", "obéissance"], _i[2]))
+FICHES["pinecone-bomb"]["cible_obj"] = ["pigne"]
+FICHES.pop("numerological-evocation", None)
+PF1_RELECTURE["numerological-evocation"] = "repose sur la « Voie des Nombres » de Golarion, comme les autres sorts de numérologie"
+FICHES["rend-body-i"]["options"] = [dict(o, impact=(o["impact"][0], [w for w in o["impact"][1] if w != "force"], o["impact"][2])) if isinstance(o, dict) and o.get("impact") else o for o in FICHES["rend-body-i"]["options"]]
+
+# ===== Relecture des glyphes, lot 16 : Transmutation de Pathfinder 1 =====
+_i = FICHES["crusaders-edge"]["impact"]; FICHES["crusaders-edge"].update(impact=(_i[0], ["arme", "hostile"], _i[2]), impact_sats=[(9, ["cible"])])
+_i = FICHES["infuse-self"]["impact"]; FICHES["infuse-self"].update(impact=(_i[0], ["forme"], _i[2]), impact_sats=[(9, ["forme"])])
+FICHES.pop("bone-flense", None)
+PF1_RELECTURE["bone-flense"] = "n'agit qu'avec les armes des membres de la Mante rouge, une confrérie d'assassins de Golarion"
+FICHES["sickening-entanglement"]["options"] = [dict(o, impact=(o["impact"][0], ["endurance" if w == "constitution" else w for w in o["impact"][1]], o["impact"][2])) if isinstance(o, dict) and o.get("impact") else o for o in FICHES["sickening-entanglement"]["options"]]

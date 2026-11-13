@@ -30,6 +30,7 @@ p { margin:0; max-width:75ch; }
 .nav a { text-decoration:none; }
 .chips { display:flex; flex-wrap:wrap; gap:6px; margin-top:12px; }
 .chip { font-family:var(--f-mono); font-size:.75rem; border:1px solid var(--rule); background:var(--paper); padding:3px 8px; }
+.desc { font-size:1.02rem; line-height:1.55; max-width:68ch; margin:10px 0 6px; font-style:italic; }
 .en { font-family:var(--f-mono); font-size:.85rem; color:var(--muted); margin-top:4px; }
 .sec { border-top:2px solid var(--ink); padding-top:14px; display:grid; gap:14px; }
 .pair { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
@@ -119,6 +120,9 @@ def form_html(sp, n):
 {lexique(sp)}
 {('<ul class="notes">' + notes + '</ul>') if notes else ''}</section></article>"""
 
+_DP = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "donnees", "descriptions.json")
+DESC = json.load(open(_DP, encoding="utf-8")) if os.path.exists(_DP) else {}
+def desc_of(idx): return html.escape(DESC.get(idx, ""), quote=False)
 def page(entry, prev, nxt):
     forms = entry["forms"]; sp = forms[0]
     nav = (f'<nav class="nav"><a href="../index.html">← Bibliothèque</a><span>'
@@ -129,6 +133,7 @@ def page(entry, prev, nxt):
     return HEAD.format(title=f"{sp['fr']} · Bibliothèque glyphique", root="../") + f"""
 {nav}
 <header><div class="eyebrow">{lv_name(sp['level'])} · {sp['ecole']} · {fams}</div><h1>{sp['fr']}</h1><p class="en">{sp['en']}</p>
+{('<p class="desc">' + desc_of(entry['idx']) + '</p>') if desc_of(entry['idx']) else ''}
 <p class="lede">{sp['dnd']}</p>{('<div class="chips">' + chips + '</div>') if chips else ''}</header>
 """ + "".join(form_html(f, i) for i, f in enumerate(forms)) + FOOT
 
@@ -178,7 +183,7 @@ def index(spells):
     data = []
     for s in spells:
         fs = [dict(b=x["label"], v=x["verb"], r=[[c, l] for _, c, l in x["rows"]]) for x in s["forms"]]
-        data.append(dict(i=s["idx"], f=s["fr"], e=s["en"], l=s["level"], c=s["ecole"], m=sorted(set(x["fam"] for x in s["forms"])), o=sorted(set(s["src"]) | set(form_source(x) for x in s["forms"])), d=s["forms"][0]["dnd"], x=fs))
+        data.append(dict(i=s["idx"], f=s["fr"], e=s["en"], l=s["level"], c=s["ecole"], m=sorted(set(x["fam"] for x in s["forms"])), o=sorted(set(s["src"]) | set(form_source(x) for x in s["forms"])), d=s["forms"][0]["dnd"], t=DESC.get(s["idx"], ""), x=fs))
     ecoles = sorted({s["ecole"] for s in spells})
     levels = sorted({s["level"] for s in spells})
     head = HEAD.format(title="Bibliothèque glyphique", root="").replace('<link rel="stylesheet" href="style.css">', f"<style>{CSS}{IDX_CSS}</style>").replace("<body>", '<body class="idx">')
@@ -186,7 +191,7 @@ def index(spells):
 <header><div class="eyebrow">Inarama · Arcane et Magie</div><h1>Bibliothèque glyphique</h1>
 <p class="lede">Les sorts de D&amp;D (SRD 5.1, 5.2 et 3.5) et de Pathfinder 1 transposés en glyphes d'Inarama. Touchez un sort pour lire chacune de ses formes ; les glyphes eux-mêmes sont sur sa page. <a href="regles.html">Les règles de lecture</a>.</p></header>
 <div class="bar">
-<input id="q" type="search" placeholder="Chercher un sort (français ou anglais)" aria-label="Chercher un sort">
+<input id="q" type="search" placeholder="Chercher un sort (nom ou description)" aria-label="Chercher un sort">
 <details class="flt"><summary><span id="n"></span><span>Filtres</span></summary>
 <div class="row"><span class="lbl">Niveau</span>{''.join(f'<button type="button" data-l="{l}" aria-pressed="false">{"TM" if l == 0 else l}</button>' for l in levels)}</div>
 <div class="row"><span class="lbl">Famille</span>{''.join(f'<button type="button" data-m="{k}" aria-pressed="false">{v}</button>' for k, v in FAM.items())}</div>
@@ -201,13 +206,13 @@ const st = {{l:new Set(), m:new Set(), c:new Set(), o:new Set(), q:""}};
 const SRC = {{"3.5":"D&D 3.5","5.1":"5e 2014","5.2":"5e 2024","pf1":"Pathfinder 1"}};
 const norm = s => s.normalize("NFD").replace(/[\\u0300-\\u036f]/g,"").toLowerCase();
 const esc = s => String(s).replace(/&(?!amp;|nbsp;)/g,"&amp;").replace(/</g,"&lt;");
-const body = s => `<div class="spb"><p class="dnd">${{s.d}}</p>` + s.x.map(x =>
+const body = s => `<div class="spb">${{s.t ? `<p class="desc">${{esc(s.t)}}</p>` : ""}}<p class="dnd">${{s.d}}</p>` + s.x.map(x =>
   `<div class="fm"><div class="lab">${{esc(x.b)}}</div><div class="vb">${{esc(x.v)}}</div><dl class="rd">` +
   x.r.map(r => `<dt>${{esc(r[0])}}</dt><dd>${{esc(r[1])}}</dd>`).join("") + `</dl></div>`).join("") +
   `<a class="go" href="sorts/${{s.i}}.html">Voir les glyphes →</a></div>`;
 function draw(){{
   const q = norm(st.q);
-  const f = S.filter(s => (!st.l.size||st.l.has(String(s.l))) && (!st.m.size||s.m.some(x=>st.m.has(x))) && (!st.c.size||st.c.has(s.c)) && (!st.o.size||s.o.some(x=>st.o.has(x))) && (!q||norm(s.f+" "+s.e).includes(q)));
+  const f = S.filter(s => (!st.l.size||st.l.has(String(s.l))) && (!st.m.size||s.m.some(x=>st.m.has(x))) && (!st.c.size||st.c.has(s.c)) && (!st.o.size||s.o.some(x=>st.o.has(x))) && (!q||norm(s.f+" "+s.e+" "+(s.t||"")).includes(q)));
   document.getElementById("n").textContent = f.length + " sort" + (f.length>1?"s":"") + " sur " + S.length;
   const by = {{}}; f.forEach(s => (by[s.l] = by[s.l]||[]).push(s));
   document.getElementById("out").innerHTML = Object.keys(by).sort((a,b)=>a-b).map(l =>
@@ -252,7 +257,7 @@ def regles():
 <li><b>D&amp;D 3.5.</b> Les sorts du SRD 3.5 entrent école par école. Le lanceur de référence est le plus petit lanceur capable du sort : portées, durées et nombres de cibles « par niveau » se calculent à son niveau. Un sort commun dont le glyphe change devient une forme « version 3.5 » ; les sorts propres à la 3.5 ont leur entrée.</li>
 <li><b>Dés de vie.</b> Comme les dégâts, ils se ramènent à une valeur fixe : un dé de vie vaut 4,5 points de vie (un d8), arrondi à l'entier. Réserves et seuils s'écrivent donc en « vie », comme en 5e.</li>
 <li><b>L'alignement transposé.</b> Inarama n'a pas de balance morale universelle : ce qui est bon à Galombar ne l'est pas à Hodolin. Le système d'alignement est écarté, pas les sorts. Bien et mal deviennent la bienveillance et l'hostilité envers le lanceur (Cible allié, Cible ennemi) ; loi et chaos deviennent l'énergie astrale lumineuse de l'Étoile et ténébreuse de l'Abysse, et ce qui en est chargé. Un sort « contre » l'alignement est un seul sort en trois formes : contre l'hostile, contre le lumineux, contre le ténébreux.</li>
-<li><b>Probabilités.</b> Une chance s'écrit en fraction, comme les êtres invoqués : 1 annoté « moitié », « quart », « cinquième »… plutôt qu'un pourcentage.</li>
+<li><b>Fractions et probabilités.</b> La forme porte le numérateur, et un satellite annoté « fractionné » porte le diviseur : une chance sur quatre s'écrit 1, avec un satellite 4 « fractionné » ; trois cinquièmes s'écrivent 3, avec un satellite 5 « fractionné ».</li>
 <li><b>Coût en expérience.</b> Quand un sort de la 3.5 coûte de l'expérience, le lanceur paie de sa propre substance : une Composante annotée « vie ». Un niveau d'expérience vaut un dé de vie, soit 4,5 points de vie ; moins d'un point s'écrit 1 « vie », un point ou plus s'écrit en « vie durable », retirée pour de bon.</li>
 <li><b>Échelons.</b> Des variantes qui ne diffèrent que par les chiffres (intensité, quantité, seuil) sont un même sort : une page, une forme par échelon (Soins mineurs à intensifs, Convocation de monstres I à IX…). Quand l'effet change, la variante a sa propre entrée.</li>
 <li><b>Êtres convoqués de la 3.5.</b> Le rang de la liste se convertit en facteur de puissance, sur l'échelle de la 5e : I = ½, II = 1, III = 2, IV = 4, V = 5, VI = 7, VII = 9, VIII = 11, IX = 12 (puissance de la meilleure créature de chaque liste, estimée). Les créatures célestes et fiélonnes deviennent des êtres chargés d'énergie lumineuse ou ténébreuse.</li>
@@ -270,6 +275,9 @@ def regles():
 <li><b>Valeurs trop longues.</b> Une valeur qui demanderait plus de quatre formes est arrondie à la plus proche qui s'écrit simplement ; la lecture le signale.</li>
 <li><b>Pathfinder 1.</b> Seuls les sorts légaux en Pathfinder Society sont repris. Le lanceur de référence est de niveau 2L−1 pour les classes à neuf niveaux de sorts, 3L−2 pour celles à six niveaux, le paladin et le rôdeur. Un nom propre du monde de Golarion s'efface et le sort garde son sens ; un sort dont l'effet dépend de ce monde, ou qui n'est qu'une mécanique de jeu (jets de dés, actions, dons, pouvoirs de classe), est écarté. Sont aussi écartés les sorts qui ne servent qu'aux armes à feu, ou qui supposent d'autres mondes : Inarama n'a ni l'un ni l'autre. Une mécanique de jeu dans un sort gardé se transpose par son esprit, sans vocabulaire de jeu.</li>
 <li><b>Souhait</b> se trace comme Miracle : un Impact plein « souhait », et le niveau maximal des sorts qu'il reproduit en satellite de seuil.</li>
+<li><b>Le glyphe avant l'annotation.</b> Le sort se dit d'abord par ses mécaniques : le verbe juste porte l'action, sans qu'on la répète en mot ; un Impact sans nature délivre la force brute du verbe ; les catégories d'êtres passent par les valeurs de la Cible (4 un inconnu, 5 un être dissimulé ou gardé, 7 un être sans corps, 9 un être qui relève d'un plan), en cercle ou en satellite de critère greffé sur un autre cercle ; la géométrie passe par la Forme. L'annotation précise tout ce que le glyphe doit dire pour être compris : un sort qui touche plusieurs aspects les nomme tous.</li>
+<li><b>Cosmétique « sens trompé ».</b> Annotée ainsi, la Cosmétique compte les sens qu'une illusion trompe : 1 la vue seule, plein tous les sens.</li>
+<li><b>Êtres d'ailleurs.</b> Les êtres « angéliques » et « démoniaques » relèvent des deux faces du plan astral, lumineuse et ténébreuse ; les génies, les fées et les esprits de la nature, des plans élémentaires ; les morts-vivants, du plan de l'existence ; les aberrations relèvent elles aussi d'un plan. Les créatures fabriquées sont des œuvres de magie.</li>
 <li><b>Annotations.</b> Mots français transcrits en Alde, en attendant le lexique propre.</li></ul></section>"""
     return HEAD.format(title="Règles · Bibliothèque glyphique", root="") + """
 <nav class="nav"><a href="index.html">← Bibliothèque</a></nav>

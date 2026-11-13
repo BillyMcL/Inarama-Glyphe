@@ -302,17 +302,26 @@ def build_spell(idx, fiche):
         if dmg:
             table = dmg.get("damage_at_slot_level") or dmg.get("damage_at_character_level") or {}
             d = table.get(str(level)) or (list(table.values())[0] if table else None)
-            med = MEDIUM.get(dtype)
+            med = [] if dtype == "Force" else MEDIUM.get(dtype)     # la force : Impact nu, la force brute du verbe
             if d: imp = (rnd(dice_avg(d)), med, f"{d} en moyenne")
         else:
             d = s["heal_at_slot_level"].get(str(level)) or list(s["heal_at_slot_level"].values())[0]
             imp = (rnd(dice_avg(d)), None, d.replace("MOD", "3") + " en moyenne, avec un modificateur de +3")
     if imp:
         v, med, why = imp if len(imp) == 3 else (*imp, "")
+        # fractions : la forme porte le numérateur, un satellite « fractionné » porte le diviseur (1/4 : 1, et 4 en satellite)
+        isats = list(fiche.get("impact_sats") or [])
+        if isinstance(med, list) and "fractionné" in med:
+            med = [m for m in med if m != "fractionné"]; isats.append((v, ["fractionné"])); v = 1
+        for j, st in enumerate(list(isats)):
+            if "fractionné" in (st[1] or []) and len(st[1]) > 1:
+                isats[j] = (1, [w for w in st[1] if w != "fractionné"]); isats.append((st[0], ["fractionné"]))
+        fiche = {**fiche, "impact_sats": isats}
         meds = med if isinstance(med, list) else ([med] if med else [])
         add = fiche.get("impact_add", [])
-        words = ([word(m) for m in meds] if meds else ["VIE"]) + [word(a) for a in add]
-        nat = ((", " + " · ".join(shown(m) for m in meds)) if meds else " de vie") + ((" · " if meds else ", ") + " · ".join(shown(a) for a in add) if add else "")
+        nu = isinstance(med, list) and not med      # Impact nu : liste vide, la force brute du verbe (§6.7)
+        words = ([word(m) for m in meds] if meds else ([] if nu else ["VIE"])) + [word(a) for a in add]
+        nat = ((", " + " · ".join(shown(m) for m in meds)) if meds else (", sans nature : la force brute du verbe" if nu else " de vie")) + ((" · " if meds else ", ") + " · ".join(shown(a) for a in add) if add else "")
         head = "plein" if v == "plein" else f"intensité {v}"
         rings.append(("IMPACT", v, words, head + nat + (f" ({why})" if why else "") + sat_reading(fiche.get("impact_sats")),
                       place_sats(fiche.get("impact_sats"))))
@@ -342,7 +351,8 @@ def build_spell(idx, fiche):
     # 12 Cosmétique
     if fiche.get("cosm"):
         v, w = fiche["cosm"]
-        rings.append(("COSMETIQUE", v, [word(w)], f"{w.lower()}, " + ("au maximum" if v == "plein" else f"degré {v}")))
+        sens = "sens" in w.lower()      # « sens trompé » : la valeur compte les sens trompés (1 la vue seule, plein tous les sens)
+        rings.append(("COSMETIQUE", v, [word(x) for x in w.split()], f"{w.lower()}, " + (("tous les sens" if v == "plein" else f"{v} sens") if sens else ("au maximum" if v == "plein" else f"degré {v}"))))
     # une valeur qui demanderait plus de quatre formes est arrondie à la plus proche qui s'écrit simplement
     def nforms(n): return len(SP.val(n, "up")[0])
     for i, r in enumerate(rings):

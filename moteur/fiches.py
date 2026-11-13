@@ -3953,3 +3953,96 @@ _i = FICHES["infuse-self"]["impact"]; FICHES["infuse-self"].update(impact=(_i[0]
 FICHES.pop("bone-flense", None)
 PF1_RELECTURE["bone-flense"] = "n'agit qu'avec les armes des membres de la Mante rouge, une confrérie d'assassins de Golarion"
 FICHES["sickening-entanglement"]["options"] = [dict(o, impact=(o["impact"][0], ["endurance" if w == "constitution" else w for w in o["impact"][1]], o["impact"][2])) if isinstance(o, dict) and o.get("impact") else o for o in FICHES["sickening-entanglement"]["options"]]
+
+# ===== Décisions du 13 novembre : caractéristiques, peuples, classes, noms, illusions, grimoire =====
+# 1. Table unique des caractéristiques : force, adresse, endurance, raison, lucidité, prestance.
+_CARAC = {"charisme": "prestance", "constitution": "endurance", "dextérité": "adresse", "dexterite": "adresse",
+          "intelligence": "raison", "sagesse": "lucidité"}
+def _carac(x):
+    if isinstance(x, list):
+        return [(_CARAC[w.lower()].upper() if w.isupper() else _CARAC[w.lower()]) if isinstance(w, str) and w.lower() in _CARAC else _carac(w) for w in x]
+    if isinstance(x, tuple): return tuple(_carac(w) for w in x)
+    if isinstance(x, dict): return {k: _carac(v) for k, v in x.items()}
+    return x
+for _k in list(FICHES): FICHES[_k] = _carac(FICHES[_k])
+
+# 3 et 4. Sorts rattachés à un peuple de Golarion ou à une classe : écartés.
+for _k, _why in {"infuse-self": "les formes proposées sont des peuples nés d'outre-plan (aasimar, tieffelin, ifrit…)",
+                 "elemental-mastery": "ne marche que si l'élément coule dans le sang du lanceur (ifrit, oréade…), peuples de Golarion",
+                 "summon-totem-creature-shoanti": "sort des Shoantis, peuple de Golarion",
+                 "fleshwarping-swarm-drow": "remodelage de chair des drows, peuple de Golarion",
+                 "mark-of-spite": "sort des demi-drows, peuple de Golarion",
+                 "arcane-disruption": "distingue magie profane et divine, distinction absente d'Inarama (comme Rupture de source)",
+                 "huntmasters-spear": "s'appuie sur la liste d'ennemis jurés du rôdeur : mécanique de classe",
+                 "blood-song": "ne transmet que des sorts de barde : mécanique de classe",
+                 "ki-shout": "repose sur le ki du moine : mécanique de classe"}.items():
+    FICHES.pop(_k, None); PF1_RELECTURE[_k] = _why
+
+# 5. Noms sans trace de Golarion.
+FICHES["light-of-iomedae"]["fr"] = "Lumière démasquante"
+FICHES["leshy-swarm"]["fr"] = "Nuée d'esprits végétaux"
+
+# 6. « Sens trompé » là où la source dit quels sens l'illusion trompe.
+for _k, _n in [("mirage", 1), ("quintessence", 2), ("hallucinatory-decor", 3), ("echo", 1), ("open-and-shut", 1),
+               ("decrepit-disguise", 1), ("illusion-of-calm", 1), ("horrific-doubles", 1), ("darting-duplicate", 1), ("hide-campsite", P)]:
+    FICHES[_k]["cosm"] = (_n, "sens trompé")
+FICHES["auditory-hallucination"]["options"] = [dict(o, cosm=(n, "sens trompé")) for o, n in zip(FICHES["auditory-hallucination"]["options"], [1, 2, P, P, P, P])]
+
+# 7. Le grimoire n'était qu'un premier essai : ses sorts se génèrent depuis leurs données, comme les autres.
+#    On garde les choix qui suivent les règles (verbe, combinaison quand un élément est en jeu, annotations utiles).
+_G = {
+ "spare-the-dying": dict(verb=V("ordre"), cible=2),
+ "detect-magic": dict(verb=V("visibilite"), cible=1),
+ "find-familiar": dict(verb=V("trame"), cible=7, comp=["ENCENS"]),
+ "shield": dict(fam="H", comb="Acier", why="l'écran qui détourne le coup", cible=1, cond=["coup"]),
+ "silent-image": dict(fam="H", comb="Plasma", why="la lumière qui trompe l'œil"),
+ "thunderwave": dict(verb=V("force", True), cible=P),
+ "enlarge-reduce": dict(verb=V("intensite"), cible=2, impact=(2, ["taille"], "taille doublée")),
+ "gentle-repose": dict(verb=V("nature", True), cible=1, cible_obj=["cadavre"], comp=["SEL"]),
+ "invisibility": dict(verb=V("visibilite", True), cible=2),
+ "lesser-restoration": dict(verb=V("qualite"), cible=2),
+ "levitate": dict(verb=V("mouvement"), cible=2),
+ "mirror-image": dict(verb=V("identite", True), cible=1, impact=(3, ["image"], "trois doubles"), cosm=(1, "sens trompé")),
+ "misty-step": dict(fam="H", comb="Brume", why="la brume argentée", cible=1),
+ "scorching-ray": dict(verb=V("flux", True), cible=3, impact=(7, ["feu"], "2d6 par rayon"), qty=3),
+ "animate-dead": dict(fam="H", comb="Sang", why="le sang rendu aux morts", cible=1, cible_obj=["os"]),
+ "dispel-magic": dict(verb=V("relation", True)),
+ "haste": dict(fam="R", art="chronomancie", verb=V("intensite"), cible=2, impact=(2, ["temps"], "le temps de la cible doublé")),
+ "lightning-bolt": dict(fam="H", why="la foudre", cible=P),
+ "meld-into-stone": dict(verb=V("identite"), cible=1, impact=(P, ["pierre"], "fondu dans la pierre")),
+ "slow": dict(fam="R", art="chronomancie", verb=V("qualite", True), cible=3, impact=(2, ["temps", "fractionné"], "le temps des cibles réduit de moitié")),
+ "banishment": dict(verb=V("trame", True), cible=9),
+ "dimension-door": dict(fam="R", art="spatiomancie", verb=V("existence"), cible=2, qty_cible=2),
+ "polymorph": dict(verb=V("nature"), cible=2, impact=(P, ["bête"], "changée en bête")),
+ "conjure-elemental": dict(fam="H", comb="Air", why="l'élément appelé", cible=9, comp=["ENCENS"]),
+ "contagion": dict(verb=V("qualite", True), cible=3),
+ "telepathic-bond": dict(verb=V("relation"), cible=2, comp=["COQUILLES"]),
+ "disintegrate": dict(verb=V("existence", True), cible=3, impact=(75, ["poussière"], "10d6 + 40 de force, réduite en poussière à 0")),
+ "flesh-to-stone": dict(fam="H", comb="Roche", why="la chair changée en pierre", cible=3, impact=(P, ["pierre"], "pétrifiée")),
+ "teleport": dict(fam="R", art="spatiomancie", verb=V("mouvement"), cible=2, qty_cible=9),
+}
+for _k, _d in _G.items():
+    _f = FICHES[_k]; _f.pop("grimoire", None)
+    for _x, _y in _d.items():
+        if _x == "impact" or _x not in _f: _f[_x] = _y
+    _f.setdefault("fam", "A")
+FICHES["enlarge-reduce"]["alt"] = [dict(label="Rapetisser", verb=V("intensite", True), cible=3, impact=(2, ["taille", "fractionné"], "taille réduite de moitié"))]
+FICHES["silent-image"]["alt"] = [dict(a, cosm=(1, "sens trompé"), impact=(P, ["image"], "")) if a.get("label") == "Forme arcane" else a for a in FICHES["silent-image"].get("alt", [])]
+for _a in FICHES["gentle-repose"].get("alt", []):
+    if _a.get("cible") == 4: _a.update(cible=1, cible_obj=["cadavre"])
+FICHES["magic-missile"]["impact"] = (3, [], "1d4 + 1 de force par projectile")
+# Symbole (5e) : un effet par forme, le verbe suit l'effet comme pour les symboles de la 3.5.
+FICHES["symbol"] = dict(fr="Symbole", verb=V("visibilite"), cible=P, aoe={"type": "sphere", "size": 60}, cond=["déclencheur"], fin=["déclenchement"],
+    comp=["MERCURE", "PHOSPHORE", "DIAMANT", "OPALE"], options=[
+    O("Mort", verb=V("existence", True), impact=(55, ["nécrose"], "10d10")),
+    O("Discorde", verb=V("relation", True), impact=(P, ["discorde"], "querelleuses, sans rien pouvoir dire de sensé")),
+    O("Peur", verb=V("force", True), impact=(P, ["peur"], "effrayées, elles lâchent tout et fuient")),
+    O("Désespoir", verb=V("intensite", True), impact=(P, ["désespoir"], "plus aucune envie de nuire")),
+    O("Démence", verb=V("ordre", True), impact=(P, ["folie"], "folles pour une minute")),
+    O("Douleur", verb=V("intensite", True), impact=(P, ["douleur"], "neutralisées par la douleur")),
+    O("Sommeil", verb=V("intensite", True), impact=(P, ["sommeil"], "endormies dix minutes")),
+    O("Étourdissement", verb=V("mouvement", True), impact=(P, ["étourdissement"], "étourdies"))])
+FICHES["teleport"].update(cible=2, qty_cible=8, no_aoe=True, impact=(P, ["lieu", "passage"], "vers un lieu connu du même plan"))
+FICHES["dimension-door"].update(cible=1, qty_cible=None, impact=(P, ["passage"], "une porte vers un lieu à portée"))
+FICHES["dimension-door"].pop("qty_cible")
+FICHES["symbol"]["dur"] = (P, None)

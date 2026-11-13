@@ -54,7 +54,7 @@ def _duration(d, CL):
     if tl.startswith("instantaneous"): return "Instantaneous"
     if tl.startswith("permanent"): return "Until dispelled"
     conc = tl.startswith("concentration")
-    m = re.search(r"(\d+|one) (round|rounds|min\.|minute|minutes|hour|hours|day|days)(/level| per level)?", tl)
+    m = re.search(r"(\d+|one) (rounds|round|min\.|minutes|minute|hours|hour|days|day)(/level| per level)?", tl)     # le pluriel d'abord : « 10 minutes/level » se multiplie bien par le niveau
     if not m: return "Concentration" if conc else "Special"
     n = 1 if m.group(1) == "one" else int(m.group(1))
     if m.group(3): n *= CL

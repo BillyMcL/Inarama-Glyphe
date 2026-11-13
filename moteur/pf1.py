@@ -1,7 +1,7 @@
 """Pathfinder 1 (Open Game License 1.0a, Paizo) : lecture des sorts et mise au format interne du moteur.
 
-Source des données : relevé d'Archives of Nethys (SpellTable-pf1e, licence MIT), sorts légaux en Pathfinder Society
-seulement (canon et équilibré), Technology Guide écarté. Les valeurs « par niveau » sont calculées au lanceur de référence :
+Source des données : relevé d'Archives of Nethys (SpellTable-pf1e, licence MIT), tous les sorts, légaux ou non en
+Pathfinder Society (le tri se fait à la relecture, dans fiches.py), Technology Guide écarté. Les valeurs « par niveau » sont calculées au lanceur de référence :
 le plus petit lanceur capable du sort.
 """
 import json, re
@@ -60,7 +60,7 @@ def load(path, prev=None):
     """prev : sorts déjà lus d'une autre édition (3.5), qui prêtent leur zone quand le relevé ne la donne pas"""
     out = {}
     for x in json.load(open(path, encoding="utf-8")):
-        if not x.get("PFS legal") or any(b in x["Source"] for b in EXCLU): continue
+        if any(b in x["Source"] for b in EXCLU): continue      # tous les sorts, légaux ou non en Pathfinder Society ; le tri se fait à la relecture
         sch = SCH.get(x["School"])
         if not sch: continue
         L, CL, cls = caster(x.get("access_ways", {}))

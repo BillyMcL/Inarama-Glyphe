@@ -4046,3 +4046,548 @@ FICHES["teleport"].update(cible=2, qty_cible=8, no_aoe=True, impact=(P, ["lieu",
 FICHES["dimension-door"].update(cible=1, qty_cible=None, impact=(P, ["passage"], "une porte vers un lieu à portée"))
 FICHES["dimension-door"].pop("qty_cible")
 FICHES["symbol"]["dur"] = (P, None)
+
+# ===== Refonte v2 : chaque sort relu en entier, tous ses cercles ensemble =====
+# La face astrale d'un être visé se dit par un symbole en satellite de la Cible, pas par une annotation.
+import unicodedata as _ud
+def _nrm(w): return "".join(c for c in _ud.normalize("NFD", w) if _ud.category(c) != "Mn").upper()
+def _faces(d):
+    n = [w for w in (d.get("cible_note") or []) if _nrm(w) in ("LUMINEUX", "TENEBREUX")] if isinstance(d, dict) else []
+    if n:
+        d["cible_note"] = [w for w in d["cible_note"] if w not in n]
+        d["cible_sym"] = [_nrm(w).lower() for w in n]
+for _f in FICHES.values():
+    _faces(_f)
+    for _o in _f.get("options") or []: _faces(_o)
+    for _a in _f.get("alt") or []: _faces(_a)
+def RV(k, **kw):
+    """relecture d'un sort : remplace les champs donnés ; opts={libellé: {champs}} retouche une option"""
+    opts = kw.pop("opts", None); f = FICHES[k]
+    for x, y in kw.items():
+        if y is None: f.pop(x, None)
+        else: f[x] = y
+    if opts:
+        f["options"] = [dict(o, **opts.get(o.get("label"), {})) for o in f["options"]]
+def _dicts(f):
+    out = [f]
+    for x in f.get("options") or []: out.append(x)
+    for x in f.get("alt") or []: out.append(x)
+    for v in ("v24", "v35", "vpf"):
+        if isinstance(f.get(v), dict):
+            out.append(f[v])
+            for x in f[v].get("options") or []: out.append(x)
+            for x in f[v].get("alt") or []: out.append(x)
+    return out
+_REN = {"ESPRIT": "psyché", "PENSEE": "psyché"}
+def MOVE(k, *words):
+    """les mots qui disent la destination quittent l'Impact pour l'annotation de la Cible (esprit, pensée → psyché)"""
+    W = {_nrm(w) for w in words}
+    for d in _dicts(FICHES[k]):
+        imp = d.get("impact")
+        if imp and isinstance(imp[1], str): imp = d["impact"] = (imp[0], [imp[1]], *imp[2:])
+        if not imp or not isinstance(imp[1], list): continue
+        moved = [w for w in imp[1] if _nrm(w) in W]
+        if not moved: continue
+        d["impact"] = (imp[0], [w for w in imp[1] if _nrm(w) not in W], imp[2] if len(imp) > 2 else "")
+        cn = list(d.get("cible_note") or (FICHES[k].get("cible_note") or [] if d is not FICHES[k] else []))
+        for w in moved:
+            w2 = _REN.get(_nrm(w), w)
+            if _nrm(w2) not in {_nrm(x) for x in cn}: cn.append(w2)
+        d["cible_note"] = cn
+def DROP(k, *words):
+    """mots retirés de l'Impact (dits ailleurs, en Cosmétique par exemple)"""
+    W = {_nrm(w) for w in words}
+    for d in _dicts(FICHES[k]):
+        imp = d.get("impact")
+        if imp and isinstance(imp[1], str): imp = (imp[0], [imp[1]], *imp[2:])
+        if imp and isinstance(imp[1], list) and any(_nrm(w) in W for w in imp[1]):
+            d["impact"] = (imp[0], [w for w in imp[1] if _nrm(w) not in W], imp[2] if len(imp) > 2 else "")
+def SENS(k, *sens, manif=(), opt=None):
+    """Cosmétique : les sens touchés (sens, intensité ou None) et ce qu'ils perçoivent"""
+    d = FICHES[k] if opt is None else next(o for o in FICHES[k]["options"] if o["label"] == opt)
+    d["sens"] = [s if isinstance(s, tuple) else (s, None) for s in sens]; d["manif"] = list(manif)
+
+# ----- Refonte v2, lot A : Abjuration de D&D 5e -----
+for _k, _w in [("resistance", ["résistance", "garde"]), ("mage-armor", ["garde"]), ("protection-from-evil-and-good", ["garde", "résistance"]),
+               ("shield", ["garde", "projectile"]), ("shield-of-faith", ["garde", "foi"]), ("protection-from-poison", ["résistance"]),
+               ("warding-bond", ["garde", "résistance"]), ("magic-circle", ["garde", "résistance"]), ("protection-from-energy", ["résistance"]),
+               ("stoneskin", ["résistance", "coup", "garde"]), ("antilife-shell", ["vivant"]), ("dispel-evil-and-good", ["garde"]),
+               ("holy-aura", ["garde", "résistance"]), ("mind-blank", ["esprit"])]:
+    MOVE(_k, *_w)
+RV("alarm", opts={"Alarme mentale": dict(impact=(P, ["alerte"], "un tintement dans l'esprit du lanceur")),
+                  "Alarme sonore": dict(impact=(P, ["alerte"], "une clochette qui sonne dix secondes"), sens=[("ouïe", None)], manif=["clochette"])})
+SENS("shield-of-faith", "vue", manif=["chatoiement"])
+SENS("pass-without-trace", "vue", "ouïe", manif=["ombre", "silence"])
+SENS("glyph-of-warding", "vue", manif=["glyphe"]); FICHES["glyph-of-warding"]["discret"] = 2
+SENS("magic-circle", "vue", manif=["runes", "lueur"])
+SENS("symbol", "vue", manif=["glyphe", "lueur"]); FICHES["symbol"]["discret"] = 4
+SENS("holy-aura", "vue", manif=["lumière"]); DROP("holy-aura", "lumière")
+SENS("antilife-shell", "vue", manif=["chatoiement"])
+SENS("dispel-evil-and-good", "vue", manif=["chatoiement"])
+SENS("globe-of-invulnerability", "vue", manif=["chatoiement"])
+FICHES["prismatic-wall"].pop("cosm", None); SENS("prismatic-wall", "vue", manif=["couleurs", "lumière"])
+
+# ----- Refonte v2, lot B : Divination de D&D 5e -----
+# Pour Révéler, l'Impact dit le mode de la révélation (vision, lecture, présence…) ; ce qui est cherché va en Cible.
+for _k, _w in [("guidance", ["aptitude"]), ("true-strike", ["coup"]), ("comprehend-languages", ["langue"]),
+               ("detect-poison-and-disease", ["poison", "maladie"]), ("speak-with-animals", ["bête"]), ("detect-thoughts", ["pensée"]),
+               ("find-traps", ["piège"]), ("locate-object", ["objet"]), ("see-invisibility", ["invisible", "éthéré"]),
+               ("locate-creature", ["créature"]), ("commune-with-nature", ["terrain"]), ("telepathic-bond", ["pensée"]), ("foresight", ["garde"])]:
+    MOVE(_k, *_w)
+for _k, _w in [("detect-thoughts", ["lecture"]), ("see-invisibility", ["vision"]), ("detect-poison-and-disease", ["présence", "nature"])]:
+    for _d in _dicts(FICHES[_k]):
+        if _d.get("impact"): _d["impact"] = (_d["impact"][0], _w + [w for w in _d["impact"][1] if _nrm(w) not in {_nrm(x) for x in _w}], _d["impact"][2])
+RV("detect-magic", cible=None)
+RV("identify", cible_obj=["talisman"], impact=(P, ["savoir"], "ses propriétés et la manière de s'en servir"))
+FICHES["identify"].get("vpf", {}).pop("impact", None)
+RV("divination", cible=9, cible_note=["divinité"])
+
+# ----- Refonte v2, lot C : Enchantement de D&D 5e -----
+# Un enchantement qui prend l'esprit vise la psyché : la Cible le dit.
+def PSY(*ks):
+    for k in ks:
+        for d in [FICHES[k]] + [x for x in _dicts(FICHES[k]) if x.get("cible_note")]:
+            cn = list(d.get("cible_note") or [])
+            if "psyché" not in cn: d["cible_note"] = cn + ["psyché"]
+PSY("vicious-mockery", "animal-friendship", "charm-person", "command", "hideous-laughter", "sleep", "calm-emotions", "enthrall",
+    "suggestion", "zone-of-truth", "compulsion", "confusion", "dominate-beast", "dominate-person", "geas", "irresistible-dance",
+    "mass-suggestion", "dominate-monster", "feeblemind", "modify-memory")
+for _k, _w in [("vicious-mockery", ["esprit"]), ("bane", ["coup", "résistance"]), ("bless", ["coup", "résistance"]),
+               ("heroism", ["coup", "résistance", "aptitude"]), ("modify-memory", ["mémoire"]), ("feeblemind", ["esprit", "intellect", "prestance"])]:
+    MOVE(_k, *_w)
+for _d in _dicts(FICHES["geas"]):
+    if _d.get("impact_sats"): _d["impact_sats"] = [(v, ["blessure"] if w == ["esprit"] else w) for v, w in _d["impact_sats"]]
+for _d in _dicts(FICHES["feeblemind"]):
+    if _d.get("impact_sats"): _d["impact_sats"] = [(v, ["raison"] if w == ["intellect"] else w) for v, w in _d["impact_sats"]]
+    if _d.get("cible_note"): _d["cible_note"] = ["raison" if w == "intellect" else w for w in _d["cible_note"]]
+
+# ----- Refonte v2, lot D : Illusion de D&D 5e -----
+RV("minor-illusion", opts={o["label"]: dict(cosm=(1, "sens trompé")) for o in FICHES["minor-illusion"]["options"]})
+for _k, _n in [("illusory-script", 1), ("blur", 1), ("major-image", 4), ("hallucinatory-terrain", 3), ("seeming", 1), ("mirage-arcane", 4)]:
+    FICHES[_k]["cosm"] = (_n, "sens trompé")
+DROP("mirage-arcane", "toucher")
+SENS("color-spray", "vue", manif=["couleurs", "éclat"])
+FICHES["hypnotic-pattern"].pop("cosm", None); SENS("hypnotic-pattern", "vue", manif=["couleurs", "motif"])
+SENS("magic-mouth", "vue", "ouïe", manif=["bouche", "voix"])
+SENS("silence", "ouïe", manif=["silence"])
+for _k in ("invisibility", "greater-invisibility", "mislead"): FICHES[_k]["discret"] = True
+PSY("fear", "hypnotic-pattern", "phantasmal-killer", "dream", "weird")
+for _k in ("phantasmal-killer", "dream", "weird"): MOVE(_k, "esprit")
+for _d in _dicts(FICHES["weird"]):
+    if _d.get("impact_sats"): _d["impact_sats"] = [(v, ["blessure"] if w == ["esprit"] else w) for v, w in _d["impact_sats"]]
+
+# ----- Refonte v2, lot E : Invocation de D&D 5e -----
+# Les êtres invoqués vont en Cible ; l'Impact garde leur puissance, nue.
+for _k, _w in [("conjure-animals", "bête"), ("conjure-minor-elementals", "élémentaire"), ("conjure-woodland-beings", "fée"),
+               ("conjure-elemental", "élémentaire"), ("conjure-fey", "fée"), ("planar-ally", "élémentaire")]:
+    MOVE(_k, _w)
+for _k in ("conjure-celestial", "planar-ally"):
+    for _d in _dicts(FICHES[_k]):
+        imp = _d.get("impact")
+        if imp and isinstance(imp[1], list) and any(_nrm(w) in ("ETRE",) for w in imp[1]):
+            _d["impact"] = (imp[0], [w for w in imp[1] if _nrm(w) != "ETRE"], imp[2])
+RV("conjure-celestial", opts={"Être lumineux": dict(cible_sym=["lumineux"], impact_sats=[]), "Être ténébreux": dict(cible_sym=["tenebreux"], impact_sats=[])})
+for _d in _dicts(FICHES["conjure-celestial"]):
+    if _d.get("impact") and isinstance(_d["impact"][1], list): _d["impact"] = (_d["impact"][0], [w for w in _d["impact"][1] if _nrm(w) not in ("LUMINEUX", "TENEBREUX")], _d["impact"][2])
+MOVE("find-familiar", "familier"); MOVE("find-steed", "monture")
+DROP("produce-flame", "lumière"); SENS("produce-flame", "vue", manif=["flamme", "lumière"])
+SENS("mage-hand", "vue", manif=["main"])
+SENS("entangle", "vue", manif=["lianes"])
+DROP("fog-cloud", "brouillard"); SENS("fog-cloud", "vue", manif=["brouillard"])
+SENS("grease", "vue", "toucher", manif=["graisse"])
+SENS("flaming-sphere", "vue", manif=["flamme", "lumière"])
+SENS("misty-step", "vue", manif=["brume"])
+SENS("web", "vue", "toucher", manif=["toile"])
+SENS("call-lightning", "vue", "ouïe", manif=["nuée", "éclair", "tonnerre"])
+SENS("sleet-storm", "vue", "toucher", manif=["grésil", "pluie"])
+SENS("spirit-guardians", "vue", manif=["esprits"])
+SENS("stinking-cloud", "vue", "odorat", manif=["gaz", "puanteur"])
+SENS("black-tentacles", "vue", manif=["tentacules"])
+SENS("faithful-hound", "ouïe", manif=["aboiement"])
+SENS("guardian-of-faith", "vue", manif=["gardien", "lueur"])
+SENS("cloudkill", "vue", manif=["brume"])
+SENS("insect-plague", "vue", "ouïe", manif=["criquets"])
+SENS("teleportation-circle", "vue", manif=["cercle", "sigles"])
+SENS("heroes-feast", "vue", "goût", "odorat", manif=["festin"])
+SENS("wall-of-thorns", "vue", manif=["broussailles"])
+SENS("magnificent-mansion", "vue", manif=["porte"])
+SENS("demiplane", "vue", manif=["porte", "ombre"])
+SENS("incendiary-cloud", "vue", manif=["fumée", "braises"])
+SENS("gate", "vue", manif=["portail"])
+SENS("storm-of-vengeance", "vue", "ouïe", manif=["orage", "éclairs", "tonnerre"])
+FICHES["planar-ally"]["cible_sym"] = ["lumineux", "tenebreux"]
+_i = FICHES["planar-ally"]["impact"]; FICHES["planar-ally"]["impact"] = (_i[0], [w for w in _i[1] if _nrm(w) not in ("LUMINEUX", "TENEBREUX")], _i[2])
+
+# ----- Refonte v2, lot F : Nécromancie de D&D 5e -----
+SENS("chill-touch", "vue", manif=["main", "spectre"])
+SENS("ray-of-enfeeblement", "vue", manif=["rayon", "ténèbres"])
+SENS("vampiric-touch", "vue", manif=["ombre"])
+SENS("eyebite", "vue", manif=["regard", "ténèbres"]); PSY("eyebite")
+MOVE("animate-dead", "mort-vivant"); MOVE("bestow-curse", "aptitude"); MOVE("speak-with-dead", "mort")
+RV("create-undead", cible=1, cible_obj=["cadavre"]); MOVE("create-undead", "goule")
+
+# ----- Refonte v2, lot G : Transmutation de D&D 5e -----
+def OSENS(k, table):
+    """Cosmétique par option : {libellé: (sens…, [manifestations])}"""
+    for o in FICHES[k]["options"]:
+        if o["label"] in table:
+            *ss, m = table[o["label"]]; o["sens"] = [(s_, None) for s_ in ss]; o["manif"] = m
+OSENS("druidcraft", {"Présage du temps": ("vue", ["signe"]), "Floraison": ("vue", "odorat", ["fleur"]),
+                     "Effet sensoriel": ("vue", "ouïe", "odorat", "toucher", ["feuilles", "souffle", "odeur"]), "Flamme": ("vue", ["flamme"])})
+OSENS("prestidigitation", {"Effet sensoriel": ("vue", "ouïe", "odorat", "toucher", ["étincelles", "souffle", "note", "odeur"]),
+                           "Flamme": ("vue", ["flamme"]), "Saveur et température": ("goût", "toucher", ["saveur", "chaleur"]),
+                           "Marque": ("vue", ["marque"])})
+for o in FICHES["prestidigitation"]["options"]:
+    if o["label"] == "Babiole": o["cosm"] = (1, "sens trompé")
+OSENS("thaumaturgy", {"Voix tonnante": ("ouïe", ["voix"]), "Flammes": ("vue", ["flamme"]), "Tremblements": ("vue", "toucher", ["tremblement"]),
+                      "Son": ("ouïe", ["son"]), "Porte": ("vue", "ouïe", ["porte", "claquement"]), "Regard": ("vue", ["regard"])})
+for o in FICHES["thaumaturgy"]["options"]: o["impact"] = None
+SENS("message", "ouïe", manif=["murmure"])
+for _k, _w in [("shillelagh", "arme"), ("magic-weapon", "arme"), ("alter-self", "arme")]: DROP(_k, _w)
+MOVE("barkskin", "garde"); SENS("barkskin", "vue", "toucher", manif=["écorce"])
+MOVE("darkvision", "obscurité"); MOVE("gaseous-form", "résistance"); SENS("gaseous-form", "vue", manif=["brume"])
+MOVE("speak-with-plants", "plante")
+for o in FICHES["enhance-ability"]["options"]:
+    w = {"Endurance de l'ours": "endurance", "Force du taureau": "force", "Grâce du félin": "adresse", "Splendeur de l'aigle": "prestance",
+         "Ruse du renard": "raison", "Sagesse du hibou": "lucidité"}[o["label"]]
+    i = o["impact"]; o["impact"] = (i[0], [x for x in i[1] if _nrm(x) not in ("ENDURANCE", "FORCE", "GRACE", "SPLENDEUR", "RUSE", "LUCIDITE")], i[2])
+    o["cible_note"] = [w]
+for o in FICHES["enhance-ability"]["v24"]["options"]:
+    i = o.get("impact")
+    if i: o["cible_note"] = [x for x in i[1] if _nrm(x) != "APTITUDE"]; o["impact"] = (i[0], [], i[2])
+FICHES["control-water"]["impact_add"] = []
+SENS("heat-metal", "vue", manif=["rougeoiement"])
+SENS("knock", "ouïe", manif=["fracas"])
+SENS("disintegrate", "vue", manif=["rayon"])
+DROP("wind-walk", "nuage"); SENS("wind-walk", "vue", manif=["nuée"])
+FICHES["sequester"]["discret"] = True
+
+# ----- Refonte v2, lot H : Évocation de D&D 5e -----
+def SENSL(table):
+    """Cosmétique en série : {sort: (sens…, [manifestations])}"""
+    for k, v in table.items():
+        *ss, m = v; FICHES[k].pop("cosm", None) if FICHES[k].get("cosm") and "sens" not in str(FICHES[k]["cosm"][1]).lower() else None
+        SENS(k, *ss, manif=m)
+SENSL({"dancing-lights": ("vue", ["lueurs"]), "light": ("vue", ["lumière"]), "eldritch-blast": ("vue", "ouïe", ["rayon", "crépitement"]),
+       "fire-bolt": ("vue", ["flamme"]), "ray-of-frost": ("vue", ["rayon"]), "sacred-flame": ("vue", ["flamme", "lumière"]),
+       "shocking-grasp": ("vue", ["éclair"]), "burning-hands": ("vue", ["flammes"]), "faerie-fire": ("vue", ["lueur", "couleurs"]),
+       "guiding-bolt": ("vue", ["éclair", "lueur"]), "magic-missile": ("vue", ["traits", "lueur"]), "thunderwave": ("ouïe", ["tonnerre"]),
+       "acid-arrow": ("vue", ["flèche"]), "branding-smite": ("vue", ["lumière"]), "continual-flame": ("vue", ["flamme"]),
+       "darkness": ("vue", ["ténèbres"]), "flame-blade": ("vue", ["lame", "flamme"]), "gust-of-wind": ("ouïe", "toucher", ["vent"]),
+       "moonbeam": ("vue", ["rayon", "lune"]), "shatter": ("ouïe", ["fracas"]), "spiritual-weapon": ("vue", ["arme", "spectre"]),
+       "daylight": ("vue", ["lumière"]), "fireball": ("vue", "ouïe", ["éclat", "grondement"]), "lightning-bolt": ("vue", "ouïe", ["éclair", "tonnerre"]),
+       "tiny-hut": ("vue", ["dôme"]), "wind-wall": ("ouïe", "toucher", ["vent"]), "fire-shield": ("vue", ["flammes", "lumière"]),
+       "ice-storm": ("vue", "ouïe", ["grêle"]), "resilient-sphere": ("vue", ["chatoiement"]), "wall-of-fire": ("vue", ["flammes"]),
+       "arcane-hand": ("vue", ["main", "chatoiement"]), "cone-of-cold": ("toucher", ["souffle", "froid"]), "flame-strike": ("vue", "ouïe", ["colonne", "flammes"]),
+       "blade-barrier": ("vue", "ouïe", ["lames"]), "chain-lightning": ("vue", "ouïe", ["éclairs"]), "freezing-sphere": ("vue", ["globe"]),
+       "sunbeam": ("vue", ["rayon", "lumière"]), "arcane-sword": ("vue", ["épée"]), "delayed-blast-fireball": ("vue", ["perle", "lueur"]),
+       "divine-word": ("ouïe", ["mot"]), "fire-storm": ("vue", "ouïe", ["flammes", "grondement"]), "prismatic-spray": ("vue", ["rayons", "couleurs"]),
+       "earthquake": ("ouïe", "toucher", ["grondement", "secousse"]), "sunburst": ("vue", ["lumière"]), "meteor-swarm": ("vue", "ouïe", ["météores", "flammes"])})
+MOVE("divine-favor", "coup"); MOVE("wind-wall", "projectile", "trait")
+
+# ----- Refonte v2, lot I : sorts propres aux règles de 2024 -----
+for _k in ("ice-knife", "mind-spike", "true-strike-2024"): FICHES[_k]["sans_parole"] = True
+DROP("conjure-animals-2024", "meute", "esprit"); SENS("conjure-animals-2024", "vue", manif=["meute", "esprits"])
+SENS("conjure-minor-elementals-2024", "vue", manif=["esprits", "tourbillon"])
+RV("conjure-woodland-beings-2024", impact=(23, [], "5d8 dans l'esprit"), cible_note=["psyché"]); SENS("conjure-woodland-beings-2024", "vue", manif=["esprits"])
+MOVE("conjure-fey-2024", "esprit"); SENS("conjure-fey-2024", "vue", manif=["esprit"])
+SENS("conjure-celestial-2024", "vue", manif=["colonne", "lumière"])
+SENS("conjure-elemental-2024", "vue", manif=["tourbillon"])
+MOVE("resistance-2024", "garde"); DROP("true-strike-2024", "arme"); MOVE("aura-of-life", "résistance")
+PSY("charm-monster")
+SENS("dissonant-whispers", "ouïe", manif=["murmure"])
+OSENS("elementalism", {"Appel de l'air": ("ouïe", "toucher", ["brise"]), "Appel de la terre": ("vue", ["poussière"]),
+                       "Appel du feu": ("vue", "odorat", ["braise", "fumée"]), "Appel de l'eau": ("vue", "toucher", ["bruine"])})
+SENS("ensnaring-strike", "vue", manif=["lianes"]); SENS("ice-knife", "vue", manif=["éclat"])
+MOVE("phantasmal-force", "esprit")
+SENS("ray-of-sickness", "vue", manif=["rayon"]); SENS("searing-smite", "vue", manif=["flammes"])
+RV("sorcerous-burst", opts={"Esprit": dict(impact=(5, [], "1d8 dans l'esprit"), cible_note=["psyché"])}); SENS("sorcerous-burst", "vue", manif=["éclat"])
+SENS("starry-wisp", "vue", manif=["lumière"])
+DROP("summon-dragon", "esprit"); MOVE("summon-dragon", "dragon"); SENS("summon-dragon", "vue", manif=["dragon", "esprit"])
+SENS("tsunami", "vue", "ouïe", manif=["vague"]); SENS("vitriolic-sphere", "vue", manif=["sphère"])
+
+# ----- Refonte v2, lot J : Abjuration et Divination de D&D 3.5 -----
+for _k, _w in [("entropic-shield", ["garde", "trait"]), ("protection-from-arrows", ["garde", "trait"]), ("resist-energy", ["résistance"]),
+               ("shield-other", ["garde", "résistance"]), ("antiplant-shell", ["plante"]), ("repel-vermin", ["vermine"]),
+               ("spell-resistance", ["résistance", "magie"]), ("protection-from-spells", ["résistance"]), ("stone-tell", ["pierre"]),
+               ("detect-animals-or-plants", ["bête", "plante"]), ("detect-secret-doors", ["passage", "secret"]), ("detect-snares-and-pits", ["piège"])]:
+    MOVE(_k, *_w)
+DROP("explosive-runes", "force")
+for _k, _w in [("detect-secret-doors", ["présence"]), ("detect-snares-and-pits", ["présence"])]:
+    for _d in _dicts(FICHES[_k]):
+        if _d.get("impact"): _d["impact"] = (_d["impact"][0], _w + list(_d["impact"][1]), _d["impact"][2])
+RV("analyze-dweomer", cible_obj=["talisman"], impact=(P, ["savoir"], "les sorts et les propriétés magiques"))
+SENSL({"entropic-shield": ("vue", ["couleurs", "lueur"]), "explosive-runes": ("vue", ["runes"]), "dimensional-anchor": ("vue", ["rayon"]),
+       "dimensional-lock": ("vue", ["barrière", "émeraude"]), "arcane-sight": ("vue", ["regard", "lueur"]), "prying-eyes": ("vue", ["yeux"]),
+       "prying-eyes-greater": ("vue", ["yeux"])})
+
+# ----- Refonte v2, lot K : Enchantement, Illusion, Invocation de D&D 3.5 -----
+def FACE(k):
+    """un être invoqué d'une face du plan astral : « être » quitte l'Impact, la face devient un symbole sur la Cible"""
+    for d in _dicts(FICHES[k]):
+        imp = d.get("impact")
+        if not imp or not isinstance(imp[1], list): continue
+        f_ = [w for w in imp[1] if _nrm(w) in ("LUMINEUX", "TENEBREUX")]
+        d["impact"] = (imp[0], [w for w in imp[1] if _nrm(w) not in ("LUMINEUX", "TENEBREUX", "ETRE")], imp[2] if len(imp) > 2 else "")
+        if f_: d["cible_sym"] = [_nrm(w).lower() for w in f_]
+PSY("daze", "daze-monster", "lullaby", "calm-animals", "charm-animal", "confusion-lesser", "hypnotism", "animal-trance", "crushing-despair",
+    "geas-lesser", "mind-fog", "song-of-discord", "insanity", "demand", "symbol-of-persuasion", "symbol-of-insanity", "symbol-of-sleep",
+    "touch-of-idiocy", "rainbow-pattern", "scintillating-pattern", "nightmare")
+for _k, _w in [("touch-of-idiocy", ["intellect", "lucidité", "prestance"]), ("good-hope", ["coup", "résistance", "aptitude", "blessure"]),
+               ("prayer", ["coup", "résistance", "aptitude", "blessure"]), ("crushing-despair", ["coup", "résistance", "aptitude", "blessure"]),
+               ("heroism-greater", ["coup", "résistance", "aptitude"]), ("rage", ["force", "endurance"]), ("mind-fog", ["lucidité", "volonté"]),
+               ("nightmare", ["esprit"]), ("mount", ["monture", "cheval"]), ("creeping-doom", ["nuée", "mille-pattes", "millepattes"]),
+               ("elemental-swarm", ["élémentaire"]), ("shambler", ["tertre"]), ("glitterdust", ["invisible"])]:
+    MOVE(_k, *_w)
+for _d in _dicts(FICHES["touch-of-idiocy"]):
+    if _d.get("cible_note"): _d["cible_note"] = ["raison" if w == "intellect" else w for w in _d["cible_note"]]
+for o in FICHES["summon-swarm"]["options"]:
+    i = o.get("impact")
+    if i: o["cible_note"] = list(i[1]); o["impact"] = (i[0], [], i[2])
+DROP("mind-fog", "brume"); SENS("mind-fog", "vue", manif=["brume"])
+FICHES["ventriloquism"]["cosm"] = (1, "sens trompé"); FICHES["displacement"]["cosm"] = (1, "sens trompé")
+for _k in ("persistent-image", "permanent-image"): FICHES[_k]["cosm"] = (4, "sens trompé")
+for _k in ("rainbow-pattern", "scintillating-pattern"): FICHES[_k].pop("cosm", None); SENS(_k, "vue", manif=["motif", "couleurs"])
+FACE("summon-monster-i"); DROP("summon-natures-ally-i", "bête"); DROP("summon-instrument", "instrument")
+SENS("glitterdust", "vue", manif=["poussière", "or"]); SENS("sepia-snake-sigil", "vue", manif=["symbole", "serpent"])
+for _k in ("solid-fog", "acid-fog"): DROP(_k, "brouillard"); SENS(_k, "vue", manif=["brouillard"])
+
+# ----- Refonte v2, lot L : Nécromancie et Évocation de D&D 3.5 ; les symboles -----
+PSY("cause-fear", "doom")
+for _k, _w in [("doom", ["coup", "résistance", "aptitude"]), ("poison", ["endurance"]), ("symbol-of-pain", ["coup", "aptitude"]),
+               ("symbol-of-weakness", ["force"]), ("consecrate", ["mort-vivant", "mortvivant"]), ("invisibility-purge", ["invisible"]),
+               ("divine-power", ["force", "coup"])]:
+    MOVE(_k, *_w)
+DROP("helping-hand", "main"); DROP("holy-sword", "arme")
+for _k in [k for k in FICHES if k.startswith("symbol-of") and not FICHES[k].get("sens")]: SENS(_k, "vue", manif=["glyphe", "lueur"])
+SENSL({"disrupt-undead": ("vue", ["rayon"]), "spectral-hand": ("vue", ["main", "lueur"]), "enervation": ("vue", ["rayon", "ténèbres"]),
+       "wail-of-the-banshee": ("ouïe", ["cri"]), "flare": ("vue", ["éclat"]), "sound-burst": ("ouïe", ["fracas"]), "helping-hand": ("vue", ["main"]),
+       "searing-light": ("vue", ["rayon", "lumière"]), "shout": ("ouïe", ["cri"]), "shout-greater": ("ouïe", ["cri"]), "polar-ray": ("vue", ["rayon"]),
+       "whirlwind": ("vue", "ouïe", ["tornade"]), "telekinetic-sphere": ("vue", ["chatoiement"])})
+
+# ----- Refonte v2, lot M : Transmutation de D&D 3.5 -----
+DROP("curse-water", "eau"); DROP("bless-weapon", "arme"); DROP("align-weapon", "arme"); DROP("magic-stone", "projectile")
+DROP("spike-stones", "pierre")
+for _k, _w in [("magic-fang", ["arme", "naturelle", "toutes"]), ("magic-vestment", ["garde"]), ("quench", ["feu"]),
+               ("animal-growth", ["force"]), ("righteous-might", ["force"]), ("transformation", ["force", "adresse", "endurance", "garde"]),
+               ("iron-body", ["garde"])]:
+    MOVE(_k, *_w)
+OSENS("pyrotechnics", {"Feux d'artifice": ("vue", "ouïe", ["étincelles", "éclat"]), "Fumée": ("vue", "odorat", ["fumée"])})
+for o in FICHES["pyrotechnics"]["options"]:
+    if o["label"] == "Fumée" and o.get("impact"): o["impact"] = (o["impact"][0], [w for w in o["impact"][1] if w != "fumée"], o["impact"][2])
+SENS("whispering-wind", "ouïe", manif=["murmure"])
+for o in FICHES["pyrotechnics"]["vpf"]["options"]:
+    if o["label"] == "Fumée": o["impact"] = (o["impact"][0], [w for w in o["impact"][1] if w != "fumée"], o["impact"][2])
+SENS("flame-arrow", "vue", manif=["flammes"])
+FICHES["quench"]["impact_sats"] = [(18, ["élémentaire"])]
+FICHES["rusting-grasp"]["impact_sats"] = [(11, ["créature"])]
+DROP("secret-page", "écrit", "déguisement"); FICHES["secret-page"]["cosm"] = (1, "sens trompé")
+DROP("arcane-mark", "rune"); SENS("arcane-mark", "vue", manif=["rune"])
+DROP("liveoak", "arbre")
+for o in FICHES["alarm"]["vpf"]["options"]:
+    if o.get("impact"): o["impact"] = (o["impact"][0], [w for w in o["impact"][1] if w not in ("pensée", "son")], o["impact"][2])
+
+# ----- Refonte v2, lot N : Abjuration de Pathfinder 1 -----
+for _k, _w in [("allied-cloak", ["garde"]), ("clay-skin", ["garde", "coup"]), ("cloak-of-winds", ["garde"]), ("death-from-below", ["garde"]),
+               ("gird-ally", ["garde"]), ("hedging-weapons", ["garde"]), ("mental-barrier-i", ["garde"]), ("nereids-grace", ["garde"]),
+               ("oath-of-peace", ["garde", "résistance"]), ("protection-from-natural-attacks", ["garde"]), ("sanctify-armor", ["garde"]),
+               ("shock-shield", ["garde"]), ("stunning-barrier", ["garde"]), ("tactical-formation", ["garde"]), ("veil-of-heaven", ["garde"]),
+               ("veil-of-positive-energy", ["garde"]), ("ward-the-faithful", ["garde"]), ("wave-shield", ["garde"]), ("wreath-of-blades", ["garde"]),
+               ("firewalkers-meditation", ["résistance"]), ("guarding-knowledge", ["résistance"]), ("hex-ward", ["résistance"]),
+               ("bestow-grace", ["résistance"]), ("firebelly", ["résistance"]), ("rite-of-centered-mind", ["esprit", "résistance"]),
+               ("thought-shield-i", ["esprit", "résistance"]), ("animus-mine", ["esprit"]), ("dream-shield", ["esprit"]),
+               ("enshroud-thoughts", ["pensée"]), ("intellect-fortress-i", ["esprit"]), ("tower-of-iron-will-i", ["esprit"]),
+               ("node-of-blasting", ["esprit"]), ("soul-vault", ["âme"]), ("dragon-turtle-shell", ["carapace"])]:
+    MOVE(_k, *_w)
+PSY("animus-mine", "dream-shield", "enshroud-thoughts", "intellect-fortress-i", "rite-of-centered-mind", "thought-shield-i",
+    "tower-of-iron-will-i", "absolution", "hymn-of-peace", "miserable-pity", "node-of-blasting", "fools-forbiddance", "recentering-drone")
+for _k, _w in [("absorb-rune-i", ["rune"]), ("book-ward", ["livre"]), ("caustic-safeguard", ["objet"]), ("sanctify-armor", ["armure"]),
+               ("vestment-of-the-champion", ["armure"]), ("ward-shield", ["bouclier"]), ("harvest-season", ["plante"]),
+               ("crimson-confession", ["marque", "rouge"]), ("peace-bond", ["rune"]), ("rune-of-warding", ["rune"]), ("woodland-rune", ["rune"])]:
+    DROP(_k, *_w)
+for _k in ("anti-incorporeal-shell", "sphere-of-warding"):      # « 7 cible » inventé : l'être visé est une condition
+    for d in _dicts(FICHES[_k]): d.pop("impact_sats", None)
+    FICHES[_k]["cond"] = list(FICHES[_k].get("cond") or []) + ["intangible"]
+SENSL({"crimson-confession": ("vue", ["marque"]), "peace-bond": ("vue", ["rune", "lueur"]), "rune-of-warding": ("vue", ["rune"]),
+       "woodland-rune": ("vue", ["rune"]), "medusas-bane": ("vue", ["miroir"]), "recentering-drone": ("ouïe", ["bourdon"]),
+       "hedging-weapons": ("vue", ["arme"]), "wall-of-silver": ("vue", "ouïe", ["argent", "vibration"]),
+       "wall-of-suppression": ("vue", ["étincelles"]), "undeath-ward": ("vue", ["argent"]), "sphere-of-warding": ("vue", ["lueur"]),
+       "firebelly": ("toucher", ["chaleur"]), "wave-shield": ("vue", ["eau"]), "globe-of-tranquil-water": ("vue", ["eau"]),
+       "wreath-of-blades": ("vue", ["dague"]), "cloak-of-winds": ("ouïe", ["hurlement"]), "stunning-barrier": ("vue", ["chatoiement"]),
+       "veil-of-positive-energy": ("vue", ["lueur"])})
+DROP("wreath-of-blades", "dague")
+for _k in ("devil-snare", "diminished-detection", "impenetrable-veil", "obscure-poison", "shield-speech", "enshroud-thoughts",
+           "sunder-breaker", "seers-bane", "blade-snare"):
+    FICHES[_k]["discret"] = True
+
+# ----- Refonte v2, lot O : Divination de Pathfinder 1 -----
+for _k, _w in [("mind-thrust-i", ["esprit"]), ("mindlink", ["pensée"]), ("anticipate-thoughts", ["pensée"]), ("psychic-reading", ["pensée"]),
+               ("heightened-awareness", ["mémoire"]), ("hypercognition", ["mémoire"]), ("share-memory", ["mémoire"]), ("seek-thoughts", ["pensée"]),
+               ("mind-probe", ["mémoire"]), ("thoughtsense", ["pensée"]), ("dream-scan", ["pensée"]), ("synapse-overload", ["esprit"]),
+               ("telepathy", ["pensée"]), ("truespeak", ["esprit"]), ("mindshock", ["esprit"]), ("tap-inner-beauty", ["prestance"]),
+               ("perfect-placement", ["garde"]), ("battlemind-link", ["garde"]), ("soulseeker", ["âme"]), ("sense-vitals", ["vital"])]:
+    MOVE(_k, *_w)
+PSY("discern-next-of-kin", "detect-anxieties", "detect-desires", "mental-block", "reveal-emotions", "focused-scrutiny", "pack-empathy",
+    "sense-fear", "build-trust", "domination-link")
+for _k, _w in [("blood-biography", ["sang"]), ("kreightons-perusal", ["livre"]), ("rune-trace", ["rune"]), ("questing-stone", ["pierre"]),
+               ("named-bullet", ["projectile"]), ("gilded-whispers", ["pièce"]), ("riversight", ["vue"])]:
+    DROP(_k, *_w)
+SENSL({"enchantment-sight": ("vue", ["iris"]), "commune-with-birds": ("ouïe", ["chant"]), "medusas-bane": ("vue", ["miroir"]),
+       "eagle-eye": ("vue", ["capteur"]), "mark-of-obvious-ethics": ("vue", ["marque"]), "tap-inner-beauty": ("vue", "ouïe", ["regard", "voix"])})
+DROP("mark-of-obvious-ethics", "marque")
+for _k in ("mask-from-divination", "secret-speech", "seed-spies", "insect-spies", "gilded-whispers"):
+    FICHES[_k]["discret"] = True
+
+# ----- Refonte v2, lot P : Enchantement de Pathfinder 1 -----
+# tout enchantement touche l'être en sa psyché : la Cible le dit
+_ENCH_PF1 = ['abadars-truthtelling', 'blessing-of-the-watch', 'egorian-diplomacy', 'tieldlaras-feint', 'unwitting-ally', 'adoration', 'alluring-light', 'animal-purpose-training', 'aphasia', 'beguiling-gift', 'bungle', 'call-animal', 'challenge-evil', 'charm-fey', 'compel-hostility', 'compel-tongue', 'compulsive-liar', 'crime-of-opportunity', 'deja-vu', 'delusional-pride', 'demand-offering', 'fairness', 'forbid-action', 'fumbletongue', 'haunting-reminder', 'haze-of-dreams', 'ill-omen', 'implant-urge', 'intensify-psyche', 'keep-watch', 'knights-calling', 'litany-of-sloth', 'lock-gaze', 'make-lost', 'memorize-page', 'memory-lapse', 'moment-of-greatness', 'murderous-command', 'opportunistic-loyalty', 'rally-point', 'reveal-secrets', 'stalwart-resolve', 'swallow-your-fear', 'tactical-acumen', 'telempathic-projection', 'unbreakable-heart', 'unnatural-lust', 'unprepared-combatant', 'wartrain-mount', 'wrath', 'alpha-instinct', 'anonymous-interaction', 'aura-of-distraction', 'aura-of-the-unremarkable', 'aversion', 'babble', 'bestow-insight', 'bestow-weapon-proficiency', 'bleed-for-your-master', 'blessing-of-luck-and-resolve', 'blood-rage', 'burdened-thoughts', 'cacophonous-call', 'castigate', 'charitable-impulse', 'cognitive-block', 'compassionate-ally', 'confess', 'contagious-zeal', 'covetous-urge', 'curse-of-keeping', 'deflect-blame', 'delay-pain', 'emotive-block', 'false-belief', 'heckle', 'hidden-presence', 'hold-fey', 'hoodwink', 'id-insinuation-i', 'inflict-pain', 'investigative-mind', 'jealous-rage', 'litany-of-eloquence', 'mantle-of-calm', 'miasmal-dread', 'mindlocked-messenger', 'oppressive-boredom', 'passing-fancy', 'peacemakers-parley', 'psychic-leech', 'psychonaut-manifestation', 'puzzle-box', 'qualm', 'reckless-infatuation', 'reinvigorating-wind', 'righteous-vigor', 'seducers-eyes', 'sensory-overload', 'shamefully-overdressed', 'tactical-miscalculation', 'thought-worm-i', 'touch-of-mercy', 'unadulterated-loathing', 'vexing-miscalculation', 'animal-ambassador', 'apparent-treachery', 'battle-trance', 'bereave', 'bite-the-hand', 'champions-bout', 'companion-mind-link', 'control-summoned-creature', 'curse-of-disgust', 'daze-mass', 'demanding-message', 'ego-whip-i', 'false-alibi', 'fleeting-memory', 'gullibility', 'hollow-heroism', 'implanted-projection', 'inveigle-person', 'lovers-vengeance', 'malicious-spite', 'martial-marionette', 'mind-maze', 'mind-swap', 'nixies-lure', 'out-of-sight', 'overlook', 'overwhelming-grief', 'pillow-talk', 'seeds-of-influence', 'sequester-thoughts', 'sleepwalking-suggestion', 'smug-narcissism', 'stage-fright', 'symbol-of-laughter', 'synaptic-pulse', 'synaptic-scramble', 'terrible-remorse', 'they-know', 'triggered-suggestion', 'untold-wonder', 'utter-contempt', 'antithetical-constraint', 'cowards-lament', 'crime-wave', 'curse-of-the-outcast', 'debilitating-portent', 'debilitating-speech', 'envious-urge', 'forced-repentance', 'forgetful-slumber', 'foster-hatred', 'life-of-crime', 'litany-of-madness', 'lost-passage', 'mindwipe', 'moonstruck', 'shadow-of-doubt', 'sleepwalk', 'stay-the-hand', 'symbol-of-distraction', 'apathy', 'befuddled-combatant', 'burst-of-glory', 'compelling-rant', 'contagious-suggestion', 'dahaks-release', 'denounce', 'die-for-your-master', 'foe-to-friend', 'grand-destiny', 'hymn-of-mercy', 'pessimism', 'planeslayers-call', 'pox-of-rumors', 'seek-shelter', 'serenity', 'touch-of-slumber', 'cloak-of-dreams', 'lost-legacy', 'overwhelming-presence', 'phobia', 'pied-piping', 'primal-regression', 'psychic-surgery', 'repress-memory', 'symbol-of-strife', 'unconscious-agenda', 'vengeful-outrage', 'waves-of-ecstasy', 'euphoric-tranquility', 'symbol-of-debauchery', 'divide-mind', 'heroic-invocation', 'mind-swap-major']
+for _k in _ENCH_PF1:
+    MOVE(_k, "esprit", "pensée", "mémoire", "volonté", "ego")
+PSY(*_ENCH_PF1)
+for _d in _dicts(FICHES["confess"]):
+    if _d.get("impact_sats"): _d["impact_sats"] = [(v, ["psyché" if _nrm(w) == "ESPRIT" else w for w in ws]) for v, ws in _d["impact_sats"]]
+SENSL({"nixies-lure": ("ouïe", ["chant"]), "pied-piping": ("ouïe", ["musique"]), "alluring-light": ("vue", ["lumière"]),
+       "cacophonous-call": ("ouïe", ["vacarme"]), "miasmal-dread": ("vue", "odorat", ["brume"]), "seducers-eyes": ("vue", ["regard"]),
+       "babble": ("ouïe", ["babil"]), "litany-of-eloquence": ("ouïe", ["parole"]), "burst-of-glory": ("vue", ["éclat"])})
+for _k, _w in [("nixies-lure", ["chant"]), ("pied-piping", ["chant"]), ("alluring-light", ["lumière"]), ("cacophonous-call", ["son"]),
+               ("miasmal-dread", ["brume"])]:
+    DROP(_k, *_w)
+for _k in ("overlook", "out-of-sight", "hidden-presence", "aura-of-the-unremarkable", "anonymous-interaction", "sequester-thoughts"):
+    FICHES[_k]["discret"] = True
+for _d in _dicts(FICHES["ego-whip-i"]):
+    if _d.get("cible_note"): _d["cible_note"] = ["prestance" if _nrm(w) == "EGO" else w for w in _d["cible_note"]]
+
+# ----- Refonte v2, lot Q : Illusion de Pathfinder 1 -----
+for _k, _w in [("mad-hallucination", ["esprit"]), ("dream-dalliance", ["psyché"]), ("thought-echo", ["pensée"]), ("jitterbugs", ["adresse"]),
+               ("haunting-mists", ["lucidité"]), ("phantasmal-asphyxiation", ["souffle"]), ("oneiric-horror", ["force"])]:
+    MOVE(_k, *_w)
+PSY("mirror-mantis", "oneiric-horror", "mad-hallucination", "phantasmal-affliction", "phantasmal-asphyxiation", "phantasmal-reminder",
+    "phantasmal-putrefaction", "phantasmal-web", "dream-dalliance", "night-terrors", "vision-of-lamashtu", "dreadscape", "haunting-mists",
+    "paranoia", "negative-reaction", "jitterbugs", "absurdity", "synesthesia", "thought-echo", "minor-dream", "dream-council",
+    "auditory-hallucination", "mantle-of-doubt", "impossible-angles", "isolate", "deceitful-veneer", "dream-reality", "placebo-effect")
+for _k, _w in [("dazzling-blade", ["arme", "éclat"]), ("disguise-weapon", ["arme"]), ("hidden-blades", ["arme"]), ("quieting-weapons", ["arme"]),
+               ("open-and-shut", ["porte"]), ("undetectable-trap", ["piège"]), ("obscured-script", ["écrit"]), ("geomessage", ["surface"]),
+               ("stolen-light", ["gemme"]), ("instant-fake", ["objet"]), ("umbral-weapon", ["arme"]), ("wandering-star-motes", ["lumière"]),
+               ("trail-of-the-rose", ["parfum"]), ("incessant-buzzing", ["guêpe"])]:
+    DROP(_k, *_w)
+SENSL({"dazzling-blade": ("vue", ["éclat"]), "incessant-buzzing": ("ouïe", ["bourdonnement"]), "clarion-call": ("ouïe", ["voix"]),
+       "wandering-star-motes": ("vue", ["lueurs"]), "trail-of-the-rose": ("odorat", ["parfum"]), "wall-of-nausea": ("vue", ["mur"])})
+FICHES["planetarium"]["cosm"] = (1, "sens trompé")
+for _k in ("blend", "blurred-movement", "chameleon-stride", "hidden-blades", "hide-campsite", "invisibility-bubble", "muffle-sound",
+           "selective-invisibility", "sunstalker", "shadowfade", "mask-dweomer", "undetectable-trap", "quieting-weapons", "respectful-quiet",
+           "silent-table", "lose-the-trail", "village-veil", "deceptive-redundancy", "sympathetic-aura", "aura-alteration", "peerless-integrity",
+           "false-future", "secret-sign", "illusory-hoard", "decrepit-disguise", "disguise-weapon", "ghostly-disguise", "adjustable-disguise",
+           "hide-bruises", "quintessence", "shroud-of-innocuity", "open-and-shut", "implant-false-reading", "obscured-script", "geomessage"):
+    FICHES[_k]["discret"] = True
+for _d in _dicts(FICHES["dazzling-blade"]):
+    if _d.get("impact") and not _d["impact"][1]: _d["impact"] = (_d["impact"][0], ["éblouissement"], _d["impact"][2])
+
+# ----- Refonte v2, lot R : Invocation de Pathfinder 1 -----
+def ETRE(k, *words):
+    """l'être invoqué ou le lieu de destination passe sur la Cible, tel quel (un « esprit » invoqué n'est pas la psyché)"""
+    _s = dict(_REN); _REN.clear()
+    try: MOVE(k, *words)
+    finally: _REN.update(_s)
+for _k, _w in [("aquatic-cavalry", ["monture"]), ("calistrias-guardian-wasps", ["guêpe"]), ("cape-of-wasps", ["guêpe"]),
+               ("draconic-ally", ["dragon", "serviteur"]), ("eagle-aerie", ["aigle", "monture"]), ("mad-monkeys", ["singe"]),
+               ("leshy-swarm", ["esprit"]), ("bow-spirit", ["esprit"]), ("call-spirit", ["esprit"]), ("summon-ancestral-guardian", ["ancêtre", "esprit"]),
+               ("bind-sage", ["savant"]), ("fleshworm-infestation", ["ver"]), ("frost-mammoth", ["mammouth"]), ("ghost-wolf", ["monture"]),
+               ("flame-steed", ["monture"]), ("murderous-crow", ["corbeau"]), ("pernicious-pranksters", ["fée"]), ("phantom-driver", ["cocher"]),
+               ("pocketful-of-vipers", ["vipère"]), ("rain-of-frogs", ["grenouille"]), ("release-the-hounds", ["loup"]),
+               ("spectral-scout", ["bête"]), ("summon-elder-worm", ["ver"]), ("summon-flight-of-eagles", ["aigle", "monture"]),
+               ("summon-froghemoth", ["batracien"]), ("summon-infernal-host", ["légion"]), ("summon-minor-ally", ["bête", "être"]),
+               ("summon-stampede", ["aurochs"]), ("swarm-of-fangs", ["croc"]), ("vomit-swarm", ["araignée"]), ("whip-of-spiders", ["araignée", "millepattes", "fourmi"]),
+               ("wicker-horse", ["monture"]), ("wooden-phalanx", ["golem"]), ("unseen-crew", ["équipage"]), ("phantom-chariot", ["cheval"]),
+               ("ancestral-gift", ["ancêtre"]), ("masters-escape", ["invoqué"]), ("instant-restoration", ["invoqué"]),
+               ("jannis-jaunt", ["plan"]), ("create-demiplane-lesser", ["plan"]), ("maddening-oubliette", ["plan"]), ("getaway", ["lieu"]),
+               ("hostile-juxtaposition", ["lieu"]), ("dimensional-bounce", ["lieu"]), ("bilocation", ["lieu"]), ("surface-excursion", ["surface"]),
+               ("soul-transfer", ["âme", "réceptacle"]), ("blood-mist", ["lucidité"]), ("resurgent-transformation", ["souffle"]),
+               ("expel-blood", ["sang"]), ("seamantle", ["garde"]), ("murderous-crow", ["garde"]), ("calistrias-guardian-wasps", ["garde"])]:
+    ETRE(_k, *_w)
+for _k, _w in [("entice-fey-lesser", ["fée"]), ("curative-distillation", ["remède"]), ("returning-weapon", ["arme"]), ("restful-cloak", ["cape"]),
+               ("secluded-grimoire", ["livre"]), ("light-of-iomedae", ["lumière"]), ("chains-of-light", ["lumière"]), ("dust-of-twilight", ["lumière"]),
+               ("flame-steed", ["fumée"]), ("ghost-wolf", ["fumée"]), ("ash-storm", ["vue"]), ("sand-whirlwind", ["vue"]), ("path-of-glory", ["lueur"]),
+               ("songbird", ["musique"]), ("solid-note", ["musique"])]:
+    DROP(_k, *_w)
+SENSL({"light-of-iomedae": ("vue", ["lumière"]), "chains-of-light": ("vue", ["lumière"]), "dust-of-twilight": ("vue", ["poussière", "lueur"]),
+       "flame-steed": ("vue", "odorat", ["flammes", "fumée"]), "ghost-wolf": ("vue", ["fumée"]), "ash-storm": ("vue", ["cendre"]),
+       "path-of-glory": ("vue", ["lueur"]), "songbird": ("ouïe", ["chant"]), "solid-note": ("ouïe", ["note"]),
+       "music-of-the-spheres": ("ouïe", ["musique"]), "hallucinogenic-smoke": ("vue", "odorat", ["fumée"]),
+       "nauseating-trail": ("odorat", ["puanteur"]), "wall-of-clockwork": ("vue", "ouïe", ["engrenages", "cliquetis"])})
+for _k in ("sylvan-hideaway", "secluded-grimoire", "unseen-crew"):
+    FICHES[_k]["discret"] = True
+ETRE("leshy-swarm", "plante"); ETRE("jannis-jaunt", "élémentaire"); ETRE("summon-minor-ally", "petit")
+
+# ----- Refonte v2, lot S : Nécromancie de Pathfinder 1 -----
+for _k in ("psychic-crush-i", "sessile-spirit", "haunting-choir", "purge-spirit"): MOVE(_k, "esprit")
+for _k, _w in [("bleed", ["sang"]), ("blood-boil", ["sang", "endurance"]), ("bloodbath", ["sang"]), ("fungal-infestation", ["sang"]),
+               ("touch-of-bloodletting", ["sang"]), ("symbol-of-exsanguination", ["sang"]), ("vampiric-hunger", ["sang"]),
+               ("suffocation", ["souffle"]), ("undines-curse", ["souffle"]), ("death-clutch", ["cœur"]), ("stricken-heart", ["cœur"]),
+               ("boneshatter", ["os"]), ("boneshaker", ["os"]), ("wither-limb", ["membre"]), ("phantom-limb", ["membre", "esprit"]),
+               ("decollate", ["tête"]), ("lipstitch", ["lèvre"]), ("depilate", ["poil"]), ("skinsend", ["peau"]), ("sweat-poison", ["peau"]),
+               ("parasitic-soul", ["âme", "corps"]), ("possession", ["âme", "corps"]), ("soulswitch", ["âme"]), ("speak-with-soul", ["âme"]),
+               ("death-knell-aura", ["âme"]), ("scourge-of-the-horsemen", ["âme"]), ("object-possession-lesser", ["âme"]),
+               ("siphon-might", ["force"]), ("deadly-juggernaut", ["force"]), ("phantom-blood", ["endurance"]), ("khains-army", ["goule"]),
+               ("skeleton-crew", ["squelette", "équipage"]), ("crafters-nightmare", ["esprit"]), ("entrap-spirit", ["esprit"]),
+               ("speak-with-haunt", ["hantise"]), ("sands-of-time", ["âge"]), ("bone-fists", ["garde"]), ("defending-bone", ["garde"]),
+               ("divine-transfer", ["garde"])]:
+    ETRE(_k, *_w)
+for _k, _w in [("bloody-arrows", ["trait"]), ("venomous-bolt", ["trait"]), ("reapers-coterie", ["arme"]), ("brow-gasher", ["arme"]),
+               ("curse-item", ["objet"]), ("cursed-treasure", ["objet"]), ("decompose-corpse", ["cadavre"]), ("dress-corpse", ["cadavre"]),
+               ("grasping-corpse", ["cadavre"]), ("grave-words", ["cadavre"]), ("natures-ravages", ["cadavre"]), ("restore-corpse", ["cadavre"]),
+               ("sculpt-corpse", ["cadavre"]), ("deathwine", ["potion"]), ("skin-tag", ["nourriture"]), ("retributive-reparations", ["objet"]),
+               ("object-possession-lesser", ["objet"]), ("corpse-lanterns", ["lumière"]), ("haunting-choir", ["chant"]), ("howling-agony", ["cri"]),
+               ("barrow-haze", ["brume"])]:
+    DROP(_k, *_w)
+SENSL({"corpse-lanterns": ("vue", ["lueurs"]), "haunting-choir": ("ouïe", ["chant"]), "howling-agony": ("ouïe", ["cri"]),
+       "banshee-blast": ("ouïe", ["cri"]), "barrow-haze": ("vue", ["brume"]), "virulent-miasma": ("vue", "odorat", ["brume", "miasme"]),
+       "plague-storm": ("vue", "odorat", ["nuage"]), "wall-of-bone": ("vue", ["os"]), "flesh-wall": ("vue", "odorat", ["chair"])})
+PSY("psychic-crush-i", "sessile-spirit", "haunting-choir", "aura-of-doom", "feast-on-fear", "garrulous-grin", "unsettling-presence",
+    "persuasive-goad", "litany-of-admonition", "hydrophobia", "black-mark", "interrogation", "grim-stalker", "sadomasochism", "howling-agony")
+FICHES["catatonia"]["discret"] = True
+
+# ----- Refonte v2, lot T : Transmutation de Pathfinder 1 -----
+# relecture systématique : l'objet déjà nommé sur la Cible quitte l'Impact ; les parts de l'être transformées passent sur la Cible
+_TRA_PF1 = ['aboleths-lung', 'absorbing-inhalation', 'absorbing-touch', 'abstemiousness', 'accelerate-poison', 'acid-maw', 'acute-senses', 'adhesive-blood', 'adjustable-polymorph', 'adroit-retrieval', 'age-resistance-lesser', 'air-breathing', 'air-step', 'alchemical-allocation', 'alchemical-tinkering', 'aldori-alacrity', 'allfood', 'alter-river', 'alter-winds', 'amplify-elixir', 'anchored-step', 'angelic-aspect-lesser', 'animal-aspect', 'ant-haul', 'anthropomorphic-animal', 'ape-walk', 'arboreal-hammer', 'arodens-magic-army', 'arodens-spellsword', 'artificers-curse', 'aspect-of-the-bear', 'aspect-of-the-falcon', 'aspect-of-the-nightingale', 'aspect-of-the-stag', 'aspect-of-the-wolf', 'assume-appearance', 'atavism', 'badgers-ferocity', 'baphomets-blessing', 'beast-shape-i', 'billowing-skirt', 'binding-earth', 'blade-lash', 'blade-of-light', 'bladed-dash', 'blast-barrier', 'blessing-of-fervor', 'blessing-of-the-mole', 'blessing-of-the-salamander', 'blood-armor', 'blood-sentinel', 'bloodhound', 'body-capacitance', 'boiling-blood', 'bombers-eye', 'bowstaff', 'brand', 'break', 'bristle', 'brittle-portal', 'buoyancy', 'burning-disarm', 'burrow', 'burst-of-adrenaline', 'burst-of-insight', 'burst-of-speed', 'calcific-touch', 'call-weapon', 'carry-companion', 'carve-passage', 'caustic-blood', 'cauterizing-weapon', 'certain-grip', 'channel-vigor', 'charge-object', 'cheetahs-sprint', 'claim-identity', 'clear-grove', 'cloud-shape', 'codespeak', 'concealed-breath', 'condensed-ether', 'control-construct', 'conversing-wind', 'countless-eyes', 'crafters-fortune', 'create-holds', 'crimson-breath', 'crusaders-edge', 'cup-of-dust', 'curse-of-burning-sleep', 'dance-of-a-hundred-cuts', 'dancing-lantern', 'deft-digits', 'delectable-flesh', 'detoxify', 'dimensional-blade', 'diminish-resistance', 'disable-construct', 'disfiguring-touch', 'dissolution', 'divine-arrow', 'divine-pursuit', 'divine-vessel', 'dongun-shapers-touch', 'dragonvoice', 'drain-poison', 'dust-form', 'earth-tremor', 'echolocation', 'effortless-armor', 'eldritch-conduit', 'elemental-body-i', 'elude-time', 'emblazon-crest', 'emblem-of-greed', 'empower-holy-water', 'enemy-hammer', 'energy-hack', 'enhance-water', 'enlightened-step', 'enter-image', 'entomb', 'erode-defenses', 'eroding-ray', 'eruptive-pustules', 'ether-step', 'ethereal-fists', 'excruciating-deformation', 'expeditious-excavation', 'extreme-flexibility', 'eyes-of-the-void', 'fabricate-disguise', 'face-of-the-devourer', 'fair-is-foul', 'false-age', 'false-face', 'fear-the-sun', 'feast-of-ashes', 'feather-step', 'fey-form-i', 'form-of-the-dragon-i', 'giant-form-i', 'monstrous-physique-i', 'plant-shape-i', 'magical-beast-shape', 'fickle-winds', 'fiery-body', 'film-of-filth', 'fins-to-feet', 'fire-trail', 'firebrand', 'firefall', 'flames-of-the-faithful', 'fleeting-defect', 'fleshcurdle', 'flexile-curse', 'fluid-form', 'forced-quiet', 'fractions-of-heal-and-harm', 'frightful-aspect', 'frostbite', 'full-pouch', 'funereal-weapon', 'fungal-blisters', 'fury-of-the-sun', 'geniekind', 'ghost-brand', 'ghostbane-dirge', 'glide', 'golden-guise', 'gorums-armor', 'grappling-scarf', 'gravity-bow', 'gravity-sphere', 'gravity-well', 'green-caress', 'greensight', 'groundswell', 'hags-seasoning', 'hairline-fractures', 'hammer-of-mending', 'handy-grapnel', 'harmless-form', 'heart-of-the-mammoth', 'heart-of-the-metal', 'heavy-water', 'heightened-reflexes', 'hellmouth-lash', 'hidden-knowledge', 'hidden-speech', 'hidden-spring', 'hide-weapon', 'hobble', 'hollow-blades', 'holy-ice', 'holy-ice-weapon', 'hostile-levitation', 'hungry-earth', 'ice-armor', 'ice-body', 'inheritors-smite', 'innocence', 'innocuous-shape', 'instrument-of-agony', 'invigorating-poison', 'iron-spine', 'ironbeard', 'ironbloom-sprouts', 'irregular-size', 'jury-rig', 'keen-senses', 'kinetic-reverberation', 'lead-blades', 'liberating-command', 'life-channel', 'lighten-object', 'lightning-conductor', 'lily-pad-stride', 'linebreaker', 'liquefy', 'litany-of-defense', 'litany-of-vengeance', 'lockjaw', 'long-arm', 'longshot', 'magnifying-chime', 'malfunction', 'mantle-of-the-magic-warriors', 'marching-chant', 'marids-mastery', 'mark-of-blood', 'mark-of-buoyancy', 'martyrs-bargain', 'masters-mutation', 'masterwork-transformation', 'merge-with-familiar', 'miasmatic-form', 'mighty-strength', 'mirror-hideaway', 'mirror-polish', 'mirror-strike', 'mirror-transport', 'monkey-fish', 'monstrous-extremities', 'natural-rhythm', 'natures-exile', 'negate-aroma', 'oasis', 'obsidian-flow', 'overstimulate', 'parchment-swarm', 'particulate-form', 'peasant-armaments', 'perceive-cues', 'persistent-vigor', 'phantom-hunt', 'phasic-challenge', 'planar-adaptation', 'plant-voice', 'poisoned-egg', 'polar-midnight', 'polymorph-familiar', 'polypurpose-panacea', 'pouncing-fury', 'pup-shape', 'putrefy-food-and-drink', 'quick-change', 'raging-rubble', 'rags-to-riches', 'rapid-repair', 'ravens-flight', 'reboot', 'redcaps-touch', 'refine-improvised-weapon', 'reinforce-armaments', 'remarkable-legerdemain', 'reprobation', 'resilient-reservoir', 'resinous-skin', 'resist-starvation', 'resize-item', 'resonating-word', 'resounding-clang', 'revenant-armor', 'ride-the-waves', 'rigor-mortis', 'rivals-weald', 'ropeweave', 'rotgut', 'rovagugs-fury', 'rubberskin', 'rune-of-durability', 'rune-of-ruin', 'sabotage-construct', 'saddle-surge', 'salvage', 'sanctify-weapons', 'savage-maw', 'sawtooth-terrain', 'scamper', 'scent-trail', 'scorching-ash-form', 'scriveners-chant', 'sculpt-simulacrum', 'sculpted-cape', 'sea-of-dust', 'sea-steed', 'sebaceous-twin', 'seismic-fissure', 'serrens-armor-lock', 'serrens-swift-girding', 'shadow-body', 'shadowy-haven', 'shapechangers-gift', 'shield-of-shards', 'shifting-sand', 'sickening-entanglement', 'sickening-strikes', 'siege-of-trees', 'silk-to-steel', 'sky-steed', 'sky-swim', 'snake-staff', 'snapdragon-fireworks', 'snow-shape-ulfen', 'solidify-earth', 'sonic-form', 'spit-venom', 'splinter-spell-resistance', 'squeeze', 'staggering-fall', 'steady-saddle', 'steal-breath', 'stench-of-prey', 'stoke-the-inner-fire', 'stone-fist', 'stone-throwing', 'strangling-hair', 'strong-jaw', 'sturdy-tree-fort', 'submerge-ship', 'substitute-trail', 'sun-metal', 'suns-disdain', 'sundering-shards', 'surefoot-boots', 'swallow-poison', 'swarm-skin', 'sword-to-snake', 'symbol-of-slowing', 'tail-current', 'tail-strike', 'tailwind', 'tar-ball', 'tar-pool', 'tattoo-potion', 'telekinetic-assembly', 'telekinetic-maneuver', 'telekinetic-volley', 'temporal-divergence', 'temporary-graft', 'thorn-body', 'threefold-aspect', 'threefold-face', 'time-shudder', 'tireless-pursuit', 'touch-injection', 'touch-of-gracelessness', 'touch-of-the-sea', 'toxic-blood', 'transfer-tattoo', 'transfiguring-touch', 'transmute-blood-to-acid', 'transmute-golem', 'transmute-potion-to-poison', 'treasure-stitching', 'tripvine', 'twin-form', 'twisted-innards', 'twisted-space', 'undead-anatomy-i', 'underbrush-decoy', 'unerring-weapon', 'urban-grace', 'vengeful-stinger', 'venomous-bite', 'vermin-shape-i', 'versatile-weapon', 'vex-giant', 'vigor', 'violent-accident', 'vocal-alteration', 'waft', 'wandering-trail', 'wandering-weather', 'wave-form', 'weapon-of-awe', 'weapons-against-evil', 'weaponwand', 'wilderness-soldiers', 'wind-blades', 'windy-escape', 'wing-thorns', 'winged-sword', 'wizened-appearance', 'wooden-wing-shield', 'world-wave', 'wrathful-weapon', 'zephyrs-fleetness', 'zone-of-foul-flames']
+_CORPS = ["souffle", "sang", "peau", "visage", "œil", "os", "membre", "corps", "chair", "jambe", "barbe", "voix", "bras", "cheveux",
+          "queue", "articulation", "vital", "gueule", "poing", "force", "adresse", "endurance", "raison", "lucidité", "prestance", "garde"]
+for _k in _TRA_PF1:
+    _obj = [w for d in _dicts(FICHES[_k]) for w in (d.get("cible_obj") or [])]
+    if _obj: DROP(_k, *_obj)
+    ETRE(_k, *_CORPS)
+    MOVE(_k, "esprit", "mémoire")
+for _k, _w in [("magnifying-chime", ["son"]), ("resounding-clang", ["vibration"]), ("marching-chant", ["chant"]), ("snapdragon-fireworks", ["dragon"]),
+               ("underbrush-decoy", ["bruissement"]), ("film-of-filth", ["puanteur"])]:
+    DROP(_k, *_w)
+SENSL({"magnifying-chime": ("ouïe", ["carillon"]), "resounding-clang": ("ouïe", ["fracas"]), "marching-chant": ("ouïe", ["chant"]),
+       "snapdragon-fireworks": ("vue", "ouïe", ["étincelles", "dragon"]), "underbrush-decoy": ("ouïe", ["bruissement"]),
+       "film-of-filth": ("odorat", ["puanteur"]), "fear-the-sun": ("vue", ["lumière"]), "emblazon-crest": ("vue", ["blason"]),
+       "dancing-lantern": ("vue", ["lueur"]), "blade-of-light": ("vue", ["lumière"]), "eyes-of-the-void": ("vue", ["ténèbres"])})
+PSY("burst-of-insight", "overstimulate", "frightful-aspect", "instrument-of-agony", "weapon-of-awe")
+for _k in ("concealed-breath", "negate-aroma", "hidden-speech", "codespeak", "remarkable-legerdemain", "hide-weapon", "substitute-trail",
+           "false-face", "fabricate-disguise", "false-age", "innocuous-shape", "claim-identity", "assume-appearance", "mirror-hideaway"):
+    FICHES[_k]["discret"] = True
+
+# ----- Refonte v2, lot U : Évocation de Pathfinder 1 -----
+_EVO_PF1 = ['admonishing-ray', 'aggressive-thundercloud', 'agonize', 'air-geyser', 'apsus-shining-scales', 'archons-aura', 'archons-trumpet', 'augmenting-wall', 'ball-lightning', 'battering-blast', 'beacon-of-guilt', 'betraying-sting', 'biting-words', 'blast-of-wind', 'blazing-rainbow', 'blinding-ray', 'blistering-invective', 'blood-crow-strike', 'burn-corruption', 'burning-arc-keleshite', 'burning-entanglement', 'burning-gaze', 'burst-bonds', 'burst-of-force', 'burst-of-radiance', 'call-the-void', 'campfire-wall', 'chain-of-perdition', 'chains-of-fire', 'channel-the-gift', 'chord-of-shards', 'cleansing-fire', 'cold-ice-strike', 'contagious-flame', 'contingent-scroll', 'controlled-fireball', 'cosmic-ray', 'creeping-ice', 'damnation', 'dancing-darkness', 'daybreak-arrow', 'deadeyes-arrow', 'deadmans-contingency', 'deafening-song-bolt', 'decapitate', 'defensive-shock', 'detonate', 'discordant-blast', 'discovery-torch', 'distracting-cacophony', 'distressing-tone', 'dousing-rain', 'draconic-reservoir', 'dread-bolt', 'ear-piercing-scream', 'elemental-aura', 'elemental-touch', 'emergency-force-sphere', 'etheric-shards', 'explode-head', 'extreme-buoyancy', 'fiery-runes', 'final-sacrifice', 'fire-breath', 'fire-snake', 'fires-friend', 'firestream', 'flashfire', 'flickering-lights', 'flurry-of-snowballs', 'force-hook-charge', 'force-punch', 'force-sword', 'forceful-strike', 'frigid-touch', 'frost-fall', 'furious-fire-barrage', 'gentle-breeze', 'gozrehs-trident', 'gusting-sphere', 'heatstroke', 'holy-whisper', 'horn-of-pursuit', 'hungry-darkness', 'hydraulic-push', 'hydraulic-torrent', 'ice-slick', 'icy-prison', 'incorporeal-chains', 'jolting-portent', 'last-azlantis-defending-sword', 'lead-anchor', 'leashed-shackles', 'light-lance', 'light-prison', 'lightning-arc', 'lightning-lash', 'litany-of-order', 'litany-of-righteousness', 'litany-of-thunder', 'mages-decree', 'martial-telekinesis', 'molten-orb', 'moonrise-arrow', 'morning-sun', 'motes-of-dusk-and-dawn', 'mydriatic-spontaneity', 'neutral-buoyancy', 'night-of-blades', 'pain-strike', 'pale-flame', 'path-of-the-winds', 'piercing-shriek', 'pilfering-hand', 'pinecone-bomb', 'poison-breath', 'protective-penumbra', 'pyrotechnic-eruption', 'rebuke', 'reflexive-barrier', 'rend-body-i', 'resounding-blow', 'revealing-light', 'ricochet-shot', 'ride-the-lightning', 'river-of-wind', 'rope-tornado', 'runic-overload', 'sacred-nimbus', 'sacred-space', 'sanctify-corpse', 'scouring-winds', 'screaming-flames', 'sheet-lightning', 'shield-of-darkness', 'shield-of-the-dawnflower', 'shifting-shadows', 'shining-cord', 'shroud-of-darkness', 'siege-scatter', 'sign-of-wrath', 'silverlight', 'sirocco', 'snowball', 'sonic-scream', 'sonic-thrust', 'spark', 'spellcasting-contract-lesser', 'spiritual-ally', 'spiritual-squire', 'spontaneous-immolation', 'spotlight', 'steam-ray-fusillade', 'stormbolts', 'suppressing-stone', 'symbol-of-storms', 'tamers-lash', 'telekinetic-charge', 'telekinetic-projectile', 'telekinetic-storm', 'telekinetic-strikes', 'thundering-drums', 'thunderstomp', 'touch-of-combustion', 'tracking-mark', 'transfer-familiar', 'trial-by-fire', 'trial-of-fire-and-acid', 'twilight-knife', 'unbearable-brightness', 'unflappable-mien', 'unwelcome-halo', 'vengeful-comets', 'vitriolic-mist', 'volcanic-storm', 'vortex', 'wake-of-light', 'wall-of-sound', 'wall-of-split-illumination', 'winds-of-vengeance', 'wrathful-mantle']
+_VUE = {"LUMIERE": "lumière", "SOLEIL": "lumière", "HALO": "halo", "AUBE": "lueur", "ETINCELLE": "étincelles", "FUMEE": "fumée",
+        "TENEBRES": "ténèbres", "OMBRE": "ombre", "ARC": "arc-en-ciel"}
+_OUIE = {"SON": "son", "CRI": "cri", "CHANT": "chant", "MUSIQUE": "musique", "BRUIT": "vacarme", "MURMURE": "murmure", "TROMPETTE": "trompette"}
+for _k in _EVO_PF1:
+    _obj = [w for d in _dicts(FICHES[_k]) for w in (d.get("cible_obj") or [])]
+    if _obj: DROP(_k, *_obj)
+    ETRE(_k, "tête", "membre", "garde")
+    _imp = FICHES[_k].get("impact"); _ws = [_nrm(w) for w in (_imp[1] if _imp and isinstance(_imp[1], list) else [])]
+    _s, _m = [], []
+    if any(w in _VUE for w in _ws): _s.append("vue"); _m += [_VUE[w] for w in _ws if w in _VUE]
+    if any(w in _OUIE for w in _ws): _s.append("ouïe"); _m += [_OUIE[w] for w in _ws if w in _OUIE]
+    if _s and not FICHES[_k].get("sens"): SENS(_k, *_s, manif=list(dict.fromkeys(_m)))
+SENSL({"archons-trumpet": ("ouïe", ["trompette"]), "fire-snake": ("vue", ["serpent"]), "screaming-flames": ("vue", "ouïe", ["flammes", "cri"]),
+       "thundering-drums": ("ouïe", ["tambours"]), "deafening-song-bolt": ("ouïe", ["chant"]), "flashfire": ("vue", ["fumée", "flammes"])})
+DROP("flashfire", "fumée"); DROP("burning-entanglement", "fumée"); SENS("burning-entanglement", "vue", manif=["fumée"])
+PSY("agonize", "blistering-invective", "holy-whisper", "rebuke", "dread-bolt", "suppressing-stone", "mydriatic-spontaneity")
+MOVE("suppressing-stone", "esprit")
+# Vraie parole : comprendre et parler toute langue, ce n'est pas toucher la psyché (sinon elle se confond avec Télépathie)
+for _d in _dicts(FICHES["truespeak"]):
+    _d.pop("cible_note", None)
+    if _d.get("impact"): _d["impact"] = (_d["impact"][0], ["parole", "langue"], _d["impact"][2])

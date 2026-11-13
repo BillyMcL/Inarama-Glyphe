@@ -157,6 +157,26 @@ def split_rare(crits):
     return lum, ten
 
 # ---------- un sort ----------
+SYMS = {"feu": "feu", "air": "air", "terre": "terre", "eau": "eau", "lumineux": "lumineux", "tenebreux": "tenebreux"}
+SYM_FR = {"feu": "le feu", "air": "l'air", "terre": "la terre", "eau": "l'eau", "lumineux": "la face lumineuse", "tenebreux": "la face ténébreuse"}
+def sym(n): return ("sym", n)
+def vshow(v):
+    return f"symbole de {SYM_FR[v[1]]}" if isinstance(v, tuple) and v and v[0] == "sym" else ("vide" if v is None else str(v))
+def verbal(s):
+    """le sort a-t-il une composante verbale ? (§2 : la parole est la forme la plus commune de la Condition)"""
+    c = s.get("components")
+    if c is None: c = (s.get("_fields") or {}).get("components")
+    if isinstance(c, list): return "V" in c
+    if not c: return True          # composantes inconnues (quelques sorts de 2024) : la parole, cas ordinaire
+    return bool(re.match(r"\s*V\b", str(c)))
+# un sort hybride porte déjà sa combinaison dans le noyau : ces médiums la répètent
+REDIT = {"Feu": {"FEU"}, "Glace": {"FROID", "GLACE"}, "Foudre": {"FOUDRE"}, "Éclair": {"FOUDRE", "ECLAIR"}, "Orage": {"TONNERRE", "ORAGE", "FOUDRE"},
+         "Acide sulfurique": {"ACIDE"}, "Ammoniac": {"POISON"}, "Eau": {"EAU"}, "Air": {"AIR", "VENT"}, "Terre": {"TERRE"}, "Lave": {"LAVE"},
+         "Vapeur ardente": {"VAPEUR"}, "Brume": {"BRUME"}, "Tempête": {"TEMPETE"}, "Roche": {"ROCHE"}, "Plasma": {"PLASMA"}}
+# un sort d'Arcane qui décrit un impact élémentaire le dit par les symboles des éléments, en satellites de l'Impact
+ELEM_UNITS = {"FEU": ["feu"], "AIR": ["air"], "TERRE": ["terre"], "EAU": ["eau"], "FROID": ["air", "terre", "eau", "eau"],
+              "GLACE": ["air", "terre", "eau", "eau"], "FOUDRE": ["feu", "feu", "air", "air"], "TONNERRE": ["feu", "feu", "air", "eau"],
+              "ACIDE": ["feu", "air", "eau", "eau"], "LAVE": ["feu", "terre", "terre", "terre"], "VAPEUR": ["feu", "feu", "feu", "eau"], "POISON": ["feu", "air", "air", "eau"], "VENT": ["air"]}
 def place_sats(sats):
     """satellites annotés (valeur, [mots]) : un seul se place au nord ou au sud ; deux, de part et d'autre"""
     if not sats: return []
@@ -166,7 +186,7 @@ def place_sats(sats):
     return [(a, v, " ".join(word(w) for w in ws)) for a, (v, ws) in zip(angles, sats)]
 def sat_reading(sats):
     if not sats: return ""
-    return "".join(f" ; satellite {'vide' if v is None else v} « {' · '.join(shown(w) for w in ws)} »" for v, ws in sats)
+    return "".join(f" ; satellite {vshow(v)}" + (f" « {' · '.join(shown(w) for w in ws)} »" if ws else "") for v, ws in sats)
 
 GRAFT = ("impact", "impact_add", "impact_sats", "cond", "cond_sats", "fin", "cible_note", "qty")
 def graft(idx, fiche, g, fam, s, fr, level, ecole, hemi, notes):
@@ -256,6 +276,8 @@ def build_spell(idx, fiche):
         val, *opt = c if isinstance(c, tuple) else (c,)
         words = [word(w) for w in fiche.get("cible_obj", [])]
         reading = (("objet annoté « " + fiche["cible_obj"][0].lower() + " »") if words else CIBLES.get(val, str(val)))
+        if dtype == "Psychic" and not fiche.get("impact") and "psyché" not in (fiche.get("cible_note") or []):
+            fiche = {**fiche, "cible_note": list(fiche.get("cible_note") or []) + ["psyché"]}
         if fiche.get("cible_note"):
             words += [word(w) for w in fiche["cible_note"]]
             reading += ", précisé « " + " · ".join(shown(w) for w in fiche["cible_note"]) + " »"
@@ -263,16 +285,31 @@ def build_spell(idx, fiche):
         if fiche.get("qty_cible"):
             q = fiche["qty_cible"]; sats = [(90, q)]
             reading += " ; satellite Quantité " + ("plein : tous ceux que je choisis" if q == "plein" else str(q))
+        for k_, fs in enumerate(fiche.get("cible_sym", [])):
+            sats.append((270 if k_ == 0 else 210 + 60 * k_, sym(fs)))
+            reading += f" ; satellite : symbole de {SYM_FR[fs]}"
         rings.append(("CIBLE", val, words, reading, sats))
     # 3-4 Forme, Ampleur
     aoe = fiche.get("aoe") or s.get("area_of_effect")
     if aoe and not fiche.get("no_aoe"):
         sil, sats, nom, gr = FORMES[aoe["type"]]
-        size = ft2m(aoe["size"] * (2 if gr == "DIAMETRE" else 1)); unit, u = "METRES", "m"
-        if size >= 1000: size, unit, u = rnd(size / 1000), "KILOMETRES", "km"
+        t, a_ = aoe["type"], aoe["size"] * 0.3048
         rings.append(("FORME", sil, [], nom, sats))
-        lab = {"DIAMETRE": "de diamètre", "COTE": "de côté", "LONGUEUR": "de long"}[gr]
-        rings.append(("AMPLEUR", size, [gr, unit], f"{size} {u} {lab}"))
+        if t == "line":
+            size, unit, u = max(1, rnd(a_)), "METRES", "m"
+            if size >= 1000: size, unit, u = rnd(size / 1000), "KILOMETRES", "km"
+            rings.append(("AMPLEUR", size, ["LONGUEUR", unit], f"{size} {u} de long"))
+        else:
+            vol = {"sphere": 4 / 3 * math.pi * a_ ** 3, "cube": a_ ** 3, "cone": math.pi * (a_ / 2) ** 2 * a_ / 3,
+                   "cylinder": math.pi * a_ ** 2 * (2 * a_)}[t]
+            base = {"sphere": f"sphère de {ft2m(aoe['size'])} m de rayon", "cube": f"cube de {ft2m(aoe['size'])} m de côté",
+                    "cone": f"cône de {ft2m(aoe['size'])} m de long", "cylinder": f"cylindre de {ft2m(aoe['size'])} m de rayon (hauteur prise égale au diamètre)"}[t]
+            # l'unité grandit pour que la valeur s'écrive en quatre formes au plus (9 × 9 × 9 × 9)
+            for div, unit, u in ((1, ["METRES", "CUBES"], "m³"), (1e3, ["DECAMETRES", "CUBES"], "dam³"),
+                                 (1e6, ["HECTOMETRES", "CUBES"], "hm³"), (1e9, ["KILOMETRES", "CUBES"], "km³")):
+                if vol / div <= 6000: break
+            size = max(1, rnd(vol / div))
+            rings.append(("AMPLEUR", size, [word(x) for x in ["volume"] + unit], f"{size} {u} ; taille d'origine : {base}"))
     for extra in fiche.get("forme", []):     # forme saisie à la main (disque, etc.)
         rings.append((extra[0], extra[1], [word(w) for w in extra[2]], *extra[3:]))
     # 5 Durée
@@ -291,10 +328,11 @@ def build_spell(idx, fiche):
     loc = fiche.get("loc") or localisation(s["range"])
     if loc and not fiche.get("no_loc"):
         rings.append(("LOCALISATION", loc[0], [loc[1]] if loc[1] else [], loc[2]))
-    # 7 Condition
-    if fiche.get("cond"):
-        cw = [word(w) for w in fiche["cond"]]
-        rd = " ; ".join(f"« {shown(w)} »" for w in fiche["cond"])
+    # 7 Condition : la composante verbale est la Condition la plus commune (§2) ; les restrictions s'y ajoutent
+    conds = (["parole"] if verbal(s) and not fiche.get("sans_parole") else []) + [c for c in (fiche.get("cond") or []) if not (verbal(s) and norm(c) == "PAROLE")]
+    if conds:
+        cw = [word(w) for w in conds]
+        rd = " ; ".join(f"« {shown(w)} »" for w in conds)
         rings.append(("CONDITION", len(cw), cw, rd + sat_reading(fiche.get("cond_sats")), place_sats(fiche.get("cond_sats"))))
     # 8 Impact
     imp = fiche.get("impact")
@@ -302,7 +340,7 @@ def build_spell(idx, fiche):
         if dmg:
             table = dmg.get("damage_at_slot_level") or dmg.get("damage_at_character_level") or {}
             d = table.get(str(level)) or (list(table.values())[0] if table else None)
-            med = [] if dtype == "Force" else MEDIUM.get(dtype)     # la force : Impact nu, la force brute du verbe
+            med = [] if dtype in ("Force", "Psychic") else MEDIUM.get(dtype)     # force et dégâts psychiques : Impact nu (la psyché est dite par la Cible)
             if d: imp = (rnd(dice_avg(d)), med, f"{d} en moyenne")
         else:
             d = s["heal_at_slot_level"].get(str(level)) or list(s["heal_at_slot_level"].values())[0]
@@ -316,11 +354,37 @@ def build_spell(idx, fiche):
         for j, st in enumerate(list(isats)):
             if "fractionné" in (st[1] or []) and len(st[1]) > 1:
                 isats[j] = (1, [w for w in st[1] if w != "fractionné"]); isats.append((st[0], ["fractionné"]))
-        fiche = {**fiche, "impact_sats": isats}
         meds = med if isinstance(med, list) else ([med] if med else [])
+        nb = [st for st in isats if (st[1] or []) == ["nombre"]]
+        if nb and not fiche.get("qty"): fiche = {**fiche, "qty": nb[0][0]}
+        isats = [st for st in isats if (st[1] or []) != ["nombre"]]
+        # faces du plan astral : un symbole en satellite, sur la Cible quand c'est l'être visé, sur l'Impact sinon
+        faces = [norm(m) for m in meds if norm(m) in ("LUMINEUX", "TENEBREUX")]
+        if faces:
+            meds = [m for m in meds if norm(m) not in ("LUMINEUX", "TENEBREUX")]
+            isats += [(sym(f_.lower()), []) for f_ in faces]
+        comb_ = fiche.get("comb") or DAMAGE_COMBO.get(dtype) or comb_def
+        red = REDIT.get(comb_, set()) | {norm(comb_)}
+        if fam == "H":
+            if any(norm(m) in red for m in meds):
+                meds = [m for m in meds if norm(m) not in red]
+                if not meds: med = []
+        else:
+            els = [m for m in meds if norm(m) in ELEM_UNITS]
+            for m in els: isats += [(sym(u_), []) for u_ in ELEM_UNITS[norm(m)]]
+            if els:
+                meds = [m for m in meds if norm(m) not in ELEM_UNITS]
+                if not meds: med = []
+        if isinstance(med, list) and not meds: med = []
+        add_ = list(fiche.get("impact_add", []))
+        if fam == "H": add_ = [a_ for a_ in add_ if norm(a_) not in red]
+        else:
+            for a_ in [a_ for a_ in add_ if norm(a_) in ELEM_UNITS]: isats += [(sym(u_), []) for u_ in ELEM_UNITS[norm(a_)]]
+            add_ = [a_ for a_ in add_ if norm(a_) not in ELEM_UNITS]
+        fiche = {**fiche, "impact_sats": isats, "impact_add": add_}
         add = fiche.get("impact_add", [])
-        nu = isinstance(med, list) and not med      # Impact nu : liste vide, la force brute du verbe (§6.7)
-        words = ([word(m) for m in meds] if meds else ([] if nu else ["VIE"])) + [word(a) for a in add]
+        nu = isinstance(med, list) and not meds     # Impact nu : liste vide, la force brute du verbe (§6.7)
+        words = list(dict.fromkeys(([word(m) for m in meds] if meds else ([] if nu else ["VIE"])) + [word(a) for a in add]))
         nat = ((", " + " · ".join(shown(m) for m in meds)) if meds else (", sans nature : la force brute du verbe" if nu else " de vie")) + ((" · " if meds else ", ") + " · ".join(shown(a) for a in add) if add else "")
         head = "plein" if v == "plein" else f"intensité {v}"
         rings.append(("IMPACT", v, words, head + nat + (f" ({why})" if why else "") + sat_reading(fiche.get("impact_sats")),
@@ -335,7 +399,7 @@ def build_spell(idx, fiche):
         cw = [word(w) for w in fiche["comp"]] + (["CONSOMME"] if consumed else [])
         c_ = cost(s); val = None; rd = ", ".join(shown(w) for w in fiche["comp"]) + (", consommé" if consumed else ", accompagnant")
         if c_:
-            val = c_[0]; cw.append(word(c_[1])); rd = f"valeur {c_[0]} pièce{'s' if c_[0] > 1 else ''} de {c_[1]} ; " + rd
+            val = c_[0]; cw = cw + ([word(c_[1])] if word(c_[1]) not in cw else []); rd = f"valeur {c_[0]} pièce{'s' if c_[0] > 1 else ''} de {c_[1]} ; " + rd
         rings.append(("COMPOSANTE", val, cw, rd))
     # coût en expérience (3.5) : le lanceur paie de sa propre substance. Un niveau (1 000 × niveau du lanceur en XP) vaut un DV,
     # soit 4,5 points de vie : moins d'un point → 1 « vie » ; un point ou plus → n « vie · durable » (retirée pour de bon)
@@ -348,7 +412,26 @@ def build_spell(idx, fiche):
             r = rings.pop(); sats = [(n, xw)]
             rings.append((r[0], r[1], r[2], r[3] + sat_reading(sats), place_sats(sats)))
         else: rings.append(("COMPOSANTE", n, xw, xr))
-    # 12 Cosmétique
+    # 11 Interaction avec la trame : la quantité de magie nécessaire (niveau du sort + 1 ; un tour de magie vaut 1)
+    try: lv_ = int(str(level).split()[0])
+    except ValueError: lv_ = 0
+    ival = lv_ + 1
+    isat = []; ird = f"{ival} : sort de niveau {lv_}" if lv_ else "1 : tour de magie"
+    if fiche.get("discret"):
+        dv = ival if fiche["discret"] is True else fiche["discret"]
+        isat = [("NS", dv, word("soustrait"))]
+        ird += f" ; satellite {dv} « soustrait » : la trace du sort " + ("entièrement effacée" if dv in (ival, "plein") else "réduite")
+    rings.append(("INTERACTION", ival, [], ird, isat))
+    # 12 Cosmétique : ce que les sens perçoivent du sort ; la valeur compte les sens touchés
+    if fiche.get("sens"):
+        sens_ = fiche["sens"]                                  # [(sens, intensité ou None)]
+        manif = fiche.get("manif", [])
+        n_ = "plein" if len(sens_) >= 5 else len(sens_)
+        cs = [(iv, [se]) for se, iv in sens_ if iv]
+        rd = " · ".join(shown(m) for m in manif) + f" ; {len(sens_)} sens : " + ", ".join(se for se, _ in sens_) + sat_reading(cs)
+        if fiche.get("cosm"):     # une illusion : les sens trompés s'écrivent dans un second cercle, extrait
+            pass
+        rings.append(("COSMETIQUE", n_, [word(m) for m in manif], rd, place_sats(cs)))
     if fiche.get("cosm"):
         v, w = fiche["cosm"]
         sens = "sens" in w.lower()      # « sens trompé » : la valeur compte les sens trompés (1 la vue seule, plein tous les sens)
@@ -415,6 +498,10 @@ def build_forms(idx, fiche):
                 d0 = SRD.get(idx, {}).get("damage") or {}; d0 = d0[0] if isinstance(d0, list) else d0
                 fe["comb"] = DAMAGE_COMBO.get((d0.get("damage_type") or {}).get("name")) or ECOLES[SRD[idx]["school"]["name"]][2]
         if "options" in v and v["options"] is None: fe.pop("options", None)
+        # une option de même nom garde ce que le sort donne à percevoir (Cosmétique), sauf si la version le redit
+        if v.get("options") and fiche.get("options"):
+            bo = {o["label"]: o for o in fiche["options"]}
+            fe["options"] = [dict({k: bo[o["label"]][k] for k in ("sens", "manif") if k in bo.get(o["label"], {})}, **o) for o in v["options"]]
         # en 3.5, la portée lue dans le texte est la vraie : une portée forcée pour la 5e ne la remplace pas
         if ed in ("3.5", "PF1") and "loc" not in v: fe.pop("loc", None)
         fe["alt"] = [dict(a, **{k: x for k, x in v.items() if k in ("impact", "impact_sats", "impact_add", "aoe", "options")}) if not a.get("grimoire") else dict(a)

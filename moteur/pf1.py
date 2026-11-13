@@ -80,7 +80,7 @@ def load(path, prev=None):
                    ritual=False, material=mat or None, desc=[desc], _ed="pf1", _cl=CL, _cls=cls, _sub=x.get("Subschool"),
                    _descr=x.get("Descriptors"), _xp=None, _book=re.split(r" pg\.", x["Source"])[0], _short=x.get("Short description", ""),
                    _target=x.get("Target"), _effect=x.get("Effect"), _url=x.get("Url aon"),
-                   _fields={"target": x.get("Target"), "effect": x.get("Effect"), "range": x.get("Range"), "duration": x.get("Duration")})
+                   _fields={"target": x.get("Target"), "effect": x.get("Effect"), "range": x.get("Range"), "duration": x.get("Duration"), "components": x.get("Components")})
         a = _area(area_src, rf)
         if a: rec["area_of_effect"] = a
         if "area_of_effect" not in rec and prev and k in prev and prev[k].get("area_of_effect"):

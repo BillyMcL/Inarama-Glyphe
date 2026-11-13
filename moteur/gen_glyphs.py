@@ -32,6 +32,8 @@ def value(r, spec, cx=0, cy=0):
             out.append(poly(r, arg, rot))
         elif kind == "full":
             pass                                   # plein : le cercle tracé, sans forme
+        elif kind == "sym":                        # symbole d'un élément ou d'un astre, porté par un satellite
+            out.append(symbol(arg, r))
     s = "".join(out)
     if cx or cy:
         s = f'<g transform="translate({f(cx)},{f(cy)})">{s}</g>'
@@ -96,6 +98,18 @@ def noyau(kind):
         cx, cy = pt(d, deg)
         out += f'<g transform="translate({f(cx)},{f(cy)})"><circle r="{f(rs)}" class="paper-f ink-s"/>{element(el, rs*0.62)}</g>'
     return out
+
+def symbol(name, r):
+    """élément (feu, air, terre, eau) ou face du plan astral (lumineux : l'étoile ; ténébreux : l'abîme)"""
+    if name == "lumineux":
+        out = ""
+        for k in range(8):
+            a = math.radians(45 * k); L_ = r * (0.85 if k % 2 == 0 else 0.5)
+            out += f'<line x1="{f(r*0.18*math.cos(a))}" y1="{f(r*0.18*math.sin(a))}" x2="{f(L_*math.cos(a))}" y2="{f(L_*math.sin(a))}" class="ink-s"/>'
+        return out
+    if name == "tenebreux":
+        return f'<circle r="{f(r*0.75)}" class="ink-s"/><circle cx="0" cy="{f(r*0.3)}" r="{f(r*0.42)}" class="ink-s"/>'
+    return element(name, r * 0.55)
 
 def element(el, s):
     if el == "terre":

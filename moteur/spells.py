@@ -54,6 +54,7 @@ def best_factors(n):
     return None
 def val(n, pol):
     """renvoie (spec, multiplicatif ?, polarité lisible ?)"""
+    if isinstance(n, tuple) and n[0] == "sym": return [("sym", n[1], 0)], False, True   # un symbole (élément, astre) à la place d'une valeur
     if n is None: return [], False, False                  # vide : un emplacement sans forme (le sort qu'on y inscrira)
     if n == "plein": return [("full", 0, 0)], False, False
     if n in PRIM: return [form(n, pol)], False, True

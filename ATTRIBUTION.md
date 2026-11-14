@@ -20,6 +20,10 @@ System Reference Document Copyright 2000-2003, Wizards of the Coast, Inc.; Autho
 
 Bibliothèque glyphique d'Inarama Copyright 2026, BillyMcL.
 
+## Pathfinder 2 — Open Game License v1.0a et licence ORC
+
+Les sorts de Pathfinder 2 proviennent des livres de règles de Paizo Inc. : l'édition d'origine (2019) est publiée sous l'Open Game License v1.0a, la version remaniée (2023) sous la licence ORC (Open RPG Creative License). Les données structurées (`donnees/pf2/sorts-pf2.json`) sont tirées des fichiers `data/spells` du projet Pf2eTools (https://github.com/Pf2eToolsOrg/Pf2eTools, code sous licence MIT), repris en entier ; le tri se fait à la relecture (`moteur/fiches.py`). Les noms propres du monde de Golarion restent l'identité de produit de Paizo et ne sont pas repris dans les glyphes. **À compléter :** la mention de section 15 (OGL) et l'avis ORC propres à chaque ouvrage.
+
 ## Pathfinder 1 — Open Game License v1.0a
 
 Les sorts de Pathfinder 1 proviennent des livres de règles de Paizo Inc., publiés sous l'Open Game License v1.0a (texte complet dans `donnees/srd/srd35/LICENCE-OGL.md`). Les données structurées (`donnees/pf1/sorts-pf1.json`) sont tirées du fichier SpellList.json du projet SpellTable-pf1e (https://github.com/iociveteres/SpellTable-pf1e, licence MIT), repris en entier, sorts légaux ou non en Pathfinder Society, hors *Technology Guide* ; le tri se fait à la relecture (`moteur/fiches.py`).

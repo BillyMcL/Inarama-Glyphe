@@ -175,10 +175,10 @@ details.sp .m { font-family:var(--f-mono); font-size:.72rem; color:var(--muted);
   .rd { grid-template-columns:1fr; } .rd dt { padding-top:6px; }
 }
 """
-SOURCES = {"5.1": "D&D 5e · 2014 (SRD 5.1)", "5.2": "D&D 5e · 2024 (SRD 5.2)", "3.5": "D&D 3.5 (SRD 3.5)", "pf1": "Pathfinder 1"}
+SOURCES = {"5.1": "D&D 5e · 2014 (SRD 5.1)", "5.2": "D&D 5e · 2024 (SRD 5.2)", "3.5": "D&D 3.5 (SRD 3.5)", "pf1": "Pathfinder 1", "pf2": "Pathfinder 2", "pf2r": "Pathfinder 2 remanié"}
 def form_source(x):
     d = x["dnd"]
-    return "pf1" if d.startswith("Pathfinder 1") else "3.5" if "D&amp;D 3.5" in d else "5.2" if "2024" in d else "5.1"
+    return "pf2r" if d.startswith("Pathfinder 2 (version") else "pf2" if d.startswith("Pathfinder 2") else "pf1" if d.startswith("Pathfinder 1") else "3.5" if "D&amp;D 3.5" in d else "5.2" if "2024" in d else "5.1"
 def index(spells):
     data = []
     for s in spells:
@@ -203,7 +203,7 @@ def index(spells):
 const S = {json.dumps(data, ensure_ascii=False, separators=(",", ":"))};
 const FAM = {json.dumps(FAM, ensure_ascii=False)};
 const st = {{l:new Set(), m:new Set(), c:new Set(), o:new Set(), q:""}};
-const SRC = {{"3.5":"D&D 3.5","5.1":"5e 2014","5.2":"5e 2024","pf1":"Pathfinder 1"}};
+const SRC = {{"3.5":"D&D 3.5","5.1":"5e 2014","5.2":"5e 2024","pf1":"Pathfinder 1","pf2":"Pathfinder 2","pf2r":"PF2 remanié"}};
 const norm = s => s.normalize("NFD").replace(/[\\u0300-\\u036f]/g,"").toLowerCase();
 const esc = s => String(s).replace(/&(?!amp;|nbsp;)/g,"&amp;").replace(/</g,"&lt;");
 const body = s => `<div class="spb">${{s.t ? `<p class="desc">${{esc(s.t)}}</p>` : ""}}<p class="dnd">${{s.d}}</p>` + s.x.map(x =>
@@ -273,6 +273,7 @@ def regles():
 <li><b>Les sorts divins sont de l'Arcane.</b> Dans Inarama, la religion passe par une magie très académique, et ses grands praticiens deviennent des figures de culte : les sorts de clerc s'écrivent en glyphes arcaniques, la lumière radiante comme médium.</li>
 <li><b>Plusieurs formes pour un même sort.</b> Un sort peut s'inscrire en Arcane et en Magie hybride : les deux pratiques l'écrivent différemment, et la bibliothèque montre toutes les formes connues.</li>
 <li><b>Valeurs trop longues.</b> Une valeur qui demanderait plus de quatre formes est arrondie à la plus proche qui s'écrit simplement ; la lecture le signale.</li>
+<li><b>Pathfinder 2.</b> L'édition d'origine et la version remaniée sont lues ensemble. Le rang vaut le niveau, un tour de magie vaut 0 ; un sort de rang 10 sans équivalent ailleurs est de niveau 10, et son Interaction vaut 11. Un sort qui dépend d'une divinité n'est gardé que si son effet tient sans elle. Sorts focalisés et rituels viendront ensuite.</li>
 <li><b>Pathfinder 1.</b> Tous les sorts du relevé sont examinés, qu'ils soient ou non légaux en Pathfinder Society ; le tri se fait à la relecture. Le lanceur de référence est de niveau 2L−1 pour les classes à neuf niveaux de sorts, 3L−2 pour celles à six niveaux, le paladin et le rôdeur. Un nom propre du monde de Golarion s'efface et le sort garde son sens ; un sort dont l'effet dépend de ce monde, ou qui n'est qu'une mécanique de jeu (jets de dés, actions, dons, pouvoirs de classe), est écarté. Sont aussi écartés les sorts qui ne servent qu'aux armes à feu, ou qui supposent d'autres mondes : Inarama n'a ni l'un ni l'autre. Une mécanique de jeu dans un sort gardé se transpose par son esprit, sans vocabulaire de jeu.</li>
 <li><b>Souhait</b> se trace comme Miracle : un Impact plein « souhait », et le niveau maximal des sorts qu'il reproduit en satellite de seuil.</li>
 <li><b>Le glyphe avant l'annotation.</b> Le sort se dit d'abord par ses mécaniques : le verbe juste porte l'action, sans qu'on la répète en mot ; un Impact sans nature délivre la force brute du verbe ; les catégories d'êtres passent par les valeurs de la Cible (4 un inconnu, 5 un être dissimulé ou gardé, 7 un être sans corps, 9 un être qui relève d'un plan), en cercle ou en satellite de critère greffé sur un autre cercle ; la géométrie passe par la Forme. L'annotation précise tout ce que le glyphe doit dire pour être compris : un sort qui touche plusieurs aspects les nomme tous.</li>

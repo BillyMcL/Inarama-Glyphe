@@ -5582,8 +5582,7 @@ PF1_RELECTURE.update(_TRI)
 def _F(k, **kw): FICHES[k].update(kw)
 _F("armor-of-darkness", fr="Armure astrale", options=[
     O("Forme ténébreuse"),
-    O("Forme lumineuse", impact=(3, ["armure", "clarté"], "3 ajouté à la défense"), impact_sats=[(2, ["si:ténébreux"])],
-      impact_plus=[(18, ["vision", "éclat", "mètres"], "voit malgré l'éclat à 18 m")], manif=["clarté", "voile"])])
+    O("Forme lumineuse", impact=(3, ["armure", "clarté"], "3 ajouté à la défense"), impact_sats=[(2, ["si:ténébreux"])], manif=["clarté", "voile"])])
 _F("righteous-blood", options=[
     O("Forme lumineuse"), O("Forme lumineuse — porteur voué à sa face", impact=(7, ["lumineux"], "2d6 en moyenne à qui le blesse")),
     O("Forme ténébreuse", impact=(4, ["ténébreux"], "1d6 en moyenne à qui le blesse"), cond=["coup", "lumineux"]),
@@ -5612,3 +5611,77 @@ _F("shadow-dragon-aspect", options=[
     O("Forme lumineuse", impact=(10, ["dragon", "griffe", "quasi-réel", "lumineux"], "des griffes d'ombre, 1d6 + 7 en moyenne")),
     O("Forme ténébreuse", impact=(10, ["dragon", "griffe", "quasi-réel", "ténébreux"], "des griffes d'ombre, 1d6 + 7 en moyenne"))])
 _F("teratoid-caress", options=[O("Forme ténébreuse"), O("Forme lumineuse", impact_add=["lumineux"])])
+
+# ===================== Pathfinder 2 (édition d'origine et version remaniée) =====================
+# Tri validé le 14 novembre : canon strict, sorts sans dieu gardés en Arcane, niveau = rang sauf écart signalé (« niveau »),
+# rang 10 sans équivalent = niveau 10. « vr » : la version remaniée du même sort donne une forme de plus si son glyphe diffère.
+P2 = lambda fr, verb, cible, words, v=None, why="", **kw: {**dict(src="pf2", fr=fr, verb=verb, cible=cible, impact=(P if v is None else v, list(words), why)), **kw}
+PF2_ECARTE = {}        # sorts de Pathfinder 2 écartés, avec leur motif
+
+# ----- Pathfinder 2, lot 1 : Abjuration -----
+PF2_ECARTE.update({
+ "protect-companion": "n'agit que sur l'eidolon ou le serviteur : mécanique de classe", "wash-your-luck": "n'efface que des effets de « fortune » : mécanique de jeu",
+ "brand-the-impenitent": "marque visible des seuls fidèles d'un culte", "spiritual-attunement": "s'accorde à un plan de la « Sphère extérieure » et à son alignement",
+ "tomorrows-dawn": "vise une lignée de fiélons propre à Golarion"})
+_ELEM6 = [("Feu", "feu"), ("Air", "air"), ("Terre", "terre"), ("Eau", "eau"), ("Métal", "acier"), ("Bois", "bois")]
+PF2_ABJ = {
+"breadcrumbs": P2("Traînée de repères", VIS, 2, ["traînée", "passage"], why="une traînée brillante marque partout où elle est passée", sens=[("vue", None)], manif=["traînée", "scintillement"]),
+"forbidding-ward": P2("Garde contre l'ennemi", SEP, 2, ["ennemi", "désigné"], 1, "1 ajouté à sa défense et à sa résistance contre un ennemi précis", cible_note=["garde", "résistance"], vr={}),
+"shattering-gem": P2("Gemme brisante", SEP, 2, ["gemme", "absorption"], 5, "une gemme flottante encaisse 5 points, une fois sur deux", cible_note=["garde"],
+    impact_plus=[(4, ["éclat", "tranchant"], "brisée, elle blesse de 1d8 en moyenne celui qui l'a brisée")], sens=[("vue", None)], manif=["gemme"]),
+"tether": P2("Attache", V("mouvement", True), 3, ["lien", "entrave"], why="liée à moi : ralentie, elle ne peut s'éloigner", impact_sats=[(9, ["mètres"])], sens=[("vue", None)], manif=["chaînes"]),
+"thermal-stasis": P2("Stase thermique", SEP, 2, ["feu"], 2, "2 retranché au feu reçu", fam="A", cible_note=["résistance"], impact_plus=[(2, ["froid"], "2 retranché au froid reçu")]),
+"erase-trail": P2("Piste effacée", NVIS, P, ["trace", "effacement"], 4, "les traces d'un être précis presque introuvables (4)", discret=True),
+"extract-poison": P2("Extraction de poison", V("flux"), 4, ["retrait", "arme", "enduit"], 4, "le poison retiré d'un objet passe sur mon arme : 1d6 en moyenne par degré du poison", fam="A", cible_obj=["poison"]),
+"lock-item": P2("Objet soudé", V("mouvement", True), 3, ["objet", "soudure"], why="ce qu'elle tient reste collé à sa main", cible_note=["membre"], dur=(24, "SECONDES")),
+"magnetic-repulsion": P2("Répulsion magnétique", V("force", True), 1, ["acier", "répulsion"], 1, "1 retranché aux coups portés avec du métal ; qui porte du métal peine à m'approcher", cible_note=["garde"]),
+"elemental-absorption": P2("Absorption élémentaire", V("flux"), 1, ["absorption"], 5, "5 retranché à ce que l'élément choisi m'inflige", cible_note=["résistance"],
+    impact_plus=[(30, ["décharge"], "je rends d'un coup ce que j'ai absorbé, 30 au plus"), (18, ["portée", "mètres"], "à un ennemi à 18 m")],
+    options=[O(n, impact=(5, ["absorption", w], f"5 retranché à ce que {'le ' if n not in ('Air', 'Eau') else 'l’'}{n.lower()} m'inflige")) for n, w in _ELEM6]),
+"safe-passage": P2("Passage sûr", SEP, P, ["danger", "terrain"], 5, "5 retranché aux dangers du lieu, 2 ajouté à la défense contre eux ; rien ne s'effondre", cible_note=["garde", "résistance"], vr={}),
+"sanctified-ground": P2("Sol consacré", SEP, P, ["consécration"], 1, "1 ajouté à tout ce qu'on fait contre la sorte d'êtres choisie", comp=["eau", "bénite"], consumed=True, options=[
+    O("Contre les aberrations", cond=["aberration"]), O("Contre les dragons", cond=["dragon"]), O("Contre les morts-vivants", cond=["MORTVIVANT"]),
+    O("Contre les êtres de la face lumineuse", cond=["lumineux"]), O("Contre les êtres de la face ténébreuse", cond=["ténébreux"])]),
+"vector-screen": P2("Écran aux projectiles", SEP, P, ["projectile", "capture"], why="un écran de force happe flèches, carreaux et pierres de fronde", cible_note=["trait"]),
+"warding-aggression": P2("Garde agressive", SEP, 1, ["ennemi", "frappé"], 2, "2 ajouté à ma défense contre l'ennemi que je frappe, tant que je le frappe", cible_note=["garde"], cond=["coup"]),
+"whirling-scarves": P2("Écharpes tourbillonnantes", NVIS, 1, ["écharpes", "force", "accroc"], why="un tourbillon d'écharpes me dérobe aux coups et accroche les armes", sens=[("vue", None)], manif=["écharpes", "couleurs"]),
+"chromatic-armor": P2("Armure chromatique", SEP, 2, ["couleur", "résistance"], 5, "5 retranché à l'énergie de chacune des deux couleurs tirées", cible_note=["garde", "résistance"], qty=2, qty_note=["couleur"],
+    impact_add=["éblouissement"], sens=[("vue", None)], manif=["armure", "lumière", "couleurs"],
+    options=[O("Armure chromatique"), O("Armure prismatique", src_idx="prismatic-armor", qty=7, impact=(5, ["couleur", "résistance", "toutes"], "5 retranché aux sept énergies à la fois"), impact_add=["cécité"])]),
+"rebounding-barrier": P2("Barrière à rebond", V("force", True), 1, ["barrière"], 10, "10 retranché au coup reçu", cible_note=["garde"], cond=["coup"], impact_sats=[(5, ["renvoi"])]),
+"reflective-scales": P2("Écailles réfléchissantes", V("flux"), 1, ["écaille", "absorption"], 5, "5 retranché à l'énergie choisie", cible_note=["résistance"],
+    impact_plus=[(35, ["éclat", "décharge"], "les écailles éclatent à 6 m : 1d6 par 10 points absorbés, 10d6 au plus")], sens=[("vue", None)], manif=["écailles", "lueur"],
+    options=[O(n, impact=(5, ["écaille", "absorption", w], f"5 retranché : {n.lower()}")) for n, w in (("Acide", "acide"), ("Froid", "froid"), ("Feu", "feu"), ("Foudre", "foudre"), ("Poison", "poison"))]),
+"soft-landing": P2("Atterrissage en douceur", ORD, P, ["chute", "douceur"], why="tout ce qui tombe dans la zone s'y pose sans mal, de n'importe quelle hauteur"),
+"bandits-doom": P2("Perte du voleur", SEP, 4, ["psyché", "condamnation"], 36, "8d8 en moyenne à l'esprit de qui s'empare de l'objet, et la mort plus proche", cible_obj=["objet"], cond=["larcin"], dur=("plein", None)),
+"blessing-of-defiance": P2("Bénédiction de défi", INT, 2, ["défi"], 4, "4 ajouté un instant contre un type de danger", cible_note=["résistance"], options=[
+    O("Le corps", impact_plus=[(15, ["poison"], "15 retranché au poison")]),
+    O("L'esquive", impact_plus=[(5, ["vitesse", "mètres"], "4,5 m de plus par instant, arrondi à 5")]),
+    O("L'esprit", impact_plus=[(15, ["psyché", "garde"], "15 retranché aux atteintes de l'esprit")]),
+    O("Tout le groupe", qty_cible=P)]),
+"chromatic-wall": P2("Mur chromatique", EXI, P, ["mur", "couleur"], why="un mur opaque d'une seule couleur, tirée au hasard", fam="A", sens=[("vue", None)], manif=["mur", "lumière"],
+    forme=[("FORME", 2, [], "plan : un mur droit et vertical", [(90, 1)]), ("AMPLEUR", 162, ["SURFACE", "METRES"], "162 m² : 18 m sur 9")], options=[
+    O("Rouge", impact=(20, ["mur", "feu"], "détruit flèches et carreaux ; 20 de feu à qui le traverse")),
+    O("Orange", impact=(25, ["mur", "acide"], "détruit les armes de jet ; 25 d'acide à qui le traverse")),
+    O("Jaune", impact=(30, ["mur", "foudre"], "arrête les énergies ; 30 de foudre à qui le traverse")),
+    O("Vert", impact=(10, ["mur", "poison", "faiblesse"], "arrête poisons, gaz et souffles ; 10 de poison et la faiblesse à qui le traverse"))]),
+"spiritual-guardian": P2("Gardien spirituel", EXI, 7, ["force", "frappe"], 12, "un gardien de force frappe (2d8 + 3 en moyenne) ou garde", cible_note=["serviteur"], vr={},
+    impact_plus=[(10, ["garde", "allié"], "il prend sur lui les 10 premiers points de chaque coup porté à l'allié gardé, 50 en tout")], sens=[("vue", None)], manif=["gardien", "translucide"]),
+"temporary-glyph": P2("Glyphe éphémère", ORD, P, ["piège", "sort", "éphémère"], why="un sort hostile enfermé dans un glyphe, pour une minute", cond=["PASSAGE"], impact_sats=[(None, ["sort"])], sens=[("vue", None)], manif=["glyphe"]),
+"scintillating-safeguard": P2("Sauvegarde scintillante", SEP, 2, ["barrière", "étincelles"], 10, "10 retranché à l'effet qui allait les frapper", cible_note=["résistance"], cond=["danger"], qty_cible=5, sans_parole=True, vr={},
+    sens=[("vue", None)], manif=["étincelles"]),
+"spellwrack": P2("Sorts en perdition", NQ, 3, ["malédiction", "déperdition"], 13, "2d12 en moyenne chaque fois qu'un sort durable la touche ; ses sorts s'écourtent", cond=["sort"], vr={}),
+"temporal-ward": P2("Garde temporelle", V("mouvement"), 4, ["temps", "recul", "piège"], why="qui veut ouvrir est renvoyé un instant en arrière, à sa place d'avant", cible_obj=["porte"], cond=["INTRUS"]),
+"energy-aegis": P2("Égide contre les énergies", SEP, 2, ["énergie", "toutes"], 5, "5 retranché à l'acide, au froid, à la foudre, au feu, à la force, au son et aux deux énergies astrales", cible_note=["résistance"], vr={}),
+"return-to-essence": P2("Retour à l'essence", SEP, "trame", ["sceau", "reprise", "énergie"], why="le sort qui scelle une porte ou un coffre défait, son énergie rendue au lanceur", cible_note=["sort"]),
+"unfettered-pack": P2("Meute sans entraves", SEP, 2, ["terrain", "entrave", "liberté"], why="le groupe ignore broussailles, gravats, vents et terrain difficile", qty_cible=10, vr={}),
+"prismatic-shield": P2("Bouclier prismatique", SEP, 1, ["éclat", "prisme", "riposte"], why="des éclats de lumière arrêtent les traits, frappent l'assaillant d'un effet prismatique et font échouer les sorts", cible_note=["garde"],
+    sans_parole=False, sens=[("vue", None)], manif=["éclats", "couleurs"]),
+"indestructibility": P2("Indestructibilité", V("nature", True), 1, ["invulnérabilité"], why="rien ne peut m'atteindre si je ne le veux pas", vr={}),
+"nullify": P2("Annulation", DISP, "trame", ["annulation"], why="le sort qui me vise est détruit à coup sûr", cible_note=["sort"], niveau=9, impact_sats=[(4, ["blessure", "niveau"])]),
+"ravenous-portal": P2("Porte vorace", TR, 4, ["mimique", "garde", "morsure"], why="la porte qu'on force devient une mimique qui attaque", cible_obj=["porte"], cond=["INTRUS"]),
+"astral-labyrinth": P2("Labyrinthe astral", SEP, P, ["dédale", "téléportation", "psyché", "détournement"], why="la magie de l'esprit s'y défait ; qui s'y téléporte est étourdi et dévié vers le point choisi", impact_add=["étourdissement"], options=[
+    O("Forme lumineuse", impact=(P, ["dédale", "téléportation", "psyché", "détournement", "lumineux"], "tissé de l'énergie de la face lumineuse")),
+    O("Forme ténébreuse", impact=(P, ["dédale", "téléportation", "psyché", "détournement", "ténébreux"], "tissé de l'énergie de la face ténébreuse"))]),
+}
+FICHES.update(PF2_ABJ)

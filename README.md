@@ -1,10 +1,11 @@
 # Bibliothèque glyphique d'Inarama
 
-Les sorts des **SRD 5.1 et 5.2** de D&D (règles de 2014 et de 2024), du **SRD 3.5** et de **Pathfinder 1** (école par école) transposés en glyphes d'Inarama : chaque sort en **glyphe circulaire** et en **glyphe en bande**, en notation **déclarée** et **non déclarée**, avec la lecture de chaque cercle et la traduction des annotations en Alde.
+Les sorts des **SRD 5.1 et 5.2** de D&D (règles de 2014 et de 2024), du **SRD 3.5**, de **Pathfinder 1** et de **Pathfinder 2** (en cours, école par école) transposés en glyphes d'Inarama : chaque sort en **glyphe circulaire** et en **glyphe en bande**, en notation **déclarée** et **non déclarée**, avec la lecture de chaque cercle et la traduction des annotations en Alde.
 
-- 2340 sorts, 4042 formes (Arcane, Magie hybride, arts rares ; une forme par option de lancement ; une forme « version 2024 », « version 3.5 » ou « Pathfinder 1 » quand une autre édition change le glyphe).
+- 2375 sorts, 4098 formes (Arcane, Magie hybride, arts rares ; une forme par option de lancement ; une forme « version 2024 », « version 3.5 » ou « Pathfinder 1 » quand une autre édition change le glyphe).
 - Chaque sort porte une description, la note qu'un arcaniste écrirait à côté du glyphe (`donnees/descriptions.json`).
 - Pathfinder 1 : les sorts légaux en Pathfinder Society, plus ceux des sorts non légaux qui ont passé un tri strict (canon d'Inarama, puissance, intérêt) ; hors *Technology Guide*. Les noms propres de Golarion sont effacés, le sens du sort est gardé ; les sorts qui dépendent du monde de Golarion ou qui ne sont qu'une mécanique de jeu sont écartés et listés dans `PF1_RELECTURE` (`moteur/fiches.py`).
+- Pathfinder 2 : édition d'origine et version remaniée ensemble ; un sort présent dans les deux reçoit une forme « version remaniée » quand son glyphe diffère. Le rang vaut le niveau (un tour de magie vaut 0) ; un sort de rang 10 sans équivalent dans D&D est de niveau 10. Les sorts écartés sont listés dans `PF2_ECARTE` (`moteur/fiches.py`). Sorts focalisés et rituels : à venir.
 - Règle d'or : **deux glyphes strictement identiques sont le même sort**. La construction s'arrête si deux sorts différents produisent le même glyphe.
 
 Le système glyphique lui-même (cercles, valeurs, annotations) est défini dans le dépôt de lore [Inarama-lore](https://github.com/BillyMcL/Inarama-lore), qui fait autorité. Cette bibliothèque en est une application : quand une règle change dans le lore, on l'applique ici.

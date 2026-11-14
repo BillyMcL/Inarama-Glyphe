@@ -6241,3 +6241,1651 @@ PF2_TRA = {
 "primal-herd": P2("Harde primordiale", TR, 2, ["forme", "mammouth", "harde"], why="six êtres deviennent une harde de mammouths", qty_cible=6, niveau=9),
 }
 FICHES.update(PF2_TRA)
+
+# ----- Pathfinder 2 : reprises du 15 novembre (décisions de Baptiste) -----
+def _R(k, **kw): FICHES[k].update(kw)
+_R("goblin-pox", fr="Vérole gobeline")          # les gobelins existent dans Inarama
+# Zones données seulement dans le texte de la source
+_S = lambda n: {"type": "sphere", "size": n}
+_R("gale-blast", aoe=_S(5)); _R("blazing-dive", aoe=_S(10)); _R("tempest-of-shades", aoe=_S(60))
+_R("pillar-of-water", aoe={"type": "cylinder", "size": 15, "height": 60}, impact_sats=[])
+_R("sea-surge", aoe={"type": "line", "size": 60}); _R("lifes-flowing-river", aoe={"type": "line", "size": 120}); _R("dividing-trench", aoe={"type": "line", "size": 15})
+_R("redistribute-potential", aoe={"type": "cube", "size": 5}, qty=2)
+_R("burning-blossoms", impact_sats=[])
+# Sorts dont l'ampleur dépend du temps mis à les lancer : la forme de base et la forme maximale
+_R("shadow-blast", aoe={"type": "cone", "size": 30})
+_R("concordant-choir", options=[
+    O("Forme de base", impact=(2, ["son", "consonance"], "1d4 en moyenne à un seul ennemi, d'un mot")),
+    O("Forme maximale", cible=P, aoe=_S(30), impact=(5, ["son", "consonance"], "2d4 en moyenne à tous ceux qui m'entourent ; tout l'instant y passe"))])
+_R("kinetic-ram", options=[
+    O("Forme de base", loc=(5, "METRES", "4,5 m, arrondi à 5"), impact=(3, ["poussée", "mètres"], "une cible proche repoussée de 3 m, d'un geste")),
+    O("Forme maximale", cible=P, aoe=_S(5), impact=(3, ["poussée", "mètres"], "tous ceux qui m'entourent repoussés de 3 m ; tout l'instant y passe"))])
+_R("gravitational-pull", options=[
+    O("Forme de base", impact=(3, ["pesanteur", "traction", "mètres"], "une cible tirée de 3 m vers moi, d'un geste")),
+    O("Forme maximale", qty_cible=5, impact=(3, ["pesanteur", "traction", "mètres"], "cinq cibles tirées de 3 m vers moi ; tout l'instant y passe"))])
+_R("elemental-annihilation-wave", options=[
+    O("Forme de base", impact=(14, ["élément", "couleur", "poussée"], "1d6 de feu + 3d6 en moyenne ; repousse")),
+    O("Forme maximale", aoe={"type": "cone", "size": 60}, impact=(14, ["élément", "couleur", "poussée"], "1d6 de feu + 3d6 en moyenne ; repousse ; deux instants de préparation"),
+      impact_plus=[(P, ["vent", "persistance"], "les éléments s'attardent un instant dans le cône : un vent violent en interdit l'approche")])])
+_R("rip-the-spirit", options=[
+    O("Forme de base", impact=(18, ["âme", "arrachement", "ténébreux"], "5d6 en moyenne à un vivant, d'un geste ; vidé de 1")),
+    O("Forme maximale", cible=P, aoe=_S(30), impact=(18, ["âme", "arrachement", "ténébreux"], "5d6 en moyenne à tous les vivants qui m'entourent ; vidés de 1 ; tout l'instant y passe"))])
+_R("inner-radiance-torrent", impact_sats=[], options=[
+    O("Forme de base", aoe={"type": "line", "size": 60}, impact=(10, ["trait", "aveuglement"], "4d4 en moyenne le long de la ligne")),
+    O("Forme maximale", aoe={"type": "line", "size": 120}, impact=(20, ["trait", "aveuglement"], "8d4 en moyenne le long d'une ligne double ; deux instants de préparation"),
+      impact_plus=[(1, ["éclat", "halo"], "je rayonne ensuite une minute : 1 à qui finit son instant contre moi")])])
+# Formes de combat : la robustesse et l'attaque principale, lues dans la source
+_R("aberrant-form", impact=(21, ["forme", "aberration"], "une grande aberration : sa meilleure attaque frappe de 2d12 + 8 en moyenne ; elle saisit"), impact_sats=[(13, ["vie", "temporaire"])])
+_R("angel-form", options=[
+    O("Forme lumineuse", impact=(27, ["forme", "ange", "lumineux"], "un être de lumière, ailé : 2d6 + 12 et 2d6 de feu et de lumière en moyenne ; la face ténébreuse le blesse de 10 de plus"), impact_sats=[(40, ["vie", "temporaire"])]),
+    O("Forme ténébreuse", src_idx="demon-form", impact=(23, ["forme", "fiélon", "ténébreux"], "un fiélon, démon ou diable : 2d8 + 10 et 1d6 de ténèbres en moyenne ; la face lumineuse le blesse de 5 de plus"), impact_sats=[(30, ["vie", "temporaire"])])])
+_R("primal-herd", impact=(37, ["forme", "mammouth", "harde"], "une harde de mammouths : défenses de 4d8 + 19 en moyenne ; ils piétinent"), impact_sats=[(20, ["vie", "temporaire"])])
+
+# ----- Pathfinder 2, lot 10 : sorts propres à la version remaniée (Abjuration, Divination, Enchantement, Illusion, Nécromancie) -----
+PF2_ECARTE.update({"recall-legacy": "accorde un don d'ascendance : pure mécanique de jeu"})
+PR = lambda fr, verb, cible, words, v=None, why="", **kw: {**P2(fr, verb, cible, words, v, why, **kw), "src": "pf2r"}
+_RES = dict(cible_note=["résistance"])
+PF2_REM1 = {
+"buoyant-bubbles": PR("Bulles flottantes", SEP, 2, ["bulle", "flottaison"], why="une écume la fait flotter : elle ne coule plus, et remonte en un instant si elle coulait"),
+"burrow-ward": PR("Garde contre les fouisseurs", SEP, P, ["terre", "durcissement", "fouisseur"], why="la terre durcit autour de moi : on n'y creuse plus, et ce qui s'y trouvait en est chassé", fam="A"),
+"cleanse-air": PR("Air purifié", V("qualite"), P, ["air", "poison", "pureté"], why="l'air de la zone redevient sain et le reste", fam="A"),
+"cloud-dragons-cloak": PR("Manteau de brume", NVIS, 2, ["brume", "dérobade"], why="une brume la dérobe au coup qui la vise, puis aux tirs, un instant", cond=["coup"]),
+"defended-by-spirits": PR("Défendu par les esprits", SEP, 2, ["esprit", "riposte"], 4, "chaque fois que l'ennemi désigné blesse l'allié, les esprits le frappent de 1d6 en moyenne", cible_note=["garde"]),
+"eat-fire": PR("Avaleur de feu", SEP, 1, ["feu", "fumée"], 5, "5 retranché au feu reçu ; la fumée recrachée ensuite fait écran", fam="A", **_RES),
+"entwined-roots": PR("Racines entrelacées", SEP, 2, ["bois", "racine", "rempart"], 5, "5 retranché aux chocs et aux pointes ; les racines attrapent les projectiles manqués", qty_cible=5, fam="A", **_RES, **_VIV),
+"fireproof": PR("Ignifugation", SEP, 4, ["feu", "isolant"], 10, "10 retranché au feu ; l'objet ne conduit plus la chaleur et ne s'enflamme plus", cible_obj=["objet"], fam="A"),
+"glass-shield": PR("Bouclier de verre", SEP, 1, ["verre", "bouclier"], 2, "arrête 2 points par coup ; brisé, ses éclats blessent de 1d4 en moyenne", cible_note=["garde"], fam="A"),
+"interposing-earth": PR("Terre interposée", SEP, 1, ["terre", "muret", "abri"], why="un muret de terre surgit entre moi et le danger et m'abrite", cond=["coup"], fam="A"),
+"phoenix-ward": PR("Garde du phénix", SEP, 1, ["feu", "phénix", "renaissance"], 10, "10 retranché au feu ; un feu mortel me laisse à 1 point, puis la garde me rend 4d8 en moyenne et s'éteint", fam="A", **_RES,
+    impact_sats=[(18, ["regain"])], sens=[("vue", None)], manif=["ailes", "flammes"]),
+"radiant-globe": PR("Globe radieux", SEP, P, ["dôme", "lumière", "projectile"], why="un dôme de lumière détruit flèches et carreaux qui le traversent, dans les deux sens", sens=[("vue", None)], manif=["dôme"]),
+"rigid-form": PR("Forme rigide", V("nature", True), 1, ["bois", "rigidité", "métamorphose"], why="je peux défaire toute métamorphose hostile qui me vise", fam="A"),
+"spirit-ward": PR("Garde contre les esprits", SEP, 2, ["esprit", "hantise"], 1, "1 ajouté contre les esprits et les hantises", **_RES),
+"tempest-cloak": PR("Manteau de tempête", SEP, 2, ["vent", "manteau"], 2, "2 ajouté à sa défense contre les tirs ; les vents gênent l'approche", cible_note=["garde"], sens=[("ouïe", None)], manif=["vent"]),
+"thief-of-fortune": PR("Voleur de fortune", V("flux"), 4, ["bienfait", "partage"], why="je m'approprie le bienfait d'un sort qui agit sur un autre, sans le lui ôter", cible_note=["sort"]),
+"veil-of-spirits": PR("Voile d'esprits", EXI, P, ["brume", "esprit", "éblouissement"], why="un voile d'esprits éblouit ceux qui s'y tiennent et les livre aux coups portés à l'âme", sens=[("vue", None)], manif=["brume"]),
+"elemental-sense": PR("Sens élémentaire", INT, 1, ["sens", "élément"], why="un sens prêté par un élément", fam="A", options=[
+    O("Eau", impact=(P, ["sens", "eau", "écho"], "sous l'eau, l'ouïe vaut la vue")),
+    O("Feu", impact=(9, ["sens", "feu", "chaleur", "mètres"], "je sens les corps chauds à 9 m")),
+    O("Métal", impact=(9, ["sens", "acier", "aimant", "mètres"], "je sens qui porte du métal à 9 m, et je sais où est le nord")),
+    O("Air", impact=(P, ["sens", "air", "invisible"], "je devine les formes invisibles")),
+    O("Terre", impact=(P, ["sens", "terre", "vibration"], "je sens ce qui bouge sur le même sol"))]),
+"engrave-memory": PR("Mémoire gravée", ORD, 4, ["souvenir", "pierre", "mot"], why="des souvenirs gardés dans une pierre, livrés à qui dit le mot ; la pierre s'effrite alors", cible_obj=["objet"], impact_sats=[(10, ["minutes"])]),
+"heatvision": PR("Vision de la chaleur", VIS, 2, ["chaleur", "regard", "mètres"], 18, "voit la chaleur à 18 m, à travers fumée et ténèbres"),
+"mental-map": PR("Carte mentale", VIS, 4, ["lieu", "souvenir"], 2, "le souvenir d'un lieu tiré de son esprit : 2 ajouté pour m'y orienter", cible_note=["mémoire"]),
+"mimic-spell": PR("Sort imité", V("flux"), 4, ["imitation", "contre"], why="je contre le sort qu'on lance ; si j'y parviens, je le relance moi-même à l'instant suivant", cible_note=["sort"], cond=["sort"]),
+"misty-memory": PR("Mémoire de l'eau", VIS, P, ["eau", "brume", "passé", "heures"], 24, "une brume monte de l'eau et rejoue ce qui s'est passé là, jusqu'à 24 heures plus tôt", sens=[("vue", None)], manif=["brume"]),
+"primal-chorus": PR("Chœur sauvage", VIS, P, ["hurlement", "bête", "nombre"], 1, "les bêtes d'alentour répondent : j'en sais à peu près le nombre ; 1 ajouté à ma prochaine entrée en lice", sens=[("ouïe", None)], manif=["hurlement"]),
+"root-reading": PR("Lecture des racines", VIS, P, ["racine", "présence"], 1, "les grandes créatures inaperçues me sont révélées ; 1 ajouté pour les trouver"),
+"scrying-ripple": PR("Onde de scrutation", VIS, 4, ["courant", "capteur"], why="je vois et j'entends depuis une eau courante des alentours", cible_obj=["eau"], impact_sats=[(150, ["mètres"])]),
+"the-parrots-whisper": PR("Murmure du perroquet", VIS, 3, ["perroquet", "faille", "bavardage"], why="un perroquet spectral me dit sa plus grande faiblesse, puis bavarde encore un instant"),
+"tremor-signs": PR("Signes par le sol", REL, 2, ["vibration", "message"], why="une courte phrase portée par le sol jusqu'à elle, sans la voir ; elle peut répondre"),
+"tremorsense": PR("Perception des vibrations", VIS, 1, ["vibration", "sol", "mètres"], 9, "je sens à 9 m ce qui bouge sur le même sol"),
+"voice-on-the-breeze": PR("Voix sur la brise", REL, P, ["vent", "murmure", "message"], why="un murmure porté par le vent jusqu'à un lieu connu, très loin"),
+"wisdom-of-the-wind": PR("Sagesse du vent", VIS, 1, ["vent", "conseil", "guide"], why="les esprits de l'air répondent à une question, d'un mot sage ou d'un vent qui guide"),
+"albatross-curse": PR("Malédiction de l'albatros", NORD, 3, ["albatros", "malédiction"], 1, "un albatros spectral la suit : 1 ajouté aux coups contre elle ; si elle le tue, il pend à son cou et la maudit",
+    sens=[("vue", None)], manif=["albatros"]),
+"attacked-from-within": PR("Attaqué du dedans", PEUR, 3, ["âme", "angoisse", "effroi"], 54, "12d8 en moyenne ; effrayée", **_PSY),
+"confusing-cry": PR("Cri déroutant", NORD, P, ["cri", "confusion"], why="ceux qui l'entendent frappent sans contrôle : confus une minute", **_PSY, sens=[("ouïe", None)], manif=["cri"]),
+"cordyceps-command": PR("Ordre du cordyceps", ORD, 3, ["spore", "champignon", "emprise"], why="un champignon gagne son corps par degrés et finit par la mener : monter, dévorer, descendre ou attirer"),
+"equal-footing": PR("À armes égales", V("mouvement", True), 3, ["lenteur", "maladresse", "mètres"], 5, "plus rapide que moi, elle devient gauche et perd 4,5 m, arrondi à 5"),
+"flames-of-ego": PR("Flammes de l'orgueil", ATT, 3, ["flamme", "vanité", "fascination"], why="des flammes superbes la parent : fascinée par elle-même, elle ne s'en prend qu'à qui s'en prend à elle", dur=(1, "MINUTES"),
+    impact_sats=[(6, ["éclat", "mètres"])], fam="A", **_PSY, sens=[("vue", None)], manif=["flammes"]),
+"indolent-haze": PR("Brume d'indolence", NORD, P, ["pavot", "torpeur", "repos"], why="ils s'allongent, ne veulent plus se relever, puis s'endorment", **_PSY, sens=[("odorat", None)], manif=["pavot"]),
+"loves-sacrifice": PR("Sacrifice d'amour", ATT, 4, ["amour", "sacrifice", "interposition"], why="elle se jette devant le coup qui me vise et le prend à ma place ; elle peut en mourir", cond=["coup"], **_PSY),
+"luring-wail": PR("Plainte attirante", ATT, P, ["plainte", "fascination", "approche"], why="fascinés, ceux qui m'entendent marchent vers ma voix ; nommer quelqu'un l'y livre mieux", **_PSY, sens=[("ouïe", None)], manif=["plainte"]),
+"overwhelming-memory": PR("Souvenir envahissant", NORD, 3, ["souvenir", "stupeur"], why="un souvenir la submerge un instant et la laisse stupéfiée", cible_note=["mémoire"], options=[
+    O("Joyeux", impact=(P, ["souvenir", "stupeur", "rire"], "elle rit sans pouvoir riposter")),
+    O("Amoureux", impact=(P, ["souvenir", "stupeur", "fascination"], "elle en reste fascinée")),
+    O("Terrifiant", impact=(P, ["souvenir", "stupeur", "effroi"], "elle en est effrayée")),
+    O("Tragique", impact=(P, ["souvenir", "stupeur", "larmes"], "les larmes l'éblouissent"))]),
+"reed-whistle": PR("Sifflet de roseau", VIS, 1, ["brin", "sifflement", "signal"], 2, "d'un coup de sifflet, je désigne à mes alliés une créature que j'ai repérée ; 2 ajouté pour la retrouver"),
+"falsify-heat": PR("Chaleur falsifiée", NVIS, 4, ["chaleur", "leurre"], 2, "sa chaleur apparente est fausse, au toucher même : 2 ajouté pour passer pour froid, ou pour chaud ; invisible aux sens de la chaleur"),
+"manifestation-of-spirits": PR("Esprits manifestés", EXI, 3, ["esprit", "menace", "stupeur"], why="elle voit tous les esprits qui l'entourent, et les croit menaçants : stupéfiée une minute", dur=(1, "MINUTES"), **_PSY),
+"wooden-double": PR("Double de bois", SEP, 1, ["bois", "double", "esquive"], 20, "je fais un pas ; une bûche à ma forme prend le coup à ma place : elle encaisse 20 points", cond=["coup"], fam="A"),
+"cauterize-wounds": PR("Plaies cautérisées", HE, 2, ["feu", "cautère", "saignement"], 1, "pour 1 point de brûlure, une chance d'arrêter ce qui saigne ou ronge", qty_cible=5, guerit=True, fam="A"),
+"coral-scourge": PR("Fléau de corail", NE, 3, ["corail", "raideur", "maladresse"], 1, "des coraux lui poussent aux jointures : gauche de 1, puis de pis en pis à chaque instant"),
+"life-draining-roots": PR("Racines voraces", NE, P, ["bois", "racine", "épine"], 28, "8d6 en moyenne ; 1d4 de vie d'emprunt par vivant transpercé", fam="A", impact_sats=[(2, ["vie", "temporaire"])]),
+"noxious-metals": PR("Métaux nocifs", NE, P, ["acier", "toxique"], 14, "4d6 en moyenne aux vivants ; pire pour les plantes et les êtres du bois", fam="A", impact_add=["poison"]),
+"pain-of-ages": PR("Douleur des âges", NE, P, ["âme", "angoisse", "lieu"], 36, "8d8 en moyenne : la peine accumulée d'un lieu, lâchée sur mes ennemis"),
+"shock-to-the-system": PR("Électrochoc", HE, 2, ["vie", "foudre", "réveil"], 36, "8d8 en moyenne ; un mort de l'instant d'avant revient ; hâté, il peut lancer la foudre à volonté", guerit=True, fam="A"),
+"spiritual-renewal": PR("Renouveau spirituel", HE, 2, ["vie", "esprit"], 8, "8 points rendus à chaque instant, quatre instants durant", guerit=True, **_VIV),
+"thermal-remedy": PR("Remède thermal", V("qualite"), 4, ["amer", "remède", "repas"], why="un repas ou une boisson pour dix, aux vertus tirées de ses amers", cible_obj=["nourriture"], options=[
+    O("Fortifiant", impact=(5, ["amer", "remède", "vie", "temporaire"], "5 points de vie d'emprunt")),
+    O("Rafraîchissant", impact=(2, ["amer", "remède", "feu"], "2 retranché au feu reçu")),
+    O("Dépuratif", impact=(1, ["amer", "remède", "maladie"], "1 ajouté contre les maladies"))]),
+}
+FICHES.update(PF2_REM1)
+
+# ----- Pathfinder 2, lot 11 : sorts propres à la version remaniée (Invocation, Évocation) -----
+# summon-undead : renvoyé à la comparaison avec les convocations et l'animation des morts déjà publiées.
+ER = lambda fr, cible, words, v=None, why="", **kw: PR(fr, NF, cible, words, v, why, **kw)
+PF2_REM2 = {
+"bramble-bush": ER("Buisson de ronces", P, ["ronce", "épine"], 2, "1d4 en moyenne, et autant à qui y entre avant mon prochain instant", comb="Plante"),
+"rousing-splash": PR("Éclaboussure vivifiante", INT, 2, ["eau", "vigueur"], 2, "1d4 en moyenne de vie d'emprunt pour une minute ; une chance d'éteindre ce qui la brûle ou la ronge", comb="Eau"),
+"timber": ER("Chute d'arbre", P, ["arbre", "chute"], 5, "2d4 en moyenne : un arbre mort tombe sur ceux qui sont devant moi, puis se décompose", comb="Bois"),
+"flourishing-flora": ER("Flore foisonnante", P, ["plante", "pousse"], 5, "2d4 en moyenne, d'une nature qui dépend de la plante choisie", comb="Plante", aoe={"type": "sphere", "size": 5}),
+"foraging-friends": PR("Amis glaneurs", INV, P, ["bête", "glanage", "vivres"], 4, "de petites bêtes rapportent en une heure de quoi nourrir 4 personnes un jour"),
+"instant-potter": PR("Poterie instantanée", EXI, 4, ["terre", "poterie"], why="la terre des alentours façonnée en objets simples, pour une heure", cible_obj=["objet"], fam="A"),
+"wall-of-shrubs": PR("Haie", EXI, P, ["haie", "abri"], why="une ligne de buissons du pays sort de terre : elle abrite un peu", comb="Plante", aoe={"type": "line", "size": 60}),
+"avenging-wildwood": PR("Arbre vengeur", EXI, P, ["arbre", "branche", "frappe"], why="un arbre animé frappe mes ennemis de ses branches", comb="Bois", impact_sats=[(20, ["réserve"])]),
+"blazing-armory": PR("Armurerie ardente", EXI, 2, ["arme", "flamme"], 4, "une arme de flammes dans sa main : elle frappe en feu, 1d6 en moyenne de plus"),
+"helpful-wood-spirits": PR("Esprits du bois serviables", INV, P, ["esprit", "corvée"], why="de petits esprits du bois font une tâche simple à chaque instant ; rien ne les atteint", comb="Bois"),
+"rubble-step": PR("Pas d'éboulis", TR, 2, ["gravats", "sillage"], why="chaque case qu'il quitte devient terrain pénible, deux instants durant", comb="Roche"),
+"warping-pull": PR("Traction salvatrice", TP2, 2, ["téléportation", "sauvegarde"], 5, "je le tire de 3 m vers moi, hors du danger : 5 retranché à ce qui le frappait", cond=["coup"], impact_sats=[(3, ["mètres"])]),
+"conjured-conveyance": PR("Véhicule conjuré", EXI, P, ["véhicule", "bois"], why="un véhicule ouvragé, tout de bois, que je mène par la magie, une heure durant", fam="A"),
+"dive-and-breach": PR("Plongeon et jaillissement", TP2, 1, ["plongeon", "eau", "jaillissement"], 17, "je plonge dans le sol comme dans l'eau et ressors à 12 m : 3d10 en moyenne à ceux d'alentour", comb="Eau", impact_sats=[(12, ["mètres"])]),
+"echo-jump": PR("Saut à écho", TP2, 1, ["téléportation", "écho", "force"], 18, "je me téléporte ; mon écho éclate où j'étais : 4d8 en moyenne à 3 m autour"),
+"bridge-of-vines": PR("Pont de lianes", EXI, P, ["liane", "pont"], why="un pont de lianes large de 3 m, qui franchit obstacles et dénivelés", comb="Plante", aoe={"type": "line", "size": 60}, impact_sats=[(20, ["réserve"])]),
+"sliding-blocks": PR("Blocs coulissants", EXI, P, ["pierre", "cube", "lévitation"], why="six cubes de pierre de 1,5 m, que je déplace d'un geste", comb="Roche", qty=6),
+"boomerang-shot": ER("Tir en boomerang", 3, ["bois", "courbe", "contournement"], 39, "7d10 en moyenne ; il contourne abris et obstacles", comb="Bois"),
+"corrosive-muck": ER("Fange corrosive", P, ["flaque", "enlisement"], 28, "8d6 en moyenne à chaque instant ; deux flaques où l'on s'englue", qty=2),
+"fires-pathway": PR("Chemin du feu", TP2, 1, ["feu", "brasier", "passage"], why="j'entre dans un feu et ressors par un autre, à 8 km au plus", fam="A", impact_sats=[(8, ["kilomètres"])]),
+"spiritual-transport": PR("Transport spirituel", TP2, 1, ["téléportation", "esprit"], why="les esprits me portent en un lieu que je vois ; mon compagnon suit"),
+"arrow-salvo": ER("Salve de flèches", P, ["arc", "flèche"], 44, "8d10 en moyenne ; au pire, renverse", comb="Bois"),
+"field-of-razors": PR("Champ de rasoirs", EXI, P, ["fil", "rasoir"], 5, "un enchevêtrement de fils tranchants : terrain pénible, 5 à chaque pas", comb="Acier", comp=["métal"]),
+"personal-ocean": PR("Océan personnel", EXI, 1, ["eau", "bulle", "nage"], why="une bulle d'eau de mer m'entoure et me suit : j'y nage et y respire ; on m'y combat comme sous l'eau", comb="Eau"),
+"wall-of-metal": PR("Mur de métal", EXI, P, ["mur", "acier"], why="une feuille de fer, de fer froid ou d'argent", comb="Acier", forme=_MUR(18, 9)),
+"beheading-buzz-saw": ER("Scie décapitante", P, ["disque", "lame"], 28, "5d10 en moyenne", comb="Acier", impact_plus=[(14, ["persistance", "saignement"], "4d6 en moyenne à chaque instant")]),
+"dancing-fountain": ER("Fontaine dansante", P, ["fontaine", "jet"], 35, "10d6 en moyenne, selon la figure commandée à chaque instant", comb="Eau"),
+"devouring-void": PR("Vide dévorant", NE, P, ["déchirure", "ténébreux", "retenue"], 32, "7d8 en moyenne aux vivants à chaque instant ; qui veut sortir peut être retenu"),
+"hungry-depths": PR("Abysse affamé", NE, P, ["gouffre", "eau", "croc"], 28, "4d8 + 4d4 en moyenne : une spirale d'eau noire, pleine d'yeux et de dents", fam="A"),
+"pollen-pods": PR("Cosses à pollen", EXI, P, ["cosse", "pollen", "piège"], 36, "8d8 en moyenne à 4,5 m quand on l'approche ; éblouit, stupéfie", qty=4, dur=(12, "HEURES")),
+"sudden-transposition": PR("Transposition brutale", TP2, 3, ["téléportation", "arrachement"], 55, "10d10 en moyenne ; je choisis où elle reparaît", qty_cible=2),
+"summon-elemental-herald": PR("Convocation d'un héraut élémentaire", INV, 9, ["héraut", "désastre"], 45, "il vient sous la forme d'un désastre : 10d8 en moyenne", cible_note=["élémentaire"], fam="A"),
+"illuminate": PR("Allumage", EXI, P, ["flamme", "lampe"], why="toutes les bougies, lampes et torches de la zone s'allument", fam="A"),
+"live-wire": ER("Fil sous tension", 3, ["fil", "cuivre", "foudre"], 4, "1d4 de taille + 1d4 de foudre en moyenne", comb="Bronze"),
+"needle-darts": ER("Aiguilles", 3, ["aiguille", "saignement"], 8, "3d4 en moyenne ; les aiguilles gardent les vertus de leur métal", comb="Acier", comp=["métal"]),
+"slashing-gust": ER("Rafale tranchante", 3, ["vent", "taille"], 5, "2d4 en moyenne à chacune", comb="Air", qty_cible=2),
+"conductive-weapon": PR("Arme conductrice", INT, 4, ["courant", "décharge"], 4, "1d6 en moyenne de foudre à chaque coup ; 1d12 sur qui porte du métal", cible_obj=["arme"], comb="Foudre"),
+"dehydrate": PR("Déshydratation", NE, P, ["sécheresse", "persistance"], 4, "1d6 en moyenne à chaque instant ; affaiblit ; pire pour les êtres d'eau et les plantes", fam="A"),
+"signal-skyrocket": ER("Fusée de signal", P, ["fusée", "signal", "fracas"], 6, "1d10 en moyenne ; une fusée rouge monte droit et éclate : vue et entendue de très loin", comp=["poudre"]),
+"brine-dragon-bile": ER("Bile saumâtre", 3, ["sel", "plaie", "persistance"], 7, "2d6 en moyenne à chaque instant : le sel ronge la plaie fraîche", cond=["blessure"], comb="Eau"),
+"exploding-earth": ER("Terre explosive", 3, ["terre", "éclat"], 14, "4d6 en moyenne, et 1d6 d'éclats alentour", comb="Roche"),
+"propulsive-breeze": PR("Brise propulsive", TP2, 2, ["vent", "élan", "mètres"], 5, "à la fin de sa course ou de son saut, le vent le pousse 4,5 m plus loin, arrondi à 5", comb="Air", cond=["mouvement"]),
+"splinter-volley": ER("Volée d'échardes", 3, ["écharde", "saignement"], 14, "4d6 en moyenne ; sur deux cibles en y mettant plus de temps", comb="Bois"),
+"blastback": ER("Onde de chute", P, ["chute", "onde"], 15, "6d4 en moyenne ; je me pose sans mal et ceux d'alentour sont repoussés", cond=["chute"], comb="Air"),
+"airlift": PR("Envol", TP2, P, ["vent", "transport", "mètres"], 18, "le vent m'emporte avec tout ce qui m'entoure à 18 m de là", comb="Air"),
+"cinder-swarm": ER("Nuée de braises", 3, ["insecte", "braise"], 11, "3d6 en moyenne à elle et à ses voisins, à chaque instant, selon l'insecte choisi", comb="Feu"),
+"grasp-of-the-deep": ER("Étreinte des profondeurs", 3, ["pression", "abysse", "suffocation"], 21, "6d6 en moyenne ; elle étouffe et s'égare", comb="Eau", **_PSY),
+"rust-cloud": ER("Nuage de rouille", P, ["rouille", "dissimulation"], 28, "5d10 en moyenne à chaque instant ; le métal s'y corrode", comb="Acier"),
+"ymeris-mark": ER("Marque ardente", 3, ["marque", "épuisement", "piste"], 18, "5d6 en moyenne ; fatiguée, et je sens où elle est", dur=(7, "JOURS")),
+"zephyr-slip": PR("Dérobade du zéphyr", TP2, 1, ["vent", "esquive", "mètres"], 5, "une brise m'emporte à 4,5 m de mon agresseur, arrondi à 5", comb="Air", cond=["agression"]),
+"elemental-breath": ER("Souffle élémentaire", P, ["souffle", "élément", "hasard"], 33, "6d10 en moyenne, d'un élément tiré au sort", comb="Énergie pure"),
+"freezing-rain": ER("Pluie verglaçante", P, ["pluie", "grésil", "lenteur"], 14, "4d6 en moyenne quand la pluie tourne au grésil ; ralentit ; le sol détrempé gêne"),
+"pressure-zone": PR("Zone de dépression", NINT, P, ["pression", "surdité", "maladresse"], why="l'air se raréfie : les vivants sont assourdis et gauches", fam="A", **_VIV),
+"frost-pillar": PR("Pilier de givre", V("mouvement", True), 3, ["glace", "prison"], why="prise dans un pilier de glace, elle ne bouge presque plus", comb="Glace", impact_sats=[(60, ["réserve"])]),
+"phantom-orchestra": ER("Orchestre fantôme", P, ["orchestre", "symphonie"], 28, "8d6 en moyenne, là où je dirige la symphonie", sens=[("ouïe", None), ("vue", None)], manif=["musiciens"]),
+"heaving-earth": ER("Terre soulevée", 3, ["onde", "sol", "secousse"], 66, "12d10 en moyenne ; ceux qui sont sur le trajet de l'onde chancellent", comb="Terre"),
+"vacuum": PR("Vide d'air", NE, P, ["souffle", "étouffement"], why="l'air est aspiré autour de moi : on y suffoque, étourdi", fam="A"),
+"rainbow-fumarole": ER("Fumerolle irisée", P, ["flamme", "fumée", "hasard"], why="des flammes de toutes couleurs percent le sol : dégâts et vapeurs tirés au sort parmi huit", fam="A"),
+"whirlpool": ER("Maelström", P, ["tourbillon", "aspiration"], 33, "6d10 en moyenne ; attire vers son centre de 3 m", comb="Eau", impact_sats=[(3, ["traction", "mètres"])]),
+"magnetic-dominion": PR("Empire magnétique", V("mouvement"), P, ["aimant", "déplacement"], why="tout ce qui est de métal ou en porte, je le déplace à mon gré dans la zone", comb="Magnétisme"),
+}
+FICHES.update(PF2_REM2)
+
+# ----- Pathfinder 2, lot 12 : sorts propres à la version remaniée (Transmutation) -----
+# Restent pour la comparaison glyphe à glyphe : hidebound, whispers-of-the-void, lignify, eagles-cry (appariements automatiques rejetés).
+PF2_REM3 = {
+"deep-breath": PR("Grande inspiration", INT, 1, ["souffle", "apnée"], why="un souffle retenu dix minutes, que les coups ne font pas perdre ; parler le vide"),
+"draw-moisture": PR("Eau soutirée", V("flux"), 4, ["eau", "séchage"], why="l'eau sort de l'objet et se rassemble en un globe dans ma main : il sèche", cible_obj=["objet"], fam="A"),
+"take-root": PR("Enracinement", V("mouvement", True), 2, ["bois", "racine", "aplomb"], 1, "des racines l'ancrent : 1 ajouté pour n'être ni poussé, ni renversé, ni désarmé", fam="A"),
+"camel-spit": PR("Crachat du chameau", NF, 3, ["crachat", "éblouissement"], 4, "1d6 en moyenne d'acide ; éblouit ; trois crachats en tout", impact_sats=[(3, ["usage"])]),
+"fold-metal": PR("Métal plié", TR, 4, ["acier", "boule", "cachette"], why="l'objet de métal se replie en une boule lisse pas plus grosse qu'un œuf ; l'eau ou le feu la défont", cible_obj=["objet"], fam="A"),
+"hippocampus-retreat": PR("Retraite de l'hippocampe", NF, 3, ["queue", "nage", "repli"], 7, "un coup de queue de 2d6 en moyenne, puis je nage 9 m plus loin", impact_sats=[(9, ["nage", "mètres"])]),
+"leaden-steps": PR("Pas de plomb", V("mouvement", True), 3, ["acier", "pied", "charge"], 2, "ses pieds deviennent des blocs de métal : chargée, et la foudre la blesse de 2 de plus", fam="A"),
+"shielded-arm": PR("Bras bouclier", SEP, 2, ["minerai", "bras", "parade"], 2, "des veines de minerai durcissent son bras : il pare comme un bouclier, 2 ajouté à sa défense", cible_note=["garde"]),
+"threefold-limb": PR("Membre aux trois états", NF, 3, ["membre", "eau"], 7, "2d6 en moyenne", fam="A", options=[
+    O("Glace", impact=(7, ["membre", "eau", "froid", "lenteur"], "2d6 en moyenne de froid ; ralentie de 3 m")),
+    O("Eau", impact=(7, ["membre", "eau", "déplacement"], "2d6 en moyenne de choc ; je la replace à 3 m")),
+    O("Vapeur", impact=(7, ["membre", "eau", "feu", "voile"], "2d6 en moyenne de feu ; la vapeur lui cache tout"))]),
+"unbroken-panoply": PR("Panoplie intacte", V("nature", True), 4, ["arme", "sursis", "retenue"], why="l'arme brisée sert comme si elle était entière, une heure ; elle assomme sans tuer", cible_obj=["arme"]),
+"weaken-earth": PR("Terre affaiblie", NINT, 4, ["pierre", "fragilité"], 5, "la pierre ou la terre visée perd 5 de dureté ; ce qui n'en a pas est blessé de 3 de plus", impact_sats=[(3, ["faille"])], fam="A"),
+"weave-wood": PR("Bois tressé", TR, 4, ["bois", "fibre", "tressage"], 4, "le bois brut se défait en fibres qui se tressent en objets simples, jusqu'à 4", cible_obj=["objet"], fam="A"),
+"wooden-fists": PR("Poings de bois", TR, 1, ["bois", "poing", "tronc"], 4, "mes bras deviennent troncs : mes poings frappent de 1d6 en moyenne, et plus loin", fam="A"),
+"clad-in-metal": PR("Paré de métal", TR, 4, ["acier", "placage"], why="la surface d'un objet de métal devient pour une minute celle d'un métal précieux, avec ses vertus", cible_obj=["objet"], fam="A"),
+"claws-of-the-otter": PR("Griffes de la loutre", TR, 1, ["griffe", "palmure", "froid"], 6, "des griffes de 1d4 + 1d6 de froid en moyenne ; 1 ajouté pour nager", fam="A"),
+"frog-tongue": PR("Langue de grenouille", ATT, 3, ["langue", "colle"], 9, "2d8 en moyenne ; collée au bout de ma langue, elle ne peut s'éloigner"),
+"pave-ground": PR("Sol aplani", TR, P, ["terre", "chemin"], why="la terre, les gravats et le sable s'aplanissent devant moi : le terrain pénible redevient aisé", fam="A"),
+"antlion-trap": PR("Piège du fourmilion", TR, P, ["sable", "entonnoir", "glissement", "mètres"], 3, "le sol devient un entonnoir de sable meuble : on y glisse de 3 m vers le centre à chaque instant", comb="Sable"),
+"croak-voice": PR("Voix coassante", NQ, 3, ["voix", "enrouement"], 11, "sa gorge enfle : parler et incanter lui font mal, 2d10 en moyenne à chaque fois", **_PSY),
+"lotus-walk": PR("Marche du lotus", TP2, 1, ["lotus", "eau", "marche"], why="des fleurs d'eau s'ouvrent sous mes pas : je marche sur l'eau, et mon sillage de feuilles porte les autres", comb="Plante"),
+"sand-form": PR("Forme de sable", TR, 2, ["sable", "corps"], 5, "5 retranché aux pointes et aux tranchants ; sans odeur, ne saigne pas, se fond dans le sable", comb="Sable"),
+"glass-form": PR("Forme de verre", TR, 2, ["verre", "corps", "transparence"], 5, "estompé, sans odeur ; 5 retranché à l'acide, au froid, à la foudre et aux pointes ; 5 ajouté au son et aux chocs", comb="Verre"),
+"grasping-earth": PR("Terre agrippante", V("mouvement", True), P, ["terre", "main", "ensevelissement"], 4, "des mains de roche saisissent et enterrent : 1d6 en moyenne à chaque instant", comb="Roche"),
+"mercurial-stride": PR("Foulée de mercure", TP2, 1, ["mercure", "traversée"], 21, "je cours deux fois plus loin et traverse un être en gouttes de mercure : 6d6 en moyenne de poison, et la nausée", comb="Mercure"),
+"snake-fangs": PR("Crocs du serpent", TR, 1, ["croc", "venin", "avalement"], 16, "des crocs de 1d8 + 2d10 de poison en moyenne ; je peux avaler une proie plus petite"),
+"stifling-stillness": PR("Calme étouffant", NINT, P, ["air", "stagnation", "suffocation"], 11, "l'air se fige : terrain pénible ; qui y respire s'épuise et s'empoisonne, 3d6 en moyenne", fam="A"),
+"flame-dancer": PR("Danseur de flammes", INT, 2, ["flamme", "danse"], 7, "ses poings et ses pieds frappent de 2d6 en moyenne de feu en plus ; il intimide en dansant"),
+"mantle-of-the-melting-heart": PR("Manteau du cœur fondant", TR, 1, ["acier", "manteau"], why="peau et armure se couvrent de métal liquide ; deux dons à la fois", comb="Mercure", options=[
+    O("Cœur de cuivre", impact=(10, ["acier", "manteau", "foudre"], "10 retranché à la foudre, que j'attire sur moi")),
+    O("Chair d'or", impact=(2, ["acier", "manteau", "or"], "insensible aux poisons et aux maladies ; 2 ajouté contre ceux que je porte déjà")),
+    O("Toucher réactif", impact=(7, ["acier", "manteau", "corrosion"], "2d6 en moyenne à tout métal qui me touche")),
+    O("Poigne lestée", impact=(6, ["acier", "manteau", "câble"], "des poings au bout de câbles : 1d4 + 1d6 de poison en moyenne ; ils saisissent"))]),
+"mantle-of-the-unwavering-heart": PR("Manteau du cœur inébranlable", TR, 1, ["bois", "manteau"], why="lianes et branches m'enveloppent ; deux dons à la fois", comb="Bois", options=[
+    O("Vigueur toujours verte", impact=(3, ["bois", "manteau", "sève"], "3 points rendus à chaque instant ; 2 ajouté contre poisons et maladies")),
+    O("Parfum entêtant", impact=(P, ["bois", "manteau", "parfum", "nausée"], "à 4,5 m autour, la nausée, et plus de flair")),
+    O("Tronc dressé", impact=(9, ["bois", "manteau", "croissance"], "je grandis d'une taille : gauche, mais une branche qui saisit, 2d8 en moyenne")),
+    O("Volonté inflexible", impact=(1, ["bois", "manteau", "psyché"], "rien ne me fascine ; 1 ajouté contre ce qui vise l'esprit"))]),
+"vitrifying-blast": PR("Souffle vitrifiant", NF, P, ["verre", "éclat", "vitrification"], 28, "8d6 en moyenne ; ralentie, à demi changée en verre : le son et les chocs la blessent de 3 de plus", comb="Verre", impact_sats=[(3, ["faille"])]),
+"chrysopoetic-curse": PR("Malédiction de l'or", TR, 3, ["malédiction", "or", "fardeau"], why="tout ce qu'elle touche devient or : armure et habits l'écrasent, puis ses armes ; au pire, sa chair même", dur=(1, "MINUTES")),
+"restore-ground": PR("Sol rendu à la nature", NE, P, ["édifice", "nature", "retour"], why="le lieu redevient sauvage : objets et bâtiments de main d'homme s'effacent, la végétation reprend"),
+"ferrous-form": PR("Forme de fer", TR, 1, ["acier", "corps", "invulnérable"], 10, "un corps de fer souple : 10 retranché aux coups ; ni poison, ni maladie, ni mort subite, ni soin", comb="Acier"),
+}
+FICHES.update(PF2_REM3)
+
+# ----- Pathfinder 2 : reprises du 16 novembre -----
+# Inarama n'a ni lune ni soleil (décision de Baptiste).
+FICHES.pop("cosmic-form"); PF2_ECARTE["cosmic-form"] = "prend les pouvoirs de la lune ou du soleil, qui n'existent pas dans Inarama"
+_R("moon-frenzy", fr="Frénésie sauvage")
+
+# ----- Pathfinder 2, lot 13 : versions PF2 des sorts déjà publiés (comparaison automatique : niveau, portée, durée, zone, dégâts) -----
+# Engendré par pf2work/gen96.py. Une forme « version » ne paraît que si son glyphe diffère de ceux de la page.
+PF2_VERSIONS = {
+ 'acid-arrow': {'vp2': {}, 'vr': {'src_idx': 'acid-grip'}},
+ 'acid-splash': {'vp2': {}, 'vr': {'src_idx': 'caustic-blast'}},
+ 'admonishing-ray': {'vp2': {'impact': (7, ['assommer'], '2d6 en moyenne')}},
+ 'advanced-scurvy': {'vp2': {}},
+ 'air-bubble': {'vp2': {}, 'vr': {}},
+ 'air-walk': {'vp2': {}},
+ 'alarm': {'vp2': {}, 'vr': {}},
+ 'alter-self': {'vp2': {'src_idx': 'humanoid-form'}, 'vr': {'src_idx': 'humanoid-form'}},
+ 'animal-messenger': {'vp2': {}, 'vr': {}},
+ 'animate-dead': {'vp2': {}, 'vr': {'src_idx': 'summon-undead'}},
+ 'animate-rope': {'vp2': {}},
+ 'animus-mine': {'vp2': {'options': [{'label': 'Mine mentale'}], 'impact': (18, ['chancellement'], '4d8 en moyenne')}},
+ 'ant-haul': {'vp2': {'options': [{'label': 'Force de fourmi'}]}, 'vr': {'options': [{'label': 'Force de fourmi'}]}},
+ 'anticipate-peril': {'vp2': {}},
+ 'antimagic-field': {'vp2': {}},
+ 'aqueous-orb': {'vp2': {}, 'vr': {}},
+ 'arcane-eye': {'vp2': {'src_idx': 'prying-eye'}},
+ 'arcane-hand': {'vp2': {'src_idx': 'forceful-hand'}},
+ 'arcane-lock': {'vp2': {'src_idx': 'lock'}, 'vr': {'src_idx': 'lock'}},
+ 'arcane-mark': {'vp2': {'src_idx': 'sigil'}, 'vr': {'src_idx': 'sigil'}},
+ 'arcanists-magic-aura': {'vp2': {'src_idx': 'magic-aura'}, 'vr': {'src_idx': 'disguise-magic'}},
+ 'augury': {'vp2': {}, 'vr': {}},
+ 'aura-of-the-unremarkable': {'vp2': {}},
+ 'baleful-polymorph': {'vp2': {}},
+ 'bane': {'vp2': {}, 'vr': {}},
+ 'banishment': {'vp2': {}, 'vr': {}},
+ 'barkskin': {'vp2': {}},
+ 'beast-shape-i': {'vp2': {'options': [{'label': 'Forme bestiale I', 'impact': ('plein', ['bête', 'forme'], 'un animal petit ou moyen')}], 'src_idx': 'animal-form'}, 'vr': {'options': [{'label': 'Forme bestiale I', 'impact': ('plein', ['bête', 'forme'], 'un animal petit ou moyen')}], 'src_idx': 'animal-form'}},
+ 'bilocation': {'vp2': {}},
+ 'biting-words': {'vp2': {'impact': (7, ['parole'], '2d6 en moyenne')}},
+ 'black-tentacles': {'vp2': {}, 'vr': {'src_idx': 'slither'}},
+ 'blade-barrier': {'vp2': {}, 'vr': {'src_idx': 'blessed-boundary'}},
+ 'bless': {'vp2': {}, 'vr': {}},
+ 'blindness-deafness': {'vp2': {'src_idx': 'blindness'}, 'vr': {'src_idx': 'blindness'}},
+ 'blink': {'vp2': {}, 'vr': {'src_idx': 'flicker'}},
+ 'blistering-invective': {'vp2': {}, 'vr': {}},
+ 'blur': {'vp2': {}, 'vr': {}},
+ 'breath-of-life': {'vp2': {}, 'vr': {}},
+ 'burning-hands': {'vp2': {}},
+ 'call-lightning': {'vp2': {'src_idx': 'lightning-storm'}, 'vr': {'src_idx': 'lightning-storm'}},
+ 'calm-emotions': {'vp2': {}},
+ 'cave-fangs': {'vr': {}},
+ 'chain-lightning': {'vp2': {}, 'vr': {}},
+ 'charm-person': {'vp2': {'src_idx': 'charm'}, 'vr': {'src_idx': 'charm'}},
+ 'chill-touch': {'vp2': {}, 'vr': {'src_idx': 'void-warp'}},
+ 'clairvoyance': {'vp2': {}, 'vr': {}},
+ 'cloudkill': {'vp2': {}},
+ 'color-spray': {'vp2': {}},
+ 'command': {'vp2': {}, 'vr': {}},
+ 'command-undead': {'vp2': {'options': [{'label': 'Injonction aux morts-vivants', 'impact': ('plein', ['amitié'], 'un mort-vivant amical')}], 'src_idx': 'bind-undead'}, 'vr': {'options': [{'label': 'Injonction aux morts-vivants', 'impact': ('plein', ['amitié'], 'un mort-vivant amical')}], 'src_idx': 'bind-undead'}},
+ 'comprehend-languages': {'vp2': {'src_idx': 'comprehend-language'}},
+ 'cone-of-cold': {'vp2': {}, 'vr': {'src_idx': 'howling-blizzard'}},
+ 'confusion': {'vp2': {}, 'vr': {}},
+ 'contingency': {'vp2': {}, 'vr': {}},
+ 'continual-flame': {'vp2': {}, 'vr': {'src_idx': 'everlight'}},
+ 'control-water': {'vp2': {}, 'vr': {}},
+ 'countless-eyes': {'vp2': {}, 'vr': {}},
+ 'create-food-and-water': {'vp2': {'src_idx': 'create-food'}, 'vr': {'src_idx': 'create-food'}},
+ 'create-or-destroy-water': {'vp2': {'src_idx': 'create-water'}, 'vr': {'src_idx': 'create-water'}},
+ 'creation': {'vp2': {}, 'vr': {}},
+ 'crushing-despair': {'vp2': {}},
+ 'cup-of-dust': {'vp2': {}},
+ 'dancing-lights': {'vp2': {}},
+ 'darkness': {'vp2': {}, 'vr': {}},
+ 'darkvision': {'vp2': {}, 'vr': {}},
+ 'daze': {'vp2': {}, 'vr': {}},
+ 'death-knell': {'vp2': {}},
+ 'death-ward': {'vp2': {}},
+ 'demand': {'vp2': {'src_idx': 'telepathic-demand'}, 'vr': {'src_idx': 'telepathic-demand'}},
+ 'detect-evil-and-good': {'vp2': {'src_idx': 'detect-alignment'}},
+ 'detect-magic': {'vp2': {}, 'vr': {}},
+ 'detect-metal': {'vr': {}},
+ 'detect-poison-and-disease': {'vp2': {'src_idx': 'detect-poison'}, 'vr': {'src_idx': 'detect-poison'}},
+ 'detect-scrying': {'vp2': {}, 'vr': {}},
+ 'detect-thoughts': {'vp2': {'src_idx': 'mind-reading'}, 'vr': {'src_idx': 'mind-reading'}},
+ 'dimension-door': {'vp2': {}},
+ 'dimensional-anchor': {'vp2': {}, 'vr': {'src_idx': 'planar-tether'}},
+ 'dimensional-lock': {'vp2': {}, 'vr': {'src_idx': 'planar-seal'}},
+ 'discern-lies': {'vp2': {}},
+ 'discern-location': {'vp2': {}},
+ 'disguise-self': {'vp2': {'src_idx': 'illusory-disguise'}, 'vr': {'src_idx': 'illusory-disguise'}},
+ 'disintegrate': {'vp2': {}, 'vr': {}},
+ 'dispel-magic': {'vp2': {}, 'vr': {}},
+ 'disrupt-undead': {'vp2': {}, 'vr': {'src_idx': 'vitality-lash', 'impact': (7, ['lumière'], '2d6 en moyenne')}},
+ 'disrupting-weapon': {'vp2': {'src_idx': 'disrupting-weapons'}, 'vr': {'src_idx': 'infuse-vitality'}},
+ 'divination': {'vp2': {'src_idx': 'read-omens'}, 'vr': {'src_idx': 'read-omens'}},
+ 'divine-vessel': {'vp2': {}},
+ 'divine-word': {'vp2': {'src_idx': 'divine-decree'}, 'vr': {'src_idx': 'divine-decree'}},
+ 'dominate-person': {'vp2': {'src_idx': 'dominate'}, 'vr': {'src_idx': 'dominate'}},
+ 'dream-council': {'vp2': {}, 'vr': {}},
+ 'earthquake': {'vp2': {}, 'vr': {}},
+ 'elemental-body-i': {'vp2': {'options': [{'label': 'Corps élémentaire I', 'impact': ('plein', ['élémentaire', 'forme', 'petit'], 'un élémentaire petit')}], 'src_idx': 'elemental-form'}, 'vr': {'options': [{'label': 'Corps élémentaire I', 'impact': ('plein', ['élémentaire', 'forme', 'petit'], 'un élémentaire petit')}], 'src_idx': 'elemental-form'}},
+ 'endure-elements': {'vp2': {}},
+ 'enervation': {'vp2': {'options': [{'label': 'Énervation', 'impact': (11, ['affaiblissement'], '1d4 niveaux perdus pour un temps, soit 11 points de vie')}]}},
+ 'enhance-victuals': {'vr': {'src_idx': 'cleanse-cuisine'}},
+ 'enlarge-reduce': {'vp2': {'src_idx': 'enlarge'}, 'vr': {'src_idx': 'enlarge'}},
+ 'entangle': {'vp2': {}},
+ 'enthrall': {'vp2': {}, 'vr': {}},
+ 'etherealness': {'vp2': {'src_idx': 'ethereal-jaunt'}},
+ 'etheric-shards': {'vp2': {}},
+ 'expeditious-excavation': {'vp2': {}},
+ 'expeditious-retreat': {'vp2': {'src_idx': 'fleet-step'}, 'vr': {'src_idx': 'fleet-step'}},
+ 'faerie-fire': {'vp2': {}},
+ 'false-life': {'vp2': {}, 'vr': {'src_idx': 'false-vitality'}},
+ 'false-vision': {'vp2': {}, 'vr': {}},
+ 'fear': {'vp2': {}, 'vr': {}},
+ 'fear-the-sun': {'vp2': {}},
+ 'feast-of-ashes': {'vp2': {}},
+ 'feather-fall': {'vp2': {}},
+ 'feeblemind': {'vp2': {}},
+ 'fey-form-i': {'vp2': {'options': [{'label': 'Forme féerique I', 'impact': ('plein', ['fée', 'forme'], 'une fée petite ou moyenne')}], 'src_idx': 'fey-form'}},
+ 'fiery-body': {'vp2': {}, 'vr': {}},
+ 'final-sacrifice': {'vp2': {}, 'vr': {}},
+ 'find-the-path': {'vp2': {'src_idx': 'wanderers-guide'}, 'vr': {'src_idx': 'wanderers-guide'}},
+ 'finger-of-death': {'vp2': {'impact': (70, ['mort', 'ténébreux'], '70 ; si elle tombe, elle meurt')}, 'vr': {'src_idx': 'execute', 'impact': (70, ['mort', 'ténébreux'], '70 ; si elle tombe, elle meurt')}},
+ 'fire-seeds': {'vp2': {}, 'vr': {'src_idx': 'tree-of-seasons'}},
+ 'fire-shield': {'vp2': {}, 'vr': {}},
+ 'fireball': {'vp2': {}, 'vr': {}},
+ 'flame-strike': {'vp2': {}, 'vr': {'src_idx': 'divine-immolation'}},
+ 'flaming-sphere': {'vp2': {}, 'vr': {'src_idx': 'floating-flame'}},
+ 'flesh-to-stone': {'vp2': {}},
+ 'floating-disk': {'vp2': {}, 'vr': {'src_idx': 'carryall'}},
+ 'fly': {'vp2': {}, 'vr': {}},
+ 'fog-cloud': {'vp2': {'src_idx': 'obscuring-mist'}},
+ 'forcecage': {'vp2': {'src_idx': 'force-cage'}, 'vr': {'src_idx': 'lifewood-cage'}},
+ 'foresight': {'vp2': {}, 'vr': {}},
+ 'form-of-the-dragon-i': {'vp2': {'options': [{'label': 'Forme draconique I', 'impact': ('plein', ['dragon', 'forme'], 'un dragon moyen')}], 'src_idx': 'dragon-form'}, 'vr': {'options': [{'label': 'Forme draconique I', 'impact': ('plein', ['dragon', 'forme'], 'un dragon moyen')}], 'src_idx': 'dragon-form'}},
+ 'freedom-of-movement': {'vp2': {}},
+ 'frostbite': {'vr': {}},
+ 'fungal-infestation': {'vp2': {}, 'vr': {}},
+ 'gaseous-form': {'vp2': {}, 'vr': {'src_idx': 'vapor-form'}},
+ 'gate': {'vp2': {}, 'vr': {}},
+ 'gentle-breeze': {'vr': {}},
+ 'gentle-repose': {'vp2': {}},
+ 'geyser': {'vp2': {}},
+ 'glibness': {'vp2': {}},
+ 'glitterdust': {'vp2': {}},
+ 'globe-of-invulnerability': {'vp2': {}, 'vr': {'src_idx': 'dispelling-globe'}},
+ 'glyph-of-warding': {'vp2': {}},
+ 'gravity-well': {'vp2': {}, 'vr': {}},
+ 'grease': {'vp2': {}, 'vr': {}},
+ 'greater-restoration': {'vp2': {'src_idx': 'restoration'}},
+ 'guidance': {'vp2': {}, 'vr': {}},
+ 'guiding-star': {'vp2': {}},
+ 'gust-of-wind': {'vp2': {}, 'vr': {}},
+ 'hallucinatory-terrain': {'vp2': {}},
+ 'harm': {'vp2': {}, 'vr': {}},
+ 'haste': {'vp2': {}, 'vr': {}},
+ 'heal': {'vp2': {'impact': (13, ['vie'], '1d8 + 8 en moyenne'), 'guerit': True}, 'vr': {'impact': (13, ['vie'], '1d8 + 8 en moyenne'), 'guerit': True}},
+ 'heat-metal': {'vp2': {}},
+ 'heroism': {'vp2': {}, 'vr': {}},
+ 'hideous-laughter': {'vp2': {}},
+ 'hold-person': {'vp2': {'src_idx': 'paralyze'}, 'vr': {'src_idx': 'paralyze'}},
+ 'holy-aura': {'vp2': {'src_idx': 'divine-aura'}},
+ 'holy-smite': {'vp2': {'options': [{'label': "Châtiment sacré — contre l'hostile", 'cond': ['hostile'], 'impact': (14, ['aveuglement'], '3d8 en moyenne, puis aveuglée')}], 'src_idx': 'divine-wrath'}, 'vr': {'options': [{'label': "Châtiment sacré — contre l'hostile", 'cond': ['hostile'], 'impact': (14, ['aveuglement'], '3d8 en moyenne, puis aveuglée')}], 'src_idx': 'divine-wrath'}},
+ 'horrid-wilting': {'vp2': {'impact': (55, ['dessèchement'], '10d10 en moyenne')}},
+ 'hydraulic-push': {'vp2': {}, 'vr': {}},
+ 'hydraulic-torrent': {'vp2': {}, 'vr': {}},
+ 'hypercognition': {'vp2': {}, 'vr': {}},
+ 'hypnotic-pattern': {'vp2': {}},
+ 'ice-storm': {'vp2': {}, 'vr': {}},
+ 'ill-omen': {'vp2': {}, 'vr': {}},
+ 'implosion': {'vp2': {}, 'vr': {}},
+ 'instant-armor': {'vp2': {}},
+ 'invisibility': {'vp2': {}, 'vr': {}},
+ 'irresistible-dance': {'vp2': {'src_idx': 'uncontrollable-dance'}, 'vr': {'src_idx': 'uncontrollable-dance'}},
+ 'jump': {'vp2': {}, 'vr': {}},
+ 'kings-castle': {'vr': {}},
+ 'knock': {'vp2': {}, 'vr': {}},
+ 'know-direction': {'vp2': {}, 'vr': {'src_idx': 'know-the-way'}},
+ 'lesser-restoration': {'vp2': {'src_idx': 'remove-disease'}, 'vr': {'src_idx': 'sound-body'}},
+ 'levitate': {'vp2': {}, 'vr': {}},
+ 'liberating-command': {'vp2': {}},
+ 'life-bubble': {'vp2': {'src_idx': 'lashuntas-life-bubble'}},
+ 'life-pact': {'vp2': {}},
+ 'light': {'vp2': {}, 'vr': {}},
+ 'lightning-bolt': {'vp2': {'impact': (26, ['foudre', 'embrasement'], '4d12 en moyenne')}, 'vr': {'impact': (26, ['foudre', 'embrasement'], '4d12 en moyenne')}},
+ 'locate-object': {'vp2': {'src_idx': 'locate'}, 'vr': {'src_idx': 'locate'}},
+ 'longstrider': {'vp2': {}},
+ 'mad-monkeys': {'vp2': {}, 'vr': {}},
+ 'mage-armor': {'vp2': {}},
+ 'mage-hand': {'vp2': {}},
+ 'mages-disjunction': {'vp2': {'src_idx': 'disjunction'}, 'vr': {'src_idx': 'detonate-magic'}},
+ 'magic-circle': {'vp2': {'src_idx': 'circle-of-protection'}},
+ 'magic-fang': {'vp2': {'options': [{'label': 'Morsure magique', 'impact': (1, [], '+1 à une arme naturelle'), 'cible_note': ['arme', 'naturelle']}]}, 'vr': {'options': [{'label': 'Morsure magique', 'impact': (1, [], '+1 à une arme naturelle'), 'cible_note': ['arme', 'naturelle']}], 'src_idx': 'runic-body'}},
+ 'magic-missile': {'vp2': {}},
+ 'magic-mouth': {'vp2': {}, 'vr': {'src_idx': 'embedded-message'}},
+ 'magic-stone': {'vp2': {}},
+ 'magic-weapon': {'vp2': {}},
+ 'magnificent-mansion': {'vp2': {}},
+ 'major-image': {'vp2': {'src_idx': 'illusory-scene'}, 'vr': {'src_idx': 'illusory-scene'}},
+ 'massacre': {'vp2': {}, 'vr': {}},
+ 'maze': {'vp2': {}, 'vr': {'src_idx': 'quandary'}},
+ 'meld-into-stone': {'vp2': {}, 'vr': {'src_idx': 'one-with-stone'}},
+ 'mending': {'vp2': {}, 'vr': {}},
+ 'message': {'vp2': {}, 'vr': {}},
+ 'meteor-swarm': {'vp2': {}, 'vr': {'src_idx': 'falling-stars'}},
+ 'mind-blank': {'vp2': {}},
+ 'mind-probe': {'vp2': {}, 'vr': {}},
+ 'mindlink': {'vp2': {}, 'vr': {}},
+ 'minor-illusion': {'vp2': {'src_idx': 'ghost-sound'}, 'vr': {'src_idx': 'figment'}},
+ 'miracle': {'vp2': {}},
+ 'mirror-image': {'vp2': {}},
+ 'misdirection': {'vp2': {}},
+ 'mislead': {'vp2': {}, 'vr': {}},
+ 'modify-memory': {'vp2': {}},
+ 'monstrous-physique-i': {'vp2': {'options': [{'label': 'Physique monstrueux I', 'impact': ('plein', ['monstre', 'forme'], 'petit ou moyen')}], 'src_idx': 'monstrosity-form'}, 'vr': {'options': [{'label': 'Physique monstrueux I', 'impact': ('plein', ['monstre', 'forme'], 'petit ou moyen')}], 'src_idx': 'monstrosity-form'}},
+ 'negate-aroma': {'vp2': {}},
+ 'nightmare': {'vp2': {}, 'vr': {}},
+ 'nondetection': {'vp2': {}, 'vr': {'src_idx': 'veil-of-privacy'}},
+ 'object-reading': {'vp2': {}, 'vr': {}},
+ 'overwhelming-presence': {'vp2': {}, 'vr': {}},
+ 'paranoia': {'vp2': {}, 'vr': {}},
+ 'pass-without-trace': {'vp2': {}},
+ 'passwall': {'vp2': {}},
+ 'penumbral-disguise': {'vp2': {}},
+ 'phantasmal-killer': {'vp2': {}, 'vr': {'src_idx': 'vision-of-death'}},
+ 'phantom-steed': {'vp2': {}, 'vr': {'src_idx': 'marvelous-mount'}},
+ 'plane-shift': {'vp2': {}},
+ 'plant-shape-i': {'vp2': {'options': [{'label': 'Forme végétale I', 'impact': ('plein', ['plante', 'forme'], 'une plante petite ou moyenne')}], 'src_idx': 'plant-form'}, 'vr': {'options': [{'label': 'Forme végétale I', 'impact': ('plein', ['plante', 'forme'], 'une plante petite ou moyenne')}], 'src_idx': 'plant-form'}},
+ 'polar-ray': {'vp2': {}, 'vr': {'src_idx': 'arctic-rift'}},
+ 'possession': {'vp2': {'options': [{'label': 'Possession'}]}, 'vr': {'options': [{'label': 'Possession'}]}},
+ 'power-word-blind': {'vp2': {}},
+ 'power-word-kill': {'vp2': {}},
+ 'power-word-stun': {'vp2': {}},
+ 'prestidigitation': {'vp2': {}, 'vr': {}},
+ 'prismatic-spray': {'vp2': {}},
+ 'prismatic-wall': {'vp2': {}},
+ 'private-sanctum': {'vp2': {}, 'vr': {'src_idx': 'peaceful-bubble'}},
+ 'produce-flame': {'vp2': {}, 'vr': {'src_idx': 'ignition'}},
+ 'project-image': {'vp2': {}, 'vr': {}},
+ 'protection-from-evil-and-good': {'vp2': {'src_idx': 'protection'}, 'vr': {'src_idx': 'protection'}},
+ 'protection-from-poison': {'vp2': {'src_idx': 'neutralize-poison'}, 'vr': {'src_idx': 'cleanse-affliction'}},
+ 'purify-food-and-drink': {'vp2': {}},
+ 'putrefy-food-and-drink': {'vp2': {}},
+ 'pyrotechnics': {'vp2': {}},
+ 'quench': {'vp2': {}},
+ 'raise-dead': {'vp2': {}, 'vr': {}},
+ 'rally-point': {'vp2': {}},
+ 'ray-of-enfeeblement': {'vp2': {}, 'vr': {'src_idx': 'enfeeble'}},
+ 'ray-of-frost': {'vp2': {}},
+ 'regenerate': {'vp2': {'impact': (15, ['vie', 'repousse'], '15 points rendus à chaque instant ; les membres perdus repoussent'), 'guerit': True}, 'vr': {'impact': (15, ['vie', 'repousse'], '15 points rendus à chaque instant ; les membres perdus repoussent'), 'guerit': True}},
+ 'remove-curse': {'vp2': {}},
+ 'remove-fear': {'vp2': {}, 'vr': {'src_idx': 'clear-mind'}},
+ 'repulsion': {'vp2': {}, 'vr': {}},
+ 'resilient-sphere': {'vp2': {}, 'vr': {'src_idx': 'containment'}},
+ 'resist-energy': {'vp2': {}, 'vr': {}},
+ 'resplendent-mansion': {'vp2': {}, 'vr': {}},
+ 'retrocognition': {'vp2': {}, 'vr': {}},
+ 'revealing-light': {'vr': {}},
+ 'reverse-gravity': {'vp2': {}},
+ 'righteous-might': {'vp2': {}},
+ 'rope-trick': {'vp2': {}, 'vr': {'src_idx': 'liminal-doorway'}},
+ 'rusting-grasp': {'vp2': {}},
+ 'sacred-nimbus': {'vp2': {}},
+ 'sanctuary': {'vp2': {}, 'vr': {}},
+ 'scintillating-pattern': {'vp2': {}},
+ 'scorching-ray': {'vp2': {}},
+ 'scrying': {'vp2': {}, 'vr': {}},
+ 'sculpt-sound': {'vp2': {}},
+ 'searing-light': {'vp2': {}},
+ 'secret-chest': {'vp2': {}, 'vr': {'src_idx': 'imaginary-lockbox'}},
+ 'secret-page': {'vp2': {}},
+ 'secure-shelter': {'vp2': {'src_idx': 'cozy-cabin'}, 'vr': {'src_idx': 'cozy-cabin'}},
+ 'see-invisibility': {'vp2': {}, 'vr': {'src_idx': 'see-the-unseen'}},
+ 'sending': {'vp2': {}, 'vr': {}},
+ 'shadow-walk': {'vp2': {}, 'vr': {'src_idx': 'umbral-journey'}},
+ 'shapechange': {'vp2': {}},
+ 'shatter': {'vp2': {}, 'vr': {}},
+ 'shield': {'vp2': {}, 'vr': {}},
+ 'shield-other': {'vp2': {}},
+ 'shifting-sand': {'vp2': {}},
+ 'shillelagh': {'vp2': {}},
+ 'shocking-grasp': {'vp2': {}, 'vr': {'src_idx': 'thunderstrike'}},
+ 'shrink-item': {'vp2': {}, 'vr': {}},
+ 'silence': {'vp2': {}, 'vr': {}},
+ 'silent-image': {'vp2': {'src_idx': 'illusory-object'}, 'vr': {'src_idx': 'illusory-object'}},
+ 'sleep': {'vp2': {}, 'vr': {}},
+ 'slow': {'vp2': {}, 'vr': {}},
+ 'snowball': {'vp2': {'impact': (5, ['neige', 'froid'], '2d4 en moyenne')}},
+ 'solid-fog': {'vp2': {}},
+ 'soul-bind': {'vp2': {'src_idx': 'bind-soul'}, 'vr': {'src_idx': 'seize-soul'}},
+ 'sound-burst': {'vp2': {}},
+ 'speak-with-animals': {'vp2': {}, 'vr': {}},
+ 'speak-with-dead': {'vp2': {'src_idx': 'talking-corpse'}, 'vr': {'src_idx': 'talking-corpse'}},
+ 'speak-with-plants': {'vp2': {}, 'vr': {}},
+ 'spectral-hand': {'vp2': {}, 'vr': {'src_idx': 'ghostly-carrier'}},
+ 'spell-immunity': {'vp2': {'options': [{'label': 'Immunité contre les sorts', 'impact': (1, ['immunité', 'sort'], 'un sort désigné sans effet'), 'impact_sats': [(4, ['seuil', 'niveau'])]}]}},
+ 'spell-turning': {'vp2': {}, 'vr': {'src_idx': 'spell-riposte'}},
+ 'spider-climb': {'vp2': {}},
+ 'spike-stones': {'vp2': {}},
+ 'spiritual-weapon': {'vp2': {}, 'vr': {'src_idx': 'spiritual-armament'}},
+ 'stabilize': {'vp2': {}, 'vr': {}},
+ 'status': {'vp2': {}, 'vr': {}},
+ 'stinking-cloud': {'vp2': {}},
+ 'stone-shape': {'vp2': {'src_idx': 'shape-stone'}, 'vr': {'src_idx': 'shape-stone'}},
+ 'stone-tell': {'vp2': {}},
+ 'stone-to-flesh': {'vp2': {}},
+ 'stoneskin': {'vp2': {}},
+ 'storm-of-vengeance': {'vp2': {}, 'vr': {'src_idx': 'wrathful-storm'}},
+ 'suggestion': {'vp2': {}, 'vr': {}},
+ 'summon-dragon': {'vp2': {}, 'vr': {}},
+ 'summon-instrument': {'vp2': {}, 'vr': {}},
+ 'summon-monster-i': {'vp2': {'options': [{'label': 'Rang I — 1 être de puissance ½ — lumineux', 'impact': (2, ['fractionné'], 'puissance ½'), 'cible_sym': ['lumineux']}], 'src_idx': 'summon-celestial'}, 'vr': {'options': [{'label': 'Rang I — 1 être de puissance ½ — lumineux', 'impact': (2, ['fractionné'], 'puissance ½'), 'cible_sym': ['lumineux']}], 'src_idx': 'summon-celestial'}},
+ 'summon-natures-ally-i': {'vp2': {'options': [{'label': 'Rang I — 1 être de puissance ½', 'impact': (2, ['fractionné'], 'puissance ½')}], 'src_idx': 'summon-animal'}, 'vr': {'options': [{'label': 'Rang I — 1 être de puissance ½', 'impact': (2, ['fractionné'], 'puissance ½')}], 'src_idx': 'summon-animal'}},
+ 'summon-stampede': {'vr': {}},
+ 'sunburst': {'vp2': {}, 'vr': {}},
+ 'synaptic-pulse': {'vp2': {'options': [{'label': 'Pulsation synaptique'}]}, 'vr': {'options': [{'label': 'Pulsation synaptique'}]}},
+ 'synesthesia': {'vp2': {'options': [{'label': 'Synesthésie'}]}, 'vr': {'options': [{'label': 'Synesthésie'}]}},
+ 'telekinesis': {'vp2': {'src_idx': 'telekinetic-haul'}, 'vr': {'src_idx': 'telekinetic-haul'}},
+ 'telekinetic-maneuver': {'vp2': {}, 'vr': {}},
+ 'telekinetic-projectile': {'vp2': {}, 'vr': {}},
+ 'telepathic-bond': {'vp2': {}},
+ 'telepathy': {'vp2': {}, 'vr': {}},
+ 'teleport': {'vp2': {}, 'vr': {}},
+ 'threefold-aspect': {'vp2': {}, 'vr': {}},
+ 'time-stop': {'vp2': {}},
+ 'tongues': {'vp2': {}},
+ 'touch-of-idiocy': {'vp2': {}},
+ 'trade-items': {'vr': {}},
+ 'transmute-rock-to-mud': {'vp2': {'src_idx': 'transmute-rock-and-mud'}},
+ 'tree-shape': {'vp2': {}, 'vr': {'src_idx': 'one-with-plants'}},
+ 'tree-stride': {'vp2': {}},
+ 'true-seeing': {'vp2': {}},
+ 'true-strike': {'vp2': {}},
+ 'undetectable-alignment': {'vp2': {}},
+ 'unseen-servant': {'vp2': {}, 'vr': {'src_idx': 'phantasmal-minion'}},
+ 'vampiric-touch': {'vp2': {}},
+ 'ventriloquism': {'vp2': {}, 'vr': {}},
+ 'vermin-shape-i': {'vp2': {'options': [{'label': 'Forme de vermine I', 'impact': ('plein', ['vermine', 'forme'], 'petite ou moyenne')}], 'src_idx': 'insect-form'}, 'vr': {'options': [{'label': 'Forme de vermine I', 'impact': ('plein', ['vermine', 'forme'], 'petite ou moyenne')}], 'src_idx': 'insect-form'}},
+ 'vomit-swarm': {'vp2': {}, 'vr': {}},
+ 'wail-of-the-banshee': {'vp2': {}},
+ 'wall-of-fire': {'vp2': {}, 'vr': {}},
+ 'wall-of-force': {'vp2': {}, 'vr': {}},
+ 'wall-of-ice': {'vp2': {}, 'vr': {}},
+ 'wall-of-stone': {'vp2': {}, 'vr': {}},
+ 'wall-of-thorns': {'vp2': {}, 'vr': {}},
+ 'water-breathing': {'vp2': {}, 'vr': {}},
+ 'water-walk': {'vp2': {}, 'vr': {}},
+ 'waterproof': {'vr': {}},
+ 'web': {'vp2': {}, 'vr': {}},
+ 'weird': {'vp2': {'impact': (56, [], '16d6 en moyenne')}, 'vr': {'src_idx': 'phantasmagoria', 'impact': (56, [], '16d6 en moyenne')}},
+ 'whirlwind': {'vp2': {'impact': (28, ['choc', 'tourbillon'], '5d10 en moyenne')}},
+ 'wind-walk': {'vp2': {}, 'vr': {'src_idx': 'migration'}},
+ 'wind-wall': {'vp2': {'src_idx': 'wall-of-wind'}, 'vr': {'src_idx': 'wall-of-wind'}},
+ 'wish': {'vp2': {}, 'vr': {'src_idx': 'manifestation'}},
+ 'wood-shape': {'vp2': {'src_idx': 'shape-wood'}, 'vr': {'src_idx': 'shape-wood'}},
+ 'zone-of-truth': {'vp2': {}, 'vr': {'src_idx': 'ring-of-truth'}},
+}
+for _k, _v in PF2_VERSIONS.items(): FICHES[_k].update(_v)
+
+# ----- Reprise du 17 novembre : ni lune ni soleil dans Inarama (décision de Baptiste) -----
+# Les sorts « de lune » et « de soleil » deviennent des sorts d'énergie astrale, à deux formes : lumineuse (l'Étoile) et ténébreuse (l'Abysse).
+def _AST(k, fr, words, why_l, why_t, v=P):
+    f = FICHES[k]; subs = f.get("options") or [{"label": None}]
+    ops = []
+    for s in subs:
+        w = list(words) + [x for x in (s.get("impact") or (0, []))[1] if x in ("éclat",)]
+        for face, mot, why in (("Forme lumineuse", "lumineux", why_l), ("Forme ténébreuse", "ténébreux", why_t)):
+            lab = face if (s["label"] is None or len(subs) == 1 or s is subs[0]) else f"{s['label'].replace('du soleil', 'astral').replace('de l' + chr(39) + 'aube', 'astral')} — {face.lower()}"
+            ops.append({**{a: b for a, b in s.items() if a not in ("label", "impact")}, "label": lab, "impact": (v, w + [mot], why + (" ; plus ardent" if "éclat" in w else ""))})
+    f.update(fr=fr, impact=(v, list(words), why_l), options=ops)
+    for a in f.get("alt", []): a["why"] = "l'énergie astrale"
+for _k, _fr in (("moonbeam", "Faisceau astral"), ("sunbeam", "Rayon astral"), ("sunburst", "Explosion astrale")):
+    FICHES[_k].update(fr=_fr, options=[O("Forme lumineuse"), O("Forme ténébreuse", face="ténébreux")])
+    for _a in FICHES[_k].get("alt", []): _a["why"] = "l'énergie astrale"
+FICHES["lunar-veil"].update(fr="Voile astral")
+_AST("moonstruck", "Frénésie astrale", ["fureur", "folie"], "l'éclat de l'Étoile la rend enragée et confuse", "l'ombre de l'Abysse la rend enragée et confuse")
+_AST("sunstalker", "Traqueur astral", ["invisibilité"], "invisible tant qu'il reste en pleine lumière", "invisible tant qu'il reste en pleine obscurité")
+_AST("cloak-of-shade", "Manteau d'ombre", ["abri", "chaleur"], "à l'abri des ardeurs de l'Étoile : chaleur et éblouissement", "à l'abri des rigueurs de l'Abysse : froid et ténèbres")
+_AST("blinding-ray", "Rayon aveuglant", ["rayon", "cécité"], "des rayons d'éclat qui aveuglent", "des rayons d'ombre qui aveuglent")
+_AST("moonrise-arrow", "Flèche astrale", ["argent", "trait"], "des traits de lueur d'argent, qui frappent comme l'argent", "des traits d'ombre d'argent, qui frappent comme l'argent")
+_AST("morning-sun", "Sphère astrale", ["sphère", "jour"], "une sphère d'éclat, vive comme le plein jour", "une sphère d'ombre, noire comme la pleine nuit")
+_AST("shield-of-the-dawnflower", "Bouclier astral", ["bouclier", "brûlure"], "un disque d'éclat qui brûle qui me frappe", "un disque d'ombre qui glace qui me frappe")
+_AST("blade-of-light", "Lame astrale", ["arme", "charge"], "une arme chargée d'éclat, fléau des morts-vivants", "une arme chargée d'ombre, fléau des êtres de lumière")
+_AST("fear-the-sun", "Crainte astrale", ["aveuglement"], "la lumière l'aveugle", "l'obscurité l'aveugle, même s'il y voyait")
+_AST("fury-of-the-sun", "Fureur astrale", ["malédiction", "chaleur"], "un coup de chaleur intérieur", "un coup de froid intérieur")
+_AST("sun-metal", "Métal astral", ["embrasement"], "une arme qui s'embrase d'un feu clair sans se consumer", "une arme qui s'embrase d'un feu noir sans se consumer")
+_AST("suns-disdain", "Dédain astral", ["aveuglement", "faiblesse"], "la lumière l'aveugle et la blesse", "l'obscurité l'aveugle et la blesse")
+
+# ----- Pathfinder 2, lot 14 : quatre sorts remaniés mal appariés, et trois formes base / maximale -----
+PF2_REM4 = {
+"hidebound": PR("Cuir épais", SEP, 2, ["cuir", "écaille"], 5, "sa peau se couvre de cuir ou d'écailles : 5 retranché aux coups jusqu'à son prochain instant", **_RES),
+"whispers-of-the-void": PR("Murmures du vide", NE, P, ["murmure", "secret", "ténébreux"], 18, "4d8 en moyenne à chaque instant ; vidés de leur force"),
+"lignify": PR("Lignification", TR, 3, ["bois", "pétrification", "lenteur"], why="sa chair devient bois peu à peu : ralentie de plus en plus, puis statue de bois", fam="A"),
+"eagles-cry": PR("Cri de l'aigle", NF, P, ["cri", "effroi"], 18, "4d8 en moyenne ; effrayés, les plus atteints fuient"),
+}
+FICHES.update(PF2_REM4)
+_R("spirit-ward", options=[
+    O("Forme de base", impact=(1, ["esprit", "hantise"], "au toucher, d'un geste : 1 ajouté contre les esprits et les hantises")),
+    O("Forme maximale", cible=P, aoe=_S(30), impact=(1, ["esprit", "hantise"], "moi et tous mes alliés alentour : 1 ajouté contre les esprits et les hantises ; tout l'instant y passe"))])
+_R("elemental-breath", options=[
+    O("Forme de base", impact=(33, ["souffle", "élément", "hasard"], "6d10 en moyenne, d'un élément tiré au sort")),
+    O("Forme maximale", impact=(39, ["souffle", "élément", "choix"], "l'élément choisi, jusqu'à 7d10 en moyenne pour le feu ; tout l'instant y passe"))])
+_R("splinter-volley", options=[
+    O("Forme de base", impact=(14, ["écharde", "saignement"], "4d6 en moyenne à une cible")),
+    O("Forme maximale", qty_cible=2, impact=(14, ["écharde", "saignement"], "4d6 en moyenne à chacune de deux cibles ; tout l'instant y passe"))])
+
+# ----- Pathfinder 2 : corrections de la relecture inversée (18 novembre) -----
+_R("charitable-urge", dur=(6, "SECONDES")); _R("earthbind", dur=(6, "SECONDES")); _R("equal-footing", dur=(6, "SECONDES")); _R("lignify", dur=(P, None))
+_R("camel-spit", loc=(5, "METRES", "4,5 m, arrondi à 5"))
+_R("misty-memory", aoe=_S(30)); _R("pollen-pods", aoe=_S(15))
+_R("soothing-spring", aoe={"type": "cylinder", "size": 10, "height": 5})
+
+# ----- Pathfinder 2, lot 15 : sorts focalisés gardés — magicien et sorcière -----
+# Tri : pf2work/focal.py. Gardé si l'effet tient comme un sort ordinaire, sans la classe.
+PF2_FOCAL_ECARTE = {}       # rempli lot par lot
+PF2_FOCAL_ECARTE.update({"personal-runewell": "puits runique de Thassilon (Golarion)", "capital-dividend": "régime des prophéties de Kalistrade (Golarion)",
+ "invisibility-cloak": "même effet que l'Invisibilité déjà publiée", "diviners-sight": "remplace un jet de dé : pure mécanique de jeu",
+ "life-siphon": "ne fait que modifier le sort qu'on lance", "elemental-tempest": "ne fait que modifier le sort qu'on lance",
+ "interdisciplinary-incantation": "reprend le sort d'un autre lanceur : mécanique de classe", "cackle": "ne fait que prolonger un autre sort", "patrons-puppet": "économie d'actions du familier"})
+PF2_FOC1 = {
+"all-encompassing-hunger": N2("Faim dévorante", 3, ["dévoration", "ténébreux"], 4, "1d6 en moyenne ; si elle en meurt, je gagne autant de vie d'emprunt", **_VIV),
+"crescent-scepter": P2("Sceptre d'autorité", SEP, 1, ["insigne", "crainte"], why="l'objet que je brandis paraît l'insigne du pouvoir que chacun redoute : qui veut me frapper peut y renoncer, effrayé", cible_note=["garde"]),
+"cutting-eye": P2("Œil envieux", SEP, 1, ["envie", "parade"], 2, "2 ajouté à ma défense ou à ma résistance contre ce qui me vise ; il ne me prend plus au dépourvu", cond=["coup"], cible_note=["garde"]),
+"hearts-hook": P2("Crochet du cœur", ATT, 4, ["rencontre", "attirance"], why="deux êtres poussés l'un vers l'autre : chacun doit d'abord s'approcher de l'autre", qty_cible=2, **_PSY),
+"precious-gleam": P2("Éclat précieux", INT, 4, ["acier", "argent", "affinage"], 4, "l'arme devient de fer froid, d'argent ou d'acier fin : 1d6 en moyenne de plus à son prochain coup", cible_obj=["arme"], fam="A"),
+"vengeful-glare": P2("Regard vengeur", NF, 3, ["regard", "froid", "feu"], 2, "1d4 en moyenne, de froid ou de feu ; 1 de plus par instant si je l'avais déjà blessée", fam="A"),
+"unexpected-windfall": P2("Aubaine imprévue", V("mouvement", True), 3, ["trésor", "fardeau"], why="une pluie de pièces et de pierres lourdes : elle ploie sous la charge"),
+"friendly-push": P2("Poussée amicale", V("mouvement"), 2, ["poussée", "mètres"], 3, "je propulse un allié de 3 m en ligne droite, même vers le haut, à chaque instant"),
+"rapid-retreat": P2("Retraite rapide", TP2, 1, ["téléportation", "esquive"], 6, "je me téléporte à 6 m, hors du danger, et ce qui me frappait me blesse moins", cond=["coup"]),
+"force-bolt": E2("Trait de force", 3, ["trait", "infaillible"], 4, "1d4 + 1 en moyenne ; il touche toujours"),
+"energy-absorption": P2("Absorption d'énergie", SEP, 1, ["énergie", "absorption"], 15, "15 retranché à l'acide, au froid, à la foudre ou au feu qui me frappe", cond=["coup"], fam="A", **_RES),
+"earthworks": P2("Terrassement", TR, P, ["terre", "butte"], why="de petites buttes sortent du sol : terrain pénible, qu'on peut dégager", fam="A"),
+"community-restoration": P2("Réconfort partagé", INT, 1, ["partage", "vigueur"], 2, "quand j'aide mes alliés par un sort : 2 points de vie d'emprunt par cran du sort, pour moi et à répartir entre eux", cond=["sort"]),
+"shifting-form": P2("Forme changeante", TR, 1, ["forme", "choix"], why="un don au choix", options=[
+    O("Vitesse", impact=(6, ["forme", "vitesse", "mètres"], "6 m de plus par instant")), O("Escalade ou nage", impact=(P, ["forme", "escalade", "nage"], "je grimpe ou nage à demi-allure")),
+    O("Vision dans le noir", impact=(P, ["forme", "nuit", "regard"], "je vois dans le noir")), O("Griffes", impact=(5, ["forme", "griffe"], "des griffes de 1d8 en moyenne"))]),
+"hand-of-the-apprentice": E2("Main de l'apprenti", 3, ["arme", "lancer", "retour"], why="l'arme que je tiens vole frapper au loin comme si je la maniais, puis me revient"),
+"augment-summoning": P2("Convocation augmentée", INT, 2, ["invoqué", "renfort"], 1, "1 ajouté à tout ce que fait l'être que j'ai convoqué", cond=["convoqué"], vr={"src_idx": "fortify-summoning"}),
+"call-of-the-grave": N2("Appel de la tombe", 3, ["rayon", "nausée"], 1, "nausée de 1 ; au mieux, nausée de 2 et lenteur", vr={"src_idx": "scramble-body"}, **_VIV),
+"charming-words": P2("Mots charmeurs", REL, 3, ["murmure", "désarmement"], why="elle ne peut plus s'en prendre à moi, un instant", vr={"src_idx": "charming-push"}, **_PSY),
+"dimensional-steps": P2("Pas dimensionnel", TP2, 1, ["téléportation", "mètres"], 6, "je me téléporte à 6 m, à vue"),
+"dread-aura": P2("Aura d'effroi", PEUR, P, ["aura", "effroi"], 1, "mes ennemis alentour sont effrayés de 1, sans répit", vr={"src_idx": "spiral-of-horrors"}, **_PSY),
+"physical-boost": P2("Regain physique", INT, 2, ["corps", "élan"], 2, "2 ajouté à son prochain effort du corps ou à sa prochaine esquive", **_VIV),
+"protective-ward": P2("Garde protectrice", SEP, P, ["aura", "garde"], 1, "1 ajouté à la défense, pour moi et mes alliés ; l'aura grandit tant que je la soutiens", impact_sats=[(9, ["rayon", "mètres"])], vr={"src_idx": "protective-wards"}),
+"vigilant-eye": P2("Œil vigilant", VIS, 1, ["œil", "capteur", "invisible"], why="un œil invisible posé à vue, par lequel je vois, une heure durant", discret=True, vr={"src_idx": "rune-of-observation"}),
+"warped-terrain": P2("Terrain faussé", EXI, P, ["terrain", "fantasme"], why="des embûches illusoires couvrent le sol : terrain pénible pour qui y croit"),
+"efficient-apport": P2("Rappel commode", TP2, 4, ["objet", "main"], why="un petit objet à vue se téléporte dans ma main", cible_obj=["objet"], vr={"src_idx": "reclined-apport"}),
+"unravel-knowledge": P2("Savoir détricoté", NORD, 3, ["souvenir", "aptitude", "oubli"], 14, "un de ses savoir-faire s'embrume : 3d8 en moyenne chaque fois qu'elle s'en sert", cible_note=["mémoire"]),
+"censure-falsehoods": P2("Mensonges châtiés", NQ, 3, ["mensonge", "crapaud", "nausée"], why="qui m'a menti crache crapauds et serpents à chaque mot : nausée, et la parole lui coûte"),
+"blood-ward": P2("Garde du sang", SEP, 2, ["espèce", "désigné"], 1, "1 ajouté à sa défense et à sa résistance contre une sorte d'êtres désignée", cible_note=["garde", "résistance"]),
+"curse-of-death": N2("Malédiction de mort", 3, ["malédiction", "cœur", "mort"], why="son cœur se serre d'effroi : le mal empire par degrés, jusqu'à la mort", dur=(1, "MINUTES")),
+"deceivers-cloak": P2("Manteau du trompeur", NVIS, 1, ["apparence", "leurre"], why="je parais un autre être de même carrure"),
+"elemental-betrayal": P2("Trahison élémentaire", NINT, 3, ["élément", "faille"], 2, "l'élément choisi la blesse de 2 de plus à chaque fois", fam="A", **_RES),
+"life-boost": P2("Regain de vie", HE, 2, ["vie"], 2, "2 points rendus à chaque instant, quatre instants durant", guerit=True),
+"malicious-shadow": P2("Ombre malveillante", TR, 3, ["ombre", "frappe"], why="son ombre prend une forme mortelle et la frappe à chaque instant, sans la quitter", sens=[("vue", None)], manif=["ombre"]),
+"needle-of-vengeance": P2("Aiguille de vengeance", NORD, 3, ["aiguille", "interdit"], 2, "2 à l'esprit chaque fois qu'elle s'en prend à l'être que j'ai nommé", **_PSY),
+"personal-blizzard": E2("Blizzard personnel", 3, ["blizzard", "persistance"], 4, "1d6 en moyenne de froid, puis autant à chaque instant ; la neige la suit et lui brouille la vue"),
+"phase-familiar": P2("Familier déphasé", SEP, 2, ["brume", "déphasage"], 5, "mon compagnon devient brume un instant : 5 retranché au coup qui le frappe", cond=["compagnon", "coup"], **_RES),
+"restorative-moment": P2("Instant réparateur", HE, 2, ["vie", "temps", "repos"], 1, "le bienfait d'un jour passé : ses maux durables reculent de 1, et elle lutte à nouveau contre ce qui l'afflige", guerit=True),
+"veil-of-dreams": P2("Voile de rêves", NORD, 3, ["torpeur", "rêverie"], 1, "somnolente : 1 retranché à sa vigilance, à ses coups et à sa volonté", **_PSY),
+"clinging-ice": E2("Glace tenace", 3, ["neige", "lenteur", "mètres"], 2, "1d4 en moyenne de froid ; ralentie de 1,5 m"),
+"discern-secrets": P2("Secrets percés", VIS, 2, ["secret", "flair"], 1, "1 ajouté pour se souvenir, chercher ou percer une intention"),
+"evil-eye": P2("Mauvais œil", PEUR, 3, ["œil", "effroi"], 1, "effrayée de 1, sans répit tant que je la vois", **_PSY),
+"nudge-fate": P2("Coup de pouce au destin", INT, 2, ["destin", "ajustement"], 1, "une fois : 1 ajouté à l'essai qui allait manquer de peu"),
+"shroud-of-night": P2("Linceul de nuit", NVIS, 4, ["nuit", "voile"], why="ses yeux sont voilés de ténèbres : tout lui paraît estompé, à moins de voir dans le noir"),
+"stoke-the-heart": P2("Cœur attisé", INT, 2, ["ferveur", "frappe"], 2, "2 ajouté à ses coups"),
+"wilding-word": P2("Parole sauvage", REL, 4, ["parenté", "retenue"], 2, "la bête ou la plante répugne à me nuire : 2 retranché à ses coups contre moi", cible_note=["bête"]),
+"pact-broker": P2("Pacte de paix", REL, 3, ["pacte", "trêve"], 1, "j'offre la paix : si elle la rompt, 1 retranché à ses coups contre moi et les miens", **_PSY),
+"return-the-favor": P2("Service rendu", INT, 2, ["dette", "vigueur"], 12, "à l'allié qui vient de m'aider : 12 points de vie d'emprunt pour une minute", cond=["aide"]),
+"over-the-coals": P2("Sur les charbons", ORD, 3, ["dette", "exigence", "châtiment"], 27, "je réclame mon dû : payer, obéir ou céder ; si elle refuse, vidée, et 6d8 en moyenne à chaque instant", **_PSY),
+"glacial-heart": E2("Cœur de glace", 3, ["gel", "lenteur", "statue"], 35, "10d6 en moyenne ; ralentie, et peu à peu changée en glace"),
+"spirit-object": P2("Objet animé", V("mouvement"), 4, ["objet", "pattes", "course"], 8, "l'objet se dote de pattes et court 7,5 m, arrondi à 8 ; il peut frapper à l'arrivée", cible_obj=["objet"]),
+"buzzing-bites": P2("Morsures bourdonnantes", NE, 3, ["insecte", "morsure", "nausée"], 2, "1d4 en moyenne à chaque instant où je soutiens le sort ; la nausée"),
+"stumbling-curse": P2("Malédiction du faux pas", NORD, 3, ["malédiction", "trajectoire"], 2, "2 retranché à son agilité et à sa force ; ses déplacements dévient"),
+}
+for _k in "all-encompassing-hunger crescent-scepter cutting-eye hearts-hook precious-gleam vengeful-glare unexpected-windfall friendly-push rapid-retreat earthworks community-restoration unravel-knowledge censure-falsehoods".split():
+    PF2_FOC1[_k]["src"] = "pf2r"
+FICHES.update(PF2_FOC1)
+FICHES["grasping-vine"].update(vr={})      # la Liane préhensile focalisée : version remaniée de la page déjà publiée
+
+# ----- Pathfinder 2, lot 16 : sorts focalisés gardés — barde, druide, rôdeur, champion, moine, magus -----
+PF2_FOCAL_ECARTE.update({"counter-performance": "remplace un jet de sauvegarde par un jet de représentation", "fortissimo-composition": "ne fait que renforcer une autre composition",
+ "lingering-composition": "ne fait que prolonger une autre composition", "inspire-heroics": "ne fait que renforcer une autre composition", "silvers-refrain": "chant d'une faction de Golarion",
+ "primal-summons": "ne fait que modifier la prochaine convocation", "wild-shape": "formes données par les dons de la classe", "untamed-form": "formes données par les dons de la classe",
+ "wild-morph": "effets donnés par les dons de la classe", "untamed-shift": "effets donnés par les dons de la classe", "snare-hopping": "déplace un piège de rôdeur",
+ "shields-of-the-spirit": "aura du champion", "litany-of-depravity": "n'existe que par l'alignement", "litany-of-righteousness": "n'existe que par l'alignement",
+ "clinging-shadows-stance": "posture de moine", "wild-winds-stance": "posture de moine", "medusas-wrath": "méduse, créature non admise (décision de Baptiste)",
+ "turbulent-tide": "frappe du magus", "cascade-countermeasure": "posture du magus", "dimensional-assault": "frappe du magus", "force-fang": "frappe du magus",
+ "shielding-strike": "frappe du magus", "shooting-star": "frappe du magus", "spinning-staff": "frappe du magus", "thunderous-strike": "frappe du magus"})
+PF2_FONDU.update({"touch-of-corruption": "lay-on-hands"})
+_CHANT = dict(sens=[("ouïe", None)], manif=["chant"])
+PF2_FOC2 = {
+"fatal-aria": P2("Aria fatale", NE, 3, ["musique", "perfection", "mort"], 50, "une musique si parfaite qu'on en meurt ; les plus forts y perdent 50, ou restent hébétés", **_PSY, **_CHANT),
+"hymn-of-healing": P2("Hymne de guérison", HE, 2, ["vie", "hymne"], 2, "2 points rendus à chaque instant, et 2 de vie d'emprunt", guerit=True, **_CHANT),
+"loremasters-etude": P2("Étude du maître du savoir", INT, 2, ["savoir", "essai"], why="pour se souvenir : le meilleur de deux essais", cible_note=["mémoire"], cond=["souvenir"]),
+"ode-to-ouroboros": P2("Ode à l'ouroboros", V("nature", True), 2, ["agonie", "sursis"], 1, "l'agonie s'arrête à 1 cran de la mort", cond=["mourant"], **_CHANT),
+"soothing-ballad": P2("Ballade apaisante", HE, 2, ["vie", "ballade"], 32, "7d8 en moyenne à chacun", qty_cible=10, guerit=True, **_CHANT, options=[
+    O("Guérir", impact=(32, ["vie", "ballade"], "7d8 en moyenne à chacun")),
+    O("Rassurer", impact=(P, ["effroi", "délivrance", "ballade"], "défait les peurs")),
+    O("Délier", impact=(P, ["paralysie", "délivrance", "ballade"], "défait les paralysies"))]),
+"symphony-of-the-unfettered-heart": P2("Symphonie du cœur délié", DISP, 2, ["entrave", "délivrance"], why="défait ce qui la tient : prise, immobilité, paralysie, lenteur, étourdissement", **_CHANT),
+"song-of-the-fallen": P2("Chant des tombés", V("existence"), 4, ["élégie", "mort", "sursaut"], 60, "quatre morts se relèvent et agissent comme vivants, sur 60 points de vie d'emprunt", qty_cible=4, cond=["mort"], **_CHANT, options=[
+    O("Élégie", impact=(60, ["élégie", "mort", "sursaut"], "quatre morts se relèvent et agissent comme vivants, sur 60 points de vie d'emprunt")),
+    O("Thrène", verb=NE, cond=["MORTVIVANT"], impact=(100, ["thrène", "repos", "lumineux"], "quatre morts-vivants rappelés au repos : 100, et ralentis une minute"))]),
+"song-of-marching": P2("Chant de marche", INT, P, ["marche", "allure"], why="moi et mes alliés forçons l'allure une heure durant, sans fatigue", **_CHANT),
+"song-of-strength": P2("Chant de force", INT, P, ["force", "aplomb"], 1, "1 ajouté aux tours de force et pour n'être ni désarmé, ni poussé, ni renversé", **_CHANT),
+"allegro": P2("Allegro", INT, 2, ["tempo", "hâte"], why="un geste de plus dans l'instant : frapper ou se déplacer", **_CHANT),
+"dirge-of-doom": P2("Chant funèbre", PEUR, P, ["glas", "effroi"], 1, "mes ennemis alentour sont effrayés de 1, sans répit", **_PSY, **_CHANT),
+"house-of-imaginary-walls": P2("Maison aux murs imaginaires", EXI, P, ["mur", "mime", "fantasme"], why="un mur mimé de 3 m sur 3, solide pour qui y croit, même sans corps", forme=_MUR(3, 3)),
+"inspire-competence": P2("Inspiration talentueuse", INT, 2, ["encouragement", "aide"], why="mes encouragements valent une aide préparée pour la tâche choisie", vr={"src_idx": "uplifting-overture"}, **_CHANT),
+"inspire-courage": P2("Inspiration vaillante", INT, P, ["courage"], 1, "1 ajouté aux coups, aux blessures et contre la peur", vr={"src_idx": "courageous-anthem"}, **_CHANT),
+"inspire-defense": P2("Inspiration défensive", SEP, P, ["rempart"], 1, "1 ajouté à la défense et aux résistances ; les coups blessent un peu moins", vr={"src_idx": "rallying-anthem"}, **_CHANT),
+"triple-time": P2("Triple mesure", INT, P, ["tempo", "vitesse", "mètres"], 3, "3 m de plus par instant", **_CHANT),
+"heal-animal": P2("Guérison animale", HE, 2, ["vie"], 5, "1d8 en moyenne", cible_note=["bête"], guerit=True, options=[
+    O("Forme de base", loc=(2, "METRES", "au toucher"), impact=(5, ["vie"], "1d8 en moyenne, au toucher, d'un geste")),
+    O("Forme maximale", impact=(13, ["vie"], "1d8 + 8 en moyenne, à distance"))]),
+"impaling-briars": P2("Ronces empaleuses", TR, P, ["ronce", "entrave"], 35, "le sol devient ronces ; à chaque instant : retenir, encombrer ou dresser un mur ; une ronce empale de 10d6 en moyenne", comb="Plante"),
+"storm-lord": P2("Seigneur des tempêtes", EXI, P, ["nuée", "foudre", "temps"], 35, "le ciel s'assombrit ; à chaque instant : brouillard, pluie ou vent ; un éclair frappe de 10d6 en moyenne"),
+"stormwind-flight": P2("Vol des vents d'orage", TP2, 1, ["vent", "envol"], why="les vents me portent : je vole comme je marche, et me pose en douceur à la fin", comb="Air"),
+"tempest-surge": E2("Déferlante de tempête", 3, ["orage", "maladresse"], 7, "1d12 en moyenne ; gauche de 2, et 1 à chaque instant", impact_sats=[(2, ["maladresse"])]),
+"apex-companion": P2("Compagnon suprême", TR, 2, ["bête", "colosse"], 30, "mon compagnon prend la forme suprême de son espèce : énorme, plus mordant, plus rapide", cond=["compagnon"], impact_sats=[(30, ["vie", "temporaire"]), (3, ["vitesse", "mètres"])]),
+"fungal-exhalation": E2("Exhalaison fongique", P, ["spore", "nausée"], 15, "6d4 en moyenne ; la nausée"),
+"hedge-prison": P2("Prison de haies", V("mouvement", True), 3, ["haie", "cube", "prison"], 20, "un cube de buissons denses l'enferme ; il faut le tailler, 20 points", comb="Plante"),
+"mushroom-patch": P2("Parterre de champignons", EXI, P, ["champignon", "spore", "éblouissement"], why="terrain pénible ; à chaque instant, un nuage de spores éblouit", comb="Plante"),
+"gravity-weapon": P2("Arme pesante", INT, 1, ["pesanteur", "frappe"], 2, "mon premier coup d'arme de chaque instant frappe de 2 de plus par dé de l'arme"),
+"heal-companion": P2("Guérison du compagnon", HE, 2, ["vie"], 6, "1d10 en moyenne", cond=["compagnon"], guerit=True, options=[
+    O("Forme de base", loc=(2, "METRES", "au toucher"), impact=(6, ["vie"], "1d10 en moyenne, au toucher, d'un geste")),
+    O("Forme maximale", impact=(14, ["vie"], "1d10 + 8 en moyenne, à distance"))]),
+"magic-hide": P2("Cuir magique", SEP, 2, ["cuir", "carapace"], 1, "1 ajouté à la défense de mon compagnon", cond=["compagnon"], cible_note=["garde"]),
+"animal-feature": P2("Trait animal", TR, 1, ["trait", "bête"], why="un trait de bête, au choix", options=[
+    O("Yeux de chat", impact=(P, ["trait", "bête", "pénombre"], "je vois dans la pénombre")), O("Griffes", impact=(4, ["trait", "bête", "griffe"], "des griffes de 1d6 en moyenne")),
+    O("Mâchoire", impact=(5, ["trait", "bête", "croc"], "une mâchoire de 1d8 en moyenne"))]),
+"enlarge-companion": P2("Compagnon agrandi", TR, 2, ["croissance", "colosse"], why="mon compagnon devient énorme", cond=["compagnon"]),
+"hunters-luck": P2("Chance du chasseur", INT, 1, ["savoir", "essai"], why="pour me souvenir d'un ennemi : le meilleur de deux essais", cible_note=["mémoire"], cond=["souvenir"]),
+"soothing-mist": P2("Brume apaisante", HE, 2, ["vie", "brume"], 9, "2d8 en moyenne, et un mal qui dure s'arrête ; un mort-vivant en est blessé d'autant", guerit=True),
+"ephemeral-tracking": P2("Piste éphémère", VIS, 1, ["trace", "air", "eau"], why="je lis dans l'air et dans l'eau la trace de ce qui est passé depuis une heure"),
+"rangers-bramble": P2("Ronce du rôdeur", V("mouvement", True), P, ["plante", "entrave"], 5, "les plantes retiennent mes ennemis ; les plus pris saignent de 2d4 en moyenne à chaque instant", comb="Plante"),
+"hunters-vision": P2("Vision du chasseur", VIS, 3, ["proie", "aura"], why="ma proie luit pour moi et les miens : ni l'ombre ni l'invisibilité ne la cachent", cond=["proie"]),
+"terrain-transposition": P2("Transposition de terrain", TP2, 1, ["téléportation", "nature"], why="en pleine nature, je me transporte en un lieu dégagé que je vois ; mon compagnon suit"),
+"lay-on-hands": P2("Imposition astrale", HE, 2, ["main"], 6, "6 points", options=[
+    O("Forme lumineuse", guerit=True, impact=(6, ["main", "vie", "lumineux"], "6 points rendus à un vivant, mieux gardé de 2 un instant ; un mort-vivant en perd 1d6")),
+    O("Forme ténébreuse", verb=NE, src_idx="touch-of-corruption", impact=(4, ["main", "flétrissure", "ténébreux"], "1d6 en moyenne à un vivant ; un mort-vivant en regagne 6"))]),
+"champions-sacrifice": P2("Sacrifice du champion", SEP, 2, ["sacrifice", "transfert"], why="tout le coup ou le sort qui frappait l'allié tombe sur moi à sa place", cond=["coup"]),
+"heros-defiance": P2("Défi du héros", HE, 1, ["vie", "défi"], 45, "10d4 + 20 en moyenne, juste avant le coup qui m'aurait terrassé", cond=["coup"], guerit=True),
+"spectral-advance": {**P2("Avancée spectrale", TP2, 1, ["spectre", "charge"], why="sous une forme d'esprit, je fonds sur un ennemi"), "src": "pf2r"},
+"litany-of-self-interest": P2("Litanie de l'intérêt propre", ORD, 4, ["égoïsme", "élan"], 2, "2 ajouté à tout ce qu'elle fait pour elle-même ; elle ne peut plus aider personne", **_PSY),
+"litany-against-sloth": P2("Litanie contre la paresse", NORD, 3, ["paresse", "lenteur"], 1, "ralentie de 1, incapable de riposter", **_PSY),
+"litany-against-wrath": P2("Litanie contre la colère", NORD, 3, ["colère", "châtiment", "lumineux"], 11, "3d6 en moyenne chaque fois qu'elle blesse l'un de ceux que je protège", **_PSY),
+"shadows-web": N2("Toile d'ombre", P, ["ténébreux", "étreinte", "faiblesse"], 35, "14d4 en moyenne ; affaiblis, les plus atteints étourdis"),
+"wind-jump": P2("Saut du vent", TP2, 1, ["vent", "bond"], why="je vole comme je marche, mais dois finir chaque instant au sol"),
+"ki-form": P2("Forme de ki", TR, 1, ["ki", "couronne"], 7, "je luis et je vole ; mes coups frappent de 1d6 de plus, et ma couronne brûle de 2d6 en moyenne qui commence son instant contre moi", vr={"src_idx": "qi-form"}, options=[
+    O("Force", impact=(7, ["ki", "couronne", "force"], "couronne de force : 2d6 en moyenne ; coups de 1d6 de plus")),
+    O("Forme lumineuse", impact=(7, ["ki", "couronne", "lumineux"], "couronne d'énergie de vie : 2d6 en moyenne ; coups de 1d6 de plus")),
+    O("Forme ténébreuse", impact=(7, ["ki", "couronne", "ténébreux"], "couronne d'énergie de mort : 2d6 en moyenne ; coups de 1d6 de plus"))], sens=[("vue", None)], manif=["couronne", "lueur"]),
+"abundant-step": P2("Pas abondant", TP2, 1, ["téléportation", "allure"], why="je me téléporte à vue, aussi loin que je cours en un instant", vr={"src_idx": "shrink-the-span"}),
+"empty-body": P2("Corps vide", SEP, 1, ["éther", "immatériel"], why="je deviens éthéré une minute, sans effort", vr={"src_idx": "embrace-nothingness"}),
+"ki-blast": E2("Déflagration de ki", P, ["ki", "force", "poussée"], 7, "2d6 en moyenne", vr={"src_idx": "qi-blast"}, options=[
+    O("Forme de base", impact=(7, ["ki", "force", "poussée"], "2d6 en moyenne dans un cône court ; repousse")),
+    O("Forme maximale", aoe={"type": "cone", "size": 60}, impact=(14, ["ki", "force", "poussée"], "4d6 en moyenne dans un cône quatre fois plus long ; tout l'instant y passe"))]),
+"ki-rush": P2("Ruée de ki", TP2, 1, ["ki", "ruée", "flou"], why="deux déplacements d'un coup ; je reste flou jusqu'à mon prochain instant", vr={"src_idx": "qi-rush"}),
+"ki-strike": P2("Frappe de ki", INT, 1, ["ki", "poing"], 4, "1 ajouté à mon coup à mains nues, qui frappe de 1d6 en moyenne de plus", vr={"src_idx": "inner-upheaval"}),
+"quivering-palm": N2("Paume vibrante", 3, ["paume", "mot", "mort"], 80, "après mon coup à mains nues, un mot peut la tuer ; sinon 80, et étourdie", vr={"src_idx": "touch-of-death"}, **_VIV),
+"wholeness-of-body": P2("Plénitude du corps", HE, 1, ["vie"], 8, "8 points", guerit=True, vr={"src_idx": "harmonize-self"}, options=[
+    O("Guérir", impact=(8, ["vie"], "8 points")), O("Purger", impact=(P, ["poison", "maladie", "délivrance"], "tente de chasser un poison ou une maladie"))]),
+"wronged-monks-wrath": E2("Colère du moine outragé", P, ["ki", "force", "foudre"], 20, "2d6 + 2d12 en moyenne", fam="A", options=[
+    O("Forme de base", impact=(20, ["ki", "force", "foudre"], "2d6 + 2d12 en moyenne à ceux qui me touchent presque ; assourdit")),
+    O("Forme maximale", aoe=_S(20), impact=(40, ["ki", "force", "foudre"], "4d6 + 4d12 en moyenne à 6 m autour ; tout l'instant y passe"))]),
+"hasted-assault": P2("Assaut hâté", INT, 1, ["hâte", "frappe"], why="un coup de plus par instant, une minute durant"),
+"runic-impression": P2("Empreinte runique", INT, 1, ["rune", "arme"], why="mon arme ou mes poings prennent une vertu : acide, feu, givre, foudre, tonnerre, spectre ou retour", fam="A"),
+}
+FICHES.update(PF2_FOC2)
+FICHES["pied-piping"].update(vp2={})      # le Joueur de flûte focalisé : version PF2 de la page déjà publiée
+
+# ----- Pathfinder 2, lot 17 : sorts focalisés gardés — ensorceleur et oracle -----
+PF2_FOCAL_ECARTE.update({"angelic-halo": "ne fait que renforcer un autre sort", "extend-blood-magic": "magie du sang : mécanique de classe", "extend-spell": "ne fait que prolonger le prochain sort",
+ "invoke-the-harrow": "jeu de cartes du Harrow (Golarion)", "debilitating-dichotomy": "malédiction de l'oracle", "heroic-feat": "accorde un don de guerrier", "revel-in-retribution": "accorde une réaction de classe",
+ "flaming-fusillade": "ne fait que hâter un autre sort", "weapon-trance": "accorde une maîtrise d'armes : mécanique de jeu"})
+PF2_FOC3 = {
+"tentacular-limbs": P2("Membres tentaculaires", TR, 1, ["tentacule", "allonge", "mètres"], 3, "mes bras deviennent tentacules : je touche et frappe à 3 m"),
+"aberrant-whispers": P2("Murmures aberrants", NORD, P, ["murmure", "stupeur"], 2, "des mots d'une langue inconnue : stupéfiés de 2", **_PSY),
+"unusual-anatomy": P2("Anatomie insolite", TR, 1, ["chair", "amalgame"], 10, "10 retranché aux coups précis et décisifs ; je vois dans le noir ; qui me frappe de près reçoit 2d6 en moyenne d'acide", fam="A", impact_plus=[(7, ["acide", "riposte"], "2d6 en moyenne d'acide à qui me frappe de près")]),
+"angelic-wings": P2("Ailes de lumière", TP2, 1, ["aile", "lumière", "envol"], why="des ailes de lumière : je vole comme je marche, trois instants, et elles éclairent", impact_sats=[(9, ["éclat", "mètres"])], sens=[("vue", None)], manif=["ailes"]),
+"celestial-brand": P2("Marque de justice", VIS, 3, ["marque", "justice", "lumineux"], 2, "1 ajouté aux coups contre elle ; ceux que je protège la blessent de 1d4 en moyenne de plus", sens=[("vue", None)], manif=["symbole"]),
+"gluttons-jaws": P2("Mâchoire du glouton", TR, 1, ["gueule", "croc"], 5, "une gueule d'ombre de 1d8 en moyenne ; chaque morsure me rend 1d6 de vie d'emprunt", impact_sats=[(4, ["vie", "temporaire"])]),
+"swamp-of-sloth": P2("Marais de paresse", EXI, P, ["marais", "fange", "bestiole"], 4, "terrain pénible ; les bêtes de fange y mordent de 1d6 en moyenne"),
+"diabolic-edict": P2("Édit imposé", ORD, 2, ["édit", "récompense", "tâche"], 1, "une tâche ordonnée : 1 ajouté à ce qui la sert ; refuser coûte autant", **_PSY, **_VIV),
+"embrace-the-pit": P2("Traits du fiélon", TR, 1, ["corne", "fiélon"], 5, "5 retranché au feu, au poison et au ténébreux, 1 aux coups ; la face lumineuse me blesse davantage", fam="A", **_RES),
+"hellfire-plume": E2("Panache de feu noir", P, ["panache", "ténébreux"], 28, "4d6 de feu + 4d6 ténébreux en moyenne"),
+"flurry-of-claws": {**E2("Volée de griffes", 3, ["griffe", "dragon"], 5, "des griffes de dragon lacèrent deux ennemis voisins : 1d8 en moyenne chacun", qty_cible=2), "src": "pf2r"},
+"dragon-breath": E2("Souffle du dragon", P, ["souffle", "dragon"], 18, "5d6 en moyenne, de l'énergie du dragon dont je tiens", fam="A"),
+"dragon-wings": P2("Ailes du dragon", TP2, 1, ["aile", "envol", "mètres"], 18, "des ailes de cuir : je vole à 18 m par instant"),
+"elemental-toss": E2("Jet élémentaire", 3, ["élément", "bloc"], 5, "1d8 en moyenne, de la matière de mon élément", fam="A"),
+"elemental-motion": P2("Élan élémentaire", TP2, 1, ["élément", "allure"], why="mon élément me porte : voler, fouir ou nager, selon lui", fam="A"),
+"elemental-blast": E2("Déflagration élémentaire", P, ["élément", "forme"], 28, "8d6 en moyenne, de la matière de mon élément, en éclat, cône ou ligne", fam="A"),
+"faerie-dust": P2("Poussière de fée", NORD, P, ["poussière", "crédulité"], 2, "ceux qu'elle touche se laissent mieux tromper : 2 retranché à leur vigilance et à leur volonté", **_PSY),
+"fey-disappearance": P2("Disparition féerique", NVIS, 1, ["invisibilité", "sous-bois"], why="invisible un instant, tant que je n'attaque pas ; les broussailles ne me gênent plus"),
+"fey-glamour": P2("Charme féerique", EXI, P, ["illusion", "voile"], why="une illusion couvre un lieu, ou déguise ceux qui s'y trouvent, dix minutes"),
+"jealous-hex": P2("Maléfice jaloux", NINT, 3, ["jalousie", "atout"], 1, "son plus grand atout lui est retiré de 1 : force, adresse, endurance ou esprit"),
+"horrific-visage": P2("Visage horrifiant", PEUR, P, ["visage", "effroi"], 1, "mes traits deviennent ceux d'une guenaude : effrayés de 1", **_PSY),
+"youre-mine": P2("Tu es à moi", ORD, 3, ["émotion", "emprise"], why="étourdie, puis à moi un instant : elle fait un geste que je choisis", **_PSY),
+"ancestral-memories": P2("Mémoires ancestrales", INT, 1, ["souvenir", "savoir"], why="les souvenirs d'arcanistes morts me prêtent un savoir pour une minute", cible_note=["mémoire"]),
+"arcane-countermeasure": P2("Contre-mesure arcanique", NINT, 4, ["affaiblissement"], 2, "le sort qu'on lance perd 1 cran ; 2 ajouté pour s'en défendre", cible_note=["sort"], cond=["sort"]),
+"undeaths-blessing": P2("Bénédiction de la non-vie", TR, 2, ["tombe", "inversion"], 2, "les soins et les flétrissures la traitent en morte-vivante ; les flétrissures lui rendent 2 de plus", **_VIV),
+"drain-life": N2("Drain de vie", 3, ["drain", "ténébreux"], 8, "3d4 en moyenne, que je gagne en vie d'emprunt", impact_sats=[(8, ["vie", "temporaire"])]),
+"grasping-grave": N2("Tombe avide", P, ["bras", "squelette", "entrave"], 21, "6d6 en moyenne ; ralentis de 3 m", impact_sats=[(3, ["lenteur", "mètres"])]),
+"blinding-beauty": P2("Beauté aveuglante", NVIS, P, ["beauté", "regard", "aveuglement"], why="un regard d'une beauté terrible : éblouis, voire aveuglés", **_PSY),
+"consuming-darkness": N2("Ténèbres dévorantes", P, ["ombre", "ténébreux", "entrave"], 7, "mon ombre s'étend : 2d6 en moyenne, ralentit, et grandit à chaque instant"),
+"dim-the-light": P2("Lumière vacillante", NVIS, 1, ["pénombre", "dérobade"], why="la lumière vacille : je me cache aussitôt, même à découvert"),
+"establish-ward": P2("Domaine établi", REL, P, ["domaine", "nature", "frappe"], why="je me lie au lieu : en son sein, la nature frappe pour moi ; hors de lui, je m'affaiblis"),
+"genies-veil": P2("Voile du génie", NVIS, 2, ["fumée", "dérobade"], why="elle disparaît dans une fumée colorée et reparaît : le coup la trouve mal", cond=["coup"]),
+"hearts-desire": P2("Désir du cœur", EXI, 3, ["désir", "fantasme", "stupeur"], 2, "des visions de ce qu'elle désire : stupéfiée de 2, sans riposte", dur=(1, "MINUTES"), **_PSY),
+"nymphs-token": P2("Gage de la nymphe", REL, 2, ["gage", "faveur"], 1, "un gage — mèche, fleur — porte chance à l'allié qui le garde : 1 ajouté"),
+"sepulchral-mask": P2("Masque sépulcral", PEUR, P, ["masque", "regret"], 2, "1d4 en moyenne à l'esprit de ceux qui m'approchent ; 1 ajouté à ma volonté", **_PSY),
+"shepherd-of-souls": P2("Berger des âmes", SEP, 2, ["sacrifice", "sursis"], 15, "je donne jusqu'à 15 de ma vie : le coup qui la frappe est réduit du double", impact_sats=[(30, ["rempart"])], cond=["coup"]),
+"spirit-veil": P2("Voile des esprits", NVIS, 1, ["esprit", "voile"], why="estompé pour tous ; invisible aux morts-vivants, quels que soient leurs sens"),
+"steal-shadow": N2("Ombre volée", 3, ["ombre", "larcin", "faiblesse"], 8, "3d4 en moyenne à chaque instant ; affaiblie ; je m'en nourris"),
+"wish-twisted-form": P2("Forme tordue par le vœu", NINT, 3, ["vœu", "faille"], 5, "ses forces deviennent faiblesses : une énergie la blesse de 5 de plus, ses résistances cèdent", dur=(1, "MINUTES"), **_RES),
+"abyssal-wrath": E2("Courroux astral", P, ["courroux"], 28, "4d6 + 4d6 en moyenne, d'une énergie et d'un choc tirés au sort", fam="A", vr={"src_idx": "chthonian-wrath"}, options=[
+    O("Forme ténébreuse", impact=(28, ["courroux", "ténébreux"], "4d6 + 4d6 en moyenne : l'énergie de l'Abysse, sous une forme tirée au sort")),
+    O("Forme lumineuse", impact=(28, ["courroux", "lumineux"], "4d6 + 4d6 en moyenne : l'énergie de l'Étoile, sous une forme tirée au sort"))]),
+"dragon-claws": P2("Griffes du dragon", TR, 1, ["griffe", "dragon"], 6, "des griffes de 1d4 + 1d6 en moyenne ; 5 retranché à l'énergie du dragon dont je tiens", fam="A"),
+"cleansing-flames": P2("Flammes purificatrices", V("qualite"), 2, ["flamme", "pureté"], why="des flammes défont un poison ou un mal : maladresse, faiblesse, fatigue, peur, paralysie, nausée, stupeur", fam="A"),
+"rejuvenating-flames": P2("Flammes vivifiantes", HE, P, ["flamme", "vie"], 2, "1d4 en moyenne rendus aux alliés, 1 ajouté à leur vigueur ; autant de brûlure aux ennemis", guerit=True, fam="A"),
+"shroud-of-flame": P2("Linceul de flammes", SEP, 1, ["flamme", "riposte"], 11, "3 à qui me touche ; 3d6 en moyenne à ceux qui m'entourent, à chaque instant", impact_sats=[(3, ["riposte"])]),
+"unraveling-blast": P2("Avenir défait", NORD, 3, ["avenir", "vertige"], 5, "2d4 en moyenne ; un de ses avenirs détruit, elle reste prise au dépourvu", **_PSY),
+"rewrite-possibility": P2("Possible réécrit", INT, 2, ["avenir", "essai"], why="une minute durant, je guide son sort : le meilleur de deux essais, une fois par instant"),
+"ancestral-touch": P2("Toucher des ancêtres", PEUR, 3, ["ancêtre", "effroi"], 2, "1d4 en moyenne ; elle voit et sent mes ancêtres : effrayée", **_PSY, **_VIV),
+"ancestral-defense": P2("Défense des ancêtres", SEP, 1, ["ancêtre", "volonté"], why="contre ce qui veut plier ma volonté : le meilleur de deux essais", cond=["emprise"], **_RES),
+"ancestral-form": P2("Forme ancestrale", TR, 1, ["esprit", "invisibilité", "immatériel"], 10, "invisible et à demi immatériel : 10 retranché à tout, le double contre le non magique ; je vole"),
+"battlefield-persistence": P2("Ténacité au combat", SEP, 1, ["ténacité"], 2, "2 ajouté à l'épreuve qui allait m'écarter du combat", cond=["coup"], **_RES),
+"soul-siphon": N2("Siphon d'âme", 3, ["âme", "drain", "ténébreux"], 2, "1d4 en moyenne, vidée de 1 ; je gagne ce qu'elle perd en vie d'emprunt", **_VIV),
+"armor-of-bones": P2("Armure d'os", SEP, 1, ["os", "rempart"], 3, "3 retranché au froid, à la foudre, au feu, aux pointes et aux tranchants", **_RES),
+"claim-undead": P2("Mort-vivant revendiqué", ORD, 3, ["maîtrise", "service"], why="le mort-vivant me reconnaît pour maître, même arraché à un autre", cond=["MORTVIVANT"]),
+"spray-of-stars": E2("Gerbe d'étoiles", P, ["étoile", "éblouissement"], 2, "1d4 en moyenne de feu ; éblouit"),
+"interstellar-void": E2("Vide interstellaire", 3, ["vide", "froid", "fatigue"], 11, "3d6 en moyenne de froid, à chaque instant ; fatiguée"),
+"moonlight-bridge": P2("Pont astral", EXI, P, ["pont"], why="un pont de 3 m de large et 36 de long ; mes ennemis ne peuvent y monter", aoe={"type": "line", "size": 120}, sens=[("vue", None)], manif=["pont"], options=[
+    O("Forme lumineuse", impact=(P, ["pont", "lumineux"], "un pont de clarté, large de 3 m ; mes ennemis ne peuvent y monter")),
+    O("Forme ténébreuse", impact=(P, ["pont", "ténébreux"], "un pont d'ombre, large de 3 m ; mes ennemis ne peuvent y monter"))]),
+"incendiary-aura": P2("Aura incendiaire", INT, P, ["feu", "embrasement"], 5, "près de moi, qui est brûlé s'enflamme : 2d4 en moyenne à chaque instant", fam="A"),
+"whirling-flames": E2("Flammes tourbillonnantes", P, ["tourbillon"], 18, "5d6 en moyenne"),
+"life-link": P2("Lien vital", REL, 2, ["partage", "blessure"], 3, "elle regagne 1d4 ; puis, à chaque instant, 3 points de ses blessures passent sur moi", impact_sats=[(2, ["regain"])]),
+"delay-affliction": P2("Affliction retardée", HE, 2, ["vie", "sursis"], 14, "3d8 en moyenne ; un mal qui l'afflige est suspendu", guerit=True),
+"life-giving-form": P2("Forme vivifiante", TR, 1, ["lumière", "vie", "lumineux"], 2, "un phare de vie : 5 retranché aux coups précis, mes poings frappent de 1d4 de plus, mon toucher soigne ; le ténébreux me blesse de 5 de plus", impact_sats=[(5, ["rempart"])], sens=[("vue", None)], manif=["lueur"]),
+"brain-drain": P2("Drain de cervelle", V("flux"), 3, ["souvenir", "larcin"], 5, "1d8 en moyenne ; je fouille ses souvenirs volés pour savoir ce qu'elle sait", **_PSY),
+"access-lore": P2("Accès au savoir", INT, 1, ["savoir", "multivers"], why="je puise un savoir précis dans la connaissance du multivers, pour une minute", cible_note=["mémoire"]),
+"dread-secret": P2("Secret redoutable", NINT, 3, ["secret", "faille", "effroi"], 1, "un secret contraire à leur nature : leur résistance cède ou leur faiblesse s'aggrave ; effrayés de 1", qty_cible=6),
+"tempest-touch": E2("Toucher de tempête", 3, ["eau", "glace", "lenteur", "mètres"], 3, "1d4 + 1d4 en moyenne ; ralentie de 3 m", fam="A", impact_sats=[(4, ["choc"])]),
+"thunderburst": E2("Éclat de tonnerre", P, ["air", "tonnerre", "surdité"], 14, "2d6 + 2d6 en moyenne ; assourdit", fam="A"),
+"tempest-form": P2("Forme de tempête", TR, 1, ["corps", "fluide"], why="mon corps devient fluide", fam="A", options=[
+    O("Air", impact=(4, ["corps", "fluide", "air", "foudre"], "je vole ; mes coups foudroient de 1d6 en moyenne")),
+    O("Eau", impact=(P, ["corps", "fluide", "eau", "nage"], "je nage et passe par les fentes")),
+    O("Brume", impact=(P, ["corps", "fluide", "brume", "voile"], "estompé, je flotte"))]),
+"call-to-arms": P2("Appel aux armes", INT, P, ["cri", "élan"], 2, "2 ajouté à l'entrée en lice de mes alliés, et un peu de vie d'emprunt"),
+"vision-of-weakness": P2("Vision de la faiblesse", VIS, 3, ["faille", "précision"], 2, "je sais ses faiblesses et sa plus faible résistance ; 2 ajouté à mon prochain coup contre elle"),
+"temporal-distortion": P2("Distorsion temporelle", NORD, 3, ["temps", "hasard"], 4, "jetée en avant ou en arrière : gauche, faible ou stupéfiée, au hasard, 4 instants", impact_sats=[(4, ["instants"])]),
+"time-skip": P2("Saut d'instant", INT, 2, ["temps", "hâte"], why="poussé de quelques instants en avant : un geste de plus à son prochain instant"),
+"manifold-lives": P2("Vies multiples", NORD, 3, ["regret", "chemin", "stupeur"], 21, "6d6 en moyenne : mille vies qu'elle n'a pas vécues ; stupéfiée une minute", dur=(1, "MINUTES"), **_PSY),
+}
+FICHES.update(PF2_FOC3)
+
+# ----- Pathfinder 2, lot 18 : sorts focalisés gardés — clerc (sorts de domaine, en Arcane, sans dieu) -----
+PF2_FOCAL_ECARTE.update({"know-the-enemy": "n'est qu'une action de règles", "perfected-form": "même effet que Coup de chance", "perfected-body": "ajuste un degré de réussite",
+ "mystic-beacon": "ne fait que renforcer le prochain sort d'un autre", "magics-vessel": "réceptacle de l'énergie d'une divinité", "zeal-for-battle": "relance l'initiative",
+ "unity": "prête un modificateur de sauvegarde : mécanique de jeu", "tempt-fate": "ajuste un degré de réussite : mécanique de jeu", "string-of-fate": "échange des degrés de réussite : mécanique de jeu"})
+_ESSAI = "le meilleur de deux essais"
+PF2_FOC4 = {
+"pushing-gust": P2("Rafale repoussante", NF, 3, ["vent", "poussée", "mètres"], 3, "repoussée de 3 m, de 1,5 m si elle tient bon", comb="Air"),
+"disperse-into-air": P2("Dispersion dans l'air", SEP, 1, ["air", "immatériel"], why="après le coup, je deviens air jusqu'à la fin de l'instant : rien ne m'atteint, puis je reparais à 4,5 m", cond=["coup"], fam="A"),
+"competitive-edge": P2("Esprit de compétition", INT, 1, ["émulation"], 1, "1 ajouté à mes coups et à mes entreprises ; davantage quand un ennemi proche brille"),
+"face-in-the-crowd": P2("Visage dans la foule", NVIS, 1, ["foule", "banalité"], 2, "dans une foule, 2 ajouté pour passer inaperçu ; elle ne me gêne pas"),
+"veil-of-confidence": P2("Voile d'assurance", SEP, 1, ["assurance", "peur"], 1, "ma peur recule de 1, et chaque peur à venir d'autant ; si je cède tout à fait, elle redouble", **_PSY),
+"artistic-flourish": P2("Touche d'artiste", TR, 4, ["art", "ouvrage"], 1, "l'objet refait selon ma vision : 1 ajouté à son usage, dix minutes", cible_obj=["objet"]),
+"cloak-of-shadow": P2("Cape d'ombre", NVIS, 2, ["ombre", "pénombre"], why="la vive lumière devient pénombre à 6 m autour d'elle : elle s'y dérobe mieux", impact_sats=[(6, ["rayon", "mètres"])]),
+"deaths-call": P2("Appel de la mort", INT, 1, ["mort", "vigueur"], why="voir mourir me ranime : un regain de vie d'emprunt, double si c'était un mort-vivant", cond=["mort"]),
+"eradicate-undeath": E2("Non-vie éradiquée", P, ["déluge", "lumineux"], 26, "4d12 en moyenne aux morts-vivants", cond=["MORTVIVANT"]),
+"cry-of-destruction": E2("Cri de destruction", P, ["voix", "fracas"], 5, "1d8 en moyenne aux êtres et aux objets ; davantage si j'ai déjà blessé dans l'instant"),
+"destructive-aura": P2("Aura destructrice", NINT, P, ["sable", "ruine"], 2, "2 retranché aux résistances de tous ceux qu'elle touche, moi compris", **_RES),
+"sweet-dream": P2("Doux rêve", ORD, 2, ["sommeil", "rêve"], 1, "je l'endors et choisis son rêve : au réveil, 1 ajouté selon le rêve", **_PSY),
+"dreamers-call": P2("Appel du rêveur", NORD, 3, ["rêverie", "suggestion"], why="noyée de rêveries : prise au dépourvu, fascinée, docile un instant", **_PSY),
+"hurtling-stone": E2("Pierre lancée", 3, ["pierre"], 4, "1d6 en moyenne", comb="Roche"),
+"localized-quake": E2("Séisme local", P, ["secousse", "chute"], 14, "4d6 en moyenne ; renverse", comb="Terre"),
+"soothing-words": P2("Paroles apaisantes", SEP, 2, ["calme", "volonté"], 1, "1 ajouté à sa volonté, 2 contre les émotions ; une émotion qui la tient peut céder", **_PSY, impact_sats=[(2, ["émotion"])]),
+"read-fate": P2("Lecture du destin", VIS, 4, ["destin", "présage"], why="un mot sur son sort prochain : bon, mauvais, les deux, ou rien"),
+"fire-ray": E2("Rayon de feu", 3, ["rayon"], 7, "2d6 en moyenne"),
+"flame-barrier": P2("Barrière aux flammes", SEP, 2, ["feu", "rempart"], 15, "15 retranché au feu qui la frappe", cond=["coup"], fam="A", **_RES),
+"unimpeded-stride": P2("Foulée sans entrave", TP2, 1, ["liberté", "foulée"], why="je m'arrache à ce qui me retient par magie, puis je cours sans que le terrain me gêne"),
+"word-of-freedom": P2("Mot de liberté", DISP, 2, ["mot", "délivrance"], why="un instant, un mal ne la tient plus : confusion, peur, prise, entrave ou paralysie"),
+"healers-blessing": P2("Bénédiction du guérisseur", INT, 2, ["soin", "surcroît"], 2, "les sorts de soin lui rendent 2 de plus", **_VIV),
+"rebuke-death": P2("Mort réprimandée", HE, P, ["vie", "agonie"], 11, "3d6 en moyenne à trois vivants au plus ; les mourants se relèvent sans séquelle", qty=3, guerit=True),
+"overstuff": P2("Gavage", NQ, 3, ["repas", "nausée"], 1, "gavée d'un repas entier : nausée de 1", **_VIV),
+"take-its-course": P2("Suivre son cours", INT, 4, ["mal", "hâte"], why="hâte ou aggrave un mal en cours : maladie, poison, plaie qui dure"),
+"scholarly-recollection": P2("Souvenir d'érudit", INT, 1, ["savoir", "essai"], why="pour chercher ou me souvenir : " + _ESSAI, cond=["souvenir"]),
+"brin-de-chance-pf2": P2("Brin de chance", INT, 2, ["chance", "essai"], why="une fois, pour résister : " + _ESSAI, src_idx="bit-of-luck"),      # la clé « bit-of-luck » est celle d'un sort de Pathfinder 1 écarté
+"lucky-break": P2("Coup de chance", INT, 1, ["chance", "essai"], why="l'épreuve manquée se rejoue : " + _ESSAI, cond=["échec"]),
+"athletic-rush": P2("Élan athlétique", INT, 1, ["corps", "vitesse", "mètres"], 3, "3 m de plus par instant et 2 ajouté aux tours de force ; un déplacement aussitôt"),
+"enduring-might": P2("Force endurante", SEP, 1, ["force", "rempart"], 8, "8 retranché au coup qui me frappe, et davantage selon ma force", cond=["coup"], **_RES),
+"touch-of-the-moon": P2("Toucher astral", INT, 4, ["marque"], why="une marque luit sur son front ; elle lui donne un bienfait qui change d'instant en instant", sens=[("vue", None)], manif=["marque", "lueur"], options=[
+    O("Forme lumineuse", impact=(P, ["marque", "phase", "lumineux"], "une marque de clarté, au bienfait changeant")),
+    O("Forme ténébreuse", impact=(P, ["marque", "phase", "ténébreux"], "une marque d'ombre, au bienfait changeant"))]),
+"vibrant-thorns": P2("Épines vivaces", TR, 1, ["épine", "riposte"], 1, "qui me frappe de près se pique de 1 ; davantage après un sort de soin"),
+"natures-bounty": P2("Largesse de la nature", HE, 1, ["vie", "fruit"], 29, "un fruit : qui le mange regagne 3d10 + 12 en moyenne et se trouve rassasié", guerit=True),
+"waking-nightmare": P2("Cauchemar éveillé", PEUR, 3, ["cauchemar", "effroi"], 2, "effrayée de 2 ; endormie, elle se réveille en sursaut", **_PSY),
+"shared-nightmare": P2("Cauchemar partagé", NORD, 3, ["cauchemar", "confusion", "échange"], why="nos cauchemars s'échangent : l'un de nous deux en sort confus — elle, si elle cède", **_PSY),
+"savor-the-sting": P2("Savourer la douleur", NORD, 3, ["douleur", "délectation"], 2, "1d4 en moyenne, puis autant à chaque instant ; tant qu'elle souffre, 1 ajouté à mes coups contre elle", **_PSY),
+"retributive-pain": P2("Douleur rendue", NORD, 3, ["douleur", "renvoi", "fractionné"], 2, "la moitié de ce qu'elle vient de m'infliger lui revient à l'esprit", cond=["coup"], **_PSY),
+"charming-touch": P2("Toucher charmeur", REL, 4, ["attirance", "amitié"], why="elle me devient amicale, voire serviable, dix minutes", **_PSY),
+"captivating-adoration": P2("Adoration captivante", ATT, P, ["charme", "fascination"], why="ceux qui m'approchent sont fascinés par moi, sauf ceux que j'en dispense", **_PSY),
+"perfected-mind": P2("Esprit parfait", SEP, 1, ["méditation", "volonté"], why="je résiste à nouveau à ce qui tient mon esprit", **_PSY),
+"protectors-sacrifice": P2("Sacrifice du protecteur", SEP, 2, ["sacrifice", "transfert"], 3, "3 points du coup qui frappe l'allié passent sur moi", cond=["coup"]),
+"protectors-sphere": P2("Sphère du protecteur", SEP, P, ["aura", "rempart"], 3, "3 retranché à tout ce qui me blesse, et à mes alliés proches", **_RES),
+"safeguard-secret": P2("Secret gardé", SEP, 2, ["secret", "silence"], 4, "un secret partagé : 4 ajouté pour le taire et le défendre contre qui veut le lire", **_PSY),
+"dazzling-flash": P2("Éclair éblouissant", NVIS, P, ["éclair", "éblouissement"], why="un éclair de lumière : éblouis, voire aveuglés un instant"),
+"agile-feet": P2("Pieds agiles", INT, 1, ["foulée", "vitesse", "mètres"], 2, "1,5 m de plus par instant, arrondi à 2 ; aucun terrain ne me gêne ; un déplacement aussitôt"),
+"travelers-transit": P2("Passage du voyageur", TP2, 1, ["escalade", "nage"], why="je grimpe ou je nage aussi vite que je marche"),
+"sudden-shift": P2("Esquive soudaine", NVIS, 1, ["pas", "voile"], why="un pas de côté, et je suis estompé un instant", cond=["coup"]),
+"tricksters-twin": P2("Jumeau du farceur", EXI, 3, ["double", "fantasme"], why="elle seule voit un double de moi qui mime mes gestes : elle ne sait plus où je suis", **_PSY),
+"word-of-truth": P2("Parole de vérité", VIS, 1, ["vérité", "signe"], why="un signe luit au-dessus de moi tant que je dis ce que je crois vrai : on sait que je ne mens pas", sens=[("vue", None)], manif=["signe"]),
+"glimpse-the-truth": P2("Vérité entrevue", VIS, P, ["vérité", "illusion"], why="je vois à travers les illusions alentour", impact_sats=[(9, ["rayon", "mètres"])]),
+"touch-of-obedience": P2("Toucher d'obéissance", NORD, 3, ["volonté", "stupeur"], 1, "sa volonté s'érode : stupéfiée de 1", **_PSY, **_VIV),
+"commanding-lash": P2("Fouet du commandement", ORD, 3, ["douleur", "ordre"], why="à celle que je viens de blesser, un ordre d'un mot, qu'elle exécute", cond=["blessure"], **_PSY),
+"touch-of-undeath": N2("Toucher de non-vie", 3, ["tombe", "ténébreux"], 4, "1d6 en moyenne ; les soins prennent moitié moins sur elle un instant", **_VIV),
+"malignant-sustenance": P2("Subsistance maligne", HE, 2, ["regain", "ténébreux"], 7, "7 points rendus à chaque instant à un mort-vivant", cond=["MORTVIVANT"], guerit=True),
+"downpour": P2("Averse", EXI, P, ["pluie", "voile"], 10, "une pluie battante : éteint les feux, cache, 10 retranché au feu", comb="Eau"),
+"appearance-of-wealth": P2("Apparence de richesse", EXI, P, ["trésor", "fantasme", "fascination"], why="une vision de richesses immenses fascine ceux que l'or tente", **_PSY),
+"precious-metals": P2("Métaux précieux", TR, 4, ["acier", "argent", "or"], why="le métal vil devient fer froid, cuivre, or, fer, argent ou acier, pour une minute", cible_obj=["objet"], fam="A"),
+"weapon-surge": P2("Arme exaltée", INT, 4, ["arme", "surcroît"], 1, "son prochain coup : 1 ajouté, et un dé de plus", cible_obj=["arme"]),
+"practice-makes-perfect": P2("C'est en forgeant", INT, 2, ["métier", "appui"], 2, "2 ajouté à l'essai en cours, 3 pour un maître", cond=["essai"]),
+"blind-ambition": P2("Ambition aveugle", NORD, 3, ["ambition", "rancœur"], 2, "2 retranché pour résister à qui la tente de trahir ; elle en veut aux siens", vr={"src_idx": "ignite-ambition"}, **_PSY),
+"darkened-eyes": P2("Yeux enténébrés", NVIS, 3, ["regard", "nuit"], why="sa vision dans le noir ou la pénombre s'éteint une minute ; au pire, elle est aveuglée", dur=(1, "MINUTES"), vr={"src_idx": "darkened-sight"}),
+"positive-luminance": P2("Luminance vitale", HE, 1, ["lumière", "vie", "réserve"], 4, "je luis et j'amasse la vie, 4 puis davantage ; je la rends en soin, ou elle brûle les morts-vivants proches", guerit=True, vr={"src_idx": "vital-luminance"},
+    sens=[("vue", None)], manif=["lueur"]),
+"pulse-of-the-city": P2("Pouls de la cité", VIS, 1, ["cité", "rumeur"], why="le nom de la cité la plus proche, et un événement marquant qui s'y passe", vr={"src_idx": "pulse-of-civilization"}),
+"splash-of-art": P2("Éclaboussure d'art", EXI, P, ["couleur", "hasard"], why="une pluie de couleurs illusoires : selon la couleur tirée, affaiblit, éblouit, stupéfie ou gêne", vr={"src_idx": "creative-splash"}, **_PSY),
+"cinder-gaze": P2("Regard des braises", VIS, 1, ["flamme", "présage"], why="je lis dans les flammes et la fumée ce qui vient : mieux préparé au prochain danger", comp=["feu"]),
+"euphoric-renewal": P2("Renouveau euphorique", INT, 1, ["agonie", "exaltation"], why="chaque fois que je reviens de l'agonie : hâté, raffermi, exalté"),
+"frenzied-revelry": P2("Réjouissances frénétiques", INT, P, ["danse", "frénésie"], 1, "1 ajouté contre ce qui vise l'esprit, pour moi et mes alliés proches ; nos coups frappent plus fort, mais nous nous gardons moins"),
+"hollow-heart": P2("Cœur vide", NREL, 3, ["ambition", "solitude"], 3, "elle ne tient plus personne pour allié, 3 instants", impact_sats=[(3, ["instants"])], **_PSY),
+"isolation": P2("Isolement", NREL, 3, ["solitude", "voile"], why="la solitude la voile : ses alliés ne la voient ni ne l'entendent plus"),
+"inevitable-destination": P2("Destination inévitable", V("mouvement", True), 3, ["chemin", "retour"], why="tous ses chemins mènent à moi : elle ne peut s'éloigner davantage"),
+"purifying-veil": P2("Voile purificateur", SEP, 2, ["eau", "voile", "lumineux"], 14, "un voile de gouttelettes la cache ; 4d6 en moyenne aux morts-vivants et aux fiélons qui le traversent", fam="A"),
+"shaken-confidence": P2("Assurance ébranlée", NORD, 3, ["moquerie", "doute"], why="moquée, elle doute : le pire de deux essais à sa prochaine entreprise", **_PSY),
+"victory-cry": P2("Cri de victoire", INT, 2, ["cri", "gloire"], 4, "le coup décisif de l'allié résonne : 1d6 en moyenne de son en plus, et un geste aussitôt", cond=["coup"], fam="A"),
+"weaponize-secret": P2("Secret armé", NORD, 3, ["secret", "rune"], 25, "la rune de son secret paraît : 7d6 en moyenne si elle agit contre moi", qty_cible=3, **_PSY),
+"wind-whispers": P2("Murmures du vent", EXI, P, ["rumeur", "vent"], why="une rumeur, vraie ou fausse, portée par les brises aux oreilles de toute une contrée"),
+"wordsmith": P2("Orfèvre des mots", TR, 4, ["texte", "langue", "clarté"], why="un écrit passe dans une autre langue, ou devient plus clair pour ses lecteurs", cible_obj=["écrit"]),
+}
+FICHES.update(PF2_FOC4)
+for _k in ("delusional-pride", "moonbeam", "tidal-surge", "forced-quiet"): FICHES[_k].update(vp2={})      # focalisés du clerc dont la page existait déjà
+
+# ----- Pathfinder 2, lot 19 : sorts focalisés gardés — sans classe marquée (archétypes, lignages, écoles de moines, élémentalistes) -----
+PF2_FOCAL_ECARTE.update({"call-the-ten": "héros d'une école de Golarion", "magic-warrior-aspect": "masque d'un archétype de Golarion", "magic-warrior-transformation": "masque d'un archétype de Golarion",
+ "invoke-the-crimson-oath": "serment d'un ordre de Golarion", "shall-not-falter-shall-not-rout": "serment d'un ordre de Golarion", "achaekeks-clutch": "symbole d'une divinité nommée",
+ "mantis-form": "même effet que la Forme d'insecte", "electrified-crystal-ward": "crée un « danger » de règles sur une serrure", "share-burden": "ajuste un degré de réussite : mécanique de jeu"})
+PF2_FOC5 = {
+"unsettling-knowledge": P2("Savoir troublant", ATT, 3, ["savoir", "fascination"], why="un savoir caché, troublant et captivant : fascinée une minute", dur=(1, "MINUTES"), **_PSY),
+"halcyon-mists": P2("Brumes sereines", HE, 2, ["brume", "vigueur"], 5, "1d8 en moyenne de vie d'emprunt ; un mal qui dure s'arrête", **_VIV),
+"menacing-lament": P2("Complainte menaçante", NORD, P, ["complainte", "ouverture"], why="mes ennemis proches sont pris au dépourvu par mes coups et ne peuvent me prendre en tenaille", **_CHANT),
+"valiant-anthem": P2("Hymne vaillant", INT, P, ["hymne", "vitesse", "mètres"], 3, "3 m de plus par instant et 1 ajouté aux coups de mes alliés", **_CHANT, impact_sats=[(1, ["précision"])]),
+"elemental-sheath": P2("Gaine élémentaire", SEP, 1, ["armure", "élément"], 1, "une armure de l'élément choisi : 1 ajouté à ma défense, et l'élément me blesse moins", fam="A", cible_note=["garde"],
+    options=[O(n, impact=(1, ["armure", w], "une armure de cet élément : 1 ajouté à ma défense")) for n, w in _ELEM6]),
+"vicious-howl": P2("Hurlement farouche", INT, 1, ["hurlement", "ardeur"], 4, "4 ajouté à mes coups, et un regain de vie d'emprunt"),
+"tireless-worker": P2("Travailleur infatigable", DISP, 2, ["fatigue", "suspension"], why="suspend un mal : maladresse, charge, faiblesse ou fatigue"),
+"serrate": P2("Dentelure", INT, 4, ["acier", "dent"], 2, "le métal de l'arme se hérisse : 1d4 en moyenne de plus à chaque coup, un instant", cible_obj=["arme"], fam="A"),
+"repel-metal": P2("Métal repoussé", SEP, 2, ["acier", "renvoi"], 2, "2 ajouté à sa défense contre le coup ; s'il manque, il retourne à l'envoyeur", cond=["coup"], cible_note=["garde"], fam="A"),
+"arms-of-nature": P2("Armes de la nature", EXI, 4, ["bois", "arme"], 1, "je tire d'un tronc ou d'une poutre une arme de même bois, meilleure de 1", cible_obj=["objet"], fam="A"),
+"wood-walk": P2("Marche du bois", TP2, 1, ["bois", "passage"], why="le bois se plie à mon pas : marches, échelles de lianes, branches qui me hissent", fam="A"),
+"speaking-sky": P2("Ciel parlant", VIS, 1, ["air", "mouvement", "mètres"], 18, "l'air me dit tout ce qui bouge à 18 m", fam="A"),
+"steal-the-sky": P2("Ciel dérobé", V("mouvement", True), 3, ["air", "chute", "mètres"], 18, "l'air ne la porte plus : elle descend de 18 m, et ne revole pas d'un instant", cond=["coup"]),
+"ordained-purpose": P2("Dessein ordonné", NORD, P, ["remords", "rang"], 14, "4d6 en moyenne ; accablés d'avoir quitté leur place, ils se jettent à terre", **_PSY),
+"split-the-tongue": P2("Langue fendue", NE, 3, ["langue", "mensonge", "stupeur"], 5, "1d8 en moyenne à qui vient de me mentir ; stupéfié", cond=["mensonge"]),
+"beastmaster-trance": P2("Transe du maître des bêtes", VIS, 2, ["sens", "partage"], why="je perçois par les sens de mon compagnon, de très loin", cond=["compagnon"]),
+"dance-of-darkness": P2("Danse des ténèbres", NVIS, P, ["danse", "obscurité"], why="je danse et laisse une nappe d'obscurité magique où je passe", aoe=_S(10)),
+"shadow-illusion": P2("Illusion d'ombre", EXI, P, ["ombre", "fantasme"], why="l'image d'un être ou d'une chose, qui ne tient que dans la pénombre ou le noir"),
+"shadow-jump": P2("Saut d'ombre", TP2, 1, ["ombre", "téléportation"], why="d'une ombre à une autre, à vue"),
+"fearful-feast": P2("Festin de peur", V("flux"), 3, ["effroi", "dévoration"], 15, "j'aspire le courage d'un être effrayé : 6d4 en moyenne, sa peur croît de 2, et je m'en repais", cond=["effroi"], **_PSY),
+"lift-natures-caul": P2("Voile de la nature levé", PEUR, P, ["vérité", "horreur", "stupeur"], why="ils voient le monde sans son voile, tordu et hideux : stupéfiés une minute, effrayés", **_PSY),
+"hallowed-ground": P2("Sol béni", EXI, P, ["vie", "lumineux"], 6, "1d6 + 1d4 en moyenne aux morts-vivants, puis à ceux qui y restent", cond=["MORTVIVANT"]),
+"eyes-of-the-dead": P2("Yeux des morts", VIS, 4, ["sens", "partage"], why="je perçois par les sens d'un mort-vivant qui me sert, de très loin", cond=["MORTVIVANT"]),
+"shambling-horror": P2("Horreur titubante", V("existence"), 4, ["cadavre", "service"], why="un mort du jour se relève en squelette ou en zombi, à mon service dix minutes", cible_obj=["cadavre"]),
+"subjugate-undead": P2("Mort-vivant subjugué", ORD, 3, ["maîtrise", "service"], why="le mort-vivant me sert une minute", cond=["MORTVIVANT"], dur=(1, "MINUTES")),
+"path-of-least-resistance": P2("Voie de moindre résistance", TP2, 1, ["temps", "chemin", "choix"], why="j'essaie plusieurs routes et garde la plus sûre : deux déplacements que rien n'entrave"),
+"waking-dream": P2("Rêve éveillé", NORD, 3, ["rêve", "confusion"], why="elle ne distingue plus le vrai péril de l'imaginaire : confuse", **_PSY),
+"light-of-revelation": P2("Lumière de révélation", VIS, P, ["lumière", "caché"], 1, "une clarté à 9 m : 1 ajouté pour y trouver ce qui se cache", impact_sats=[(9, ["rayon", "mètres"])], sens=[("vue", None)], manif=["aura"]),
+"perfect-strike": P2("Frappe parfaite", INT, 1, ["frappe", "essai"], why="le coup manqué se rejoue", cond=["échec"]),
+"sun-blade": E2("Lame astrale ardente", 3, ["rayon", "lame"], 2, "1d4 en moyenne de feu, tiré de l'épée ou de la lance", fam="A", options=[
+    O("Forme lumineuse", impact=(2, ["rayon", "lame", "lumineux"], "1d4 en moyenne ; bien davantage aux morts-vivants et aux êtres de l'ombre")),
+    O("Forme ténébreuse", impact=(2, ["rayon", "lame", "ténébreux"], "1d4 en moyenne ; bien davantage aux êtres de lumière"))]),
+"adapt-self": P2("Adaptation de soi", TR, 1, ["milieu", "adaptation"], why="un trait adapté au lieu : nager, respirer sous l'eau, grimper, voir dans le noir"),
+"adaptive-ablation": P2("Ablation adaptative", SEP, 1, ["énergie", "accoutumance"], 5, "5 retranché à l'énergie qui vient de me blesser", cond=["coup"], **_RES),
+"asterism": E2("Astérisme", P, ["étoile", "ligne", "constellation"], 14, "cinq lignes de feu d'étoile entre moi et ce que je relie : 4d6 en moyenne à qui les traverse", qty=5),
+"bottle-the-storm": P2("Orage en bouteille", V("flux"), 1, ["foudre", "réserve"], 10, "10 retranché à la foudre qui me frappe ; je la garde et la rends dans mon prochain coup", cond=["coup"], fam="A"),
+"charged-javelin": E2("Javelot chargé", 3, ["javelot", "champ"], 4, "1d6 en moyenne, puis 1 à chaque instant ; le champ gêne la cible"),
+"delay-consequence": P2("Conséquence différée", ORD, 2, ["temps", "sursis"], why="la blessure qui la frappe ne prend effet qu'à la fin de l'instant suivant", cond=["coup"]),
+"diamond-dust": E2("Poussière de diamant", P, ["cristal", "glace"], 7, "2d6 en moyenne à qui entre ou reste près de moi ; le sol gèle"),
+"divine-plagues": N2("Plaies", 3, ["maladie", "plaie"], 1, "une maladie au choix : maladresse, faiblesse ou stupeur de 1, qui empire"),
+"door-to-beyond": P2("Porte vers l'au-delà", ATT, P, ["fissure", "aspiration", "mètres"], 3, "des fissures hors du réel aspirent ce qui est proche de 3 m ; qui les touche est lacéré de 4d6 en moyenne", impact_plus=[(14, ["lacération"], "4d6 en moyenne à qui touche les fissures")]),
+"draconic-barrage": E2("Barrage draconique", 3, ["dragon", "énergie", "hasard"], why="un petit dragon d'énergie volette autour de moi, d'une espèce tirée au sort, et se jette sur un ennemi", fam="A"),
+"dust-storm": E2("Tempête de poussière", P, ["poussière", "étouffement"], 4, "cache, étouffe, et écorche de 1d6 en moyenne", comb="Poussière"),
+"dutiful-challenge": P2("Défi loyal", REL, 3, ["défi", "duel"], 1, "1 retranché à ce qu'elle fait contre d'autres que moi, et à ce que je fais contre d'autres qu'elle", **_PSY),
+"ectoplasmic-interstice": P2("Interstice ectoplasmique", TR, P, ["éther", "matière"], why="dans la zone, ce qui est sans corps en prend presque un : on le frappe, et il ne traverse plus"),
+"eject-soul": P2("Âme éjectée", NREL, 3, ["âme", "corps", "étourdissement"], 1, "le lien de l'âme au corps vacille : étourdie de 1 ; au pire, l'âme sort un instant", **_VIV),
+"empty-inside": P2("Vide intérieur", DISP, 1, ["vide", "émotion"], why="un éclat de vide dans mon esprit : une émotion qui me tient peut s'éteindre", **_PSY),
+"ephemeral-hazards": P2("Dangers éphémères", EXI, P, ["piège", "fantasme"], 14, "quatre pièges illusoires : 4d6 en moyenne à l'esprit de qui les touche", qty=4, **_PSY),
+"fallow-field": P2("Champ en friche", NINT, P, ["soin", "fractionné"], 2, "une lumière jaune : les soins n'y prennent qu'à moitié"),
+"font-of-serenity": P2("Fontaine de sérénité", SEP, P, ["sérénité", "émotion"], 1, "1 ajouté contre les émotions ; qui touche la fontaine peut s'en défaire", **_PSY),
+"foul-miasma": P2("Miasme infect", NQ, 3, ["maladie", "contagion"], why="sa maladie sort d'elle en brume et gagne ceux qui l'approchent", cond=["maladie"]),
+"ghostly-transcription": P2("Transcription fantôme", VIS, 4, ["parole", "lettre"], why="ses paroles s'écrivent en lettres de lumière devant elle, dans les langues que je parle", sens=[("vue", None)], manif=["lettres"]),
+"hyperfocus": P2("Hyperconcentration", INT, 4, ["sens", "netteté"], 1, "1 ajouté à ses sens précis ; ses sens diffus portent moitié moins"),
+"lament": P2("Lamentation", NF, 3, ["plainte", "chagrin"], 5, "1d8 en moyenne ; davantage si une émotion me tient", **_PSY),
+"oathkeepers-insignia": P2("Insigne du serment tenu", VIS, 1, ["serment", "gage"], why="un gage qui change d'aspect quand j'ai tenu ma promesse : on sait que je l'ai tenue"),
+"object-memory": P2("Mémoire de l'objet", INT, 1, ["objet", "savoir-faire"], why="je tire d'une arme ou d'un outil l'expérience de ceux qui s'en sont servis", cible_note=["mémoire"]),
+"overflowing-sorrow": P2("Chagrin débordant", NORD, P, ["chagrin", "émotion"], why="ma tristesse noie toute autre émotion chez ceux qui m'approchent, bonne ou mauvaise", **_PSY),
+"parch": P2("Dessèchement", NQ, 3, ["vent", "soif"], 1, "desséchée : 1 retranché à tout, une minute ; pire pour les êtres d'eau", dur=(1, "MINUTES")),
+"redact": P2("Caviardage", NVIS, 4, ["nom", "rature"], why="un nom s'efface de tous les écrits visés, un jour durant", cible_obj=["écrit"]),
+"remember-the-lost": P2("Souvenir des oubliés", NF, P, ["mort", "grief"], 21, "6d6 en moyenne : les morts qui leur en veulent assaillent leur esprit", **_PSY),
+"roar-of-the-wyrm": P2("Rugissement du dragon", PEUR, P, ["rugissement", "effroi"], 2, "effrayés de 2 ; les dragons, eux, m'en respectent davantage", **_PSY),
+"stasis": P2("Stase", ORD, 4, ["temps", "arrêt"], why="le temps se fige pour elle un instant : rien ne l'atteint, elle ne fait rien"),
+"swarm-form": P2("Forme de nuée", TR, 1, ["nuée", "corps"], 5, "je deviens une nuée de bestioles : 5 retranché aux pointes et aux tranchants, 5 ajouté à ce qui frappe en zone"),
+"swarmsense": P2("Sens de la nuée", VIS, 1, ["nuée", "capteur"], why="une nuée rampante entend pour moi, et je la déplace"),
+"winter-bolt": E2("Trait d'hiver", 3, ["glace", "éclat"], 5, "1d8 en moyenne ; le glaçon éclate ensuite en froid"),
+"withering-grasp": N2("Poigne flétrissante", 4, ["pourriture", "ténébreux"], 7, "1d12 en moyenne, puis 1d4 à chaque instant ; ronge aussi les objets", impact_sats=[(2, ["persistance"])]),
+"zenith-star": P2("Étoile au zénith", VIS, 3, ["étoile", "repère"], why="une petite étoile l'éblouit puis monte au ciel et marque où elle se trouve, un jour durant"),
+"unblinking-flame-aura": P2("Flamme sans cillement : aura", HE, 1, ["flamme", "regard"], 15, "15 points rendus ; 2 ajouté à ma vigilance", guerit=True, fam="A"),
+"unblinking-flame-emblem": P2("Flamme sans cillement : emblème", VIS, 3, ["flamme", "sceau"], 1, "un sceau de feu la marque : 1 ajouté aux coups contre elle, 1d6 de feu en plus", cond=["coup"], fam="A"),
+"unblinking-flame-ignition": P2("Flamme sans cillement : embrasement", TR, 1, ["flamme", "aura"], 7, "acculé, je m'embrase : je vois tout, et mes coups brûlent de 1d12 en moyenne", fam="A"),
+"unblinking-flame-revelation": P2("Flamme sans cillement : révélation", VIS, 3, ["flamme", "illusion"], why="une flamme révèle celle que je viens de frapper : ses illusions sont suspendues", cond=["coup"], fam="A"),
+"unbreaking-wave-advance": P2("Vague sans brisure : avancée", NF, P, ["vague", "poussée", "mètres"], 3, "repoussés de 3 m", fam="A"),
+"unbreaking-wave-barrier": P2("Vague sans brisure : barrière", SEP, P, ["vague", "cercle"], 1, "1 ajouté à ma défense ; qui approche est repoussé de 3 m, les plus atteints meurtris de 2d6", fam="A", impact_sats=[(3, ["poussée", "mètres"])]),
+"unbreaking-wave-containment": P2("Vague sans brisure : entrave", V("mouvement", True), 3, ["eau", "lien"], 35, "quatre liens d'eau : clouées sur place ; 10d6 en moyenne quand je les broie", qty_cible=4, fam="A"),
+"unbreaking-wave-vapor": P2("Vague sans brisure : vapeur", NVIS, 1, ["vapeur", "esquive"], 2, "estompé contre le coup, 2 ajouté à ma défense ; puis un pas ou deux", cond=["coup"], fam="A"),
+"unfolding-wind-rush": P2("Vent déployé : ruée", TP2, 1, ["vent", "ruée"], why="deux déplacements d'un coup, jusque dans les airs", fam="A"),
+"unfolding-wind-buffet": P2("Vent déployé : rafale", NF, 3, ["vent", "poing"], why="trois coups à mains nues sur la même cible ; si l'un porte, elle est repoussée", fam="A"),
+"unfolding-wind-blitz": P2("Vent déployé : éclair", TP2, 1, ["vent", "envol", "frappe"], why="je vole deux fois plus loin que je cours, sans qu'on puisse riposter, en frappant au passage", fam="A"),
+"unfolding-wind-crash": E2("Vent déployé : fracas", P, ["bond", "impact"], 63, "je bondis à 36 m et retombe : 18d6 en moyenne à 6 m autour", impact_sats=[(36, ["bond", "mètres"])], aoe=_S(20)),
+"untwisting-iron-buffer": P2("Fer sans torsion : rempart", SEP, 1, ["ki", "rempart"], 15, "15 points de vie d'emprunt, trois instants", cible_note=["garde"]),
+"untwisting-iron-roots": E2("Fer sans torsion : racines", P, ["terre", "secousse"], 7, "2d6 en moyenne ; ils chancellent, et le sol reste encombré", fam="A"),
+"untwisting-iron-augmentation": P2("Fer sans torsion : renfort", INT, 1, ["poing", "acier", "argent"], 1, "mes poings valent le fer froid et l'argent : 1 de plus par dé", fam="A"),
+"untwisting-iron-pillar": P2("Fer sans torsion : pilier", SEP, 1, ["terre", "pilier"], 50, "50 points de vie d'emprunt ; 5 retranché aux coups", fam="A", impact_sats=[(5, ["rempart"])]),
+"for-love-for-lightning": E2("Foudre plantée", P, ["arme", "foudre"], 20, "l'arme plantée en terre crépite : 3d12 en moyenne à chaque instant où je soutiens le sort"),
+"suns-fury": P2("Fureur astrale ardente", INT, 4, ["flamme", "arme"], 3, "l'arme s'enveloppe d'une flamme : 1d4 de feu et 1 en plus à chaque coup", cible_obj=["arme"], fam="A", options=[
+    O("Forme lumineuse", impact=(3, ["flamme", "arme", "lumineux"], "une flamme claire, qui éclaire : 1d4 de feu et 1 de lumière en plus")),
+    O("Forme ténébreuse", impact=(3, ["flamme", "arme", "ténébreux"], "une flamme noire : 1d4 de feu et 1 d'ombre en plus"))]),
+"familiar-form": P2("Forme de familier", TR, 1, ["bête", "petit"], why="je deviens une petite bête de compagnie : chat, chauve-souris, corbeau, rat…"),
+"spellmasters-ward": P2("Garde du maître des sorts", SEP, 1, ["rune", "sort"], 3, "jusqu'à 3 runes tournent autour de moi : chacune peut briser un sort qui me vise", cible_note=["résistance"], sens=[("vue", None)], manif=["runes"]),
+"transcribe-moment": P2("Instant transcrit", VIS, P, ["écrit", "lieu", "exactitude"], why="un petit rouleau paraît, qui décrit avec une précision parfaite tout ce qui m'entoure"),
+"combustion": E2("Combustion", 3, ["flamme", "persistance"], 18, "4d8 en moyenne", impact_plus=[(7, ["persistance"], "2d6 en moyenne à chaque instant")]),
+"crushing-ground": E2("Sol broyeur", 3, ["terre", "mâchoire"], 7, "2d6 en moyenne ; le sol s'ouvre et se referme sur elle, et la ralentit", comb="Terre"),
+"darklight": P2("Lumière noire", NVIS, P, ["ombre", "obscurité"], 7, "aucune lumière n'y luit ; les ombres frappent de 2d6 en moyenne"),
+"inscrutable-mask": P2("Masque impénétrable", NVIS, 1, ["ombre", "masque"], 1, "un masque d'ombre : 1 ajouté pour mentir, feinter, intimider et me cacher dans la pénombre"),
+"powerful-inhalation": E2("Inspiration puissante", P, ["air", "aspiration"], 18, "5d6 en moyenne : j'aspire tout l'air alentour ; ils en perdent la voix", comb="Air"),
+"pulverizing-cascade": E2("Cascade pulvérisante", P, ["vague", "étau"], 18, "5d6 en moyenne entre deux vagues", comb="Eau"),
+"rising-surf": P2("Vague montante", TP2, 1, ["vague", "glisse", "mètres"], 10, "une vague me porte sur 10,5 m, arrondi à 10, par-dessus les obstacles", comb="Eau"),
+"stone-lance": E2("Lance de pierre", 3, ["lance", "empalement", "mètres"], 21, "6d6 en moyenne ; empalée, elle perd 3 m par instant", comb="Roche", impact_sats=[(3, ["lenteur", "mètres"])]),
+"updraft": E2("Courant ascendant", 3, ["vent", "projection", "chute"], 7, "2d6 en moyenne : projetée en l'air, elle retombe à terre", comb="Air"),
+"wildfire": P2("Feu de brousse", EXI, P, ["cendre", "flamme"], 1, "une nappe de cendre et de flammes : 1 de feu à chaque pas"),
+"ki-cutting-sight": P2("Regard qui tranche le ki", VIS, 3, ["ki", "faille"], why="je vois où frapper pour arrêter le flux qui l'anime : mon prochain coup la trouve sans défense"),
+}
+for _k in "unsettling-knowledge halcyon-mists menacing-lament valiant-anthem elemental-sheath vicious-howl serrate repel-metal arms-of-nature wood-walk".split(): PF2_FOC5[_k]["src"] = "pf2r"
+FICHES.update(PF2_FOC5)
+
+# ----- Pathfinder 2 : focalisés rattachés à une page déjà publiée -----
+if "goodberry" in FICHES: FICHES["goodberry"].update(vp2={}, vr={"src_idx": "cornucopia"})      # Baies nourricières ; « Cornucopia » en est la version remaniée
+
+# ----- Pathfinder 2 : focalisés repris sur le texte source entier (21 novembre) -----
+_R("crescent-scepter", impact=(P, ["insigne", "crainte"], "l'objet que je brandis paraît l'insigne du pouvoir que chacun redoute : qui veut me frapper est effrayé, et son coup s'en ressent"))
+FICHES["shifting-form"]["options"].append(O("Flair", impact=(18, ["forme", "flair", "mètres"], "je flaire à 18 m")))
+_R("malicious-shadow", impact=(6, ["ombre", "frappe"], "son ombre prend une forme mortelle et la frappe de 1d10 en moyenne à chaque instant, sans la quitter ; elle s'évanouit dans le noir complet"))
+_R("spirit-object", impact_plus=[(2, ["frappe"], "1d4 en moyenne au voisin qu'il attaque à l'arrivée")])
+_R("ki-form", impact_sats=[(9, ["rayon", "mètres"]), (2, ["émotion"])])
+_R("tentacular-limbs", impact_sats=[(6, ["sort", "mètres"])])
+_R("flurry-of-claws", impact=(7, ["griffe", "dragon"], "des griffes de dragon lacèrent deux ennemis voisins : 1d8 + 1d4 en moyenne chacun"))
+_R("establish-ward", impact=(9, ["domaine", "nature", "frappe"], "je me lie au lieu : la nature y frappe pour moi de 2d8 en moyenne, un coup de plus par instant ; hors de lui, je suis ralenti de 1"), impact_sats=[(1, ["lenteur"])])
+_R("wish-twisted-form", impact_sats=[(3, ["lenteur", "mètres"]), (1, ["résistance"])])
+_R("rewrite-possibility", impact=(2, ["avenir", "essai"], "une minute : 1 ajouté à son entrée en lice ; une fois par instant, un essai rejoué avec 2 de plus, le meilleur gardé"), impact_sats=[(1, ["élan"])])
+_R("life-giving-form", impact=(27, ["lumière", "vie", "lumineux"], "un phare de vie : mon toucher rend 6d8 en moyenne ; 5 retranché aux coups précis, mes poings frappent de 1d4 de plus ; le ténébreux me blesse de 5 de plus"),
+   impact_plus=[(8, ["riposte", "lumineux"], "3d4 en moyenne aux morts-vivants qui me touchent")], guerit=True)
+_R("tempest-form", impact_sats=[(10, ["rempart"])])
+FICHES["tempest-form"]["options"][0] = O("Air", impact=(4, ["corps", "fluide", "air", "foudre"], "je vole à 6 m par instant, invisible dans les airs ; mes coups foudroient de 1d6 en moyenne"))
+_R("touch-of-the-moon", options=[
+    O("Forme lumineuse", impact=(4, ["marque", "phase", "lumineux"], "quatre phases, d'instant en instant : rien ; puis 1 aux coups et 4 aux blessures ; puis 1 aussi à la défense ; puis la défense seule")),
+    O("Forme ténébreuse", impact=(4, ["marque", "phase", "ténébreux"], "quatre phases, d'instant en instant : rien ; puis 1 aux coups et 4 aux blessures ; puis 1 aussi à la défense ; puis la défense seule"))])
+_R("vibrant-thorns", impact_plus=[(4, ["soin", "surcroît"], "1d6 en moyenne, juste après un de mes sorts de soin")])
+_R("cinder-gaze", options=[
+    O("Grand danger", impact=(2, ["flamme", "présage", "élan"], "2 ajouté à ma prochaine entrée en lice")),
+    O("Vie nouvelle", impact=(P, ["flamme", "présage", "vie", "temporaire"], "un peu de vie d'emprunt à ma prochaine blessure")),
+    O("Intuition vive", impact=(P, ["flamme", "présage", "savoir"], "le meilleur de deux essais pour me souvenir")),
+    O("Bonne fortune", impact=(P, ["flamme", "présage", "chance"], "le meilleur de deux essais pour résister"))])
+_R("euphoric-renewal", impact=(8, ["agonie", "exaltation"], "chaque fois que je reviens de l'agonie : un geste pour me relever, 1 ajouté à mes résistances, 8 points de vie d'emprunt"))
+_R("sweet-dream", options=[
+    O("Rêve de perspicacité", impact=(1, ["sommeil", "rêve", "raison"], "1 ajouté à ce qui relève de la raison")),
+    O("Rêve de séduction", impact=(1, ["sommeil", "rêve", "prestance"], "1 ajouté à ce qui relève de la prestance")),
+    O("Rêve de voyage", impact=(2, ["sommeil", "rêve", "vitesse", "mètres"], "1,5 m de plus par instant, arrondi à 2"))])
+_R("overstuff", impact_sats=[(3, ["lenteur", "mètres"])])
+_R("wordsmith", impact=(P, ["texte", "langue"], "un écrit passe dans une langue que je connais, sans rien y changer d'autre"))
+_R("elemental-sheath", impact_sats=[(5, ["rempart"])])
+_R("steal-the-sky", dur=(1, "MINUTES"))
+_R("shadow-illusion", impact=(9, ["ombre", "fantasme"], "l'image d'un être ou d'une chose, qui ne tient que dans la pénombre ou le noir ; l'être frappe de 2d8 en moyenne"))
+_R("hallowed-ground", impact_sats=[(1, ["faille"])])
+_R("draconic-barrage", impact=(4, ["dragon", "énergie", "hasard"], "un petit dragon d'énergie, d'une espèce tirée au sort, crache sur un ennemi : 1d6 en moyenne, puis s'éteint"))
+_R("hyperfocus", impact=(1, ["sens", "netteté"], "1 ajouté à ses sens précis, ses sens diffus deviennent précis ; mais elle ne perçoit plus rien au-delà de 6 m"), impact_sats=[(6, ["limite", "mètres"])])
+_R("remember-the-lost", impact_plus=[(33, ["nom", "grief"], "6d10 en moyenne à l'ennemi dont je nomme les victimes")])
+_R("winter-bolt", impact_plus=[(7, ["éclat", "froid"], "1d12 en moyenne de froid à elle et à ses voisins quand le glaçon éclate")])
+_R("unblinking-flame-ignition", impact=(7, ["flamme", "aura"], "acculé, je m'embrase : je vois tout, je vole, un geste de plus par instant ; 1d12 en moyenne à qui commence son instant contre moi"))
+_R("unbreaking-wave-advance", impact_plus=[(11, ["choc"], "3d6 en moyenne à qui est projeté contre un obstacle")])
+_R("unfolding-wind-rush", impact_plus=[(P, ["mur", "vent"], "un mur de vent reste un instant là où je suis passé")])
+_R("unfolding-wind-blitz", qty=3)
+_R("spellmasters-ward", impact=(7, ["rune", "sort"], "jusqu'à 3 runes tournent autour de moi : chacune arrête 2d6 en moyenne des dégâts d'un sort"), qty=3)
+_R("ki-cutting-sight", impact=(22, ["ki", "faille"], "je vois où arrêter le flux qui l'anime : mon prochain coup frappe de 4d10 en moyenne de plus"))
+_R("charged-javelin", impact_sats=[(1, ["conducteur"])])
+_R("wildfire", impact_plus=[(P, ["croissance"], "la nappe s'élargit à chaque instant où je la soutiens")])
+
+# ----- Pathfinder 2, rituels, lot 1 : livre de base, version remaniée, Guide du joueur avancé (22 novembre) -----
+# Un rituel inscrit son temps d'exécution au cercle Durée, son coût à la Composante (consommée), ses officiants en satellite
+# Quantité de la Condition et en cercles périphériques. Homonyme d'un sort déjà publié, il en est une version ; l'échec qui
+# peut s'écrire est une forme « Rituel manqué », l'autre reste une note.
+_RT = dict(label="Rituel")
+def _RM(**kw): return dict(label="Rituel manqué", **kw)
+def _RV(page, rit, rem=None, **kw):
+    """rit : rituel d'origine (None s'il n'existe que remanié) ; rem : rituel remanié (True = même nom)"""
+    if rit: FICHES[page]["vp2"] = dict(src_idx=rit, **kw)
+    if rem: FICHES[page]["vr"] = dict(src_idx=rit if rem is True else rem, **kw)
+_M3 = (3, "METRES", "3 m"); _M6 = (6, "METRES", "6 m")
+_MOI = dict(cible=1, cible_note=["officiant"])
+
+_RV("animate-objects", "animate-object", True, qty_cible=None, loc=_M3, comp=["huile"],
+    options=[_RT, _RM(impact=(P, ["animation", "fureur"], "l'objet s'anime, mais en furie : il cherche à détruire le meneur"))],
+    notes=["Rituel : un jour de travail, un officiant en plus du meneur ; les huiles rares, d'autant plus chères que l'objet animé sera puissant, sont consommées. Manqué de peu, le rituel ne fait rien ; manqué tout à fait, l'objet s'anime en furie."])
+_CONS = dict(aoe=_S(40), dur=(365, "JOURS"), cond=["autel"], comp=["encens", "offrande"], prix=(4, "platine"),
+    notes=["Rituel : trois jours de chants, deux officiants en plus du meneur, autour d'un autel fixe. Le lieu favorise ceux qui s'y reconnaissent et gêne ceux qu'il réprouve. Manqué tout à fait, le lieu se refuse : pendant un an au moins, nul ne peut plus le consacrer (rien ne s'en inscrit)."])
+_CONSO = lambda scelle: [
+    dict(label="Consécration — lumineux" + scelle[0], impact=(1, ["lumineux", "faveur"] + scelle[1], "1 ajouté aux fidèles du lieu, 1 retranché à ceux qu'il réprouve" + scelle[2]), cible_note=[], **scelle[3]),
+    dict(label="Profanation — ténébreux" + scelle[0], impact=(1, ["ténébreux", "faveur"] + scelle[1], "1 ajouté aux fidèles du lieu, 1 retranché à ceux qu'il réprouve" + scelle[2]), cible_note=[], **scelle[3])]
+_SC0 = ("", [], "", {}); _SC7 = (", lieu scellé (rang 7)", ["ancrage"], " ; nul n'y entre ni n'en sort par magie, hormis les fidèles", dict(niveau=7, prix=(140, "platine")))
+_RV("consecrate", "consecrate", True, options=_CONSO(_SC0) + _CONSO(_SC7), **_CONS)
+_RV("create-undead", "create-undead", True, qty_cible=None, loc=_M3, cond=[], comp=["onyx"], cible_note=[], impact=(P, ["service"], "un mort relevé, à mon service s'il est assez faible"),
+    options=[_RT, _RM(impact=(P, ["haine"], "le mort se relève, mais plein de haine : il cherche à détruire le meneur"))],
+    notes=["Rituel : un jour, un officiant en plus du meneur ; l'onyx noir, d'autant plus cher que le mort relevé sera puissant, est consommé. Chaque sorte de mort-vivant a son propre rituel. Manqué tout à fait, le mort se relève dans la haine de qui l'a tiré de là."])
+_RV("geas", "geas", True, cible=2, loc=_M3, cond=["accord"], impact=(P, ["serment"], "un acte imposé ou interdit, tenu aussi longtemps que la cible y consent"),
+    impact_sats=[(4, ["nausée", "manquement"])], sats={}, dur=(P, None), fin=["accord"],
+    options=[_RT, dict(label="Serment imposé (rang 5)", niveau=5, cible=3, cond=[], dur=(7, "JOURS"), fin=[]),
+             _RM(cible=1, cond=[], impact=(P, ["serment"], "le serment retombe sur le meneur, contre son gré"))],
+    notes=["Rituel : un jour, un officiant en plus du meneur, qui veille aux termes du serment. Qui est empêché de le tenir est pris de nausée, 1 de plus par jour, jusqu'à 4. Au rang 5, il se pose sur qui ne le veut pas, pour une semaine. Manqué tout à fait, il retombe sur le meneur."])
+_RV("atonement", "atone", True, loc=_M3, comp=["encens", "offrande"], prix=(2, "platine"),
+    notes=["Rituel : un jour, un officiant en plus du meneur ; encens et offrandes consommés, d'autant plus chers que le pénitent est puissant. Le pardon obtenu, il reste une tâche à accomplir, d'un mois au moins. Manqué de peu, la moitié du prix suffira la fois suivante ; manqué tout à fait, le pénitent est rejeté pour de bon (rien ne s'en inscrit)."])
+_RV("plant-growth", "plant-growth", True, aoe=_S(2640), dur=(365, "JOURS"),
+    options=[dict(label="Croissance végétale", impact=(P, ["croissance", "récolte"], "les récoltes d'un tiers plus abondantes")),
+             dict(label="Flétrissement des récoltes", src_idx="blight", impact=(P, ["rabougrissement", "récolte"], "les récoltes réduites de moitié"))],
+    notes=["Rituel : un jour, un officiant en plus du meneur, sur 800 m à la ronde et pour un an. Les deux formes se défont l'une l'autre. Manqué tout à fait, le rituel produit le contraire de ce qu'on voulait : sa forme manquée est l'autre forme de la page."])
+_RV("call-spirit", "call-spirit", True, dur=(10, "MINUTES"), comp=["bougie", "encens"], prix=(5, "platine"), cond=["nom", "relique"], impact_sats=[(10, ["question"])],
+    options=[_RT, _RM(impact=(P, ["mort", "hostile"], "des esprits mauvais répondent à la place et attaquent"), impact_sats=[])],
+    notes=["Rituel : une heure, un officiant en plus du meneur ; il faut le nom de l'esprit et un lien avec lui (un bien, un vêtement, un reste). Une question par minute, dix minutes ; l'esprit répond comme il veut. Manqué tout à fait, des esprits mauvais viennent à sa place."])
+_ALLY = lambda prim: dict(comp=["encens", "offrande"], prix=(2, "or"),
+    options=[dict(label="Allié planaire"),
+             dict(label="Appel primordial", src_idx="primal-call", cible=4, cible_sym=[], cond=[], cible_note=["bête", "fée", "plante"], loc=(160, "KILOMETRES", "160 km (100 miles)"), comp=["offrande"], prix=(1, "or")),
+             _RM(impact=(P, ["courroux"], "l'entité s'offense : un signe de son déplaisir, ou un serviteur venu châtier"))],
+    notes=["Rituel : un jour, deux officiants en plus du meneur (quatre pour l'Appel primordial, autour d'un cercle de fées), qui plaident la cause ; offrandes consommées, d'autant plus chères que l'être appelé est puissant. Le service se paie à part. Manqué tout à fait, l'entité s'offense."])
+_RV("planar-ally", "planar-ally", "planar-servitor", **_ALLY(0))
+_RV("resurrection", "resurrect", True, loc=_M3, cond=["mort"], cond_sats=[(1, ["ans"])], comp=["diamant"], prix=(75, "or"),
+    impact=(P, ["vie", "retour"], "revient à la vie, à bout de forces"), impact_sats=[(7, ["jours", "faiblesse"])],
+    options=[_RT, _RM(impact=(P, ["possession"], "un esprit mauvais prend le corps, ou pire"), impact_sats=[])],
+    notes=["Rituel : un jour, deux officiants en plus du meneur ; le corps doit être là, à peu près entier, et la mort dater de moins d'un an. Les diamants, d'autant plus chers que le mort était puissant, sont consommés. Le revenu reste affaibli une semaine. Manqué tout à fait, autre chose prend le corps."])
+_RV("awaken", "awaken-animal", True, loc=_M3, cible_note=["bête"], comp=["herbe"],
+    impact=(10, ["raison", "lucidité", "prestance"], "l'esprit élevé jusqu'à 10 s'il était moindre ; la bête devient amicale"),
+    options=[_RT, _RM(impact=(6, ["raison", "lucidité", "prestance", "haine"], "éveillée à 6 seulement, et dans une haine pure du meneur"))],
+    notes=["Rituel : un jour, trois officiants en plus du meneur ; herbes consommées, d'autant plus chères que la bête est puissante. Manqué tout à fait, la bête s'éveille à demi et dans la haine."])
+_RV("planar-binding", "planar-binding", "binding-circle", comp=["diagramme"], prix=(2, "or"), cible_note=[], impact=(P, ["marché"], "appelé dans le cercle pour y marchander un service"),
+    options=[_RT, _RM(impact=(P, ["hostile"], "quelque chose d'affreux répond, que le cercle ne retient pas"))],
+    notes=["Rituel : un jour, quatre officiants en plus du meneur dans l'édition d'origine (trois dans la version remaniée), chacun à l'un des points du diagramme où la puissance se concentre ; l'un d'eux trace le cercle qui retient l'être appelé le temps du marché. Les ingrédients du diagramme, d'autant plus chers que l'être est puissant, sont consommés. Manqué tout à fait, autre chose vient, et libre."])
+_COM = lambda px, imp: dict(impact=imp, qty=7, dur=(10, "MINUTES"), comp=["encens"], prix=px,
+    options=[dict(_RT), _RM(cible=1, cible_note=["psyché"], qty=None, loc=None, cond=[], impact=(4, ["hébétude"], "l'immensité entrevue hébète le meneur de 4, une semaine durant"), dur=(7, "JOURS"))],
+    notes=["Rituel : un jour, un officiant en plus du meneur ; sept questions, dix minutes, des réponses d'un mot que l'être donne selon ses propres vues. Manqué tout à fait, le meneur entrevoit l'immensité et en reste hébété une semaine."])
+_RV("commune", "commune", True, **_COM((15, "platine"), (P, ["réponse", "oui", "non"], "sept réponses d'un mot")))
+_RV("commune-with-nature", "commune-with-nature", None, **_COM((6, "platine"), (P, ["savoir"], "sept réponses d'un mot sur le pays alentour")))
+for _o in FICHES["commune-with-nature"]["vp2"]["options"][:1]: _o["loc"] = (5, "KILOMETRES", "5 km (3 miles)")
+_RV("legend-lore", "legend-lore", "collective-memories", comp=["encens"], prix=(30, "platine"),
+    options=[_RT, _RM(cible=1, cible_note=["psyché"], cond=[], impact=(P, ["passé", "absence"], "l'esprit du meneur se perd dans le passé, sourd au présent"), dur=(7, "JOURS"))],
+    notes=["Rituel : un jour, deux officiants en plus du meneur ; le savoir vient dans l'heure qui suit. Manqué tout à fait, l'esprit du meneur se perd une semaine dans ce qu'il regardait."])
+_RV("control-weather", "control-weather", True, loc=(3, "KILOMETRES", "3 km (2 miles)"), dur=(26, "HEURES"),
+    notes=["Rituel : un jour, un officiant en plus du meneur ; le temps change sur 3 km à la ronde, pour 4d12 heures (26 en moyenne), selon ce que la saison permet. Manqué tout à fait, le temps tourne au contraire de ce qu'on voulait : le glyphe est le même, seul le résultat trahit."])
+_RV("freedom", "freedom", None, loc=_M3, cond=["nom"], comp=["huile", "souvenir"], prix=(10, "platine"),
+    impact=(P, ["libération", "prison", "pétrification", "stase"], "délivrée de tout ce qui l'emprisonne, la pétrifie ou la suspend"), impact_add=[],
+    options=[_RT, _RM(verb=V("mouvement", True), cond=[], impact=(P, ["prison", "pétrification", "stase"], "l'entrave qu'on voulait lever se referme sur le meneur et les officiants"), **_MOI)],
+    notes=["Rituel : un jour, deux officiants en plus du meneur, près de la cible ou du lieu où elle fut prise ; il faut son nom et son histoire. Huiles et objets liés à elle sont consommés, d'autant plus chers qu'elle est puissante. Manqué tout à fait, l'entrave se referme sur ceux qui officiaient."])
+_RV("imprisonment", "imprisonment", None, loc=_M3, comp=["réactif"], prix=(80, "platine"),
+    options=[dict(label="Enchaînement", impact=(P, ["prison", "chaînes"], "enchaînée, capable seulement de parler ; qui veut l'approcher ou la délivrer doit d'abord vaincre le sort")),
+             dict(label="Prison close", impact=(P, ["prison", "lieu"], "incapable de quitter le lieu choisi ni de l'entamer")),
+             dict(label="Sommeil", impact=(P, ["prison", "sommeil"], "un sommeil sans âge, que rompt un geste d'affection sincère")),
+             dict(label="Stase temporelle", impact=(P, ["prison", "stase", "temps"], "suspendue hors du temps, pour la durée dite ou sans fin")),
+             dict(label="Confinement minuscule (rang 9)", niveau=9, impact=(P, ["prison", "gemme"], "réduite ou changée en vapeur, enfermée dans un récipient ; le briser la tue")),
+             dict(label="Ensevelissement (rang 10)", niveau=10, impact=(P, ["prison", "ensevelissement"], "ensevelie hors d'atteinte de tout, le lieu caché aux divinations")),
+             _RM(impact=(P, ["prison"], "le meneur et les officiants s'emprisonnent eux-mêmes, de la façon qu'ils voulaient"), **_MOI)],
+    notes=["Rituel : un jour, six officiants en plus du meneur, la cible tenue à 3 m tout du long ; les réactifs de la prison, d'autant plus chers que la cible est puissante, sont consommés. Seul le rituel de Liberté défait ces prisons. Manqué tout à fait, le meneur et les officiants s'emprisonnent eux-mêmes."])
+_RV("glyph-of-warding", None, "rune-trap", loc=(2, "METRES", "contact"), comp=["pigment", "huile"], prix=(5, "or"),
+    options=[dict(label="Glyphe de sort", impact=(P, ["piège", "sort"], "un sort hostile enfermé dans la rune, lâché sur qui la déclenche"), impact_sats=[(None, ["sort"])]),
+             _RM(cible=P, aoe=_S(10), cond=[], impact=(14, ["force", "explosion"], "4d6 en moyenne par rang du sort enfermé, sur le meneur, l'officiant et tous ceux à 3 m"), impact_sats=[])],
+    notes=["Rituel : une heure, un officiant en plus du meneur ; pigments et huiles consommés, d'autant plus chers que le sort enfermé est puissant. Un mot de passe ou un déclencheur garde la rune. Manqué tout à fait, la rune éclate au visage de ceux qui la traçaient."])
+_RV("plane-shift", None, "planar-displacement", cible=P, qty_cible=None, aoe=_S(20), comp=["encens", "craie"], prix=(50, "platine"),
+    notes=["Rituel : un jour, deux officiants en plus du meneur, dont l'un peut se tenir au lieu d'arrivée ; tous ceux du cercle changent de plan. Le cercle reste ouvert une minute pour qui veut revenir. Réussi de peu, on arrive à 1d10 × 40 km du but. Manqué tout à fait, on se trompe de plan, ou tout passage est interdit une semaine (rien ne s'en inscrit)."])
+FICHES["wish"]["vr"] = dict(src_idx="manifestation", options=[dict(label="Manifestation"),
+    dict(label="Souhait, rituel", src_idx="wish-rituel", loc=_M3, cond=["parole"], impact=(P, ["souhait"], "le plus grand désir de la cible, quel qu'il soit"), impact_sats=[],
+         comp=["cendre", "pigment", "gemme"], prix=(10000, "platine"),
+         notes=["Rituel : un jour, deux officiants en plus du meneur ; la cible dit son souhait à voix haute au début et à la fin. Réussi de peu, le souhait s'accomplit avec des suites imprévues ; manqué, il ne se fait pas, ou si peu que la cible en reste insatisfaite ; manqué tout à fait, il s'accomplit cruellement. Le glyphe est le même dans tous les cas : c'est l'issue qui trahit."])])
+_RV("reincarnate", "reincarnate", None, loc=_M3, cond=["mort"], cond_sats=[(7, ["jours"])], comp=["herbe"], prix=(25, "or"), impact_sats=[(7, ["jours", "faiblesse"])],
+    options=[_RT, _RM(impact=(P, ["vie", "corps", "bête"], "l'âme se trouve prise dans une bête sans raison"), impact_sats=[])],
+    notes=["Rituel : quatre heures, deux officiants en plus du meneur ; un reste du corps suffit, la mort datant de moins d'une semaine. Le corps neuf est d'un peuple tiré au sort. Herbes consommées, d'autant plus chères que le mort était puissant. Manqué tout à fait, l'âme se trouve prise dans une bête."])
+_RV("rest-eternal", "rest-eternal", None, loc=_M6, comp=["huile"], prix=(25, "or"),
+    options=[_RT, _RM(cond=[], impact=(1, ["condamnation"], "les esprits s'irritent : le meneur et les officiants sont condamnés de 1, une semaine"), dur=(7, "JOURS"), **_MOI)],
+    notes=["Rituel : un jour, deux officiants en plus du meneur ; les huiles dont on oint le corps sont consommées. L'esprit ne peut plus être appelé, relevé ni ramené, sauf par une magie plus haute. Manqué tout à fait, les esprits invoqués se retournent contre les officiants."])
+_RV("simulacrum", "simulacrum", None, loc=_M6, cond=["vivant"], comp=["cheveu", "huile", "pigment"], prix=(30, "platine"),
+    options=[_RT, _RM(impact=(P, ["glace", "hostile"], "le double s'éveille hostile à tous les officiants, et cherche leur perte"))],
+    notes=["Rituel : un jour, trois officiants en plus du meneur ; un cheveu ou une goutte de sang du modèle, des huiles et des pigments, consommés. Le double de neige n'a ni les souvenirs ni les pouvoirs du modèle : il n'en a que l'apparence. Manqué tout à fait, il s'éveille hostile."])
+_RV("astral-projection", "astral-projection", None, qty_cible=6, cond=["contact"], comp=["jacinthe"], prix=(5, "or"),
+    options=[_RT, _RM(qty_cible=None, impact=(P, ["agonie", "condamnation"], "la séparation tourne mal : tous les officiants tombent, mourants"), **_MOI)],
+    notes=["Rituel : une heure, deux officiants en plus du meneur, tous se tenant en cercle ; une jacinthe par voyageur, consommée. Les corps restent en suspens ; chacun peut revenir d'un geste. Le cordon rompu tue. Manqué tout à fait, tous les officiants tombent mourants."])
+_RV("heroes-feast", "heroes-feast", None, qty_cible=10, comp=["offrande"], prix=(25, "or"),
+    impact=(50, ["festin"], "50 points de vie rendus à chaque convive ; poison, maladie et peur chassés"), impact_plus=[(10, ["vigueur"], "10 points de vie d'appoint, douze heures")],
+    options=[_RT, _RM(impact=(4, ["festin", "nausée"], "le festin est empoisonné : nausée de 4, douze heures sans remède"), impact_add=[], impact_plus=[], dur=(12, "HEURES"))],
+    notes=["Rituel : quatre heures, un officiant en plus du meneur ; des êtres d'ailleurs servent dix convives, qu'il ne faut pas offenser. Manqué de peu, le festin n'a que le goût de la cendre ; manqué tout à fait, il est empoisonné."])
+_RV("teleportation-circle", "teleportation-circle", None, dur=(1, "JOURS"), cond=["lieu", "connu"], comp=["encens", "craie"], prix=(50, "platine"), impact_sats=[(1620, ["kilomètres"])],
+    notes=["Rituel : un jour, deux officiants en plus du meneur, dont l'un peut se tenir au lieu d'arrivée ; un cercle de 3 m mène, un jour durant, à un lieu connu à moins de 1 600 km (1 620, la valeur la plus proche qui s'écrive). Le double du prix l'ouvre dans les deux sens. Réussi de peu, on arrive à côté ; manqué tout à fait, le cercle mène au hasard (le glyphe est le même, seul le résultat trahit)."])
+_RV("word-of-recall", "word-of-recall", None, qty_cible=7, dur=(365, "JOURS"), cond=["sanctuaire", "mot"], comp=["huile", "minéral"], prix=(500, "platine"),
+    options=[_RT, _RM(impact=(P, ["plan", "rappel"], "le lien se noue à un lieu d'un autre plan : le mot y jette tous les participants"))],
+    notes=["Rituel : sept jours, deux officiants en plus du meneur, au lieu sûr où l'on voudra revenir ; pendant un an, le mot dit par l'un des participants les y ramène tous, chacun à sa place. Manqué tout à fait, le lien se noue ailleurs, sans que nul le sache."])
+_RV("clone", "clone", None, cond=["chair"], comp=["laboratoire"], prix=(10, "platine"), impact_sats=[(150, ["jours", "croissance"])],
+    options=[_RT, _RM(impact=(P, ["clone", "intrus"], "le double paraît réussi, mais ne peut accueillir l'âme : une intelligence malveillante l'habite"))],
+    notes=["Rituel : sept jours, trois officiants en plus du meneur ; un peu de chair de la cible, un laboratoire, des réactifs consommés. Le double croît 2d4 mois (5 en moyenne) ; l'âme y passe à la mort du corps, et s'y trouve affaiblie une semaine. Manqué tout à fait, autre chose l'habite."])
+_RV("guards-and-wards", "ward-domain", None, aoe={"type": "cube", "size": 100}, dur=(7, "JOURS"), comp=["encens", "huile", "argent"], prix=(15, "platine"),
+    impact=(P, ["verrou", "illusion", "scrutation", "ancrage"], "portes verrouillées, six entrées masquées en murs, scrutation aveugle, téléportation repoussée"), impact_sats=[(6, ["porte", "mur"])],
+    options=[_RT, _RM(impact=(P, ["piège", "hostile"], "le lieu se piège contre le meneur et les siens"), impact_sats=[])],
+    notes=["Rituel : un jour, trois officiants en plus du meneur, à brûler l'encens, oindre les seuils et tirer des lignes d'argent ; le domaine est gardé une semaine. Manqué tout à fait, le lieu se retourne contre ceux qu'il devait garder."])
+_RV("demiplane", "create-demiplane", None, cond=["plan"], comp=["matière"], prix=(80, "platine"), aoe={"type": "cube", "size": 100},
+    impact=(P, ["demi-plan", "clef"], "un demi-plan de 30 m de côté, et la clef qui y mène"),
+    options=[_RT, dict(label="Aménagement", cond=["clef"], impact=(P, ["demi-plan", "ajout"], "le demi-plan agrandi d'autant, ou doté d'un trait : vie propre, élément, pesanteur, autre clef, portail, absence de bornes")),
+             _RM(verb=V("mouvement"), no_aoe=True, cond=[], impact=(P, ["plan", "hostile"], "tous les officiants sont jetés sur un plan inconnu"), **_MOI)],
+    notes=["Rituel : neuf jours, trois officiants en plus du meneur, depuis un plan qui touche à l'entre-deux ; les officiants y sont portés à la fin. Avec la clef, le même rituel agrandit ou aménage un demi-plan existant. Manqué tout à fait, tous sont jetés ailleurs."])
+
+PF2_RIT1 = {
+"inveigle": P2("Enjôlement", REL, 3, ["amitié", "confiance"], why="la cible me tient pour un ami proche et trouve raisonnable tout ce que je suggère", loc=_M3, dur=(365, "JOURS"), fin=["demande", "contraire"],
+    cible_note=["psyché"], comp=["huile"], prix=(1, "platine"),
+    options=[O("Rituel"), O("Rituel manqué", impact=(P, ["haine"], "la cible me hait pour toute la durée"), fin=[])]),
+"heartbond": P2("Lien des cœurs", REL, 2, ["lien", "état", "direction"], why="une fois par jour, chacun sait où est l'autre, à quelle distance, et ce qui l'affecte", qty_cible=2, loc=_M6, dur=(P, None), fin=["anneau", "perte"],
+    cond=["affection", "anneau"], comp=["vin", "anneau"], prix=(4, "platine"),
+    options=[O("Rituel"), O("Rituel manqué", cond=[], fin=[], impact=(2, ["maladresse", "hébétude"], "un contrecoup discordant : chaque participant est maladroit et hébété de 2 dès qu'il approche d'un autre"), dur=(7, "JOURS"))]),
+"unseen-custodians": P2("Gardiens invisibles", EXI, 7, ["service", "lieu"], why="trois serviteurs de force pure, attachés au lieu", cible_note=["serviteur"], qty=3, aoe={"type": "cube", "size": 100}, dur=(365, "JOURS"),
+    comp=["huile", "sel", "herbe"], prix=(15, "or"),
+    options=[O("Rituel"), O("Rituel manqué", qty=6, impact=(4, ["force", "hostile"], "six serviteurs hostiles, qui frappent de 1d6 en moyenne et brisent ce qui m'appartient"))]),
+"fantastic-facade": P2("Façade fantastique", NVIS, P, ["ville", "apparence", "habitant"], why="l'aspect, le bruit, le toucher et l'odeur d'une ville entière et de ceux qui s'y trouvent", src_idx="fantastic-fa-ade",
+    aoe=_S(5280), dur=(P, None), comp=["peinture", "voile", "minéral"], prix=(2000, "platine"), sens=[("vue", None), ("ouïe", None), ("toucher", None), ("odorat", None)], manif=["ville"],
+    options=[O("Rituel"), O("Rituel manqué", impact=(P, ["apparence", "chaos"], "des illusions imprévues et sans maître : couleurs mouvantes, puanteurs, passants à l'air de squelettes"), dur=(30, "JOURS"))]),
+}
+FICHES.update(PF2_RIT1)
+
+# ----- Pathfinder 2, rituels, lot 2 : Secrets de la magie, bestiaires, aventures, Rage des éléments (23 novembre) -----
+_RI = O("Rituel")
+def _RX(**kw): return O("Rituel manqué", **kw)
+_Q = V("qualite")
+PF2_RIT2 = {
+"elemental-sentinel": P2("Sentinelle élémentaire", INV, 1, ["veille", "alerte"], why="un feu follet élémentaire, logé dans l'objet, veille sur la pièce et m'avertit en pensée de ce que je lui ai dit de guetter", cible_obj=["objet"],
+    dur=(P, None), fin=["bris"], comp=["encens", "herbe"], prix=(15, "or"), impact_sats=[(30, ["pensée", "mètres"])],
+    options=[_RI, _RX(impact=(P, ["veille", "mensonge"], "l'esprit, pris au piège, ne rend que des rapports trompeurs"))]),
+"guardians-aegis": P2("Égide du gardien", REL, 2, ["lien", "état", "direction", "partage"], why="le gardien et son protégé savent toujours où est l'autre et ce qui l'affecte ; à moins de 9 m, le gardien prend sur lui une part des blessures du protégé", cible_note=["officiant"],
+    dur=(7, "JOURS"), comp=["huile"], prix=(1, "platine"), impact_sats=[(9, ["partage", "mètres"])],
+    options=[_RI, _RX(impact=(P, ["isolement"], "le lien se retourne : aucun des deux ne peut plus rien apporter de bon à l'autre"), impact_sats=[])]),
+"mystic-carriage": P2("Carrosse mystique", EXI, 1, ["voyage", "destination"], why="un carrosse qui mène de lui-même au lieu nommé, par les routes et les chemins", cible_obj=["carrosse"],
+    dur=(7, "JOURS"), fin=["arrivée"], cond=["nom", "lieu"], comp=["jouet", "encens", "plume"], prix=(5, "platine"), impact_sats=[(400, ["kilomètres"]), (18, ["allure", "mètres"]), (4, ["passager"])],
+    options=[_RI, _RX(verb=INV, cible=4, cible_obj=[], cible_note=["cheval"], qty=4, impact=(P, ["hostile"], "nul carrosse : quatre chevaux surgissent et attaquent"), impact_sats=[], fin=[])]),
+"concealments-curtain": P2("Rideau de dissimulation", NVIS, 3, ["vue", "officiant"], why="la cible ne peut plus voir aucun des officiants, et ne s'en doute pas ; ce n'est pas eux que le sort cache, c'est son œil qu'il ferme",
+    dur=(7, "JOURS"), cond=["nom", "regard", "minuit"], comp=["miroir", "fruit", "aiguille"], prix=(10, "platine"),
+    options=[_RI, _RX(cond=[], impact=(P, ["cécité"], "le sort se retourne : tous les officiants sont aveugles un jour"), dur=(1, "JOURS"), **_MOI)]),
+"garden-of-death": P2("Jardin de mort", ATT, P, ["poison", "plante", "bête"], why="tout ce que le pays compte de plantes et de bêtes venimeuses vient croître et vivre là ; elles épargnent les officiants", aoe=_S(40),
+    dur=(365, "JOURS"), comp=["eau", "poison", "sang"], prix=(5, "platine"),
+    options=[_RI, _RX(no_aoe=True, impact=(P, ["morsure", "poison"], "la bête la plus venimeuse du pays mord chacun des officiants"), **_MOI)]),
+"dread-ambience": P2("Atmosphère d'effroi", NQ, P, ["effroi"], 1, "le lieu pèse sur qui y entre : 1 retranché à quiconque y résiste à la peur", aoe=_S(2979),
+    dur=(365, "JOURS"), comp=["bougie", "sel", "herbe"], prix=(8, "platine"),
+    options=[_RI, _RX(no_aoe=True, impact=(1, ["volonté"], "1 retranché à la volonté des officiants, une semaine"), dur=(7, "JOURS"), **_MOI)]),
+"portrait-of-spite": P2("Portrait de rancune", NQ, 3, ["maladresse", "faiblesse", "épuisement", "hébétude"], 2, "le châtiment choisi, infligé au portrait peint de son sang, frappe la cible de 2 ; le portrait en devient la caricature",
+    dur=(365, "JOURS"), fin=["portrait", "destruction"], cond=["nom", "visage"], comp=["peinture", "sang"], prix=(10, "platine"), impact_sats=[(4, ["heures", "délai"])],
+    options=[_RI, _RX(cond=[], fin=[], impact=(4, ["maladresse", "faiblesse", "épuisement", "hébétude"], "le portrait prend les traits des officiants : le châtiment les frappe eux, de 4"), **_MOI)]),
+"the-worlds-a-stage": P2("Le monde est un théâtre", ORD, 2, ["destin", "essai"], 1, "le sort lie le destin à la pièce jouée : chaque officiant rejoue un essai, s'il sert l'issue mise en scène", cible_note=["officiant"],
+    dur=(30, "JOURS"), cond=["représentation", "public"], cond_sats=[(100, ["spectateur"])], comp=["costume", "scène"], consumed=False,
+    options=[_RI, _RX(impact=(1, ["condamnation"], "la pièce tourne au désastre et le destin frappe : chaque officiant est condamné de 1, un mois"))]),
+"asmodean-wager": P2("Pari scellé", REL, 2, ["pari", "serment"], why="chaque parieur engage un bien ou une promesse sur une issue à venir ; le perdant est tenu par un serment des plus puissants", cible_note=["officiant"],
+    dur=(P, None), fin=["issue"], cond=["accord"], comp=["parchemin", "encre", "gage"], prix=(5, "platine"),
+    options=[O("Enjeu : un bien ou une promesse"),
+             O("Enjeu : la vie", impact=(P, ["pari", "mort", "sursis"], "le perdant meurt sur-le-champ ; le gagnant survivra une fois à ce qui devait le tuer")),
+             _RX(impact=(P, ["pari", "perte"], "les termes se retournent : tous les parieurs sont tenus pour perdants, quelle que soit l'issue"))]),
+"awaken-object": P2("Éveil d'objet", TR, 1, ["conscience", "vue", "ouïe", "langue"], why="un petit objet inerte s'éveille : il voit, entend, comprend une langue sans la parler, et reste indifférent à tous", cible_obj=["objet"],
+    dur=(P, None), comp=["gemme", "épice"], prix=(25, "platine")),
+"ideal-mimicry": P2("Poupée d'envoûtement", NE, 3, ["douleur", "pensée", "poupée"], 11, "", loc=(60, "METRES", "60 m (200 pieds)"), qty=10, cond=["regard", "poupée"],
+    comp=["cheveu", "ongle", "sang"], prix=(5, "platine"),
+    options=[O("Forme de base", impact=(11, ["douleur", "pensée", "poupée"], "un seul lien dans la poupée (cheveu, ongle ou sang) : 3d6 en moyenne chaque fois qu'on la maltraite, dix fois")),
+             O("Forme maximale", impact=(32, ["douleur", "pensée", "poupée"], "les trois liens : 9d6 en moyenne chaque fois, dix fois")),
+             _RX(impact=(32, ["douleur", "pensée", "poupée"], "la poupée se retourne : chaque coup qu'on lui porte frappe les officiants de 9d6 en moyenne"), **_MOI)]),
+"bathe-in-blood": P2("Bain de sang", TR, 1, ["jeunesse", "ans"], 20, "vingt ans de moins, ou vingt ans sans vieillir", cond=["sang", "peuple"], cond_sats=[(6, ["heures"])],
+    comp=["herbe", "sang"], prix=(100, "platine"),
+    options=[_RI, _RX(verb=NE, impact=(P, ["mort"], "le bain tue qui s'y plonge"))]),
+"abyssal-pact": P2("Pacte astral", INV, 9, ["faveur"], why="", cond=["pair"], qty=3,
+    options=_FACES(["faveur"], None, "un à trois êtres de la même face que moi, tenus de me rendre une faveur") + [_RX(impact=(P, ["hostile"], "dérangés, ils paraissent et attaquent aussitôt"))]),
+"fey-abeyance": P2("Carillons contre les fées", NF, P, ["fée", "gêne", "fer"], why="les fées s'y sentent mal, tout coup les blesse comme le fer froid, et les cloches les tourmentent là où elles pendent", aoe={"type": "cube", "size": 60},
+    dur=(7, "JOURS"), comp=["huile", "cloche"], prix=(5, "or"), impact_sats=[(3, ["cloche"])],
+    options=[_RI, _RX(impact=(P, ["fée", "attirance"], "rien ne se fait, sinon qu'une fée importune s'intéresse au lieu"), impact_sats=[])]),
+"tattoo-whispers": P2("Tatouages murmurants", REL, 2, ["tatouage", "murmure"], why="les officiants portent le même tatouage, orné d'une bouche : ce que l'un articule sans voix, le tatouage de l'autre le lui murmure", cible_note=["officiant"],
+    loc=(36, "METRES", "36 m (120 pieds)"), dur=(1, "JOURS"), cond=["vue"], comp=["encre", "aiguille"], prix=(2, "platine"),
+    options=[_RI, _RX(impact=(1, ["hébétude"], "un contrecoup de parasites : tous les officiants sont hébétés un jour"))]),
+"community-repair": P2("Réparation commune", ORD, 1, ["réparation", "souvenir"], why="un ouvrage commun, pont, puits ou fresque, retrouve son état premier par la force des souvenirs qu'on y attache", cible_obj=["ouvrage"],
+    loc=_M3, cond=["souvenir"], comp=["pigment"], prix=(5, "platine"),
+    options=[_RI, _RX(verb=NINT, cible_obj=[], cond=[], impact=(3, ["allure", "mètres"], "l'ouvrage se refuse et les souvenirs s'aigrissent : près de lui, les officiants perdent 3 m d'allure et aucune joie ne les touche, une semaine"), dur=(7, "JOURS"), **_MOI)]),
+"awaken-portal": P2("Réveil de portail", INT, 1, ["portail", "éveil"], why="un portail endormi se rouvre ; il faut l'éveiller à ses deux bouts, et le premier éveillé attend l'autre quelques jours", cible_obj=["portail"],
+    dur=(4, "JOURS"),
+    options=[_RI, _RX(verb=INV, cible=4, cible_obj=[], impact=(P, ["hostile"], "une créature hostile est tirée par le portail et attaque"), impact_plus=[(1, ["hébétude"], "le contrecoup hébète le meneur de 1, un jour")])]),
+"extract-brain": P2("Extraction du cerveau", SEP, 3, ["cerveau", "conservation"], why="le cerveau d'un être consentant, entravé ou mort depuis moins d'une heure, retiré intact pour être placé dans un récipient ou un corps fabriqué", cond=["entrave"],
+    comp=["outil", "sel"], prix=(10, "platine"),
+    options=[_RI, _RX(impact=(P, ["cerveau", "intrus"], "l'opération semble réussir, mais le cerveau se déforme en une chose hostile"))]),
+"statuette": P2("Statuette", NINT, 1, ["statuette", "taille"], why="un grand objet devient une statuette de lui-même, légère, jusqu'à ce qu'on la pose pour lui rendre sa taille", cible_obj=["objet"],
+    dur=(1, "JOURS"), fin=["pose"], cond=["seuil"], cond_sats=[(85, ["mètres", "cubes"])],
+    options=[_RI, _RX(cond=[], fin=[], impact=(P, ["statuette", "perte"], "c'est le meilleur objet que porte le meneur qui rétrécit, inutilisable"), dur=(7, "JOURS"))]),
+"terminate-bloodline": P2("Extinction de lignée", NQ, 3, ["maladie", "lignée", "contagion"], why="un mal dépérissant frappe la cible et gagne, au simple contact, ses parents et ses enfants, qui le transmettent à leur tour",
+    comp=["sang", "trésor"], prix=(10, "platine")),
+"mosquito-blight": P2("Fléau de moustiques", INV, P, ["insecte", "maladie"], why="des insectes tenaces harcèlent quiconque entre, et lui portent chaque jour un mal qui épuise", aoe=_S(5280),
+    dur=(P, None), fin=["ruche", "destruction"], comp=["ambre", "encens"], prix=(75, "platine"), impact_plus=[(1, ["insecte", "faveur"], "1 ajouté aux insectes et araignées du lieu")],
+    options=[_RI, _RX(cible=1, no_aoe=True, fin=[], impact=(P, ["insecte", "maladie"], "les insectes se jettent sur le meneur et lui portent le mal"), impact_plus=[])]),
+"phantom-ship": P2("Vaisseau fantôme", TR, 1, ["intangible", "équipage"], why="le navire et tous ceux qu'il porte deviennent intangibles ; il file à pleine allure quel que soit le vent, au travers des écueils, tant qu'il touche l'eau", cible_obj=["navire"],
+    dur=(1, "HEURES"), cond=["mort-vivant", "équipage", "eau"], comp=["perle"], prix=(5, "platine"), impact_plus=[(1, ["navigation"], "1 ajouté à qui le manœuvre par gros temps")],
+    options=[_RI, _RX(impact=(P, ["intangible", "chute"], "le navire seul devient intangible : tous passent au travers et tombent à l'eau"), dur=(10, "MINUTES"), impact_plus=[])]),
+"unseen-heralds": P2("Hérauts invisibles", EXI, P, ["bouche", "voix"], why="trois bouches d'illusion posées dans le lieu, qui disent ce que je veux, quand je veux, ou le répètent", qty=3, aoe={"type": "cube", "size": 100},
+    dur=(365, "JOURS"), comp=["huile", "sel", "herbe"], prix=(15, "or"), sens=[("ouïe", None)], manif=["voix"],
+    options=[_RI, _RX(qty=6, impact=(P, ["bouche", "vacarme"], "les bouches hurlent, bredouillent et jurent sans trêve : nul repos à portée de voix"), dur=(1, "JOURS"))]),
+"lucky-month": P2("Mois de chance", ORD, 2, ["chance", "essai"], 1, "une fois dans le mois, le porteur du gage rejoue un essai et garde le meilleur", dur=(30, "JOURS"), cond=["gage"],
+    comp=["mets", "gage"], prix=(1, "platine"),
+    options=[_RI, _RX(cond=[], impact=(1, ["malchance", "essai"], "une fois par semaine, le premier essai qui compte est rejoué et le pire gardé, gage porté ou non"))]),
+"last-nights-vigil": P2("Veillée de la dernière nuit", _Q, 2, ["guérison", "maladie"], why="au matin, l'être aimé a recouvré toutes ses forces, et l'un de ses maux recule d'un degré", cond=["nuit", "amour", "veille"],
+    comp=["encens"], prix=(1, "platine"),
+    options=[_RI, _RX(verb=NQ, cible=1, cond=[], impact=(P, ["fatigue"], "la veille n'a servi à rien : le veilleur est épuisé un jour"), dur=(1, "JOURS"))]),
+"regale-the-lost-ones": P2("Régal des égarés", ORD, P, ["esprit", "apaisement"], why="les esprits et les morts qui hantent le bourg, réjouis par le spectacle, se font moins hostiles et plus aisés à défaire", cible_note=["bourg"],
+    dur=(365, "JOURS"), cond=["spectacle"], comp=["offrande", "costume"], prix=(2, "or"),
+    options=[_RI, _RX(verb=NORD, impact=(P, ["esprit", "colère"], "les esprits s'irritent : plus sournois, plus redoutables"))]),
+"sweetest-solstice": P2("Le plus doux des solstices", EXI, 2, ["soupe", "repas"], why="une soupe de sésame qui ne tarit pas : un repas chaud pour tout le bourg, une semaine durant", qty_cible=P,
+    dur=(7, "JOURS"), cond=["hiver", "plaisanterie"], comp=["sésame", "sucre", "riz"], prix=(2, "or"), impact_plus=[(1, ["courage"], "1 ajouté aux officiants contre la peur, un mois")],
+    options=[_RI, _RX(impact=(4, ["soupe", "nausée"], "la soupe est gâtée et rend le bourg malade ; les officiants en ont la nausée (4), douze heures sans remède"), impact_plus=[], dur=(12, "HEURES"))]),
+"ransack-the-night": P2("Pillage de la nuit", NVIS, 2, ["dissimulation"], why="", cible_note=["officiant"], dur=(12, "HEURES"), cond=["nuit"], comp=["sel", "agrume", "épice"], prix=(75, "or"),
+    options=[O("Forme ténébreuse", impact=(P, ["dissimulation", "ténébreux"], "une brume noire voile les officiants aux êtres de la face ténébreuse et aux morts-vivants les plus faibles, tant qu'ils ne les attaquent pas")),
+             O("Forme lumineuse", impact=(P, ["dissimulation", "lumineux"], "une brume claire voile les officiants aux êtres de la face lumineuse les plus faibles, tant qu'ils ne les attaquent pas")),
+             _RX(impact=(P, ["aveuglement"], "la brume trouble les sens des officiants : ce sont eux qui distinguent mal ces êtres, un jour durant"), dur=(1, "JOURS"))]),
+"winters-breath": P2("Souffle de l'hiver", EXI, 2, ["thé", "réconfort"], why="un pavillon, un thé servi à six convives courtois : chacun choisit d'être remis de ses fatigues ou gardé du froid et du chaud", qty_cible=6,
+    comp=["offrande"], prix=(15, "or"), impact_plus=[(10, ["vigueur"], "10 points de vie d'appoint, douze heures")], sens=[("vue", None), ("goût", None), ("odorat", None)], manif=["pavillon", "thé"],
+    options=[_RI, _RX(impact=(3, ["thé", "nausée"], "le thé déçoit et accable : nausée de 3, douze heures sans remède"), impact_plus=[], dur=(12, "HEURES"))]),
+"perfection-of-essence": PR("Perfection de l'essence", TR, 1, ["immortalité"], why="je ne vieillis plus que si je le veux, et rien ne me tue hors la vieillesse ; mort pour de bon, je renais adulte ailleurs au bout d'un an",
+    dur=(P, None), fin=["interdit"], cond=["interdit", "poison"], cond_sats=[(3, ["interdit"])], comp=["mets", "herbe", "minéral"], prix=(4500, "platine"),
+    options=[_RI, _RX(verb=NQ, cond=[], fin=[], impact=(P, ["poison"], "le poison de l'épreuve l'emporte, et plus virulent encore"))]),
+"bountiful-oasis": PR("Oasis généreuse", EXI, P, ["source", "pureté"], why="une source pure jaillit, de quoi abreuver une douzaine de personnes ; elle se purifie d'elle-même à chaque aube", comb="Eau", aoe=_S(10),
+    dur=(365, "JOURS"), comp=["goutte"],
+    options=[_RI, _RX(impact=(P, ["croupissement", "maladie"], "une mare fétide qui ne sèche jamais, pleine d'insectes, et qui rend malade qui en boit"))]),
+"sky-signs": PR("Signes du ciel", VIS, P, ["message", "ciel"], why="un message simple, écrit en nuages le jour ou en aurores la nuit, visible jusqu'à l'horizon", dur=(8, "HEURES"),
+    comp=["lentille", "poussière"], prix=(30, "platine"), impact_sats=[(5, ["mot"])], sens=[("vue", None)], manif=["ciel"],
+    options=[_RI, _RX(impact=(P, ["message", "contraire"], "les esprits de l'air, offensés, écrivent le contraire, lisible de tous"))]),
+}
+FICHES.update(PF2_RIT2)
+_RV("mind-swap", "mind-swap", None, cible=2, qty_cible=2, loc=_M3, dur=(7, "JOURS"), cond=["peuple"], comp=["miroir"], prix=(5, "platine"),
+    options=[_RT, _RM(qty_cible=None, cond=[], impact=(2, ["hébétude"], "des souvenirs brouillés se déversent : le meneur et l'officiant sont hébétés de 2, une semaine"), **_MOI)],
+    notes=["Rituel : un jour, un officiant en plus du meneur ; deux êtres du même peuple échangent leurs esprits pour une semaine, chacun maître du corps de l'autre. Qui meurt dans un corps meurt tout à fait ; à la fin, l'esprit dont le corps est mort meurt aussi. Les miroirs ornés, d'autant plus chers que les cibles sont puissantes, sont consommés. Manqué tout à fait, les officiants restent hébétés."])
+FICHES["planar-ally"]["vr"]["options"] = list(FICHES["planar-ally"]["vr"]["options"])
+FICHES["planar-ally"]["vr"]["options"].insert(2, dict(label="Serviteur élémentaire", src_idx="elemental-servitor", cible_note=["élémentaire"], cible_sym=[], cond=[]))
+# Rituels fondus dans une page (même glyphe) et rituels écartés, avec leur raison
+PF2_RIT_FONDU = {"daemonic-pact": "abyssal-pact", "div-pact": "abyssal-pact", "infernal-pact": "abyssal-pact", "primal-call": "planar-ally", "blight": "plant-growth",
+                 "commune-with-nature": "commune", "elemental-servitor": "planar-ally"}
+PF2_RIT_ECARTE = {
+ "purify-soul-path": "ne lève que la corruption d'une arme d'âme, mécanique d'archétype", "establish-nexus": "lignes telluriques et leur puisage : mécanique propre au jeu",
+ "empower-ley-line": "lignes telluriques et leur puisage : mécanique propre au jeu", "angelic-messenger": "voyage d'un messager vers les fidèles de son dieu ; l'effet est le Changement de plan déjà publié",
+ "owb-pact": "créatures propres à Golarion", "arcane-weaving": "échange de sorts connus : mécanique de classe", "amity-cycle": "cités de Thuvia (Golarion)",
+ "create-skinstitch": "créature propre à Golarion, commandée au nom d'un dieu", "ravenous-reanimation": "dragon devenu mort-vivant d'une espèce propre au bestiaire",
+ "unfettered-mark": "évasion d'une prison précise de Golarion", "commune-with-corazal": "entité et forêt de Golarion", "drain-planar-connection": "lieu et intrigue d'une aventure",
+ "harrowing": "jeu de cartes divinatoire de Golarion ; ses effets sont des relances", "blunt-the-final-blade": "guillotines de Galt (Golarion)", "anima-invocation-modified": "intrigue d'une aventure",
+ "raga-of-remembrance": "avatar d'un héros de Vudra (Golarion)", "power-of-the-beasts": "épreuve qui octroie un don de jeu", "seed-of-mercy": "épreuve qui octroie un don de jeu",
+ "the-unseeing-blade-master": "épreuve qui octroie un don de jeu", "retreat-among-the-rains": "réapprentissage de dons : mécanique de jeu",
+ "gnaw-at-the-moon": "culte de la lune, qui n'existe pas dans Inarama", "open-the-wall-of-ghosts": "lieu d'une aventure", "transmigrate": "intrigue d'une aventure",
+}
+# les paysages mentaux : écartés comme leurs équivalents de Pathfinder 1, pour la même raison
+for _k in ("construct-mindscape", "mindscape-door", "mindscape-shift", "destroy-mindscape"):
+    PF2_RIT_ECARTE[_k] = "repose sur les « mondes intérieurs » (mindscapes), sous-système de règles propre à Pathfinder"
+PF2_RIT_DOUTE = []
+
+# ----- Pathfinder 2 : sorts ordinaires repris sur le texte source entier (24 novembre) -----
+def _AS(k, *sats): FICHES[k]["impact_sats"] = list(FICHES[k].get("impact_sats") or []) + list(sats)
+def _AP(k, *plus): FICHES[k]["impact_plus"] = list(FICHES[k].get("impact_plus") or []) + list(plus)
+_AS("tether", (3, ["lenteur", "mètres"]))
+_AS("spiritual-guardian", (50, ["réserve"]))
+_AS("duplicate-foe", (14, ["perte"]))
+_AP("summon-archmage", (2, ["hébétude", "départ"], "à son départ, il hébète de 2 les ennemis proches et peut rompre l'un de leurs sorts"))
+_AP("draw-the-lightning", (13, ["orage"], "2d12 en moyenne de plus sous un ciel d'orage"))
+_AP("horizon-thunder-sphere", (7, ["éclat", "attente"], "tenue un instant de plus, elle éclate : 2d6 en moyenne à tous ceux à 3 m de la cible"))
+_AP("pernicious-poltergeist", (2, ["effroi"], "ou bien il se montre : effroi de 2"), (18, ["force", "débris"], "ou bien il jette des débris : 4d8 en moyenne à tous"))
+FICHES["wall-of-flesh"]["options"] = [O("Bouches", impact_plus=[(4, ["morsure"], "1d6 en moyenne à qui finit son instant près du mur")]),
+    O("Yeux", impact_plus=[(2, ["vue", "vigilance"], "je vois par ses yeux : 2 ajouté à ma vigilance")]),
+    O("Bras", impact_plus=[(P, ["étreinte"], "il agrippe qui finit son instant près de lui")])]
+_AP("volcanic-eruption", (11, ["chaleur"], "3d6 en moyenne à tous ceux de la colonne et de ses abords, quoi qu'il arrive"))
+_AS("volcanic-eruption", (50, ["gangue", "réserve"]))
+_AP("indolent-haze", (15, ["âme", "dormeur"], "6d4 en moyenne à qui dort dans la brume"))
+_i = FICHES["avenging-wildwood"]["impact"]; FICHES["avenging-wildwood"]["impact"] = (9, _i[1], _i[2] + " ; ses branches frappent de 2d8 en moyenne")
+FICHES["summon-elemental-herald"]["options"] = [
+    O("Air", impact=(45, ["héraut", "tornade"], "10d8 en moyenne à son arrivée"), impact_plus=[(P, ["rabat", "départ"], "à son départ, il jette à terre ou rabat de 12 m ceux d'une ligne")]),
+    O("Terre", impact=(35, ["héraut", "crevasse"], "10d6 en moyenne à son arrivée ; les plus malchanceux tombent dans la crevasse"), impact_plus=[(28, ["fracas", "départ"], "5d10 en moyenne quand la crevasse se referme")]),
+    O("Feu", impact=(35, ["héraut", "lave"], "10d6 en moyenne à son arrivée"), impact_plus=[(11, ["persistance"], "3d6 en moyenne à chaque instant"), (21, ["colonne", "départ"], "6d6 en moyenne à son départ")]),
+    O("Métal", impact=(44, ["héraut", "éclat", "étincelle"], "4d8 + 4d12 en moyenne à son arrivée"), impact_plus=[(35, ["rouille", "départ"], "10d6 en moyenne au métal à son départ")]),
+    O("Eau", impact=(44, ["héraut", "ouragan", "grêle"], "4d10 + 4d10 en moyenne à son arrivée"), impact_plus=[(27, ["flot", "départ"], "6d8 en moyenne à son départ, et repousse de 6 m")]),
+    O("Bois", impact=(33, ["héraut", "racine"], "6d10 en moyenne à son arrivée ; 3 m d'allure en moins"), impact_plus=[(33, ["racine", "départ"], "6d10 en moyenne à son départ")])]
+
+# ----- Pathfinder 2 : versions des pages déjà publiées, relues sur le texte source (24 novembre) -----
+# La comparaison automatique ne voyait que niveau, portée, durée, zone et dégâts : ici, ce que le texte change d'autre.
+def _VV(k, both=None, vp2=None, vr=None):
+    for key, d in (("vp2", vp2), ("vr", vr)):
+        if key in FICHES[k]:
+            FICHES[k][key] = {**FICHES[k][key], **(both or {}), **(d or {})}
+def _OB(k, *labels):
+    o = {x["label"]: x for x in FICHES[k]["options"]}
+    return [dict(o[l]) for l in labels]
+_VV("chill-touch", dict(impact_sats=[]))
+_VV("guidance", dict(impact=(1, ["chance"], "1 ajouté à un essai, au choix")))
+_VV("mending", dict(impact=(5, ["réparation"], "5 points rendus à l'objet par rang du sort")))
+_VV("prestidigitation", dict(options=_OB("prestidigitation", "Saveur et température") + [dict(label="Soulèvement", impact=(P, ["lévitation"], "un objet léger soulevé d'un pied"))] + _OB("prestidigitation", "Babiole", "Nettoyage")))
+_VV("shocking-grasp", vp2=dict(impact_sats=[(2, ["persistance", "acier"])]), vr=dict(impact_sats=[(1, ["maladresse", "acier"])]))
+_VV("bane", dict(impact=(1, ["chance"], "1 retranché aux attaques des ennemis de la zone"), qty_cible=None))
+_VV("bless", dict(impact=(1, ["chance"], "1 ajouté aux attaques des alliés de la zone"), qty_cible=None))
+_VV("burning-hands", dict(impact_add=[]))
+_VV("charm-person", dict(cond=[]))
+_VV("color-spray", dict(cond=[], impact=(P, ["aveuglement", "étourdissement"], "étourdie, aveuglée un instant, éblouie une minute")))
+_VV("create-or-destroy-water", dict(options=[dict(label="Création", impact=(8, ["eau", "litres", "création"], "8 litres d'eau (2 gallons)"))]))
+_VV("detect-magic", dict(impact=(P, ["présence"], "la présence ou l'absence de magie, rien de plus")))
+_VV("entangle", dict(impact_sats=[(3, ["lenteur", "mètres"])]))
+_VV("expeditious-retreat", dict(impact=(9, ["course", "mètres"], "9 m de plus par instant")))
+_VV("false-life", vp2=dict(impact=(6, ["vie", "temporaire"], "6 points de vie d'appoint")), vr=dict(impact=(10, ["vie", "temporaire"], "10 points de vie d'appoint")))
+_VV("feather-fall", dict(qty_cible=None))
+_VV("floating-disk", dict(impact_sats=[(25, ["kilogrammes"])]))
+_VV("goodberry", dict(impact=(8, ["vie", "nourriture"], "1d6 + 4 en moyenne"), qty_cible=None))
+_VV("heroism", dict(impact=(1, ["chance"], "1 ajouté aux attaques, à la vigilance, aux résistances et aux talents"), impact_sats=[]))
+_VV("hideous-laughter", dict(impact=(1, ["rire", "lenteur"], "pris de fou rire : ralenti de 1, sans riposte"), cond=["vivant"]))
+_VV("jump", dict(impact=(9, ["saut", "mètres"], "un bond de 9 m en tout sens"), impact_add=[]))
+_VV("mage-armor", dict(impact=(1, [], "1 ajouté à la garde")))
+_VV("protection-from-evil-and-good", dict(impact=(1, ["protection"], "1 ajouté à la garde et aux résistances"), impact_sats=[]))
+_VV("sleep", dict(cond=["vivant"], dur=(1, "MINUTES")))
+_VV("acid-arrow", vr=dict(impact_sats=[(4, ["acide", "persistance"]), (3, ["traction", "mètres"])]))
+_VV("alter-self", dict(options=_OB("alter-self", "Changement d'apparence")))
+_VV("barkskin", dict(impact=(2, ["écorce", "résistance"], "2 retranché aux coups contondants et perforants ; le feu la blesse de 3 de plus"), impact_add=[], impact_sats=[(3, ["feu", "faille"])]))
+_VV("blindness-deafness", dict(options=_OB("blindness-deafness", "Cécité"), dur=(1, "MINUTES")))
+_VV("calm-emotions", dict(cond=[], options=None, impact=(P, ["calme", "hostilité"], "les émotions suspendues, nul geste hostile possible")))
+_VV("enlarge-reduce", dict(impact_sats=[(2, ["frappe"]), (1, ["maladresse"])]))
+_VV("gust-of-wind", dict(impact_sats=[(9, ["mètres"])]))
+_VV("heat-metal", dict(impact_sats=[(P, ["lâcher"]), (5, ["persistance"])]))
+_VV("hold-person", dict(cond=[], dur=(6, "SECONDES")))
+_VV("knock", dict(impact=(4, ["ouverture"], "4 ajouté à qui tente d'ouvrir")))
+_VV("lesser-restoration", vp2=dict(options=_OB("lesser-restoration", "Maladie")),
+    vr=dict(options=_OB("lesser-restoration", "Cécité", "Surdité") + [dict(label="Faiblesse", impact=(P, ["faiblesse"], "la faiblesse levée")), dict(label="Nausée", impact=(P, ["nausée"], "la nausée levée"))]))
+_VV("levitate", dict(impact=(3, ["mètres", "élévation"], "3 m par geste, vers le haut ou le bas")))
+_VV("moonbeam", dict(impact_sats=[], impact_add=["éblouissement"]))
+_VV("pass-without-trace", dict(impact=(4, ["sans-trace"], "4 ajouté à la difficulté de me pister"), qty_cible=None))
+_VV("protection-from-poison", vr=dict(impact=(1, ["poison", "maladie", "malédiction", "recul"], "le mal recule d'un degré"), impact_add=[]))
+_VV("ray-of-enfeeblement", dict(impact=(2, ["faiblesse"], "affaiblie de 2")))
+_VV("scorching-ray", dict(options=[dict(label="Forme de base", qty=1), dict(label="Forme maximale", qty=3, impact=(14, ["feu"], "4d6 en moyenne par rayon, trois rayons sur trois cibles ; tout l'instant y passe"))]))
+_VV("silence", dict(cible=2, no_aoe=True, impact=(P, ["silence"], "la cible ne fait plus aucun bruit")))
+_VV("suggestion", dict(dur=(1, "MINUTES")))
+_VV("web", dict(impact_sats=[(3, ["lenteur", "mètres"])]))
+_VV("zone-of-truth", vr=dict(impact=(P, ["vérité", "cloche"], "une cloche tinte à chaque parole vraie"), impact_sats=[(2, ["mensonge"])]))
+_VV("blink", dict(impact=(5, ["éthéré", "résistance"], "5 retranché à tout coup ; un saut de 3 m au hasard à chaque instant"), impact_sats=[(3, ["saut", "mètres"])]))
+_VV("clairvoyance", dict(impact=(P, ["vue"], "voir depuis un point fixe, en tous sens")))
+_VV("create-food-and-water", dict(impact=(6, ["nourriture", "ration"], "de quoi nourrir six personnes un jour"), qty=None))
+_VV("dispel-magic", dict(impact_sats=[]))
+_VV("fear", dict(cible=3, no_aoe=True, impact=(2, ["peur"], "effrayée de 2")))
+_VV("fireball", dict(impact_add=[]))
+_VV("fly", dict(impact=(6, ["vol", "mètres"], "vole à son allure, 6 m au moins")))
+_VV("gaseous-form", dict(impact_sats=[(8, ["résistance"]), (3, ["vol", "mètres"])]))
+_VV("glyph-of-warding", vp2=dict(options=_OB("glyph-of-warding", "Glyphe de sort")))
+_VV("magic-circle", dict(impact=(1, ["barrière"], "1 ajouté à la garde et aux résistances de ceux du cercle"), impact_add=[]))
+_VV("phantom-steed", dict(impact_sats=[(12, ["mètres"])]))
+_VV("slow", dict(impact=(1, ["temps", "lenteur"], "ralentie de 1")))
+_VV("speak-with-dead", dict(qty=3, impact=(P, ["réponse"], "trois réponses du cadavre")))
+_VV("stinking-cloud", dict(impact=(1, ["nausée", "lenteur"], "nausée de 1 et lenteur de 1 dans le nuage")))
+_VV("vampiric-touch", dict(impact_sats=[(10, ["vie", "temporaire"])]))
+_VV("water-breathing", dict(qty_cible=5))
+_VV("water-walk", dict(qty_cible=None))
+_VV("banishment", dict(impact=(P, ["exil", "plan"], "renvoyée sur son plan d'origine")))
+_VV("black-tentacles", dict(impact_sats=[(P, ["entrave"]), (4, ["persistance"])]))
+_VV("confusion", dict(cible=3, no_aoe=True))
+_VV("control-water", dict(options=[dict(label="Montée ou baisse des eaux", impact=(3, ["eau", "niveau", "mètres"], "le niveau de l'eau monte ou baisse de 3 m"))]))
+_VV("death-ward", dict(impact=(4, ["mort", "résistance"], "4 ajouté contre la mort et l'énergie ténébreuse"), impact_sats=[(10, ["résistance"])], cond=[], fin=[]))
+_VV("divination", dict(cible=1, cible_note=[], impact=(P, ["présage", "conseil"], "un indice sibyllin sur ce qui vient dans la semaine")))
+_VV("fire-shield", dict(impact_plus=[(5, ["résistance", "froid"], "5 retranché au froid")]))
+_VV("ice-storm", dict(impact=(9, ["froid"], "2d8 en moyenne de froid"), impact_plus=[(2, ["froid", "persistance"], "2 à chaque instant passé sous le nuage")]))
+_VV("phantasmal-killer", dict(impact_sats=[(2, ["peur"])], impact_add=[]))
+_VV("resilient-sphere", dict(impact_sats=[(40, ["réserve"])]))
+_VV("secret-chest", vr=dict(impact=(P, ["pensée", "cache"], "le coffre rangé dans mon esprit, où moi seul le vois")))
+_VV("stoneskin", dict(impact=(5, [], "5 retranché aux coups")))
+_VV("arcane-hand", dict(impact=(P, ["main", "abri"], "une main de force s'interpose et m'abrite"), impact_add=[], impact_sats=[(50, ["réserve"])]))
+_VV("cone-of-cold", vr=dict(options=[dict(label="Forme de base"), dict(label="Forme maximale", aoe=_S(30), loc=(150, "METRES", "150 m (500 pieds)"))]))
+_VV("dominate-person", dict(cond=[]))
+_VV("flame-strike", vp2=dict(impact_sats=[]), vr=dict(impact_sats=[(7, ["persistance"])]))
+_VV("greater-restoration", dict(options=[dict(label="État", impact=(2, ["maladresse", "faiblesse", "hébétude", "recul"], "un état réduit de 2, ou deux de 1")), dict(label="Poison", impact=(1, ["poison", "recul"], "le poison recule d'un degré"))]))
+_VV("raise-dead", dict(cond_sats=[(3, ["jours"])], impact_sats=[(7, ["jours", "faiblesse"])]))
+_VV("scrying", dict(impact=(P, ["vue"], "voir la cible, où qu'elle soit")))
+_VV("telekinesis", dict(options=_OB("telekinesis", "Objet"), impact_sats=[(6, ["mètres"])]))
+_VV("telepathic-bond", dict(qty_cible=5))
+_VV("tree-stride", dict(impact_sats=[(8, ["kilomètres"])]))
+_VV("wall-of-force", dict(options=None, impact_sats=[(60, ["réserve"])]))
+_VV("blade-barrier", vp2=dict(options=_OB("blade-barrier", "Mur droit")), vr=dict(options=None))
+_VV("chain-lightning", dict(qty_cible=P))
+_VV("disintegrate", dict(impact=(66, ["poussière"], "12d10 en moyenne")))
+_VV("find-the-path", dict(impact=(P, ["chemin", "terrain"], "la route inspirée : le terrain difficile gêne moitié moins"), cond=[]))
+_VV("flesh-to-stone", dict(impact=(1, ["pierre", "lenteur"], "ralentie de 1, puis de plus en plus, jusqu'à la pierre")))
+_VV("globe-of-invulnerability", dict(impact_sats=[(3, ["seuil", "niveau"])]))
+_VV("harm", dict(impact_sats=[], options=[dict(label="Forme de base"), dict(label="Forme maximale", cible=P, aoe=_S(30))]))
+_VV("irresistible-dance", dict(dur=(1, "MINUTES")))
+_VV("true-seeing", dict(impact_sats=[(18, ["mètres"])]))
+_VV("wall-of-ice", dict(impact_sats=[(40, ["réserve"])]))
+_VV("wall-of-thorns", dict(options=_OB("wall-of-thorns", "Mur droit"), impact_sats=[(20, ["réserve"])]))
+_VV("wind-walk", vp2=dict(qty_cible=6, impact=(32, ["vent", "kilomètres", "heure"], "portés par le vent à 32 km à l'heure")),
+    vr=dict(qty_cible=6, impact=(12, ["forme", "bête", "allure", "mètres"], "en bêtes du pays, à 12 m par instant sur terre, sous terre, dans l'air et dans l'eau")))
+_VV("divine-word", dict(impact=(39, ["décret", "faiblesse"], "7d10 en moyenne ; affaiblie de 2 une minute"), cond=[]))
+_VV("forcecage", dict(impact_sats=[(40, ["réserve"])]))
+_VV("teleport", dict(qty_cible=5))
+_VV("earthquake", dict(impact_plus=[(38, ["effondrement"], "11d6 en moyenne sous ce qui s'effondre")], impact_sats=[(12, ["fissure", "mètres"])]))
+_VV("feeblemind", dict(impact=(4, ["hébétude"], "hébétée de 4, sans terme"), cible_note=["psyché"]))
+_VV("glibness", dict(impact=(4, ["persuasion", "mensonge"], "4 ajouté à mes mensonges")))
+_VV("holy-aura", dict(impact=(1, [], "1 ajouté à la garde et aux résistances des alliés de l'aura")))
+_VV("mind-blank", dict(impact_sats=[(4, ["psyché", "résistance"])]))
+_VV("sunburst", dict(impact_sats=[(P, ["aveuglement"]), (44, ["si:mort-vivant"])]))
+_VV("meteor-swarm", dict(impact_sats=[(33, ["choc"])]))
+_VV("daze", dict(cond=[]))
+_VV("touch-of-idiocy", dict(impact=(2, ["hébétude"], "hébétée de 2"), cible_note=["psyché"]))
+_VV("crushing-despair", dict(impact=(1, ["désespoir", "lenteur"], "sans riposte, et ralentie de 1 quand les sanglots l'emportent"), cible_note=["psyché"]))
+_VV("discern-lies", dict(impact=(4, ["mensonge"], "4 ajouté à ma vigilance contre le mensonge")))
+_VV("remove-fear", vp2=dict(impact=(P, ["peur"], "une peur levée")), vr=dict(impact=(P, ["peur", "fuite", "hébétude"], "la peur, la fuite ou l'hébétude levée")))
+_VV("resist-energy", dict(options=[dict(o, impact=(5, o["impact"][1], "5 retranché")) for o in FICHES["resist-energy"]["options"]]))
+_VV("dimensional-anchor", dict(dur=(10, "MINUTES")))
+_VV("spell-turning", dict(impact=(P, ["sort", "renvoi"], "un sort qui me vise, retourné contre son auteur")))
+_VV("mages-disjunction", vr=dict(impact_plus=[(28, ["force", "explosion"], "8d6 en moyenne quand la magie se défait")]))
+_VV("glitterdust", dict(impact=(P, ["éblouissement", "révélation"], "éblouie une minute, son invisibilité levée")))
+_VV("fire-seeds", vp2=dict(qty=4, options=[dict(label="Glands explosifs", impact=(14, ["feu", "jet"], "4d6 en moyenne"), impact_plus=[(7, ["feu", "persistance"], "2d6 en moyenne à qui entre dans les flammes, une minute")])]),
+    vr=dict(qty=4, options=[dict(label="Cosses des saisons", impact=(21, ["saison", "jet"], "6d6 en moyenne, de foudre, de feu, de poison ou de froid selon la cosse"))]))
+_VV("sound-burst", dict(impact_sats=[(P, ["surdité"])]))
+_VV("searing-light", dict(impact=(18, ["lumière"], "5d6 en moyenne"), impact_sats=[(18, ["si:mort-vivant"])]))
+_VV("polar-ray", vp2=dict(impact_sats=[(2, ["épuisement"])]), vr=dict(impact_sats=[(P, ["lenteur"])]))
+_VV("implosion", dict(impact=(75, ["écrasement"], "75 points, une cible nouvelle à chaque instant soutenu"), qty=None))
+_VV("scintillating-pattern", dict(cond=[]))
+_VV("nightmare", dict(impact=(P, ["fatigue"], "s'éveille épuisée")))
+_VV("shadow-walk", dict(qty_cible=10))
+_VV("death-knell", dict(impact_sats=[(10, ["vie", "temporaire"]), (1, ["coup", "frappe"])]))
+_VV("spectral-hand", dict(impact_sats=[]))
+_VV("wail-of-the-banshee", dict(impact=(44, ["plainte", "âme"], "8d10 en moyenne aux vivants ennemis"), qty_cible=P, impact_sats=[(2, ["épuisement"])]))
+_VV("animate-rope", dict(impact_sats=[(3, ["lenteur", "mètres"])]))
+_VV("sculpt-sound", dict(qty_cible=None))
+_VV("shrink-item", dict(impact=(P, ["taille", "pièce"], "réduit à la taille d'une pièce")))
+_VV("rusting-grasp", dict(impact_sats=[(28, ["si:fer"]), (7, ["persistance"])]))
+_VV("spike-stones", dict(impact=(3, ["perce"], "3 par pas fait dans la zone")))
+_VV("baleful-polymorph", dict(dur=(1, "MINUTES")))
+_VV("disrupting-weapon", dict(impact=(2, ["destruction"], "1d4 en moyenne de plus aux morts-vivants")), vp2=dict(qty_cible=2), vr=dict(qty_cible=3))
+_VV("righteous-might", dict(impact_sats=[(10, ["vie", "temporaire"]), (3, ["résistance"])]))
+_VV("rally-point", dict(impact=(P, ["ralliement", "retour"], "je reviens d'un geste au point marqué, s'il est à moins de 36 m"), impact_add=[], cond=[], cible_note=[]))
+_VV("overwhelming-presence", dict(qty_cible=P))
+_VV("dream-council", dict(qty_cible=12))
+_VV("anticipate-peril", dict(impact=(1, ["danger", "vigilance"], "1 ajouté à sa prochaine entrée en lice")))
+_VV("hypercognition", dict(impact_sats=[(6, ["savoir"])]))
+_VV("life-bubble", dict(qty_cible=None))
+_VV("waterproof", dict(impact_sats=[(10, ["résistance", "acide"])]))
+_VV("fungal-infestation", dict(impact=(7, ["champignon", "persistance"], "2d6 en moyenne à chaque instant"), impact_sats=[(1, ["faille"])]))
+_VV("life-pact", dict(qty_cible=6, impact_sats=[(3, ["don"])]))
+_VV("massacre", dict(impact=(100, ["mort"], "100 points ; la mort pour les plus malchanceux")))
+_VV("blistering-invective", dict(cible=3, no_aoe=True, impact=(7, ["parole", "feu", "persistance"], "2d6 en moyenne à chaque instant"), impact_sats=[(1, ["peur"])]))
+_VV("etheric-shards", dict(impact=(2, ["éclat", "lenteur"], "1d4 en moyenne par pas fait dans la zone")))
+_VV("final-sacrifice", dict(impact=(21, ["invoqué", "explosion"], "6d6 en moyenne à 6 m à la ronde")))
+_VV("gentle-breeze", dict(impact=(10, ["vent", "repos", "guérison"], "10 points de vie à qui y reste dix minutes ; 2 ajouté contre les maux")))
+_VV("hydraulic-push", dict(impact=(11, ["eau", "recul"], "3d6 en moyenne, repoussée de 1,5 m")))
+_VV("hydraulic-torrent", dict(impact=(28, ["eau", "recul"], "8d6 en moyenne, repoussés de 1,5 m")))
+_VV("sacred-nimbus", dict(impact_sats=[], options=[dict(label="Forme lumineuse", impact=(18, ["pluie", "lumineux"], "5d6 en moyenne aux êtres de la face ténébreuse et aux morts-vivants sous le nuage")),
+                                                     dict(label="Forme ténébreuse", impact=(18, ["pluie", "ténébreux"], "5d6 en moyenne aux êtres de la face lumineuse sous le nuage"))]))
+_VV("breath-of-life", vp2=dict(impact=(18, ["vie", "retour"], "4d8 en moyenne")), vr=dict(impact=(23, ["vie", "retour"], "5d8 en moyenne")))
+_VV("cave-fangs", dict(impact=(21, ["roche", "croc"], "6d6 en moyenne")))
+_VV("geyser", dict(impact=(25, ["eau", "brûlure"], "3d6 + 4d6 en moyenne ; projetée en l'air"), impact_sats=[(6, ["mètres", "élévation"])]))
+_VV("summon-stampede", dict(impact=(36, ["piétinement"], "8d8 en moyenne à son départ"), impact_plus=[(P, ["peur"], "à son arrivée, la terreur")]))
+_VV("tidal-surge", dict(cible=3, no_aoe=True, impact=(2, ["eau", "vague", "déplacement", "mètres"], "déplacée de 1,5 m sur terre, 3 m dans l'eau")))
+_VV("vomit-swarm", dict(impact=(9, ["nuée", "morsure"], "2d8 en moyenne"), impact_sats=[(1, ["nausée"])]))
+_VV("cup-of-dust", dict(impact=(2, ["soif", "fatigue"], "épuisée ; 1d4 en moyenne par heure")))
+_VV("feast-of-ashes", dict(impact=(2, ["faim", "fatigue"], "épuisée ; 1d4 en moyenne par jour")))
+_VV("divine-vessel", dict(impact_sats=[(40, ["vie", "temporaire"])]))
+_VV("fiery-body", dict(impact_plus=[(11, ["riposte"], "3d6 en moyenne à qui me touche")], impact_sats=[(12, ["vol", "mètres"])]))
+_VV("forced-quiet", dict(dur=(1, "MINUTES")))
+_VV("frostbite", dict(impact=(5, ["froid"], "2d4 en moyenne")))
+_VV("gravity-well", dict(impact_sats=[(5, ["traction", "mètres"])]))
+_VV("penumbral-disguise", dict(impact=(1, ["déguisement", "discrétion", "pénombre"], "1 ajouté pour se cacher dans la pénombre")))
+
+# ----- Pathfinder 2 : reliquat de la comparaison (24 novembre) -----
+PF2_RELIQUAT = {
+"invisibility-sphere": P2("Sphère d'invisibilité", NVIS, 2, ["invisibilité", "groupe"], why="moi et tous ceux du cercle, invisibles sauf les uns aux autres, tant qu'ils y restent", qty_cible=P, fin=["attaque", "sortie"]),
+"endure": P2("Tenir bon", INT, 2, ["vie", "temporaire"], 5, "5 points de vie d'appoint, un instant", loc=(2, "METRES", "contact")),
+"aerial-form": P2("Forme aérienne", TR, 1, ["forme", "envol"], 14, "", impact_sats=[(5, ["vie", "temporaire"]), (15, ["vol", "mètres"])], vr={},
+    options=[O("Chauve-souris", impact=(14, ["forme", "envol", "croc", "écho"], "crocs : 2d8 + 5 en moyenne ; se dirige à l'écho, vole à 9 m"), impact_sats=[(5, ["vie", "temporaire"]), (9, ["vol", "mètres"])]),
+             O("Oiseau", impact=(14, ["forme", "envol", "bec"], "bec : 2d8 + 5 en moyenne ; vole à 15 m")),
+             O("Guêpe", impact=(10, ["forme", "envol", "dard"], "dard : 1d8 + 5 en moyenne, et 1d6 à chaque instant ensuite ; vole à 12 m"), impact_sats=[(5, ["vie", "temporaire"]), (12, ["vol", "mètres"]), (4, ["persistance"])])]),
+"pest-form": P2("Forme de bestiole", TR, 1, ["forme", "minuscule", "discrétion"], why="une bête minuscule, chat, lézard, rat ou insecte : furtive, agile, incapable de frapper", impact_sats=[(6, ["allure", "mètres"]), (5, ["faille"])], vr={}),
+}
+FICHES.update(PF2_RELIQUAT)
+FICHES["seeming"]["vp2"] = dict(src_idx="veil", qty_cible=10)
+_pw = _OB("prismatic-wall", "Mur", "Sphère"); _pw[1]["src_idx"] = "prismatic-sphere"; _pw[1]["aoe"] = _S(10)
+FICHES["prismatic-wall"]["vp2"] = dict(options=_pw)
+for _k in ("vp2", "vr"):
+    _v = FICHES["summon-monster-i"][_k]; _o = dict(_v["options"][0])
+    _o.update(label=_o["label"].replace("lumineux", "ténébreux"), cible_sym=["tenebreux"], src_idx="summon-fiend")
+    FICHES["summon-monster-i"][_k] = dict(_v, options=list(_v["options"]) + [_o])
+_VV("clairvoyance", dict(options=[dict(label="Clairvoyance"), dict(label="Clairaudience", src_idx="clairaudience", impact=(P, ["ouïe"], "entendre depuis un point fixe"))]))
+FICHES["wish"]["vp2"] = dict(FICHES["wish"]["vp2"], options=[dict(label="Souhait"), dict(label="Réalité altérée", src_idx="alter-reality"), dict(label="Phénomène primordial", src_idx="primal-phenomenon")])
+_VV("invisibility", dict(options=[dict(label="Invisibilité"), dict(label="Objet invisible", src_idx="invisible-item", cible=1, cible_obj=["objet"])]))
+_VV("blindness-deafness", dict(options=_OB("blindness-deafness", "Cécité") + [dict(_OB("blindness-deafness", "Surdité")[0], src_idx="deafness", dur=(10, "MINUTES"))]))
+_VV("lesser-restoration", vp2=dict(options=_OB("lesser-restoration", "Maladie") + [dict(o, src_idx="restore-senses") for o in _OB("lesser-restoration", "Cécité", "Surdité")] + [dict(_OB("lesser-restoration", "Paralysie")[0], src_idx="remove-paralysis")]),
+    vr=dict(options=FICHES["lesser-restoration"]["vr"]["options"] + [dict(label="Entrave", src_idx="sure-footing", impact=(P, ["maladresse", "étreinte", "paralysie"], "la maladresse, l'étreinte ou la paralysie levée"))]))
+_VV("enlarge-reduce", dict(options=[dict(label="Agrandissement"), dict(label="Rapetissement", src_idx="shrink", impact=(P, ["stature", "minuscule"], "réduite à une taille minuscule, sans allonge"), impact_sats=[])]))
+# relecture inversée des focalisés : deux retouches
+_R("stone-lance", impact=(21, ["lance", "empalement"], "6d6 en moyenne ; empalée, elle perd 3 m par instant"))
+FICHES["blind-ambition"]["vr"] = dict(FICHES["blind-ambition"]["vr"], dur=(10, "MINUTES"))

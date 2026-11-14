@@ -78,7 +78,27 @@ NAMES = {"CIBLE": ("2", "Cible"), "FORME": ("3", "Forme"), "AMPLEUR": ("4", "Amp
          "QUANTITE": ("9", "Quantité"), "COMPOSANTE": ("10", "Composante"), "INTERACTION": ("11", "Interaction"), "COSMETIQUE": ("12", "Cosmétique")}
 
 import math, re as _re
-def build(core, pol, rings, r0=34, split=None):
+def _officiants(svg, n):
+    """rituel : n cercles périphériques annotés « officiant », reliés au glyphe par un segment comme les satellites astraux
+    d'un sort hybride. Ce sont les places où les officiants se tiennent autour du glyphe tracé au sol. Ils se répartissent
+    à intervalles égaux depuis le haut, sans jamais occuper l'axe horizontal, réservé aux satellites astraux et aux extraits."""
+    vb = [float(x) for x in _re.search(r'viewBox="([^"]+)"', svg).group(1).split()]
+    w, h = -vb[0], -vb[1]
+    inner = _re.sub(r'^<svg[^>]*>', '', svg)[:-6]
+    Rm = max(float(x) for x in _re.findall(r'<circle r="([\d.]+)"', inner))
+    ro, gap = 30, 22
+    D = Rm + gap + ro
+    step = 360 / n; a0 = -90
+    if any(abs(((a0 + k * step) % 180)) < 1e-6 for k in range(n)): a0 += step / 2
+    pre, post = "", ""
+    for k in range(n):
+        a = math.radians(a0 + k * step); cx, cy = D * math.cos(a), D * math.sin(a)
+        pre += f'<line x1="0" y1="0" x2="{cx:.1f}" y2="{cy:.1f}" class="ink-s"/>'
+        post += GG.satellite_annot(cx, cy, ro - GG.SBAND, [], "OFFICIANT")
+    H = max(h, D + ro + 8); W = max(w, H)
+    return f'<svg viewBox="{-W:.1f} {-H:.1f} {2*W:.1f} {2*H:.1f}" role="img" xmlns="http://www.w3.org/2000/svg">{pre}{inner}{post}</svg>'
+
+def build(core, pol, rings, r0=34, split=None, officiants=0):
     """split = (lumineux, ténébreux) : chaque cercle prend la polarité de son camp"""
     gr, rows, undet = [], [], []
     for crit, v, words, reading, *rest in rings:
@@ -94,6 +114,7 @@ def build(core, pol, rings, r0=34, split=None):
         gr.append(dict(label=" ".join([crit] + words), spec=spec, sats=[(d, sp, lab) for d, (sp, _, _), lab in svals]))
         rows.append((NAMES[crit][0], NAMES[crit][1], reading))
     dec, epu = GG.glyph(core, gr, r0=r0)
+    if officiants: dec, epu = _officiants(dec, officiants), _officiants(epu, officiants)
     RAW[0] = (dec, epu); PART[0] = None
     if split:
         full = split

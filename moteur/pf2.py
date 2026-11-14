@@ -60,11 +60,19 @@ def _duration(d):
     if "sustained" in e: return "Concentration"
     return "Special"
 def _area(a):
+    """Zone d'effet : la source l'écrit en toutes lettres (« 20-foot radius burst », « 5-foot radius, 40-foot tall cylinder »…)."""
     if not a: return None
-    e = (a.get("entry") or "").lower()
-    m = re.search(r"(\d+)-foot[- ](burst|emanation|cone|line|cube)", e)
-    if not m: return None
-    return {"type": {"burst": "sphere", "emanation": "sphere", "cone": "cone", "line": "line", "cube": "cube"}[m.group(2)], "size": int(m.group(1))}
+    e = (a.get("entry") or "").lower().replace("-", " ")
+    r = re.search(r"(\d+) foot radius", e); h = re.search(r"(\d+) foot tall", e)
+    if "cylinder" in e and r:
+        return {"type": "cylinder", "size": int(r.group(1)), **({"height": int(h.group(1))} if h else {})}
+    m = re.search(r"(\d+) foot (?:radius )?(burst|emanation|cone|line|cube)", e)
+    if m: return {"type": {"burst": "sphere", "emanation": "sphere", "cone": "cone", "line": "line", "cube": "cube"}[m.group(2)], "size": int(m.group(1))}
+    m = re.search(r"line (?:up to )?(\d+) feet", e) or re.search(r"(\d+) foot long", e)
+    if m: return {"type": "line", "size": int(m.group(1))}
+    m = re.search(r"cubes?,? (?:each )?(\d+) feet on (?:each|a) side", e) or re.search(r"(\d+) foot square", e)
+    if m and int(m.group(1)) >= 10: return {"type": "cube", "size": int(m.group(1))}
+    return None
 def _damage(txt, L):
     m = re.search(r"(\d+d\d+(?:\s*\+\s*\d+)?) (?:points of )?(\w+) damage", txt)
     if not m or m.group(2).lower() not in DMG: return None
@@ -81,10 +89,11 @@ def load(path):
         if not x.get("remaster"):
             s_ = next((SCH[t] for t in _traits(x) if t in SCH), None)
             if s_: ecoles.setdefault(idx_of(x["name"]), s_)
-    for x in raw:
-        if focalise(x): continue
+    # les sorts ordinaires d'abord, puis les sorts focalisés (pouvoirs de classe), marqués « _focal » ; un focalisé
+    # sans école connue (version remaniée) reçoit l'école par défaut, que sa fiche peut corriger
+    for x in sorted(raw, key=focalise):
         k = idx_of(x["name"]); rem = bool(x.get("remaster"))
-        sch = next((SCH[t] for t in _traits(x) if t in SCH), None) or ecoles.get(k)
+        sch = next((SCH[t] for t in _traits(x) if t in SCH), None) or ecoles.get(k) or ("Transmutation" if focalise(x) else None)
         if not sch or k in out[rem]: continue
         L = 0 if tour(x) else x["level"]
         desc = _clean(_flat(x["entries"]))
@@ -93,11 +102,40 @@ def load(path):
         rec = dict(index=k, name=x["name"], level=L, school={"name": sch}, casting_time=_cast(x.get("cast")),
                    range=_range(x.get("range")), duration=_duration(x.get("duration")), concentration=bool((x.get("duration") or {}).get("sustained")),
                    ritual=False, material=x.get("cost"), desc=[desc], components=comps, _ed="pf2r" if rem else "pf2", _cl=None, _xp=None,
-                   _book=x["source"], _rarete=rarete(x), _rang=x["level"], _traits=_traits(x), _cibles=x.get("targets"),
+                   _book=x["source"], _rarete=rarete(x), _focal=focalise(x), _rang=x["level"], _traits=_traits(x), _cibles=x.get("targets"),
                    _fields={"target": x.get("targets"), "area": (x.get("area") or {}).get("entry"), "components": None})
         a = _area(x.get("area"))
         if a: rec["area_of_effect"] = a
         d = _damage(desc, L)
         if d: rec["damage"] = d
+        out[rem][k] = rec
+    # les rituels : même forme de fiche, marqués « _rituel » ; leur temps d'exécution tient lieu d'incantation, leurs
+    # officiants (lanceurs secondaires) et leur coût sont gardés à part. Un rituel homonyme d'un sort prend le suffixe « -rituel ».
+    pr = os.path.join(os.path.dirname(path), "rituels-pf2.json")
+    rits = json.load(open(pr, encoding="utf-8")) if os.path.exists(pr) else []
+    for x in rits:
+        if not x.get("remaster"):
+            s_ = next((SCH[t] for t in _traits(x) if t in SCH), None)
+            if s_: ecoles.setdefault("rituel:" + idx_of(x["name"]), s_)
+    for x in rits:
+        k0 = idx_of(x["name"]); rem = bool(x.get("remaster"))
+        k = k0 + "-rituel" if (k0 in out[0] and not out[0][k0].get("_rituel")) or (k0 in out[1] and not out[1][k0].get("_rituel")) else k0
+        if k in out[rem]: continue
+        sch = next((SCH[t] for t in _traits(x) if t in SCH), None) or ecoles.get("rituel:" + k0) or "Transmutation"
+        desc = _clean(_flat(x["entries"]))
+        c = dict(x.get("cast") or {})
+        if c.get("unit") == "week": c = {"number": 7 * c.get("number", 1), "unit": "day"}
+        d = x.get("duration"); d = d if isinstance(d, dict) else None
+        if d and d.get("unit") in ("week", "month", "year"):
+            d = {"number": d.get("number", 1) * {"week": 7, "month": 30, "year": 365}[d["unit"]], "unit": "day"}
+        sc = x.get("secondaryCasters") or {}
+        rec = dict(index=k, name=x["name"], level=x["level"], school={"name": sch}, casting_time=_cast(c),
+                   range=_range(x.get("range")), duration=_duration(d), concentration=False,
+                   ritual=True, material=None, desc=[desc], components=[], _ed="pf2r" if rem else "pf2", _cl=None, _xp=None,
+                   _book=x["source"], _rarete=rarete(x), _focal=False, _rituel=True, _officiants=sc.get("number", 0), _cout=_clean(_flat(x.get("cost") or "")),
+                   _rang=x["level"], _traits=_traits(x), _cibles=x.get("targets"),
+                   _fields={"target": x.get("targets"), "area": (x.get("area") or {}).get("entry"), "components": None})
+        a = _area(x.get("area"))
+        if a: rec["area_of_effect"] = a
         out[rem][k] = rec
     return out

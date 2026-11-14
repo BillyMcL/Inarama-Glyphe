@@ -314,9 +314,9 @@ def build_spell(idx, fiche):
             rings.append(("AMPLEUR", size, ["LONGUEUR", unit], f"{size} {u} de long"))
         else:
             vol = {"sphere": 4 / 3 * math.pi * a_ ** 3, "cube": a_ ** 3, "cone": math.pi * (a_ / 2) ** 2 * a_ / 3,
-                   "cylinder": math.pi * a_ ** 2 * (2 * a_)}[t]
+                   "cylinder": math.pi * a_ ** 2 * (aoe.get("height", 2 * aoe["size"]) * 0.3048)}[t]
             base = {"sphere": f"sphère de {ft2m(aoe['size'])} m de rayon", "cube": f"cube de {ft2m(aoe['size'])} m de côté",
-                    "cone": f"cône de {ft2m(aoe['size'])} m de long", "cylinder": f"cylindre de {ft2m(aoe['size'])} m de rayon (hauteur prise égale au diamètre)"}[t]
+                    "cone": f"cône de {ft2m(aoe['size'])} m de long", "cylinder": f"cylindre de {ft2m(aoe['size'])} m de rayon" + (f" et {ft2m(aoe['height'])} m de haut" if aoe.get("height") else " (hauteur prise égale au diamètre)")}[t]
             # l'unité grandit pour que la valeur s'écrive en quatre formes au plus (9 × 9 × 9 × 9)
             for div, unit, u in ((1, ["METRES", "CUBES"], "m³"), (1e3, ["DECAMETRES", "CUBES"], "dam³"),
                                  (1e6, ["HECTOMETRES", "CUBES"], "hm³"), (1e9, ["KILOMETRES", "CUBES"], "km³")):
@@ -343,10 +343,20 @@ def build_spell(idx, fiche):
         rings.append(("LOCALISATION", loc[0], ([word(w) for w in loc[1]] if isinstance(loc[1], list) else [loc[1]]) if loc[1] else [], loc[2]))
     # 7 Condition : la composante verbale est la Condition la plus commune (§2) ; les restrictions s'y ajoutent
     conds = (["parole"] if verbal(s) and not fiche.get("sans_parole") else []) + [c for c in (fiche.get("cond") or []) if not (verbal(s) and norm(c) == "PAROLE")]
+    # rituel : la présence des officiants est une Condition, leur nombre un satellite Quantité greffé sur elle ; le satellite
+    # ne porte le mot « officiant » que s'il faut dire laquelle des conditions il compte (§4.2, forme de référence)
+    off_n = fiche.get("officiants", s.get("_officiants", 0)) if s.get("_rituel") else 0
+    cond_sats = list(fiche.get("cond_sats") or [])
+    off_rd = ""
+    if off_n:
+        seul = not conds and not cond_sats
+        conds = conds + ["officiant"]
+        cond_sats.append((off_n, [] if seul else ["officiant"]))
+        off_rd = f" ; satellite Quantité : {off_n} officiant{'s' if off_n > 1 else ''} en plus du meneur, {'chacun à sa place sur un' if off_n > 1 else 'à sa place sur le'} cercle périphérique"
     if conds:
         cw = [word(w) for w in conds]
         rd = " ; ".join(f"« {shown(w)} »" for w in conds)
-        rings.append(("CONDITION", len(cw), cw, rd + sat_reading(fiche.get("cond_sats")), place_sats(fiche.get("cond_sats"))))
+        rings.append(("CONDITION", len(cw), cw, rd + sat_reading(fiche.get("cond_sats")) + off_rd, place_sats(cond_sats)))
     # 8 Impact
     imp = fiche.get("impact")
     if imp is None and (dmg or s.get("heal_at_slot_level")):
@@ -380,6 +390,7 @@ def build_spell(idx, fiche):
         meds = ["tenebreux" if norm(m) == "NECROSE" else "lumineux" if norm(m) == "LUMIERE" and (v != "plein" or fiche.get("rayonnement")) else m for m in meds]
         isats = [(st[0], [{"NECROSE": "ténébreux", "LUMIERE": "lumineux"}.get(norm(w), w) for w in (st[1] or [])]) + tuple(st[2:]) for st in isats]
         faces = [norm(m) for m in meds if norm(m) in ("LUMINEUX", "TENEBREUX")]
+        if fiche.get("face") and faces: faces = [norm(fiche["face"])]      # forme réciproque : la même énergie, tissée de l'autre face
         if faces:
             meds = [m for m in meds if norm(m) not in ("LUMINEUX", "TENEBREUX")]
             isats += [(sym(f_.lower()), []) for f_ in faces]
@@ -450,9 +461,9 @@ def build_spell(idx, fiche):
     # 10 Composante
     if fiche.get("comp"):
         mat = (s.get("material") or "").lower()
-        consumed = fiche.get("consumed", "consume" in mat)
+        consumed = fiche.get("consumed", "consume" in mat or bool(s.get("_rituel")))
         cw = [word(w) for w in fiche["comp"]] + (["CONSOMME"] if consumed else [])
-        c_ = cost(s); val = None; rd = ", ".join(shown(w) for w in fiche["comp"]) + (", consommé" if consumed else ", accompagnant")
+        c_ = fiche.get("prix") or cost(s); val = None; rd = ", ".join(shown(w) for w in fiche["comp"]) + (", consommé" if consumed else ", accompagnant")
         if c_:
             val = c_[0]; cw = cw + ([word(c_[1])] if word(c_[1]) not in cw else []); rd = f"valeur {c_[0]} pièce{'s' if c_[0] > 1 else ''} de {c_[1]} ; " + rd
         rings.append(("COMPOSANTE", val, cw, rd))
@@ -497,6 +508,15 @@ def build_spell(idx, fiche):
                       f"sens éteint, {len(se_)} sens : " + ", ".join(se_)))
     # une valeur qui demanderait plus de quatre formes est arrondie à la plus proche qui s'écrit simplement
     def nforms(n): return len(SP.val(n, "up")[0])
+    # Composante : un prix qui ne s'écrit pas en quatre formes se décompose exactement, valeur × satellite « fois », plutôt que de s'arrondir
+    for i, r in enumerate(rings):
+        v = r[1]
+        if r[0] == "COMPOSANTE" and isinstance(v, int) and nforms(v) > 4:
+            fs = [(a_, v // a_) for a_ in range(2, int(v ** 0.5) + 1) if v % a_ == 0 and nforms(a_) <= 4 and nforms(v // a_) <= 4]
+            if fs:
+                b_, a_ = max(fs)                       # les deux facteurs les plus proches ; le plus grand reste la valeur du cercle
+                old_ = [(x[1], [x[2]] if len(x) > 2 and x[2] else []) for x in (r[4] if len(r) > 4 else [])]
+                rings[i] = (r[0], a_, r[2], r[3] + f" ; {v} s'écrit {a_} × {b_} : satellite {b_} « fois »", place_sats(old_ + [(b_, ["fois"])]))
     for i, r in enumerate(rings):
         v = r[1]
         if isinstance(v, int) and nforms(v) > 4:
@@ -533,8 +553,8 @@ def build_spell(idx, fiche):
         verb = f"{ecole} · {'Hodolin' if hemi == 'H' else 'Galombar'} · {comb} ({code(comb)})"
         why = fiche.get("why") or (f"les dégâts de {disp(MEDIUM[dtype])}" if dtype in DAMAGE_COMBO else "l'élément en jeu")
         notes.insert(0, f"Magie hybride, combinaison {comb} : {why}.")
-    svg, rows = SP.build(core, pol, rings, r0, split)
-    return dict(idx=idx, fr=fr, en=s["name"], level=level, ecole=ecole, fam=fam, verb=verb, core=core, rings=rings, split=split,
+    svg, rows = SP.build(core, pol, rings, r0, split, officiants=off_n)
+    return dict(idx=idx, fr=fr, en=s["name"], level=level, ecole=ecole, fam=fam, verb=verb, core=core, rings=rings, split=split, officiants=off_n,
                 bsplit=SP.PART[0], svg=svg, rows=rows, r0=r0, notes=notes, dnd=dnd_line(s, fr), pol=pol)
 
 def glyph_key(f):
@@ -544,10 +564,11 @@ def build_forms(idx, fiche):
     """toutes les formes d'un sort ; puis, pour un sort qui existe aussi dans les règles de 2024,
     ses formes de 2024 qui donnent un glyphe différent (un glyphe identique est le même sort)"""
     forms = _forms(idx, fiche)
-    if fiche.get("src") in ("pf1", "pf2r"): return forms
+    if fiche.get("src") == "pf2r": return forms
     seen = {glyph_key(f) for f in forms}
     for ed, base, key in (("2024", SRD24, "v24"), ("3.5", SRD35, "v35"), ("PF1", PF1, "vpf"), ("PF2", PF2, "vp2"), ("PF2 remaniée", PF2R, "vr")):
         if fiche.get("src") == "pf2" and ed != "PF2 remaniée": continue
+        if fiche.get("src") == "pf1" and ed not in ("PF2", "PF2 remaniée"): continue      # une page venue de Pathfinder 1 ne reçoit que les versions de Pathfinder 2
         if ed == fiche.get("src") or (fiche.get("src") == "3.5" and ed == "2024"): continue
         v = fiche.get(key, {} if ed == "2024" else None)   # 3.5 et Pathfinder 1 n'entrent qu'école par école, après relecture   # la 3.5 n'entre qu'école par école, après relecture
         if v is None: continue
@@ -671,6 +692,10 @@ def dnd_line(s, fr):
     if s.get("_ed") in ("pf2", "pf2r"):
         ed_ = "édition d'origine" if s["_ed"] == "pf2" else "version remaniée"
         rg_ = "tour de magie" if s["level"] == 0 else f"rang {s['_rang']}"
+        if s.get("_rituel"):
+            n_ = s["_officiants"]
+            return (f"Pathfinder 2 ({ed_}, {s['_book']}, {s['_rarete']}) : rituel de rang {s['_rang']} · {SCHOOL_FR[s['school']['name']].lower()} · exécution {fr_cast(s['casting_time'])}"
+                    f" · {n_} officiant{'s' if n_ > 1 else ''} en plus du meneur · portée {fr_range(s['range'])} · durée {fr_duration(s['duration'])}")
         return f"Pathfinder 2 ({ed_}, {s['_book']}, {s['_rarete']}) : {rg_} · {SCHOOL_FR[s['school']['name']].lower()} · incantation {fr_cast(s['casting_time'])} · portée {fr_range(s['range'])} · durée {fr_duration(s['duration'])}"
     if s.get("_ed") == "pf1":
         return f"Pathfinder 1 (lanceur de niveau {s['_cl']}, {s['_book']}) : {lv} · {SCHOOL_FR[s['school']['name']].lower()} · incantation {fr_cast(s['casting_time'])} · portée {fr_range(s['range'])} · durée {fr_duration(s['duration'])}"

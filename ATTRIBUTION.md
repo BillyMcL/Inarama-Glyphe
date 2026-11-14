@@ -38,6 +38,10 @@ Pathfinder Roleplaying Game Core Rulebook. © 2009, Paizo Publishing, LLC; Autho
 
 Les sorts repris viennent de 173 ouvrages Pathfinder (Core Rulebook, Advanced Player's Guide, Ultimate Magic, Ultimate Combat, Advanced Class Guide, Occult Adventures, guides de joueur et suppléments de campagne). **À compléter :** la ligne de section 15 propre à chacun de ces ouvrages.
 
+## Elden Ring
+
+*Elden Ring* et *Shadow of the Erdtree* sont des œuvres de FromSoftware, Inc., éditées par Bandai Namco Entertainment ; leurs noms, leur univers et leurs textes leur appartiennent. Ils ne sont couverts par aucune licence ouverte. La bibliothèque n'en reprend **aucun texte** : seuls figurent le nom d'origine de chaque sort, à titre de référence, et une transposition originale de son effet. Les effets ont été relevés sur le wiki de la communauté, eldenring.wiki.gg, page par page, puis reformulés. Les noms propres du monde du jeu ont été retirés des noms français des sorts.
+
 ## Créations originales
 
 Le système glyphique d'Inarama, les conversions, les glyphes produits et les textes en français sont des créations originales et ne relèvent pas de cette licence.

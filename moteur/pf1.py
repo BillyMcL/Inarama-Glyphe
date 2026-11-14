@@ -16,6 +16,13 @@ SCH = {"abjuration": "Abjuration", "conjuration": "Conjuration", "divination": "
        "evocation": "Evocation", "illusion": "Illusion", "necromancy": "Necromancy", "transmutation": "Transmutation"}
 EXCLU = ("Technology Guide",)
 
+def _xpc(desc):
+    """Coût en expérience resté dans le texte de quelques sorts : chiffre fixe, ou 1 quand il dépend de l'objet créé (minimum)."""
+    m = re.search(r"XP Cost</b>:?\s*([^<]*)", desc or "")
+    if not m: return None
+    n = re.match(r"([\d,]+) XP", m.group(1).strip())
+    return int(n.group(1).replace(",", "")) if n else 1
+
 def _cl(cls, L):
     if cls in FULL: return max(1, 2 * L - 1)
     if cls in SIX: return max(1, 3 * L - 2)
@@ -78,7 +85,7 @@ def load(path, prev=None):
         rec = dict(index=k, name=x["Name"], level=L, school={"name": sch}, casting_time=_cast(x.get("Casting time")),
                    range=rng, duration=dur, concentration="concentration" in x.get("Duration", "").lower(),
                    ritual=False, material=mat or None, desc=[desc], _ed="pf1", _cl=CL, _cls=cls, _sub=x.get("Subschool"),
-                   _descr=x.get("Descriptors"), _xp=None, _book=re.split(r" pg\.", x["Source"])[0], _short=x.get("Short description", ""),
+                   _descr=x.get("Descriptors"), _xp=_xpc(desc), _book=re.split(r" pg\.", x["Source"])[0], _short=x.get("Short description", ""),
                    _target=x.get("Target"), _effect=x.get("Effect"), _url=x.get("Url aon"),
                    _fields={"target": x.get("Target"), "effect": x.get("Effect"), "range": x.get("Range"), "duration": x.get("Duration"), "components": x.get("Components")})
         a = _area(area_src, rf)

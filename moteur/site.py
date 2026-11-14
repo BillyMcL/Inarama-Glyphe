@@ -175,10 +175,10 @@ details.sp .m { font-family:var(--f-mono); font-size:.72rem; color:var(--muted);
   .rd { grid-template-columns:1fr; } .rd dt { padding-top:6px; }
 }
 """
-SOURCES = {"5.1": "D&D 5e · 2014 (SRD 5.1)", "5.2": "D&D 5e · 2024 (SRD 5.2)", "3.5": "D&D 3.5 (SRD 3.5)", "pf1": "Pathfinder 1", "pf2": "Pathfinder 2", "pf2r": "Pathfinder 2 remanié"}
+SOURCES = {"5.1": "D&D 5e · 2014 (SRD 5.1)", "5.2": "D&D 5e · 2024 (SRD 5.2)", "3.5": "D&D 3.5 (SRD 3.5)", "pf1": "Pathfinder 1", "pf2": "Pathfinder 2", "pf2r": "Pathfinder 2 remanié", "er": "Elden Ring"}
 def form_source(x):
     d = x["dnd"]
-    return "pf2r" if d.startswith("Pathfinder 2 (version") else "pf2" if d.startswith("Pathfinder 2") else "pf1" if d.startswith("Pathfinder 1") else "3.5" if "D&amp;D 3.5" in d else "5.2" if "2024" in d else "5.1"
+    return "er" if d.startswith("Elden Ring") else "pf2r" if d.startswith("Pathfinder 2 (version") else "pf2" if d.startswith("Pathfinder 2") else "pf1" if d.startswith("Pathfinder 1") else "3.5" if "D&amp;D 3.5" in d else "5.2" if "2024" in d else "5.1"
 def index(spells):
     data = []
     for s in spells:
@@ -189,7 +189,7 @@ def index(spells):
     head = HEAD.format(title="Bibliothèque glyphique", root="").replace('<link rel="stylesheet" href="style.css">', f"<style>{CSS}{IDX_CSS}</style>").replace("<body>", '<body class="idx">')
     return head + f"""
 <header><div class="eyebrow">Inarama · Arcane et Magie</div><h1>Bibliothèque glyphique</h1>
-<p class="lede">Les sorts de D&amp;D (SRD 5.1, 5.2 et 3.5) et de Pathfinder 1 transposés en glyphes d'Inarama. Touchez un sort pour lire chacune de ses formes ; les glyphes eux-mêmes sont sur sa page. <a href="regles.html">Les règles de lecture</a>.</p></header>
+<p class="lede">Les sorts de D&amp;D (SRD 5.1, 5.2 et 3.5), de Pathfinder 1 et 2 et d'Elden Ring transposés en glyphes d'Inarama. Touchez un sort pour lire chacune de ses formes ; les glyphes eux-mêmes sont sur sa page. <a href="regles.html">Les règles de lecture</a>.</p></header>
 <div class="bar">
 <input id="q" type="search" placeholder="Chercher un sort (nom ou description)" aria-label="Chercher un sort">
 <details class="flt"><summary><span id="n"></span><span>Filtres</span></summary>
@@ -203,7 +203,7 @@ def index(spells):
 const S = {json.dumps(data, ensure_ascii=False, separators=(",", ":"))};
 const FAM = {json.dumps(FAM, ensure_ascii=False)};
 const st = {{l:new Set(), m:new Set(), c:new Set(), o:new Set(), q:""}};
-const SRC = {{"3.5":"D&D 3.5","5.1":"5e 2014","5.2":"5e 2024","pf1":"Pathfinder 1","pf2":"Pathfinder 2","pf2r":"PF2 remanié"}};
+const SRC = {{"3.5":"D&D 3.5","5.1":"5e 2014","5.2":"5e 2024","pf1":"Pathfinder 1","pf2":"Pathfinder 2","pf2r":"PF2 remanié","er":"Elden Ring"}};
 const norm = s => s.normalize("NFD").replace(/[\\u0300-\\u036f]/g,"").toLowerCase();
 const esc = s => String(s).replace(/&(?!amp;|nbsp;)/g,"&amp;").replace(/</g,"&lt;");
 const body = s => `<div class="spb">${{s.t ? `<p class="desc">${{esc(s.t)}}</p>` : ""}}<p class="dnd">${{s.d}}</p>` + s.x.map(x =>

@@ -41,6 +41,8 @@ import pf1 as _pf1
 PF1 = _pf1.load(DATA + "/pf1/sorts-pf1.json", SRD35)
 import pf2 as _pf2
 PF2, PF2R = _pf2.load(DATA + "/pf2/sorts-pf2.json")      # Pathfinder 2 : édition d'origine, version remaniée
+import eldenring as _er
+ER = _er.load(DATA + "/eldenring/sorts-eldenring.json")      # Elden Ring : relevé propre, sans texte du jeu
 SRD24 = {}
 for _s in json.load(open(DATA + "/srd/spells-2024.json", encoding="utf-8")):
     SRD24[_s["index"]] = _merge24(SRD.get(_s["index"]), _s)
@@ -81,7 +83,7 @@ def dice_avg(s, mod=3):
         elif part.isdigit(): tot += sg * int(part)
     return tot
 
-UNITS = {"minute": "MINUTES", "hour": "HEURES", "day": "JOURS", "round": "SECONDES", "year": "ANS"}
+UNITS = {"second": "SECONDES", "minute": "MINUTES", "hour": "HEURES", "day": "JOURS", "round": "SECONDES", "year": "ANS"}
 UNIT_FR = {"MINUTES": ("minute", "minutes"), "HEURES": ("heure", "heures"), "JOURS": ("jour", "jours"), "ANS": ("an", "ans"), "SECONDES": ("seconde", "secondes")}
 def fr_time(v, u):
     if v == "plein": return "jusqu'à dissipation"
@@ -91,7 +93,7 @@ def parse_time(t):
     if "instantaneous" in t or "special" in t: return None
     if "until dispelled" in t or "permanent" in t: return ("plein", None)
     if t.strip() == "concentration": return ("plein", None)   # concentration sans durée maximale : infinie
-    m = re.match(r"(\d+)\s*(round|minute|hour|day|year)", t)
+    m = re.match(r"(\d+)\s*(second|round|minute|hour|day|year)", t)
     if not m: return None
     n, u = int(m.group(1)), m.group(2)
     if u == "round": return (n * 6, "SECONDES")
@@ -262,7 +264,7 @@ def cost(s):
     return n, metals[i]
 
 def build_spell(idx, fiche):
-    s = {"2024": SRD24, "3.5": SRD35, "pf1": PF1, "pf2": PF2, "pf2r": PF2R}.get(fiche.get("src"), SRD)[fiche.get("src_idx", idx)]
+    s = {"2024": SRD24, "3.5": SRD35, "pf1": PF1, "pf2": PF2, "pf2r": PF2R, "er": ER}.get(fiche.get("src"), SRD)[fiche.get("src_idx", idx)]
     fr = fiche["fr"]
     level = fiche.get("niveau", s["level"])       # « niveau » : le niveau retenu sur l'échelle de D&D quand il s'écarte du rang d'origine
     ecole, hemi, comb_def = ECOLES[s["school"]["name"]]
@@ -466,6 +468,8 @@ def build_spell(idx, fiche):
         c_ = fiche.get("prix") or cost(s); val = None; rd = ", ".join(shown(w) for w in fiche["comp"]) + (", consommé" if consumed else ", accompagnant")
         if c_:
             val = c_[0]; cw = cw + ([word(c_[1])] if word(c_[1]) not in cw else []); rd = f"valeur {c_[0]} pièce{'s' if c_[0] > 1 else ''} de {c_[1]} ; " + rd
+            if c_[1] == "vie":     # le lanceur se blesse pour lancer : il paie de sa propre substance, comme pour un coût en expérience
+                rd = f"{c_[0]} point{'s' if c_[0] > 1 else ''} de vie : le lanceur se blesse pour lancer le sort"
         rings.append(("COMPOSANTE", val, cw, rd))
     # coût en expérience (3.5) : le lanceur paie de sa propre substance. Un niveau (1 000 × niveau du lanceur en XP) vaut un DV,
     # soit 4,5 points de vie : moins d'un point → 1 « vie » ; un point ou plus → n « vie · durable » (retirée pour de bon)
@@ -732,10 +736,10 @@ def fr_duration(d):
     if "instantaneous" in dl: return "instantanée"
     if "until dispelled" in dl: return "jusqu'à dissipation" + (" ou déclenchement" if "triggered" in dl else "")
     if "special" in dl: return "spéciale"
-    m = re.search(r"(\d+)\s*(round|minute|hour|day)", dl)
+    m = re.search(r"(\d+)\s*(second|round|minute|hour|day)", dl)
     if not m: return d
     n, u = int(m.group(1)), m.group(2)
-    fr = {"round": ("round", "rounds"), "minute": ("minute", "minutes"), "hour": ("heure", "heures"), "day": ("jour", "jours")}[u][0 if n == 1 else 1]
+    fr = {"second": ("seconde", "secondes"), "round": ("round", "rounds"), "minute": ("minute", "minutes"), "hour": ("heure", "heures"), "day": ("jour", "jours")}[u][0 if n == 1 else 1]
     return ("concentration, jusqu'à " if "up to" in dl else "") + f"{n} {fr}"
 def dnd_line(s, fr):
     lv = "tour de magie" if s["level"] == 0 else f"niveau {s['level']}"
@@ -748,6 +752,9 @@ def dnd_line(s, fr):
             return (f"Pathfinder 2 ({ed_}, {s['_book']}, {s['_rarete']}) : rituel de rang {s['_rang']} · {SCHOOL_FR[s['school']['name']].lower()} · exécution {fr_cast(s['casting_time'])}"
                     f" · {n_} officiant{'s' if n_ > 1 else ''} en plus du meneur · portée {fr_range(s['range'])} · durée {fr_duration(s['duration'])}")
         return f"Pathfinder 2 ({ed_}, {s['_book']}, {s['_rarete']}) : {rg_} · {SCHOOL_FR[s['school']['name']].lower()} · incantation {fr_cast(s['casting_time'])} · portée {fr_range(s['range'])} · durée {fr_duration(s['duration'])}"
+    if s.get("_ed") == "er":
+        return (f"Elden Ring ({s['_kind']}, {s['_origine']}) : {'tour de magie' if s['level'] == 0 else 'niveau équivalent ' + str(s['level'])} · {SCHOOL_FR[s['school']['name']].lower()}"
+                f" · portée {fr_range(s['range'])} · durée {'tant que le sort est tenu' if s['duration'] == 'Concentration' else fr_duration(s['duration'])}")
     if s.get("_ed") == "pf1":
         return f"Pathfinder 1 (lanceur de niveau {s['_cl']}, {s['_book']}) : {lv} · {SCHOOL_FR[s['school']['name']].lower()} · incantation {fr_cast(s['casting_time'])} · portée {fr_range(s['range'])} · durée {fr_duration(s['duration'])}"
     if s.get("_ed") == "3.5":
@@ -788,7 +795,7 @@ def sources_of(idx, fiche):
     if src == "2024": out.add("5.2")
     if src == "3.5": out.add("3.5")
     if src == "pf1": out.add("pf1")
-    if src in ("pf2", "pf2r"): out.add(src)
+    if src in ("pf2", "pf2r", "er"): out.add(src)
     for ed, base, key in (("5.2", SRD24, "v24"), ("3.5", SRD35, "v35"), ("pf1", PF1, "vpf"), ("pf2", PF2, "vp2"), ("pf2r", PF2R, "vr")):
         v = fiche.get(key, {} if ed == "5.2" else None)
         if v is None or (src is not None and not (src == "3.5" and ed == "pf1") and not (ed in ("pf2", "pf2r") and src != ed)): continue

@@ -51,6 +51,13 @@ def _duration(d):
     if u in ("round", "minute", "hour", "day"): return f"{sus}{n} {u}{'s' if n > 1 else ''}"
     e = (d.get("entry") or "").lower()
     if "daily preparations" in e: return "24 hours"
+    if "turn" in e: return "1 round"
+    m = re.search(r"(\d+) (round|minute|hour|week)", e)
+    if m:
+        n, u = int(m.group(1)), m.group(2)
+        if u == "week": n, u = 7 * n, "day"
+        return f"{'Up to ' if 'sustained' in e else ''}{n} {u}{'s' if n > 1 else ''}"
+    if "sustained" in e: return "Concentration"
     return "Special"
 def _area(a):
     if not a: return None

@@ -178,7 +178,10 @@ REDIT = {"Feu": {"FEU"}, "Glace": {"FROID", "GLACE"}, "Foudre": {"FOUDRE"}, "Éc
 # un sort d'Arcane qui décrit un impact élémentaire le dit par les symboles des éléments, en satellites de l'Impact
 ELEM_UNITS = {"FEU": ["feu"], "AIR": ["air"], "TERRE": ["terre"], "EAU": ["eau"], "FROID": ["air", "terre", "eau", "eau"],
               "GLACE": ["air", "terre", "eau", "eau"], "FOUDRE": ["feu", "feu", "air", "air"], "TONNERRE": ["feu", "feu", "air", "eau"],
-              "ACIDE": ["feu", "air", "eau", "eau"], "LAVE": ["feu", "terre", "terre", "terre"], "VAPEUR": ["feu", "feu", "feu", "eau"], "POISON": ["feu", "air", "air", "eau"], "VENT": ["air"]}
+              "ACIDE": ["feu", "air", "eau", "eau"], "LAVE": ["feu", "terre", "terre", "terre"], "VAPEUR": ["feu", "feu", "feu", "eau"], "POISON": ["feu", "air", "air", "eau"], "VENT": ["air"],
+              # le métal et le bois ne sont pas des éléments à part : ils s'inscrivent par leur combinaison (Acier, Bronze, Bois)
+              "ACIER": ["feu", "air", "terre", "terre"], "METAL": ["feu", "air", "terre", "terre"], "BRONZE": ["feu", "feu", "terre", "eau"],
+              "BOIS": ["air", "terre", "terre", "eau"]}
 def place_sats(sats):
     """satellites annotés (valeur, [mots]) : un seul se place au nord ou au sud ; deux, de part et d'autre"""
     if not sats: return []

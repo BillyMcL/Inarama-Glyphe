@@ -13,10 +13,10 @@ La Cible dit QUI ou QUOI reçoit le sort, jamais ce que le sort fait :
   TRAME    ce que l'on vise quand la Cible est vide (la trame elle-même)
   QUALITE  un qualificatif qui précise l'un des précédents
 """
-ETRE = """genie bete elementaire plante fee monture mortvivant divinite esprit goule nuee araignee insecte ancetre serviteur creature vermine
+ETRE = """genie geant bete elementaire plante fee monture mortvivant divinite esprit goule nuee araignee insecte ancetre serviteur creature vermine
 cheval graine invoque molosse dragon millepattes equipage guepe aigle ver legion familier chauvesouris rat aberration squelette hantise
 allie ecuyer savant mammouth singe corbeau cocher vipere grenouille loup batracien etre aurochs fourmi golem serpent double compagnon"""
-OBJET = """etendard objet arme cadavre eau trait metal ecrit porte pierre os projectile corde nourriture coffre armure bois baton piege talisman
+OBJET = """etendard outil objet arme cadavre eau trait metal ecrit porte pierre os projectile corde nourriture coffre armure bois baton piege talisman
 rune baies serrure livre cape matiere mur instrument tertre fer recipient gemme plume potion echarpe mineral structure mecanisme feu
 chene rose crane empreinte paroi piece bouclier carquois bourse remede contenant receptacle arc lanterne gant miroir œuf selle navire
 botte etoffe pigne poison maladie entrave passage"""

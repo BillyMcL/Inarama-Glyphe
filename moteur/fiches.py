@@ -7889,3 +7889,954 @@ _VV("enlarge-reduce", dict(options=[dict(label="Agrandissement"), dict(label="Ra
 # relecture inversée des focalisés : deux retouches
 _R("stone-lance", impact=(21, ["lance", "empalement"], "6d6 en moyenne ; empalée, elle perd 3 m par instant"))
 FICHES["blind-ambition"]["vr"] = dict(FICHES["blind-ambition"]["vr"], dur=(10, "MINUTES"))
+
+# ----- Passe finale, lot 1 (pages 0 à 32 lues dans les deux sens ; détecteurs sur toute la bibliothèque) -----
+def _VE(k, keys, **kw):
+    for key in keys.split():
+        FICHES[k][key] = {**(FICHES[k].get(key) or {}), **kw}
+_VE("acid-splash", "v24", cible=P, qty_cible=None, aoe=_S(5))            # 2024 : une sphère de 1,5 m, non plus deux cibles
+_VE("chill-touch", "v35 vpf", impact_sats=[])                            # 3.5 : rien n'empêche de guérir
+_VE("ray-of-frost", "v35 vpf", impact_sats=[])                           # 3.5 : le rayon ne ralentit pas
+_VE("shocking-grasp", "v35 vpf", impact_sats=[])                         # 3.5 : pas de stupeur
+_VE("color-spray", "v24", cond=[], cond_sats=[])                         # 2024 : plus de réserve de vie, une simple résistance
+_VE("color-spray", "v35 vpf vp2", cond_sats=[])
+_VE("spiritual-weapon", "vr", impact=(9, ["arme"], "2d8 en moyenne"))
+_VE("wind-wall", "vp2 vr", impact=(P, ["vent", "projectile"], "les projectiles légers n'y passent pas ; qui vole au travers est arrêté"), impact_add=[])
+_VE("heal", "vp2 vr", impact_add=[])
+_VE("lightning-bolt", "vp2 vr", impact_add=[])
+
+# --- pages 33-47 ---
+_VE("detect-evil-and-good", "vp2", impact=(P, ["présence"], "la présence ou l'absence, rien de plus"))
+_VE("detect-poison-and-disease", "v35 vpf", cible_note=["POISON"])
+_VE("detect-poison-and-disease", "vp2 vr", cible_note=["POISON"], impact=(P, ["présence"], "la présence du poison, sans sa nature"))
+_VE("expeditious-retreat", "v35 vpf", impact=(9, ["course", "mètres"], "9 m de plus par instant"))
+_VE("fog-cloud", "v35", aoe=_S(20))
+for _o in FICHES["detect-magic"]["vpf"]["options"]:
+    if _o.get("src_idx") == "detect-magic-greater":
+        _o["aoe"] = {"type": "cone", "size": 60}
+for _o in FICHES["false-life"]["vpf"]["options"]:
+    if _o.get("src_idx") == "false-life-greater":
+        _o["impact"] = (16, ["vie", "temporaire"], "2d10 + 5 en moyenne")
+
+# --- pages 48-59 ---
+_VE("goodberry", "v35 vpf", qty_cible=5, notes=["2d4 baies, cinq en moyenne."])
+_VE("grease", "v35 vpf vp2 vr", aoe={"type": "cube", "size": 10})
+_VE("heroism", "vp2 vr", cible_note=["coup", "résistance", "aptitude"], impact=(1, ["courage"], "plus sûre en tout ce qu'elle tente (+1 aux attaques, à la vigilance, aux résistances et aux talents)"))
+_VE("identify", "vpf", comp=[])
+_VE("illusory-script", "v35 vpf", impact_sats=[(P, ["suggestion"])])
+_VE("jump", "v24", impact=(9, ["saut", "mètres"], "des bonds de 9 m"), impact_add=[])
+_VE("jump", "v35 vpf", impact=(3, ["saut", "mètres"], "3 m de plus à chaque saut"), impact_add=[])
+
+# --- pages 60-74 ---
+for _o in FICHES["longstrider"]["vpf"]["options"]:
+    if _o.get("src_idx") == "longstrider-greater":
+        _o["impact"] = (6, "PAS", "+6 m de vitesse")
+_VE("mage-armor", "v35 vpf", impact=(4, [], "4 ajouté à la garde"), cond=[], fin=[])
+_VE("magic-missile", "vp2", options=[O("Forme de base", qty=1), O("Forme maximale")])
+_VE("protection-from-evil-and-good", "v35 vpf", impact=(2, ["protection", "possession"], "mieux gardée et plus résistante (2 ajouté à la CA et aux sauvegardes)"))
+_VE("protection-from-evil-and-good", "vp2 vr", comp=[])
+_VE("shield", "vp2 vr", impact=(1, [], "1 ajouté à la garde ; l'écran peut absorber un coup"))
+FICHES["silent-image"]["alt"][0].pop("aoe", None)
+_VE("sleep", "vp2 vr", cond_sats=[])
+_VE("sleep", "v24", cond=["vivant"], cond_sats=[])
+
+# --- pages 75-89 ---
+def _OPT(k, ver, src, **kw):
+    for _o in FICHES[k][ver]["options"]:
+        if _o.get("src_idx") == src:
+            _o.update(kw)
+_VE("animal-messenger", "v35 vpf vp2 vr", qty=None, qty_note=[], impact=(P, ["message"], "un billet ou un petit objet porté"))
+_VE("animal-messenger", "vp2 vr", dur=(1, "JOURS"))
+_VE("arcane-lock", "v35 vpf vp2 vr", impact=(P, ["verrou"], "fermé à tous sauf au lanceur"))
+_VE("arcane-lock", "vp2 vr", comp=[])
+_VE("augury", "v35 vpf vp2 vr", loc=(30, ["MINUTES", "AVENIR"], "30 minutes dans l'avenir"))
+_VE("augury", "vp2 vr", comp=[])
+_VE("barkskin", "v35 vpf", impact=(2, [], "2 ajouté à la garde naturelle"))
+FICHES["branding-smite"]["impact_sats"] = [(P, ["marque"])]
+_VE("continual-flame", "vr", comp=[])
+_OPT("darkness", "v35", None, aoe=_S(20))
+_OPT("darkness", "v35", "deeper-darkness", aoe=_S(60))
+_OPT("darkvision", "vpf", "darkvision-greater", impact=(36, ["vision", "obscurité", "mètres"], "voir dans le noir à 36 m"))
+_VE("detect-thoughts", "v35 vpf", cond=[])
+_OPT("enhance-ability", "v35", "bears-endurance-mass", dur=(11, "MINUTES"))
+
+# --- pages 90-98 ---
+for _v in ("vp2", "vr"):
+    FICHES["enlarge-reduce"][_v]["options"][0]["only"] = 0
+    FICHES["enlarge-reduce"][_v]["options"][1]["only"] = 1
+_VE("gentle-repose", "vp2", comp=[], alt=[dict(comp=[])])
+_VE("heat-metal", "v35 vpf", impact_sats=[])
+
+# --- pages 99-119 ---
+FICHES["magic-mouth"]["prix"] = (1, "platine")
+_VE("magic-mouth", "vp2 vr", comp=[], prix=None)
+_VE("pass-without-trace", "v35 vpf", impact=(P, ["sans-trace"], "ni empreinte ni odeur"))
+_VE("protection-from-poison", "vp2 vr", cible_note=[])
+_VE("ray-of-enfeeblement", "v35 vpf", impact=(6, ["faiblesse"], "1d6 + 2 retranché à la force"))
+_VE("rope-trick", "vr", cible_obj=["porte"], impact=(P, ["abri", "extradimension"], "un abri derrière une porte tracée à la craie"))
+_VE("scorching-ray", "v35 vpf", impact=(14, ["feu"], "4d6 en moyenne, un seul rayon"), qty=1, alt=[dict(qty_cible=None)])
+_VE("see-invisibility", "vp2 vr", impact=(P, ["vision", "invisible"], "voir l'invisible"))
+_VE("shatter", "vp2 vr", cible=1, cible_obj=["objet"])
+
+# --- pages 120-131 ---
+_VE("spike-growth", "v35 vpf", impact=(3, ["perce", "épines"], "1d4 tous les 1,5 m"), impact_sats=[(2, ["lenteur", "fractionné"])], aoe={"type": "cube", "size": 20})
+_VE("spiritual-weapon", "v35 vpf", impact=(6, [], "1d8 + 1 en moyenne, de force"))
+_VE("spiritual-weapon", "vp2", impact=(8, [], "1d8 + 3 en moyenne, de force"))
+FICHES["animate-dead"]["dur"] = (1, "JOURS")
+_VE("animate-dead", "v35 vpf", comp=["onyx"], consumed=True, dur=None)
+_VE("animate-dead", "vp2 vr", dur=None)
+_BC35 = [O("Faiblesse", cible_note=["aptitude"], impact=(6, ["malédiction"], "6 retranché à une caractéristique")),
+         O("Maladresse", impact=(4, ["malédiction", "maladresse"], "4 retranché à tout ce qu'elle tente")),
+         O("Torpeur", impact=(P, ["malédiction", "torpeur"], "figée de torpeur, un instant sur deux"))]
+FICHES["bestow-curse"]["v35"] = dict(options=[dict(o) for o in _BC35])
+FICHES["bestow-curse"]["vpf"] = dict(options=[dict(o) for o in _BC35] + [
+    O("Malédiction majeure", src_idx="curse-major", impact=(P, ["malédiction"], "une malédiction plus tenace")),
+    O("Malédiction suprême", src_idx="bestow-curse-greater", cible_note=["aptitude"], impact=(12, ["malédiction"], "12 retranché à une caractéristique"))])
+for _v in ("v35", "vpf"):
+    for _o in FICHES["call-lightning"][_v]["options"]:
+        _o["aoe"] = {"type": "line", "size": 30}
+
+# --- pages 132-143 ---
+_VE("clairvoyance", "vp2 vr", comp=[])
+_VE("daylight", "v35", aoe=_S(60))
+_OPT("daylight", "vpf", "brightest-light", aoe=_S(60))
+_VE("dispel-magic", "v35 vpf", impact_sats=[])
+_VE("fireball", "v35 vpf", alt=[dict(impact=(18, "FEU", "5d6 en moyenne"))])
+_VE("fireball", "vp2 vr", alt=[dict(impact=(21, "FEU", "6d6 en moyenne"))])
+for _v in ("v35", "vpf"):
+    _OPT("fly", _v, "overland-flight", impact=(12, ["vol", "mètres"], "voler à 12 m par instant, des heures durant"))
+_OPT("glyph-of-warding", "vpf", "glyph-of-warding-greater", prix=(40, "platine"))
+_VE("glyph-of-warding", "vp2", comp=[])
+
+# --- pages 144-155 ---
+_VE("hypnotic-pattern", "v35 vpf", aoe=_S(10))
+_VE("hypnotic-pattern", "vp2", aoe=_S(10), impact=(P, ["fascination", "éblouissement"], "éblouie dans le motif, fascinée si elle y cède"))
+_VE("lightning-bolt", "v35 vpf", impact=(18, ["foudre", "embrasement"], "5d6 en moyenne"))
+_VE("magic-circle", "v35 vpf", impact=(2, ["protection", "possession"], "mieux gardés et plus résistants (2 ajouté à la CA et aux sauvegardes)"))
+_VE("magic-circle", "vp2", comp=[])
+_VE("major-image", "v35 vpf", aoe={"type": "cube", "size": 10})
+_VE("major-image", "vp2 vr", aoe=_S(30))
+_VE("nondetection", "vp2 vr", comp=[])
+_OPT("nondetection", "vpf", "nondetection-lesser", comp=[])
+_VE("phantom-steed", "vpf", impact_sats=[(12, ["mètres"])])
+_PG_E = dict(aoe=_S(2640), dur=(365, "JOURS"))
+FICHES["plant-growth"]["options"] = [O("Foisonnement"), O("Enrichissement", impact=(2, ["récolte", "fois"], "les récoltes doublées, un an durant, sur 800 m à la ronde"), **_PG_E)]
+for _v in ("v35", "vpf"):
+    FICHES["plant-growth"][_v]["options"].insert(1, O("Enrichissement", impact=(P, ["croissance", "récolte"], "les récoltes d'un tiers plus abondantes, un an durant"), **_PG_E))
+_OPT("protection-from-energy", "vpf", "protection-from-energy-communal", impact=(P, ["énergie"], "immunité à une énergie au choix, partagée"))
+
+# --- zones figées dans la fiche qui écrasaient celles des autres éditions ---
+_VE("forbiddance", "v35 vpf", aoe={"type": "cube", "size": 60})
+_VE("antipathy-sympathy", "v24", aoe={"type": "cube", "size": 200})
+_VE("antipathy-sympathy", "v35 vpf", aoe={"type": "cube", "size": 10})
+_VE("minor-illusion", "v35 vpf vp2", no_aoe=True)
+
+# --- cylindres : hauteur donnée par le texte (sinon le moteur la prend égale au diamètre) ---
+def _CY(r, h): return {"type": "cylinder", "size": r, "height": h}
+FICHES["flame-strike"]["aoe"] = _CY(10, 40)
+FICHES["ice-storm"]["aoe"] = _CY(20, 40)
+FICHES["moonbeam"]["aoe"] = _CY(5, 40)
+FICHES["sleet-storm"]["aoe"] = _CY(40, 20)
+_VE("sleet-storm", "v24", aoe=_CY(20, 40))
+
+# --- pages 156-167 ---
+_VE("sending", "v35 vpf", loc=(P, [], "où qu'il soit"))
+FICHES["slow"]["qty_cible"] = 6
+_VE("slow", "v35 vpf", qty_cible=5)
+_VE("slow", "vp2 vr", qty_cible=None)
+_VE("stinking-cloud", "v35", aoe=_S(20))
+_VE("vampiric-touch", "v35 vpf", impact_sats=[(7, ["vie", "temporaire"])])
+_VE("moonbeam", "vp2", no_aoe=True)
+_VE("flame-strike", "vr", aoe=_S(20))
+_VE("ice-storm", "vp2 vr", aoe=_S(20))
+
+# --- pages 168-179 ---
+_VE("wind-wall", "v35 vpf", aoe={"type": "line", "size": 50})
+_VE("wind-wall", "vp2 vr", aoe={"type": "line", "size": 60})
+_VE("banishment", "v35 vpf", impact=(P, ["exil", "plan"], "renvoyé dans son plan"))
+_VE("blight", "v35 vpf", cond=["plante"])
+_CW = [O("Montée des eaux", impact=(3, ["niveau", "mètres"], "l'eau monte de 3 m")), O("Baisse des eaux", impact=(3, ["niveau", "mètres", "soustrait"], "l'eau baisse de 3 m"))]
+_VE("control-water", "v35 vpf", options=[dict(o) for o in _CW], aoe={"type": "cube", "size": 50})
+_VE("death-ward", "v35 vpf", cond=[], fin=[], impact=(P, ["mort", "résistance"], "insensible aux effets de mort et à l'énergie qui draine"))
+
+# --- pages 180-191 ---
+_L7 = (7, ["JOURS", "AVENIR"], "7 jours dans l'avenir")
+_VE("divination", "v35 vpf vp2 vr", loc=_L7)
+_VE("divination", "vp2 vr", comp=[])
+_VE("fire-shield", "vp2 vr", alt=[dict(drop=True)])
+_VE("giant-insect", "v24", cible=7, impact=(P, ["service"], "un insecte géant appelé, qui obéit"))
+_VE("ice-storm", "v35 vpf", impact=(7, ["froid"], "2d6 de froid (et 3d6 contondants)"), impact_sats=[(11, ["choc"])])
+
+# --- pages 192-203 ---
+_VE("phantasmal-killer", "v35 vpf", impact_sats=[(P, ["mort"])])
+_VE("phantasmal-killer", "vp2", impact=(28, [], "8d6 en moyenne"))
+_VE("private-sanctum", "v35 vpf vp2 vr", impact=(P, ["son", "vue", "divination"], "ni son, ni regard, ni divination ne passent"))
+_VE("secret-chest", "v35", prix=(500, "platine"), dur=(60, "JOURS"))
+_VE("secret-chest", "vpf", prix=(500, "platine"))
+_OPT("secret-chest", "vpf", "secret-coffer", prix=(50, "platine"), dur=(14, "JOURS"))
+_OPT("secret-chest", "vpf", "secret-vault", prix=(2500, "platine"), dur=(360, "JOURS"))
+_VE("secret-chest", "vp2 vr", comp=[])
+_VE("stoneskin", "vp2", comp=[])
+_VE("wall-of-fire", "v35 vpf", impact=(14, ["mur"], "2d6 + 7 à qui le traverse ; 2d4 à qui s'en approche"), impact_sats=[(5, ["proximité"])])
+FICHES["arcane-hand"]["impact_add"] = []
+FICHES["arcane-hand"]["options"] = [
+    O("Poing serré", impact=(18, ["main", "choc"], "4d8 de force")),
+    O("Main puissante", impact=(P, ["main", "poussée"], "l'adversaire repoussé")),
+    O("Main agrippante", impact=(10, ["main", "étreinte"], "l'adversaire agrippé, puis broyé (2d6 + 3)")),
+    O("Main interposée", impact=(P, ["main", "abri"], "la main s'interpose et abrite"))]
+FICHES["arcane-hand"]["v24"] = dict(options=[
+    O("Poing serré", impact=(23, ["main", "choc"], "5d8 de force")),
+    O("Main puissante", impact=(P, ["main", "poussée"], "l'adversaire repoussé")),
+    O("Main agrippante", impact=(17, ["main", "étreinte"], "l'adversaire agrippé, puis broyé (4d6 + 3)")),
+    O("Main interposée", impact=(P, ["main", "abri"], "la main s'interpose et abrite"))])
+_VE("arcane-hand", "vp2", options=None)
+_VE("awaken", "vpf", comp=["herbe", "huile"])
+
+# --- pages 204-215 ---
+_VE("cloudkill", "v35", aoe=_S(20))
+_VE("commune", "vpf", comp=["encens"], consumed=True)
+FICHES["cone-of-cold"]["vr"]["options"][0]["aoe"] = {"type": "cone", "size": 60}
+_VE("flame-strike", "v35", impact=(16, ["feu"], "la moitié de 9d6, par le feu"), impact_sats=[(16, ["lumière"])])
+_VE("flame-strike", "vpf", impact=(12, ["feu"], "la moitié de 7d6, par le feu"), impact_sats=[(12, ["lumière"])])
+
+# --- pages 216-229 ---
+_OPT("greater-restoration", "vpf", "restoration-greater", comp=["diamant"], consumed=True, prix=(500, "platine"))
+_VE("greater-restoration", "vp2", comp=[])
+_VE("hallow", "v35 vpf", aoe=_S(40))
+_VE("scrying", "v35", prix=(100, "platine"))
+_VE("scrying", "vp2 vr", comp=[])
+
+# --- pages 230-239 ---
+FICHES["telepathic-bond"]["qty_cible"] = 8
+_VE("telepathic-bond", "v35 vpf", qty_cible=3)
+FICHES["teleportation-circle"]["aoe"] = _S(5)
+_VE("tree-stride", "v35 vpf", loc=(150, "METRES", "150 m au moins, davantage selon l'essence de l'arbre"))
+_WF = FICHES["wall-of-force"]["options"][1]
+_VE("wall-of-force", "v35 vpf", options=[dict(_WF, label="Panneaux")])
+_VE("wall-of-force", "vp2 vr", aoe={"type": "line", "size": 50})
+FICHES["wall-of-stone"]["forme"] = list(_WF["forme"]); FICHES["wall-of-stone"]["no_aoe"] = True
+_VE("wall-of-stone", "vp2 vr", forme=[], no_aoe=False, aoe={"type": "line", "size": 120})
+FICHES["blade-barrier"]["options"][1]["aoe"] = _CY(30, 20)
+FICHES["blade-barrier"]["vp2"]["options"][0]["aoe"] = {"type": "line", "size": 120}
+_VE("chain-lightning", "v35 vpf", qty_cible=12)
+
+# --- pages 240-251 ---
+_VE("contingency", "vp2 vr", comp=[])
+_VE("find-the-path", "vp2 vr", comp=[])
+FICHES["forbiddance"]["aoe"] = {"type": "cube", "size": 106}      # 3 700 m² sur 9 m de haut : 33 000 m³, le volume d'un cube de 32 m
+FICHES["guards-and-wards"]["aoe"] = {"type": "cube", "size": 37}  # 232 m² sur 6 m de haut : 1 400 m³, le volume d'un cube de 11 m
+_VE("freezing-sphere", "v35", aoe=_S(10))
+FICHES["harm"]["impact_sats"] = [(1, ["plancher"]), (P, ["vie", "maximum"])]
+_VE("harm", "v35 vpf", impact_sats=[(1, ["plancher"])])
+
+# --- pages 252-261 ---
+_VE("heal", "v24", impact_add=["aveuglement", "surdité", "poison"])
+_OPT("heal", "vpf", "cleanse", impact=(27, None, "4d8 + 9 en moyenne, et les maux levés"))
+for _v in ("vp2", "vr"):
+    FICHES["heal"][_v]["options"] = [O("Forme de base", impact=(5, ["vie"], "1d8 en moyenne, au toucher")),
+                                     O("Forme maximale", cible=P, aoe=_S(30), impact=(5, ["vie"], "1d8 en moyenne, à tous les vivants alentour"))]
+_VE("heroes-feast", "v35 vpf", comp=[])
+FICHES["move-earth"]["aoe"] = {"type": "cube", "size": 40}
+_VE("move-earth", "v35 vpf", no_aoe=True)
+for _o in FICHES["planar-ally"]["vpf"]["options"][:2]:
+    _o.update(comp=["offrande"], consumed=True)
+_VE("sunbeam", "v35 vpf", impact=(14, ["lumière"], "4d6 en moyenne ; bien davantage contre les morts-vivants"))
+
+# --- pages 262-272 ---
+_VE("true-seeing", "vp2", comp=[])
+_VE("wall-of-ice", "v35", impact=(11, ["froid"], "1d6 + 7 à qui franchit la brèche"))
+_VE("wall-of-ice", "vpf", impact=(9, ["froid"], "1d6 + 5 à qui franchit la brèche"))
+_VE("wind-walk", "v35 vpf", impact=(180, ["vol", "mètres"], "porté par le vent à 180 m par instant"))
+_VE("arcane-sword", "v24", impact=(29, [], "4d12 + 3 en moyenne, de force"))
+_VE("arcane-sword", "v35 vpf", impact=(17, [], "4d6 + 3 en moyenne, de force"))
+_VE("delayed-blast-fireball", "v35 vpf", impact_sats=[])
+
+# --- pages 273-283 ---
+def _VOL(ft3): return {"type": "cube", "size": round(ft3 ** (1 / 3), 2)}
+_VE("finger-of-death", "vpf", impact=(130, ["ténébreux"], "10 points par niveau du lanceur"), impact_sats=[])
+_VE("finger-of-death", "vp2 vr", impact_sats=[])
+FICHES["fire-storm"]["aoe"] = _VOL(10000)       # dix cubes de 3 m, non un cube de 30 m
+_VE("fire-storm", "v24", aoe=_VOL(10000))
+_VE("fire-storm", "v35", aoe=_VOL(30000))       # deux cubes de 3 m par niveau, niveau 15
+_VE("fire-storm", "vpf", aoe=_VOL(26000))       # niveau 13
+_VE("forcecage", "v35 vpf", consumed=True)
+_VE("forcecage", "vp2 vr", comp=[])
+FICHES["magnificent-mansion"]["prix"] = (15, "or")
+FICHES["magnificent-mansion"]["impact"] = ("plein", ["demeure", "serviteur", "nourriture"], "une demeure extradimensionnelle, servie et garnie")
+_VE("magnificent-mansion", "vp2", comp=[])
+_VE("mirage-arcane", "v35 vpf", aoe=_VOL(72000))  # un cube de 6 m par niveau, niveau 9
+_VE("mirage-arcane", "v35", dur=(9, "HEURES"))
+_VE("prismatic-spray", "v35 vpf", impact=(20, ["feu", "pétrification", "bannissement", "démence"], "20 de feu, ou la pierre, l'exil, la démence, selon la couleur"),
+    impact_sats=[(40, ["acide"]), (80, ["foudre"]), ("plein", ["poison", "mort"])])
+_VE("prismatic-spray", "vp2", impact=(50, ["feu", "pétrification", "bannissement", "confusion"], "50 de feu, ou la pierre, l'exil, la confusion, selon la couleur"),
+    impact_sats=[(60, ["acide"]), (70, ["foudre"]), (30, ["poison", "faiblesse"]), (1, ["minutes", "lenteur"])])
+_VE("project-image", "vp2 vr", comp=[])
+_VE("regenerate", "v35 vpf", sats={})
+_VE("regenerate", "vp2 vr", sats={"DUREE": [(15, ["vie", "tour"])]})
+_VE("resurrection", "v35 vpf", consumed=True, cond_sats=[(130, ["ans"])])
+_VE("reverse-gravity", "v35 vpf", aoe=_VOL(13000))  # un cube de 3 m par niveau, niveau 13
+
+# --- pages 284-295 ---
+_VE("sequester", "v35 vpf", comp=[])
+_VE("sequester", "vpf", no_aoe=True)
+_VE("simulacrum", "v35 vpf", cond=[], consumed=True)
+_VE("symbol", "v24", options=[_o for _o in FICHES["symbol"]["options"] if _o["label"] not in ("Désespoir", "Démence")])
+_OPT("teleport", "v35", None, qty_cible=3, loc=(1440, "KILOMETRES", "160 km par niveau"))
+_OPT("teleport", "vpf", None, qty_cible=3, loc=(1440, "KILOMETRES", "160 km par niveau"))
+_OPT("teleport", "v35", "teleport-greater", qty_cible=4)
+_OPT("teleport", "vpf", "teleport-greater", qty_cible=4)
+_VE("teleport", "vp2 vr", qty_cible=4)
+_VE("animal-shapes", "v35", qty_cible=15, impact=(15, ["bête"], "des bêtes de puissance au plus égale au niveau du lanceur"))
+_VE("animal-shapes", "vpf", qty_cible=15, impact=("plein", ["bête"], "une même espèce de bête pour tous"))
+_VE("antipathy-sympathy", "v35 vpf", aoe=_VOL(15000),
+    alt=[dict(src_idx="sympathy", comp=["perle"], prix=(150, "platine"), consumed=True)])
+FICHES["clone"]["impact_sats"] = [(120, ["jours", "croissance"])]
+_VE("clone", "v35 vpf", comp=["laboratoire"], consumed=True, impact_sats=[(150, ["jours", "croissance"])])
+_VE("demiplane", "vp2", aoe=_VOL(200000))
+FICHES["earthquake"]["impact_plus"] = [(18, ["effondrement"], "5d6 en moyenne sous ce qui s'effondre")]
+_VE("earthquake", "v24", impact_plus=[(42, ["effondrement"], "12d6 en moyenne sous ce qui s'effondre")])
+_VE("earthquake", "v35 vpf", impact_plus=[(28, ["effondrement"], "8d6 en moyenne sous ce qui s'effondre")])
+
+# --- pages 296-307 ---
+FICHES["feeblemind"]["cible_note"] = ["psyché", "raison", "prestance"]
+FICHES["feeblemind"]["impact_sats"] = [("plein", ["incantation"])]
+_VE("feeblemind", "v24", cible_note=["psyché"])
+_VE("glibness", "v35 vpf", impact=(30, ["persuasion", "mensonge"], "30 ajouté à mes mensonges"))
+_VE("holy-aura", "v35", aoe=_S(20))
+_VE("holy-aura", "vp2", comp=[])
+_VE("incendiary-cloud", "v35 vpf", aoe=_CY(20, 20))
+_VE("maze", "v35 vpf", dur=(10, "MINUTES"))
+_VE("mind-blank", "vpf", impact=("plein", ["divination"], "nulle divination ne l'atteint"), impact_sats=[(8, ["psyché", "résistance"])])
+_VE("power-word-stun", "vp2 vr", cond=["PAROLE"], cond_sats=[])
+FICHES["sunburst"]["aoe"] = _S(60)
+_VE("sunburst", "v35 vpf", aoe=_S(80), impact=(21, ["lumineux"], "6d6 en moyenne"),
+    impact_sats=[("plein", ["aveuglement"]), (52, ["si:mort-vivant"])])
+_VE("sunburst", "vp2 vr", aoe=_S(60))
+FICHES["astral-projection"]["prix"] = (110, "platine")
+_VE("astral-projection", "v35 vpf", prix=(100, "platine"), consumed=True)
+_VE("gate", "v35 vpf", dur=(102, "SECONDES"))
+_VE("gate", "vpf", comp=["encens"], prix=(1000, "platine"), consumed=True)
+_VE("gate", "vp2 vr", comp=[])
+_VE("imprisonment", "v35 vpf", comp=[], options=[_o for _o in FICHES["imprisonment"]["options"] if _o["label"] == "Ensevelissement"])
+
+# --- pages 308-319 ---
+FICHES["mass-heal"]["impact_add"] = ["maladie", "aveuglement", "surdité"]
+_VE("meteor-swarm", "vp2 vr", impact=(49, ["feu"], "14d6 en moyenne par météore"))
+_VE("power-word-kill", "vp2", cond=["PAROLE"], cond_sats=[])
+_OPT("prismatic-wall", "vp2", None, aoe={"type": "line", "size": 60})
+_VE("shapechange", "vp2", comp=[])
+FICHES["storm-of-vengeance"]["impact_sats"] = [("plein", ["surdité"]), (35, ["foudre"])]
+_VE("storm-of-vengeance", "vp2", impact_sats=[("plein", ["surdité"]), (24, ["foudre"])])
+_VE("storm-of-vengeance", "vr", impact_add=["foudre", "froid", "grêle"], impact_sats=[(24, ["foudre"])])
+_VE("true-resurrection", "v35 vpf", consumed=True, cond_sats=[(170, ["ans"])])
+_VE("weird", "v24", impact=(55, [], "10d10 psychiques"))
+_VE("weird", "v35 vpf", impact=("plein", ["mort"], "mortes de peur"), impact_sats=[(10, ["blessure"])])
+_VE("weird", "vr", impact_add=["confusion"])
+_VE("feeblemind", "vp2", impact_sats=[])
+_VE("feeblemind", "v35 vpf", impact_sats=[("plein", ["incantation"])])
+
+# --- pages 320-345 ---
+FICHES["conjure-celestial-2024"]["aoe"] = _CY(10, 40)
+_VE("summon-dragon", "vp2 vr", comp=[])
+
+# --- pages 346-361 ---
+_VE("daze", "vp2 vr", cond=[], cond_sats=[], impact=(4, [], "une secousse mentale"))
+_OPT("hypnotism", "vpf", "hypnotism-greater", cond_sats=[(63, ["vie"])])
+FICHES["mind-fog"]["aoe"] = _CY(20, 20)
+
+# --- composantes à prix des pages PF1 natives (la source les donne, la fiche ne les inscrivait pas) ---
+FICHES["abeyance"].update(comp=['eau', 'bénite'], consumed=True, prix=(25, 'or'))   # a flask of holy water worth 25 gp
+FICHES["ablative-sphere-garundi"].update(comp=['cristal'], consumed=True, prix=(1, 'platine'))   # a crystalline sphere worth 10 gp
+FICHES["absorb-rune-i"].update(comp=['gant'], consumed=True, prix=(25, 'or'))   # a white silk glove worth 25 gp
+FICHES["acidic-spray"].update(comp=['acide'], consumed=True, prix=(1, 'platine'))   # a vial of acid worth 10 gp
+FICHES["aram-zeys-focus"].update(comp=['outils'], consumed=False, prix=(10, 'platine'))   # masterwork thieves' tools worth 100 gp
+FICHES["aram-zeys-trap-ward"].update(comp=['outils'], consumed=True, prix=(10, 'platine'))   # masterwork thieves' tools worth 100 gp
+FICHES["arodens-spellbane"].update(comp=['sceptre'], consumed=False, prix=(100, 'platine'))   # cold iron scepter worth at least 1,000 gp
+FICHES["blood-sentinel"].update(comp=['mandragore'], consumed=True, prix=(25, 'or'))   # a life-sized animal sculpture of a familiar made of clay, cloth, stone
+FICHES["call-construct"].update(comp=['saphir'], consumed=True, prix=(100, 'platine'))   # a sapphire worth 1,000 or 5,000 gp; see text
+FICHES["carve-passage"].update(comp=['pioche'], consumed=False, prix=(50, 'platine'))   # a tiny diamond pick worth 500 gp
+FICHES["cave-fangs"].update(comp=['gemme'], consumed=True, prix=(15, 'platine'))   # a sharp gemstone fragment worth 150 gp
+FICHES["circle-of-clarity"].update(comp=['lentille'], consumed=False, prix=(10, 'platine'))   # a crystal lens worth 100 gp
+FICHES["commune-with-texts"].update(comp=['encens'], consumed=True, prix=(25, 'platine'))   # incense worth 250 gp
+FICHES["contact-nalfeshnee"].update(comp=['saphir'], consumed=True, prix=(25, 'platine'))   # powdered sapphire worth 250 gp
+FICHES["contingent-scroll"].update(comp=['plume'], consumed=False, prix=(10, 'platine'))   # a platinum quill worth 100 gp
+FICHES["create-demiplane-lesser"].update(comp=['diapason'], consumed=False, prix=(50, 'platine'))   # a forked metal rod worth at least 500 gp
+FICHES["create-pit"].update(comp=['pelle'], consumed=False, prix=(1, 'platine'))   # miniature shovel costing 10 gp
+FICHES["create-treasure-map"].update(comp=['encre'], consumed=True, prix=(10, 'platine'))   # powdered metal and rare inks worth 100 gp
+FICHES["curative-distillation"].update(comp=['herbe'], consumed=True, prix=(5, 'platine'))   # healing herb, alchemical remady, or potion of a healing spell worth at
+FICHES["cursed-earth"].update(comp=['onyx'], consumed=True, prix=(1000, 'platine'))   # powdered onyx 10,000 gp
+FICHES["deadmans-contingency"].update(comp=['statuette'], consumed=False, prix=(150, 'platine'))   # ivory statuette of you worth 1,500 gp
+FICHES["detonate"].update(comp=['acide'], consumed=True, prix=(5, 'platine'))   # two vials; one containing acid and one containing an alkaline solution
+FICHES["devil-snare"].update(comp=['poudre', 'argent'], consumed=True, prix=(25, 'or'))   # a pouch of silvered powder worth 25 gp
+FICHES["dirge-of-the-victorious-knights"].update(comp=['médaille'], consumed=False, prix=(10, 'platine'))   # a medal from a dead Hellknight or a copy a Chelish opera script, eithe
+FICHES["discern-value"].update(comp=['monocle'], consumed=False, prix=(10, 'platine'))   # platinum monocle worth 100 gp
+FICHES["dissolution"].update(comp=['réactif'], consumed=True, prix=(5, 'platine'))   # vial of alchemical reagents worth 50 gp
+FICHES["draconic-ally"].update(comp=['écaille'], consumed=True, prix=(25, 'platine'))   # a scale from a dragon and 250 gp
+FICHES["dungeonsight"].update(comp=['orbe'], consumed=False, prix=(15, 'platine'))   # a small glass orb worth 150 gp
+FICHES["elude-time"].update(comp=['saphir'], consumed=True, prix=(50, 'platine'))   # powdered diamond, emerald, ruby, and sapphire dust worth 500 gp
+FICHES["enlightened-step"].update(comp=['encens'], consumed=True, prix=(60, 'platine'))   # soothing incense worth 600 gp
+FICHES["entice-fey-lesser"].update(comp=['offrande'], consumed=True, prix=(50, 'platine'))   # offerings worth 500 gp plus payment, see text
+FICHES["entomb"].update(comp=['géode'], consumed=True, prix=(100, 'platine'))   # a pristine geode worth at least 1,000 gp
+FICHES["euphoric-cloud"].update(comp=['champignon'], consumed=True, prix=(5, 'or'))   # rare mushrooms worth 5 gp
+FICHES["false-alibi"].update(comp=['émeraude'], consumed=True, prix=(10, 'platine'))   # emerald dust worth 100 gp
+FICHES["false-future"].update(comp=['jade'], consumed=True, prix=(10, 'platine'))   # crushed jade worth 100 gp
+FICHES["familiar-double"].update(comp=['statuette'], consumed=True, prix=(5, 'or'))   # a small replica of you worth 5 gp
+FICHES["firewalkers-meditation"].update(comp=['encens'], consumed=True, prix=(40, 'platine'))   # soothing incense worth 400 gp
+FICHES["full-pouch"].update(comp=['herbe'], consumed=True, prix=(1, 'or'))   # alchemical reagents or herbs worth 1 gp
+FICHES["ghost-brand"].update(comp=['fer', 'soie'], consumed=True, prix=(1, 'platine'))   # a branding iron an a strip of white silk worth 10 gp
+FICHES["gilded-whispers"].update(comp=['gemme'], consumed=True, prix=(10, 'platine'))   # 100 gp of powdered gemstones
+FICHES["glimpse-of-truth"].update(comp=['tourmaline'], consumed=True, prix=(5, 'platine'))   # a tourmaline costing 50 gp
+FICHES["grasping-corpse"].update(comp=['onyx'], consumed=True, prix=(1, 'or'))   # pinch of powdered onyx worth 1 gp
+FICHES["hammer-of-mending"].update(comp=['marteau'], consumed=False, prix=(30, 'platine'))   # a small mithral hammer worth 300 gp
+FICHES["heart-of-the-metal"].update(comp=['adamantium'], consumed=True, prix=(10, 'platine'))   # a chunk of adamantine worth 100 gp, or a chunk of cold iron or silver 
+FICHES["holy-ice"].update(comp=['eau', 'bénite'], consumed=True, prix=(25, 'or'))   # a flask of holy water or 5 pounds of powdered silver worth 25 gp
+FICHES["holy-ice-weapon"].update(comp=['eau', 'bénite'], consumed=True, prix=(25, 'or'))   # a flask of holy water, or 5 pounds of powdered silver worth 25 gp
+FICHES["impenetrable-veil"].update(comp=['poussière', 'rêve'], consumed=True, prix=(125, 'platine'))   # dust from the Dimension of Dreams worth 1,250 gp
+FICHES["ironbloom-sprouts"].update(comp=['fer'], consumed=True, prix=(1, 'or'))   # 1 gp worth of powdered iron
+FICHES["languid-venom"].update(comp=['herbe'], consumed=True, prix=(25, 'or'))   # herbs used in antitoxin worth 25 gp
+FICHES["last-azlantis-defending-sword"].update(comp=['épée'], consumed=False, prix=(25, 'platine'))   # a miniature platinum sword worth 250 gp
+FICHES["lovers-vengeance"].update(comp=['bijou'], consumed=True, prix=(10, 'platine'))   # a piece of jewelry worth at least 100 gp
+FICHES["malicious-spite"].update(comp=['turquoise'], consumed=True, prix=(15, 'platine'))   # powdered turquoise worth 150 gp
+FICHES["mask-from-divination"].update(comp=['diamant'], consumed=True, prix=(20, 'platine'))   # diamond dust worth 200 gp
+FICHES["miasmatic-form"].update(comp=['poison'], consumed=True, prix=(10, 'platine'))   # contact or inhaled poison worth 100 gp
+FICHES["mind-swap-major"].update(comp=['diamant'], consumed=True, prix=(1000, 'platine'))   # diamonds worth 10,000 gp
+FICHES["morning-sun"].update(comp=['poussière', 'dorée'], consumed=True, prix=(50, 'platine'))   # 500 gp worth of gold dust
+FICHES["nap-stack"].update(comp=['coussin'], consumed=True, prix=(10, 'platine'))   # a little silk pillow worth 100 gp
+FICHES["obscure-poison"].update(comp=['herbe'], consumed=True, prix=(1, 'platine'))   # herbs used in antitoxin worth 10 gp
+FICHES["orb-of-the-void"].update(comp=['gemme'], consumed=True, prix=(5, 'platine'))   # a black gemstone of any kind worth 50 gp
+FICHES["parasitic-soul"].update(comp=['gemme'], consumed=False, prix=(10, 'platine'))   # a gem or crystal worth at least 100 gp
+FICHES["percieve-betrayal"].update(comp=['diadème'], consumed=False, prix=(50, 'platine'))   # a silver circlet worth 500 gp
+FICHES["planar-inquiry"].update(comp=['offrande'], consumed=True, prix=(10, 'platine'))   # offerings worth 100 gp per HD of the creature called
+FICHES["planar-refuge"].update(comp=['gemme'], consumed=True, prix=(50, 'platine'))   # precious stones worth 500 gp
+FICHES["possession-trap"].update(comp=['gemme'], consumed=False, prix=(50, 'platine'))   # a gem or crystal worth at least 500 gp
+FICHES["preserve-grace"].update(comp=['miroir'], consumed=False, prix=(5, 'platine'))   # a silver hand mirror worth 50 gp
+FICHES["prophetic-lore"].update(comp=['encens'], consumed=True, prix=(15, 'platine'))   # incense worth 150 gp
+FICHES["psychic-surgery"].update(comp=['diamant'], consumed=True, prix=(25, 'platine'))   # diamond dust worth 250 gp
+FICHES["rain-of-arrows"].update(comp=['flèches'], consumed=True, prix=(1, 'or'))   # a quiver full of 20 arrows worth 1 gp
+FICHES["read-weather"].update(comp=['osselets'], consumed=False, prix=(25, 'or'))   # a set of marked sticks or bones worth at least 25 gp
+FICHES["reboot"].update(comp=['rubis'], consumed=False, prix=(25, 'or'))   # a ruby worth at least 25 gp per HD of the target construct
+FICHES["resize-item"].update(comp=['compas'], consumed=True, prix=(25, 'or'))   # silver calipers worth 25 gp
+FICHES["resplendent-mansion"].update(comp=['pierre', 'gemme'], consumed=False, prix=(50, 'platine'))   # a miniature cornerstone carved from precious gemstones worth 500 gp
+FICHES["resurgent-transformation"].update(comp=['fer', 'météore'], consumed=True, prix=(10, 'platine'))   # a pinch of meteoric iron worth 100 gp
+FICHES["rite-of-bodily-purity"].update(comp=['encens'], consumed=True, prix=(10, 'platine'))   # soothing incense worth 100 gp
+FICHES["rite-of-centered-mind"].update(comp=['encens'], consumed=True, prix=(10, 'platine'))   # soothing incense worth 100 gp
+FICHES["rune-of-warding"].update(comp=['adamantium'], consumed=True, prix=(20, 'platine'))   # powdered adamantine, diamond, or mithral worth 200 gp
+FICHES["rune-trace"].update(comp=['gemme'], consumed=True, prix=(25, 'or'))   # pinch of powdered gemstones worth 25 gp
+FICHES["sacred-bond"].update(comp=['bracelet'], consumed=False, prix=(20, 'platine'))   # a pair of golden bracelets worth 100 gp each worn by both you and the 
+FICHES["sarzari-shadow-memory"].update(comp=['portrait'], consumed=True, prix=(150, 'platine'))   # a work of art bearing your target's likeness worth at least 1,500 gp
+FICHES["see-beyond"].update(comp=['encens'], consumed=True, prix=(30, 'platine'))   # soothing incense worth 300 gp
+FICHES["sequester-thoughts"].update(comp=['gemme'], consumed=True, prix=(50, 'platine'))   # a gemstone worth at least 500 gp
+FICHES["shining-cord"].update(comp=['chaîne'], consumed=True, prix=(10, 'platine'))   # a small length fine of silver chain worth 100 gp
+FICHES["sign-of-wrath"].update(comp=['gemme'], consumed=False, prix=(100, 'platine'))   # a gem worth 1,000 gp inscribed with the Thassilonian symbol of wrath
+FICHES["signifers-rally"].update(comp=['jaspe'], consumed=True, prix=(10, 'platine'))   # 100 gp worth of bloodstone for every ally teleported
+FICHES["skin-tag"].update(comp=['réactif'], consumed=True, prix=(25, 'or'))   # beverage or food item, plus special reagents worth 25 gp
+FICHES["sleepwalk"].update(comp=['belladone'], consumed=True, prix=(10, 'platine'))   # a sprig of belladonna worth 100 gp
+FICHES["sleepwalking-suggestion"].update(comp=['huile'], consumed=True, prix=(18, 'platine'))   # two  doses of oil of taggit worth 180 gp total
+FICHES["soul-transfer"].update(comp=['gemme'], consumed=True, prix=(100, 'platine'))   # a gem worth 1,000 gp per HD of the targeted creature or soul
+FICHES["soulseeker"].update(comp=['encens'], consumed=True, prix=(25, 'platine'))   # incense worth 250 gp
+FICHES["soulswitch"].update(comp=['collier'], consumed=False, prix=(10, 'platine'))   # two brass collars worth 50 gp each
+FICHES["spirit-bonds"].update(comp=['encens'], consumed=True, prix=(30, 'platine'))   # soothing incense worth 300 gp
+FICHES["spite"].update(comp=['encre'], consumed=True, prix=(25, 'platine'))   # rare inks worth 250 gp
+FICHES["stolen-light"].update(comp=['gemme'], consumed=False, prix=(50, 'platine'))   # a gem worth at least 500 gp
+FICHES["stumble-gap"].update(comp=['pelle'], consumed=False, prix=(1, 'platine'))   # miniature shovel costing 10 gp
+FICHES["summon-flight-of-eagles"].update(comp=['plume'], consumed=False, prix=(10, 'platine'))   # a gold feather worth 100 gp
+FICHES["suppressing-stone"].update(comp=['pierre'], consumed=False, prix=(100, 'platine'))   # one ioun stone worth at least 1,000 gp
+FICHES["symbol-of-debauchery"].update(comp=['rubis'], consumed=True, prix=(500, 'platine'))   # a set of bull genitals and powdered ruby worth 5,000 gp
+FICHES["symbol-of-dispelling"].update(comp=['alcool', 'diamant'], consumed=True, prix=(500, 'platine'))   # pure grain alcohol and powdered diamond worth 5,000 gp
+FICHES["symbol-of-distraction"].update(comp=['diamant'], consumed=True, prix=(500, 'platine'))   # mercuty and phosphorus, plus powdered diamond and opal worth a total o
+FICHES["symbol-of-exsanguination"].update(comp=['jaspe'], consumed=True, prix=(50, 'platine'))   # powdered garnet and bloodstone worth a total of 500 gp
+FICHES["symbol-of-healing"].update(comp=['mercure', 'phosphore', 'diamant', 'opale'], consumed=True, prix=(50, 'platine'))   # mercury and phosphorous, plus powdered diamond and opal worth a total 
+FICHES["symbol-of-laughter"].update(comp=['mercure', 'phosphore', 'diamant', 'opale'], consumed=True, prix=(200, 'platine'))   # mercury and phosphorus, plus powdered diamond and opal worth 1,000 gp 
+FICHES["symbol-of-mirroring"].update(comp=['mercure', 'phosphore', 'diamant', 'opale'], consumed=True, prix=(10, 'platine'))   # mercury and phosphorous, plus powdered diamond and opal worth a total 
+FICHES["symbol-of-revelation"].update(comp=['mercure', 'phosphore', 'diamant', 'opale'], consumed=True, prix=(100, 'platine'))   # mercury and phosphorous, plus powdered diamond and opal worth a total 
+FICHES["symbol-of-scrying"].update(comp=['mercure', 'phosphore', 'diamant', 'opale'], consumed=True, prix=(100, 'platine'))   # mercury and phosphorous, plus powdered diamond and opal worth a total 
+FICHES["symbol-of-sealing"].update(comp=['mercure', 'phosphore', 'diamant', 'opale'], consumed=True, prix=(500, 'platine'))   # mercury and phosphorous, plus powdered diamond and opal worth a total 
+FICHES["symbol-of-slowing"].update(comp=['mercure', 'phosphore', 'diamant', 'opale'], consumed=True, prix=(100, 'platine'))   # mercury and phosphorous, plus powdered diamond and opal worth a total 
+FICHES["symbol-of-storms"].update(comp=['cuivre', 'ponce'], consumed=True, prix=(150, 'platine'))   # powdered copper and pumice worth a total of 1,500 gp
+FICHES["symbol-of-strife"].update(comp=['mercure', 'phosphore', 'diamant', 'opale'], consumed=True, prix=(1500, 'platine'))   # mercury and phosphorous, plus powdered diamond opal worth a total of 1
+FICHES["symbol-of-striking"].update(comp=['arme'], consumed=True, prix=(30, 'platine'))   # a masterwork melee weapon costing at least 300 gp
+FICHES["symbol-of-vulnerability"].update(comp=['mercure', 'phosphore', 'diamant', 'opale'], consumed=True, prix=(1500, 'platine'))   # mercury and phosphorous, plus powdered diamond opal worth a total of 1
+FICHES["tattoo-potion"].update(comp=['encre'], consumed=True, prix=(50, 'platine'))   # a potion to be tattooed, special inks worth 500 gp
+FICHES["telekinetic-assembly"].update(comp=['miniature'], consumed=False, prix=(1, 'platine'))   # a miniature of the target siege engine, costing 10 gp
+FICHES["temporal-divergence"].update(comp=['mithral'], consumed=True, prix=(10, 'platine'))   # mithral wishbone worth 100 gp
+FICHES["temporal-regression"].update(comp=['sablier'], consumed=False, prix=(150, 'platine'))   # hourglass filled with powdered horacalcum worth 1,500 gp
+FICHES["temporary-resurrection"].update(comp=['diamant'], consumed=True, prix=(50, 'platine'))   # diamond dust worth 500 gp
+FICHES["threefold-aspect"].update(comp=['croissant', 'argent'], consumed=False, prix=(5, 'or'))   # silver crescent worth 5 gp
+FICHES["threefold-form"].update(comp=['nœud', 'mithral'], consumed=False, prix=(729, 'or'))   # a green, three-pointed knot made of mithral worth 729 gp
+FICHES["torpid-reanimation"].update(comp=['onyx'], consumed=True, prix=(25, 'or'))   # an onyx gem worth at least 25 gp per HD of the undead
+FICHES["transfiguring-touch"].update(comp=['réactif'], consumed=True, prix=(1, 'or'))   # alchemical reagents worth 1 gp or the value of the created material, w
+FICHES["transmute-blood-to-acid"].update(comp=['poupée', 'acide'], consumed=True, prix=(1, 'platine'))   # a wax doll and a vial of acid worth 10 gp
+FICHES["treasure-stitching"].update(comp=['étoffe'], consumed=True, prix=(10, 'platine'))   # a piece of embroidered cloth no larger than 10-ft. square worth 100 gp
+FICHES["unbreakable-construct"].update(comp=['adamantium'], consumed=True, prix=(10, 'platine'))   # powdered adamantine worth 100 gp
+FICHES["undetectable-trap"].update(comp=['soie'], consumed=True, prix=(5, 'platine'))   # a square of black silk worth 50 gp
+FICHES["unflappable-mien"].update(comp=['broche', 'diamant'], consumed=False, prix=(10, 'platine'))   # a diamond clasp, brooch, or pin worth at least 100 gp
+FICHES["unwilling-shield"].update(comp=['rubis'], consumed=True, prix=(25, 'platine'))   # ruby dust worth 250 gp
+FICHES["venomous-bite"].update(comp=['poison'], consumed=True, prix=(75, 'or'))   # a vial of injury poison worth at least 75 gp
+FICHES["wall-of-suppression"].update(comp=['adamantium'], consumed=True, prix=(100, 'platine'))   # powdered adamantine worth 1,000 gp
+FICHES["waters-of-lamashtu"].update(comp=['ambre'], consumed=True, prix=(25, 'platine'))   # 250 gp of powdered amber
+FICHES["wreath-of-blades"].update(comp=['dague', 'mithral'], consumed=False, prix=(2008, 'or'))   # four mithral daggers, each worth at least 502 gp each
+_VE("cave-fangs", "vr", comp=[])
+_VE("resplendent-mansion", "vp2 vr", comp=[])
+_VE("threefold-aspect", "vp2 vr", comp=[])
+
+# --- pages 362-377 ---
+_OPT("song-of-discord", "vpf", "song-of-discord-greater", aoe=_S(20))
+_VE("power-word-blind", "vp2", cond=["PAROLE"], cond_sats=[])
+for _v in (FICHES["binding"], FICHES["binding"]["vpf"]):
+    for _o in _v["options"]:
+        if _o["label"] in ("Enchaînement", "Sommeil"): _o["dur"] = (15, "ANS")           # un an par niveau, niveau 15
+        if _o["label"] == "Sommeil enchaîné": _o["dur"] = (450, "JOURS")                  # un mois par niveau
+FICHES["binding"].update(comp=["opale"], prix=(50, "platine"), consumed=True)            # 500 po d'opales par dé de vie de la cible
+_SYM = ["mercure", "phosphore", "diamant", "opale"]
+for _k, _p in (("symbol-of-sleep", 100), ("symbol-of-persuasion", 500), ("symbol-of-stunning", 500), ("symbol-of-insanity", 500),
+               ("symbol-of-pain", 100), ("symbol-of-fear", 100), ("symbol-of-weakness", 500), ("symbol-of-death", 1000)):
+    FICHES[_k].update(comp=_SYM, prix=(_p, "platine"), consumed=True)
+
+# --- pages 378-393 ---
+FICHES["scrying-greater"]["comp"] = []
+_VE("vision", "vpf", comp=["encens"], prix=(25, "platine"), consumed=True)
+
+# --- unité « ans » dans la Durée : toute durée d'un an s'écrit 1 an, non 365 jours ---
+def _ANS(o):
+    if isinstance(o, dict):
+        for _k2, _v2 in list(o.items()):
+            if _k2 == "dur" and isinstance(_v2, tuple) and len(_v2) == 2 and _v2[1] == "JOURS" and isinstance(_v2[0], int) and _v2[0] >= 365 and _v2[0] % 365 == 0:
+                o[_k2] = (_v2[0] // 365, "ANS")
+            else: _ANS(_v2)
+    elif isinstance(o, list):
+        for _x in o: _ANS(_x)
+_ANS(FICHES)
+
+# --- pages 394-409 ---
+_OPT("protection-from-arrows", "vpf", "protection-from-arrows-communal", impact_sats=[(50, ["plafond"])])
+FICHES["shield-other"]["prix"] = (10, "platine")          # deux anneaux à 50 po chacun
+_OPT("shield-other", "vpf", None, prix=(5, "platine"))
+_OPT("shield-other", "vpf", "shield-companion-aa", prix=(5, "platine"))
+_OPT("shield-other", "vpf", "watchful-eye", prix=(1, "platine"))
+_VE("shield-other", "vp2", comp=[])
+FICHES["fire-trap"]["aoe"] = _S(5)
+
+# --- pages 410-425 ---
+FICHES["repulsion"]["aoe"] = _S(110)                       # 3 m de rayon par niveau, niveau 11
+_VE("repulsion", "vp2 vr", aoe=_S(40), comp=[])
+for _v in ("vp2", "vr"):
+    for _o in FICHES["summon-monster-i"][_v]["options"]:
+        _o["label"] = "Être de puissance 5 — " + _o["label"].split(" — ")[-1]; _o["impact"] = (5, [], "puissance 5")
+import copy as _copy
+FICHES["summon-swarm"]["vpf"] = {**FICHES["summon-swarm"].get("vpf", {}), "options": _copy.deepcopy(FICHES["summon-swarm"]["options"])}
+_OPT("mount", "vpf", "mount-communal", qty_cible=6)
+_VE("creeping-doom", "vpf", qty=4, impact=(14, [], "4d6 en moyenne par nuée"))
+
+# --- pages 426-441 ---
+FICHES["shambler"]["dur"] = (7, "JOURS")
+for _k in ("sepia-snake-sigil", "wall-of-iron", "trap-the-soul", "refuge"): FICHES[_k]["consumed"] = True
+FICHES["solid-fog"]["aoe"] = _CY(20, 20); _VE("solid-fog", "vp2", aoe=_S(20))
+FICHES["acid-fog"]["aoe"] = _CY(20, 20)
+FICHES["fire-seeds"]["options"][0]["impact_sats"] = [(4, ["nombre"])]
+FICHES["fire-seeds"]["vpf"]["options"][0].update(impact=(28, ["feu", "jet"], "11d4 en moyenne, en quatre glands"), impact_sats=[(4, ["nombre"])])
+
+# --- pages 442-457 ---
+FICHES["consecrate"]["consumed"] = True
+_VE("divine-power", "vpf", impact=(2, [], "2 ajouté à l'attaque et aux coups, une attaque de plus"))
+FICHES["imbue-with-spell-ability"]["impact_sats"] = [(2, ["seuil", "niveau"]), (3, ["sort"])]
+for _v in ("vp2", "vr"):
+    FICHES["holy-smite"][_v]["options"][0]["impact"] = (22, ["nausée"], "4d10 en moyenne, puis nauséeuse")
+_VE("polar-ray", "vpf", impact_sats=[(3, ["adresse"])])
+FICHES["telekinetic-sphere"]["aoe"] = _S(7.5); _VE("telekinetic-sphere", "vpf", aoe=_S(6.5))
+FICHES["whirlwind"]["aoe"] = _CY(10, 30); _VE("whirlwind", "vp2", aoe=_CY(15, 80))
+_VE("implosion", "vpf", impact=(170, ["écrasement"], "10 points par niveau"), qty=8, dur=(48, "SECONDES"))
+
+# --- pages 458-473 ---
+_VE("miracle", "vpf", comp=["diamant"], prix=(2500, "platine"), consumed=True)
+FICHES["minor-image"]["aoe"] = _VOL(7000)                 # quatre cubes de 3 m, plus un par niveau (niveau 3)
+FICHES["persistent-image"]["aoe"] = _VOL(13000)           # niveau 9
+FICHES["permanent-image"].update(aoe=_VOL(19000), consumed=True)   # un cube de 6 m plus un cube de 3 m par niveau (niveau 11)
+_VE("permanent-image", "vpf", prix=(10, "platine"))
+_VE("misdirection", "vpf", no_aoe=True)
+FICHES["phantom-trap"]["consumed"] = True
+FICHES["rainbow-pattern"]["dur"] = (42, "SECONDES")       # concentration, puis un round par niveau
+FICHES["false-vision"]["consumed"] = True
+_OPT("false-vision", "vpf", "false-vision-greater", consumed=False)
+_VE("false-vision", "vp2 vr", comp=[])
+FICHES["screen"]["aoe"] = _VOL(405000)                    # un cube de 9 m par niveau, niveau 15
+
+# --- pages 474-489 ---
+_VE("disrupt-undead", "vp2", impact=(7, ["lumière"], "1d6 + 3 en moyenne"))
+for _v in (FICHES["cause-fear"], FICHES["cause-fear"]["vpf"]): _v["options"][1]["qty_cible"] = None     # Effroi : un être par trois niveaux, soit un seul au niveau 3
+FICHES["curse-water"]["consumed"] = True
+FICHES["ghoul-touch"]["aoe"] = _S(10)
+FICHES["enervation"]["vp2"]["options"][0]["impact"] = (18, ["affaiblissement"], "4d8 en moyenne, persistants")
+
+# --- pages 490-505 ---
+FICHES["poison"]["impact_sats"] = [(6, ["différé"])]
+_VE("poison", "vpf", impact=(2, [], "1d3 en moyenne à chaque instant, six instants durant"), impact_sats=[])
+_VE("slay-living", "vpf", impact=(51, ["ténébreux"], "12d6 + 9 en moyenne"), impact_sats=[])
+_VE("destruction", "vpf", impact=(130, ["anéantissement"], "10 points par niveau ; qui en meurt est réduit en cendres"))
+FICHES["undeath-to-death"]["consumed"] = True
+_VE("soul-bind", "vpf", prix=(100, "platine"))
+_VE("wail-of-the-banshee", "vpf", impact=(170, ["plainte", "âme"], "10 points par niveau"))
+
+# --- pages 506-521 ---
+FICHES["magic-stone"]["impact_sats"] = [(3, ["nombre"]), (9, ["si:mort-vivant"])]
+for _v in (FICHES["pyrotechnics"], FICHES["pyrotechnics"]["vpf"]):
+    _v["options"][0]["aoe"] = _S(120); _v["options"][1]["aoe"] = _S(20)
+_VE("pyrotechnics", "vp2", aoe=_S(20))
+_VE("warp-wood", "vpf", no_aoe=True)
+_OPT("warp-wood", "vpf", "warp-metal", qty_cible=7)
+FICHES["quench"]["aoe"] = _VOL(40000); _VE("quench", "vp2", aoe=_S(20))     # un cube de 6 m par niveau, niveau 5
+
+# --- pages 522-537 ---
+FICHES["snare"]["impact_sats"] = [(4, ["blessure"])]
+FICHES["rusting-grasp"].update(impact_sats=[(18, ["si:fer"])], aoe=_S(3)); _VE("rusting-grasp", "vp2", no_aoe=True)
+_VE("animal-growth", "vpf", qty_cible=None)
+_VE("righteous-might", "vpf", impact=(4, [], "4 ajouté à la Force et à l'Endurance, taille doublée"))
+FICHES["control-winds"]["aoe"] = _CY(360, 40)              # 12 m de rayon par niveau, niveau 9
+FICHES["transmute-rock-to-mud"]["aoe"] = _VOL(18000)       # deux cubes de 3 m par niveau, niveau 9
+_VE("transmute-rock-to-mud", "vp2", aoe={"type": "cube", "size": 10})
+
+# --- pages 538-553 ---
+FICHES["transmute-mud-to-rock"]["aoe"] = _VOL(18000)
+FICHES["temporal-stasis"]["consumed"] = True
+
+# --- pages 554-579 ---
+FICHES["adoration"].update(cible=2, impact=(2, ["charme", "admiration"], "2 ajouté à ses paroles et à ses prouesses"))
+FICHES["bungle"].update(cond=["seuil"], cond_sats=[(45, ["vie"])], impact=(20, ["maladresse"], "20 retranché à sa prochaine entreprise"))
+_VE("delusional-pride", "vp2", impact_add=[], dur=(10, "MINUTES"))
+
+# --- pages 580-631 ---
+FICHES["covetous-urge"]["cond_sats"] = [(10, ["valeur", "platine"])]      # tout objet d'au moins 100 po
+FICHES["daze-mass"].update(cond=["humanoïde", "seuil"], cond_sats=[(18, ["vie"])])
+FICHES["nixies-lure"].update(cond=["seuil"], cond_sats=[(108, ["vie"])])     # 24 dés de vie au plus
+
+# --- pages 632-709 ---
+FICHES["forgetful-slumber"].update(cond=["seuil"], cond_sats=[(45, ["vie"])])   # 10 dés de vie au plus
+FICHES["terrible-remorse"]["impact"] = (5, ["remords", "blessure"], "1d8 en moyenne à chaque instant, de sa propre main")
+
+# --- pages 710-735 ---
+FICHES["mindwipe"]["impact"] = (9, ["effacement"], "deux niveaux effacés pour un temps, soit 9 points de vie")
+FICHES["serenity"]["impact"] = (11, ["paix", "blessure"], "3d6 en moyenne à qui veut nuire")
+
+# --- pages 736-839 ---
+FICHES["umbral-weapon"]["impact"] = (6, ["écho"], "1d8 + 1 en moyenne, de froid, quand l'arme manque")
+FICHES["loathsome-veil"].update(cond=["seuil"], cond_sats=[(108, ["vie"])])     # 24 dés de vie au plus
+
+# --- pages 840-865 ---
+FICHES["shocking-image"]["impact_sats"] = [(7, ["foudre"])]            # 2d6 à qui détruit une image
+FICHES["illusory-hoard"].update(comp=["trésor"], prix=(1, "platine"), consumed=True)   # un objet d'au moins 10 po pris au trésor
+
+# --- pages 866-891 ---
+FICHES["dirge-of-the-victorious-knights"]["impact"] = (56, ["cavalier", "piétinement"], "16d6 en moyenne, moitié de froid")
+FICHES["phantasmal-revenge"].update(impact=(130, ["vengeance", "fantôme"], "10 points par niveau au meurtrier"), impact_sats=[(30, ["résistance"])])
+FICHES["mantle-of-doubt"]["impact"] = ("plein", ["doute", "peur"], "saisis de doute, ils ne menacent plus personne")
+
+# --- pages 892-995 ---
+def _N(k, v, why=None):
+    i = FICHES[k]["impact"]; FICHES[k]["impact"] = (v, i[1], why or i[2])
+_N("timely-inspiration", 1, "+1 par cinq niveaux")
+_N("true-skill", 1, "la moitié du niveau, au moins 1")
+_N("whispering-lore", 4); _N("true-appraisal", 5); _N("ancestral-communion", 4)
+_N("anticipate-thoughts", 2); _N("perfect-placement", 1); _N("focused-scrutiny", 10); _N("wild-instinct", 5)
+_N("mindshock", 2, "1d4 de douleur par coup"); _N("sense-vitals", 3, "1d6 de plus par coup")
+FICHES["sensory-amplifier"]["impact_sats"] = [(7, ["blessure"])]
+
+# --- pages 996-1099 ---
+_N("cast-out", 12, "2d8 + 3 en moyenne et un effet dissipé")
+_N("caustic-safeguard", 7, "1d6 par deux niveaux à qui touche l'objet")
+FICHES["clay-skin"]["impact_sats"] = [(25, ["plafond"])]
+_N("corruption-resistance", 5, "5 retranché aux coups chargés de la charge choisie")
+_N("blessing-of-liberty", 1); _N("gird-ally", 1, "+1, plus 1 par six niveaux")
+
+# --- pages 1100-1125 ---
+_N("painful-revelation", 4, "1d6 par deux niveaux à qui perce l'illusion")
+_N("planar-aegis", 16, "3d6 + niveau à qui frappe le lanceur")
+_N("quell-energy", 10, "10 retranché aux blessures de l'énergie choisie")
+_N("radiation-ward", 4)
+FICHES["nine-lives"]["cible"] = 2
+
+# --- pages 1126-1151 ---
+_N("sanctify-armor", 1, "+1 par quatre niveaux")
+_N("seers-bane", 18, "1d6 par deux niveaux au devin qui échoue")
+_N("shock-shield", 2, "+2 à la garde ; 1d6 de foudre en le congédiant")
+_N("strand-of-the-tangled-knot", 10, "le prochain coup s'égare de 10")
+_N("sunder-breaker", 4, "1d6 par niveau à l'arme qui brise")
+FICHES["symbol-of-dispelling"]["aoe"] = _S(40)
+FICHES["symbol-of-sealing"].pop("aoe", None); FICHES["symbol-of-sealing"].update(cible=1, cible_obj=["porte"])
+
+# --- pages 1152-1177 ---
+_N("tactical-formation", 2); _N("ward-the-faithful", 2)
+FICHES["unholy-ward"]["cible"] = 1
+FICHES["unholy-ward"]["impact_sats"] = FICHES["unholy-ward"].get("impact_sats", []) + [(50, ["plafond"])]
+_N("vestment-of-the-champion", 1, "+1 par quatre niveaux")
+_N("wall-of-silver", 22, "3d6 + niveau aux êtres hostiles qui le franchissent")
+_N("wreath-of-blades", 10, "1d4 par deux niveaux à qui commence son tour dans les lames")
+FICHES["woodland-rune"]["aoe"] = _S(30)
+
+# --- pages 1178-1203 ---
+_N("banshee-blast", 28, "11d4 en moyenne")
+_N("blood-boil", 32, "1d6 par niveau au troisième instant")
+_N("bloodbath", 4, "1d6 de saignement à chaque tour")
+_N("bloody-arrows", 1, "1 de saignement par trait, cumulable")
+_N("bloody-claws", 2, "saignement égal à la moitié du niveau")
+_N("boneshaker", 11, "3d6 en moyenne aux vivants")
+_N("boneshatter", 25, "7d6 en moyenne")
+
+# --- pages 1204-1229 ---
+FICHES["corpse-lanterns"]["impact"] = ("plein", ["lueur", "contraste"], "une lueur verdâtre qui trahit ceux qui se cachent et trouble les illusions")
+FICHES["corpse-lanterns"]["aoe"] = _S(20)
+_N("curse-of-unexpected-death", 35, "8d6 + niveau si le sort frappe")
+FICHES["deathwine"]["impact"] = ("plein", ["nécromancie", "puissance"], "le prochain sort de nécromancie du buveur est plus puissant")
+FICHES["defending-bone"]["impact"] = (5, ["os"], "chaque coup amoindri de 5")
+FICHES["defending-bone"]["impact_sats"] = [(15, ["plafond"])]
+_N("explosion-of-rot", 25, "7d6 en moyenne")
+
+# --- pages 1230-1255 ---
+_N("gebs-hammer", 7, "1d6 par trois niveaux à chaque coup du marteau")
+_N("howling-agony", 2)
+_N("life-blast", 18, "1d6 par niveau aux morts-vivants")
+
+# --- pages 1256-1281 ---
+FICHES["mind-over-matter"]["cible"] = 2
+FICHES["plague-carrier"]["cible"] = 2
+
+# --- pages 1282-1307 ---
+_N("purge-spirit", 11, "1d6 par niveau")
+_N("scarify", 8, "2d6 + niveau de blessures changées en douleur passagère")
+_N("scourge-of-the-horsemen", 60, "17d6 d'acide en moyenne, et la vie drainée")
+_N("siphon-might", 6, "1d6 + 2 de force drainée puis donnée")
+_N("retribution", 4)
+
+# --- pages 1308-1359 ---
+FICHES["umbral-strike"].update(impact=(46, ["froid", "nécrose"], "13d6 en moyenne, moitié froid, moitié nécrose"), sens=[("vue", None)])
+FICHES["vampiric-shadow-shield"]["impact"] = (13, ["riposte", "nécrose"], "1d6 + niveau à qui frappe le lanceur, dont un quart lui revient")
+_N("admonishing-ray", 14, "4d6 en moyenne")
+_N("augmenting-wall", 4, "1d6 d'énergie ajouté aux traits qui le traversent")
+_N("battering-blast", 7, "1d6 par deux niveaux")
+FICHES["betraying-sting"]["impact"] = (23, ["trahison"], "1d8 par deux niveaux à ceux qui se fiaient au lanceur")
+_N("blistering-invective", 6, "1d10 de feu aux ennemis démoralisés")
+_N("burn-corruption", 18, "1d8 par deux niveaux")
+
+# --- pages 1360-1385 ---
+_N("burning-arc-keleshite", 11, "1d6 par niveau, moitié moins à chaque rebond")
+_N("burning-entanglement", 14, "4d6 de feu à qui reste pris")
+_N("burst-bonds", 4, "1d6 par niveau aux liens")
+_N("burst-of-force", 32, "9d6 en moyenne")
+FICHES["burst-of-radiance"]["impact_sats"] = [(8, ["si:hostile"])]
+_N("call-the-void", 7, "2d6 à qui côtoie le lanceur")
+_N("chains-of-fire", 39, "11d6 en moyenne à la première cible")
+_N("cleansing-fire", 7, "2d6 de feu à qui franchit l'anneau")
+_N("controlled-fireball", 25, "7d6 en moyenne"); FICHES["controlled-fireball"]["aoe"] = _S(20)
+_N("cosmic-ray", 39, "11d6 en moyenne")
+FICHES["deadeyes-arrow"]["cible"] = 3; _N("deadeyes-arrow", 5, "1d6 + niveau de foudre, ou un signal")
+_N("decapitate", 14, "4d6 de plus sur un coup terrible")
+
+# --- pages 1386-1411 ---
+_N("defensive-shock", 4, "1d6 par deux niveaux à qui touche le lanceur")
+_N("elemental-aura", 7, "2d6 d'énergie à qui côtoie le lanceur")
+_N("explode-head", 32, "9d6 en moyenne ; la mort sous 20 points de vie")
+_N("fiery-runes", 4, "1d4+1 de feu à la décharge")
+_N("fires-friend", 4, "1d6 de feu à qui frappe le lanceur")
+_N("firestream", 7, "2d6 de feu par instant")
+_N("flashfire", 4, "1d6 par trois niveaux")
+_N("force-hook-charge", 5, "1 par niveau")
+_N("draconic-reservoir", 30, "6 points d'énergie absorbés par niveau")
+
+# --- pages 1412-1463 ---
+_N("force-punch", 13, "5d4 en moyenne"); _N("forceful-strike", 18, "1d4 par niveau")
+_N("frost-fall", 7, "2d6 de froid"); _N("furious-fire-barrage", 25, "1d6 par niveau par boule")
+_N("gozrehs-trident", 6, "1d8 + 1 de foudre"); _N("gusting-sphere", 4, "1d6 et une bousculade")
+_N("hungry-darkness", 11, "3d6 de force par instant"); _N("ice-slick", 7, "1d6 + niveau de froid")
+_N("icy-prison", 9, "1 de froid par niveau à chaque instant"); _N("jolting-portent", 14, "4d6 de foudre quand la cible agit")
+_N("lightning-lash", 7, "1d6 de foudre et 1d6 de puissance pure"); _N("night-of-blades", 13, "5d4 en moyenne")
+_N("pale-flame", 10, "2d6 + niveau"); _N("pinecone-bomb", 4, "1d6 par deux niveaux")
+_N("pyrotechnic-eruption", 18, "1d6 par niveau, moitié moins à chaque instant"); _N("rebuke", 14, "1d8 par deux niveaux")
+_N("reflexive-barrier", 2, "la moitié du niveau"); FICHES["reflexive-barrier"]["cible"] = 2
+
+# --- pages 1464-1515 ---
+_N("ride-the-lightning", 35, "10d6 de foudre sur la ligne franchie"); _N("runic-overload", 18, "1d6 par niveau")
+_N("sacred-nimbus", 13, "1d6 + niveau aux hostiles qui frappent"); _N("screaming-flames", 9, "1d8 par deux niveaux")
+_N("shield-of-the-dawnflower", 11, "1d6 + niveau à qui frappe le lanceur"); _N("siege-scatter", 14, "1d6 par deux niveaux")
+_N("sign-of-wrath", 39, "11d6 en moyenne"); _N("sirocco", 25, "4d6 + niveau de feu")
+_N("sonic-scream", 10, "4d4 au premier cri, moitié moins ensuite"); _N("spiritual-ally", 8, "1d10 + 2 de force par coup")
+_N("steam-ray-fusillade", 14, "4d6 par rayon"); _N("stormbolts", 68, "15d8 en moyenne")
+FICHES["symbol-of-storms"]["aoe"] = _S(30); _N("symbol-of-storms", 35, "10d6 de foudre par instant sur un être au hasard")
+_N("telekinetic-strikes", 2, "1d4 de force par coup"); _N("thundering-drums", 23, "5d8 en moyenne")
+_N("touch-of-combustion", 4, "1d6 de feu"); FICHES["tracking-mark"]["cible"] = 3
+_N("trial-by-fire", 7, "1d6 par deux niveaux"); _N("trial-of-fire-and-acid", 7, "1d6 d'acide et 1d6 de feu par instant")
+_N("unflappable-mien", 13, "1d4 par niveau"); _N("vengeful-comets", 14, "1d6 de choc et 3d6 de froid par comète")
+
+# --- pages 1516-1567 ---
+_N("vortex", 11, "3d6 à qui touche le tourbillon"); _N("wall-of-sound", 16, "2d6 + niveau à qui le traverse")
+_N("wrathful-mantle", 1, "+1 par quatre niveaux")
+_N("ablative-barrier", 5, "5 points de chaque coup changés en douleur passagère"); FICHES["ablative-barrier"]["impact_sats"] = [(15, ["plafond"])]
+_N("acidic-spray", 32, "9d6 en moyenne"); FICHES["acidic-spray"]["aoe"] = {"type": "line", "size": 60}
+_N("fire-snake", 32, "9d6 en moyenne"); _N("lightning-arc", 32, "9d6 en moyenne")
+_N("balance-of-suffering", 43, "9d6 + niveau pris à l'un, rendus à l'autre"); _N("barbed-chains", 4, "1d6 par chaîne")
+_N("blaze-of-glory", 11, "1d6 par deux niveaux"); _N("breath-of-life", 32, "5d8 + niveau")
+_N("burning-sands", 2, "1d4 de feu par instant"); _N("cave-fangs", 14, "3d8 en moyenne")
+_N("conjure-deadfall", 25, "1d6 par niveau sur une case"); _N("corrosive-consumption", 32, "1d6 par niveau au troisième instant")
+_N("corrosive-touch", 2, "1d4 par niveau")
+
+# --- pages 1568-1593 ---
+_N("curative-distillation", 8, "1d8 + niveau, en plus de la vertu du remède")
+_N("cushioning-bands", 2, "2 retranché aux chocs, moitié de l'écrasement"); FICHES["cushioning-bands"]["impact_sats"] = [(36, ["plafond"])]
+FICHES["damnation-stride"]["impact_sats"] = [(14, ["feu"])]
+FICHES["fiery-shuriken"]["cible"] = 3; _N("fiery-shuriken", 5, "1d8 de feu par étoile")
+
+# --- pages 1594-1645 ---
+_N("flash-flood", 18, "1d6 par deux niveaux"); _N("fleshworm-infestation", 4, "1d6 par instant, et l'adresse rongée")
+_N("force-anchor", 2, "1d4 par deux niveaux"); _N("geyser", 11, "3d6 de feu, plus la chute")
+_N("gloomblind-bolts", 14, "4d6 par trait"); _N("gravel-vortex", 18, "5d6 en moyenne")
+_N("healing-flames", 14, "1d8 par deux niveaux, soin ou brûlure"); _N("holy-javelin", 4, "1d6 par instant aux hostiles")
+_N("ice-spears", 14, "2d6 de perforation et 2d6 de froid par lance"); _N("inspiring-recovery", 14, "1d8 par deux niveaux")
+_N("instant-restoration", 25, "4d8 + niveau"); _N("iron-stake", 4, "1d6 par deux niveaux")
+_N("maw-of-chaos", 53, "1d6 par niveau à qui y est entraîné")
+
+# --- pages 1646-1697 ---
+_N("pellet-blast", 9, "1d8 par deux niveaux"); _N("pillar-of-life", 18, "2d8 + niveau à qui touche le pilier")
+_N("rain-of-arrows", 53, "15d6 en moyenne"); _N("resurgent-transformation", 27, "4d8 + niveau au sursaut")
+_N("second-wind", 14, "2d8 + niveau"); _N("silver-darts", 18, "5d6 en moyenne")
+_N("soothing-mud", 1, "1 point de vie par instant"); _N("stone-discus", 14, "4d6 par disque")
+FICHES["storm-step"]["impact_sats"] = [(9, ["foudre"])]; _N("stone-shield", 4, "+4 à la garde contre un ennemi")
+
+# --- pages 1698-1749 ---
+_N("stumble-gap", 4, "1d6 dans la chute"); _N("summon-stampede", 23, "4d6 + 9 sous les sabots")
+_N("swarm-of-fangs", 7, "2d6 par instant"); _N("symbol-of-healing", 14, "2d8 + niveau, soin ou brûlure")
+_N("tidal-surge", 14, "1d6 par deux niveaux"); _N("vine-strike", 4, "1d6 de plus par coup")
+FICHES["vinetrap"]["impact"] = ("plein", ["liane", "lenteur"], "des lianes qui ralentissent de plus en plus")
+_N("wall-of-clockwork", 14, "1d6 par deux niveaux à qui le traverse"); _N("wall-of-lava", 70, "20d6 de feu à qui le traverse")
+_N("winter-grasp", 4, "1d6 de froid par instant"); _N("acute-senses", 10); _N("acid-maw", 2, "1d4 d'acide par morsure")
+
+# --- pages 1750-1801 ---
+_N("arodens-magic-army", 2, "+1 par cinq niveaux"); FICHES["baphomets-blessing"]["cible"] = 3
+_N("blessing-of-the-salamander", 5, "5 points de vie rendus par instant, et le feu amoindri de 20")
+_N("boiling-blood", 1, "1 de feu par instant"); _N("binding-earth", 4, "1d6 par pas franchi")
+_N("burning-disarm", 2, "1d4 par niveau à qui garde l'objet en main")
+
+# --- pages 1802-1853 ---
+_N("caustic-blood", 25, "1d6 par niveau à qui blesse le lanceur"); FICHES["certain-grip"]["cible"] = 2
+_N("curse-of-burning-sleep", 11, "1d6 par deux niveaux, puis l'embrasement"); _N("dance-of-a-hundred-cuts", 2, "+1 par trois niveaux")
+_N("diminish-resistance", 5, "5 de résistance en moins"); _N("earth-tremor", 13, "5d4 en moyenne")
+FICHES["eldritch-conduit"]["cible"] = 3
+
+# --- pages 1854-1905 ---
+_N("eruptive-pustules", 4, "1d6 d'acide à qui frappe le lanceur"); _N("excruciating-deformation", 7, "2d6 de douleur par instant")
+_N("fire-trail", 9, "1d6 + niveau à qui entre dans la traînée"); _N("firebrand", 4, "1d6 de feu de plus par coup")
+_N("firefall", 18, "5d6 en moyenne"); FICHES["firefall"]["aoe"] = _S(60)
+_N("flames-of-the-faithful", 4, "1d6 de feu de plus par coup"); _N("funereal-weapon", 5, "5 points de la garde des morts-vivants ignorés")
+_N("fungal-blisters", 5, "1d6 + 1 par deux niveaux à chaque cloque")
+
+# --- pages 1906-1957 ---
+FICHES["ghost-brand"]["impact"] = ("plein", ["marque", "fusion"], "l'objet, devenu ombre, se fond dans la chair de son porteur")
+_N("hammer-of-mending", 32, "1d6 par niveau réparés"); _N("hellmouth-lash", 14, "1d8 par deux niveaux")
+_N("iron-spine", 4, "1d6 à chaque mouvement"); _N("ironbeard", 1, "+1 à la garde")
+for _k in ("ironbeard", "kinetic-reverberation", "groundswell"): FICHES[_k]["cible"] = 2
+
+# --- pages 1958-2009 ---
+FICHES["mark-of-blood"]["impact"] = ("plein", ["marque", "piste"], "le premier être frappé est marqué, le lanceur sait où il se trouve")
+FICHES["mighty-strength"]["cible"] = 1; FICHES["miasmatic-form"]["cible"] = 2; FICHES["natural-rhythm"]["cible"] = 2
+_N("obsidian-flow", 7, "1d6 par deux niveaux"); _N("parchment-swarm", 32, "9d6 en moyenne")
+_N("polar-midnight", 18, "5d6 de froid par instant"); _N("raging-rubble", 4, "1d6 par instant")
+
+# --- pages 2010-2061 ---
+_N("resonating-word", 18, "5d6 les deux premiers instants, 10d6 au troisième"); _N("rigor-mortis", 18, "1d6 par niveau")
+_N("sawtooth-terrain", 14, "3d8 en moyenne, puis le saignement")
+FICHES["scorching-ash-form"]["cible"] = 2; _N("scorching-ash-form", 7, "2d6 de feu à qui partage son espace")
+_N("shield-of-shards", 4, "1d4 + 1 par éclat au-delà du premier")
+
+# --- pages 2062-2113 ---
+_N("splinter-spell-resistance", 5, "5 de résistance à la magie en moins"); _N("staggering-fall", 4, "1d6 de plus dans la chute")
+_N("steal-breath", 7, "2d6 et le souffle coupé"); _N("sun-metal", 2, "1d4 de feu par coup"); _N("strangling-hair", 4, "1d6 par instant d'étreinte")
+_N("snapdragon-fireworks", 2, "1d4 de feu"); _N("tar-ball", 2, "1d4 de feu, puis encore à chaque instant"); _N("tar-pool", 18, "1d6 par deux niveaux")
+_N("thorn-body", 9, "1d6 + niveau à qui frappe le lanceur"); FICHES["toxic-blood"]["cible"] = 2
+_N("transmute-blood-to-acid", 28, "1d6 par deux niveaux à chaque instant")
+
+# --- pages 2114-2139 ---
+FICHES["transmute-golem"]["cible"] = 2
+FICHES["violent-accident"]["impact"] = (14, ["accident"], "1d8 par niveau, au plus 5d8")
+_N("wave-form", 14, "4d6 à ce que la vague traverse")
+
+# --- pages 2140-2191 ---
+FICHES["wind-blades"]["cible"] = 3; _N("wind-blades", 4, "1d6 dès que la cible bouge, plus 1d6 par trois mètres")
+_N("wooden-wing-shield", 4, "+4 à la garde")
+FICHES["absorbing-barrier"]["impact_sats"] = [((140 if s[0] == 200 else s[0]),) + tuple(s[1:]) for s in FICHES["absorbing-barrier"]["impact_sats"]]
+
+# --- pages 2192-2269 ---
+_N("blood-of-the-martyr", 4, "1d6 par instant")
+_N("limp-lash", 4, "1d6 retiré à chaque instant, jusqu'à la paralysie du corps")
+FICHES["unlock-flesh"]["options"][1]["impact"] = (4, ["lambeaux"], "1d6 par niveau : sa chair tombe par lambeaux")
+FICHES["crown-of-glory"]["prix"] = (20, "platine")
+FICHES["dark-light"]["dur"] = (30, "SECONDES")
+FICHES["recorporeal-incarnation"]["dur"] = (91, "JOURS")      # une semaine par niveau
+
+# --- pages 2270-2339 ---
+FICHES["torrent-of-elemental-rage"]["dur"] = (18, "SECONDES")   # un round par trois niveaux
+_N("celestial-companion", 5, "résistance aux sorts des êtres hostiles : 5 plus la moitié du niveau")
+FICHES["frosty-aura"]["aoe"] = _S(10)
+_N("pattern-recognition", 1, "la moitié du niveau, 1 au moins")
+FICHES["metabolic-molting"]["dur"] = (7, "JOURS")
+
+# --- pages 2340-2495 ---
+FICHES["return-beacon"]["impact"] = ("plein", ["balise", "retour"], "une balise invisible où revenir, à 1,6 km au plus")
+FICHES["return-beacon"]["impact_sats"] = [(2, ["kilomètres"])]
+
+# --- page 1750 : mot composé remplacé par un mot simple ---
+FICHES["age-resistance-lesser"]["options"][2]["impact"] = ("plein", ["âge", "vénérable"], "ceux du grand âge")
+
+# --- réponses de fin de passe : question 1, toute face astrale reçoit sa réciproque ---
+for _k in ['chill-touch', 'sacred-flame', 'divine-favor', 'guiding-bolt', 'inflict-wounds', 'branding-smite', 'bestow-curse', 'vampiric-touch', 'blight', 'guardian-of-faith', 'contagion', 'circle-of-death', 'harm', 'finger-of-death', 'symbol', 'true-strike-2024', 'aura-of-life', 'divine-smite', 'hex', 'starry-wisp', 'searing-light', 'inflict-light-wounds-mass', 'disrupt-undead', 'slay-living', 'bestow-grace', 'unholy-ward', 'defoliate', 'lash-of-the-astradaemon', 'repair-undead', 'stricken-heart', 'umbral-strike', 'undeath-inversion', 'vampiric-shadow-shield', 'blood-crow-strike', 'litany-of-order', 'motes-of-dusk-and-dawn', 'wrathful-mantle', 'blaze-of-glory', 'gloomblind-bolts', 'holy-javelin', 'life-current', 'divine-arrow', 'empower-holy-water', 'life-channel', 'shared-suffering', 'wracking-ray', 'burst-with-light', 'ghostly-tragedy', 'penumbral-shroud', 'purifying-icicle', 'wall-of-virtue', 'radiant-beam', 'scouring-pulse', 'grim-tendrils', 'necromancers-generosity', 'feral-shades', 'sudden-blight', 'positive-attunement', 'call-the-blood', 'cloak-of-light', 'necrotic-radiation', 'pernicious-poltergeist', 'sanguine-mist', 'vampiric-maiden', 'invoke-spirits', 'rip-the-spirit', 'field-of-life', 'necrotize', 'vampiric-exsanguination', 'devour-life', 'divine-armageddon', 'voracious-gestalt', 'devouring-void', 'whispers-of-the-void', 'all-encompassing-hunger', 'song-of-the-fallen', 'litany-against-wrath', 'shadows-web', 'celestial-brand', 'hellfire-plume', 'drain-life', 'consuming-darkness', 'soul-siphon', 'life-giving-form', 'eradicate-undeath', 'touch-of-undeath', 'malignant-sustenance', 'positive-luminance', 'purifying-veil', 'hallowed-ground', 'light-of-revelation', 'withering-grasp']:
+    FICHES[_k]["reciproque"] = True
+
+# --- réponses de fin de passe : questions 2 à 28 ---
+# 2. sorts 3.5 / PF1 lus les premiers : valeurs au niveau du lanceur de référence (2n − 1)
+for _v in ("v35", "vpf"):
+    FICHES["magic-missile"][_v] = dict(FICHES["magic-missile"].get(_v) or {}, qty=1)
+    FICHES["floating-disk"][_v] = dict(FICHES["floating-disk"].get(_v) or {}, impact_sats=[(45, ["kilogrammes"])])
+    FICHES["feather-fall"][_v] = dict(FICHES["feather-fall"].get(_v) or {}, qty_cible=1)
+# 3. Croissance d'épines 3.5 : un carré de 6 m par niveau
+FICHES["spike-growth"]["v35"]["aoe"] = _VOL(40000)
+# 5. Éveil 3.5 : le coût en expérience seul, payé en vie (pas de gemme)
+FICHES["awaken"]["v35"] = dict(FICHES["awaken"].get("v35") or {}, comp=[])
+# 6. Œil magique : la portée de sa vision est un satellite de l'Impact, pas une Ampleur
+FICHES["arcane-eye"]["no_aoe"] = True
+FICHES["arcane-eye"]["impact_sats"] = [(9, ["nuit", "mètres"])]
+for _v in ("v35", "vpf"): FICHES["arcane-eye"][_v] = dict(FICHES["arcane-eye"].get(_v) or {}, impact_sats=[])
+# 7. Contagion : les maladies propres à la 3.5 et à Pathfinder 1
+_MAL = [("Mal aveuglant", "aveuglement", "aveugle"), ("Fièvre ricanante", "rire", "un rire fou qui ronge la lucidité"), ("Fièvre des ordures", "faiblesse", "le corps affaibli"),
+        ("Feu de l'esprit", "démence", "l'esprit en fièvre"), ("Mal rouge", "douleur", "la force qui s'en va"), ("Tremblote", "tremblement", "l'adresse qui s'en va"),
+        ("Mort visqueuse", "pourriture", "les chairs qui se liquéfient")]
+_MAL_O = lambda l: [dict(label=a, impact=("plein", ["maladie", b], c)) for a, b, c in l]
+FICHES["contagion"]["v35"] = dict(FICHES["contagion"].get("v35") or {}, options=_MAL_O(_MAL))
+FICHES["contagion"]["vpf"] = dict(FICHES["contagion"].get("vpf") or {}, options=_MAL_O(_MAL[:3] + [("Peste bubonique", "peste", "la peste"), ("Lèpre", "lèpre", "la lèpre")] + _MAL[3:]))
+# 8. Quête PF1 : ce sont les caractéristiques qui baissent (3 par jour, 12 au plus), non la vie
+FICHES["geas"]["vpf"] = dict(FICHES["geas"]["vpf"], sats={"DUREE": [(3, ["affaiblissement", "jour"])]}, impact_sats=[(12, ["plafond"])])
+# 9. Dissipation du mal et du bien : les trois usages annoncés
+FICHES["dispel-evil-and-good"]["options"] = [
+    O("Garde", impact=("plein", ["garde", "outre-plan"], "les êtres d'outre-plan me frappent mal")),
+    O("Rupture d'enchantement", cible=2, impact=("plein", ["délivrance", "charme", "effroi", "possession"], "un allié touché est délivré du charme, de l'effroi ou de la possession")),
+    O("Renvoi", cible=3, impact=("plein", ["renvoi"], "l'être d'outre-plan touché est renvoyé chez lui"))]
+# 11. Chaîne d'éclairs 3.5 / PF1 : les éclairs secondaires frappent à moitié
+for _v in ("v35", "vpf"): FICHES["chain-lightning"][_v] = dict(FICHES["chain-lightning"][_v], impact_sats=[(2, ["secondaire", "fractionné"])])
+# 15. Lévitation 3.5 / PF1 : portée courte (7,5 m + 1,5 m par deux niveaux)
+for _v in ("v35", "vpf"): FICHES["levitate"][_v] = dict(FICHES["levitate"].get(_v) or {}, loc=(9, "METRES", "9 m"))
+# 17. prix secondaires, en satellite de la Composante
+FICHES["clone"]["sats"] = dict(FICHES["clone"].get("sats") or {}, COMPOSANTE=[(200, ["récipient", "platine"])])
+FICHES["protection-from-spells"]["sats"] = dict(FICHES["protection-from-spells"].get("sats") or {}, COMPOSANTE=[(100, ["porteur", "platine"])])
+# 21. Images 3.5 / PF1 : quatre cubes de 3 m, plus un par niveau
+for _v in ("v35", "vpf"):
+    FICHES["silent-image"][_v] = dict(FICHES["silent-image"].get(_v) or {}, aoe=_VOL(5000))
+    FICHES["major-image"][_v] = dict(FICHES["major-image"].get(_v) or {}, aoe=_VOL(9000))
+# 22. murs 3.5 : la surface
+FICHES["wall-of-iron"]["forme"] = [("FORME", 2, [], "plan : un mur droit et vertical", [(90, 1)]), ("AMPLEUR", 25, ["SURFACE", "METRES"], "25 m² : un carré de 1,5 m par niveau")]
+FICHES["illusory-wall"]["forme"] = [("FORME", 2, [], "plan : un mur droit et vertical", [(90, 1)]), ("AMPLEUR", 9, ["SURFACE", "METRES"], "9 m² : 3 m sur 3")]
+# 23. Déguisement spectral : source sans texte, page retirée
+del FICHES["ghostly-disguise"]
+# 24. Frappe de glace : une ligne
+FICHES["cold-ice-strike"]["aoe"] = {"type": "line", "size": 30}
+# 25. Trait de charge : 1d8 par deux niveaux, soit 5 au niveau de référence
+_N("dread-bolt", 5)
+for _o in FICHES["dread-bolt"]["options"]: _o["impact"] = (5,) + tuple(_o["impact"][1:])
+# 28. Convocation de génie : un mot pour l'être, la Quantité pour le nombre
+FICHES["summon-genie-lesser"]["impact"] = ("plein", ["génie", "mineur"], "un génie mineur")
+FICHES["summon-genie-lesser"]["qty"] = 1
+FICHES["summon-genie-lesser"]["options"][1]["impact"] = ("plein", ["génie", "vents"], "un génie des vents")
+FICHES["summon-genie-lesser"]["options"][2]["impact"] = ("plein", ["génie", "terrestre"], "un génie de la terre")

@@ -81,17 +81,17 @@ def dice_avg(s, mod=3):
         elif part.isdigit(): tot += sg * int(part)
     return tot
 
-UNITS = {"minute": "MINUTES", "hour": "HEURES", "day": "JOURS", "round": "SECONDES"}
-UNIT_FR = {"MINUTES": ("minute", "minutes"), "HEURES": ("heure", "heures"), "JOURS": ("jour", "jours"), "SECONDES": ("seconde", "secondes")}
+UNITS = {"minute": "MINUTES", "hour": "HEURES", "day": "JOURS", "round": "SECONDES", "year": "ANS"}
+UNIT_FR = {"MINUTES": ("minute", "minutes"), "HEURES": ("heure", "heures"), "JOURS": ("jour", "jours"), "ANS": ("an", "ans"), "SECONDES": ("seconde", "secondes")}
 def fr_time(v, u):
     if v == "plein": return "jusqu'à dissipation"
     return f"{v} {UNIT_FR[u][0 if v == 1 else 1]}"
 def parse_time(t):
-    t = t.lower().replace("up to ", "")
+    t = re.sub(r"^concentration,?\s+(?=\S)", "", t.lower()).replace("up to ", "")
     if "instantaneous" in t or "special" in t: return None
     if "until dispelled" in t or "permanent" in t: return ("plein", None)
     if t.strip() == "concentration": return ("plein", None)   # concentration sans durée maximale : infinie
-    m = re.match(r"(\d+)\s*(round|minute|hour|day)", t)
+    m = re.match(r"(\d+)\s*(round|minute|hour|day|year)", t)
     if not m: return None
     n, u = int(m.group(1)), m.group(2)
     if u == "round": return (n * 6, "SECONDES")
@@ -594,6 +594,7 @@ def build_forms(idx, fiche):
         fe["alt"] = [dict(a, **{k: x for k, x in v.items() if k in ("impact", "impact_sats", "impact_add", "aoe", "options")}) if not a.get("grimoire") else dict(a)
                      for a in fiche.get("alt", [])]
         for a, extra in zip(fe["alt"], v.get("alt", [])): a.update(extra)
+        fe["alt"] = [a for a in fe["alt"] if not a.get("drop")]   # une version peut retirer une forme alternative qui n'existe pas chez elle
         fe.pop("v24", None); fe.pop("v35", None); fe.pop("vpf", None); fe.pop("vp2", None); fe.pop("vr", None)
         nom = f" ({v['name']})" if v.get("name") else ""
         for f in _forms(idx, fe, single_note=False):
@@ -606,6 +607,42 @@ def build_forms(idx, fiche):
             f["notes"] = [f"{what}{nom} : la version change ce que le glyphe inscrit."] + [n for n in f["notes"] if not n.startswith("Pas de forme")]
             forms.append(f)
     return forms
+
+def _faces_of(f):
+    out = set()
+    for r in f["rings"]:
+        for w in r[2]:
+            if norm(w) in ("LUMINEUX", "TENEBREUX"): out.add(norm(w).lower())
+        for x in (r[4] if len(r) > 4 and r[4] else []):
+            for q in x:
+                if isinstance(q, tuple) and len(q) == 2 and q[0] == "sym" and q[1] in ("lumineux", "tenebreux"): out.add(q[1])
+                elif isinstance(q, (list, tuple)):
+                    for w in q:
+                        if isinstance(w, str) and norm(w) in ("LUMINEUX", "TENEBREUX"): out.add(norm(w).lower())
+    return out
+
+def _autre_face(src, face):
+    """la même fiche, tissée de l'autre face : les deux faces s'échangent partout, l'énergie propre à une face prend le nom de l'autre"""
+    def m(o, energie=False):
+        if isinstance(o, str):
+            n = norm(o)
+            if n == "LUMINEUX": return "ténébreux"
+            if n == "TENEBREUX": return "lumineux"
+            if energie and n == "NECROSE" and face == "lumineux": return "lumineux"
+            if energie and n == "LUMIERE" and face == "tenebreux": return "ténébreux"
+            return o
+        if isinstance(o, tuple): return tuple(m(x, energie) for x in o)
+        if isinstance(o, list): return [m(x, energie) for x in o]
+        if isinstance(o, dict): return {k: m(x, energie) for k, x in o.items()}
+        return o
+    out = dict(src)
+    for k in ("impact", "impact_add", "impact_plus", "impact_sats"):
+        if k in out: out[k] = m(out[k], True)
+    for k in ("cond", "cond_sats", "cible_note"):
+        if k in out: out[k] = m(out[k])
+    if "cible_sym" in out: out["cible_sym"] = [{"lumineux": "tenebreux", "tenebreux": "lumineux"}.get(x, x) for x in out["cible_sym"]]
+    out["face"] = "ténébreux" if face == "tenebreux" else "lumineux"
+    return out
 
 def _forms(idx, fiche, single_note=True):
     fams = [fiche]
@@ -624,6 +661,20 @@ def _forms(idx, fiche, single_note=True):
             if "only" in o and o.pop("only") != i: continue
             src = {**{k: v for k, v in fam.items() if k != "options"}, **o}
             forms.append(build_spell(idx, src)); srcs.append({**src, "_opt": lab})
+    if fiche.get("reciproque"):
+        # canon : une face astrale ne va pas sans l'autre ; chaque forme qui n'en inscrit qu'une reçoit sa réciproque
+        forms2, srcs2 = [], []
+        for f, src in zip(forms, srcs):
+            fa = _faces_of(f)
+            if len(fa) != 1 or src.get("face"):
+                forms2.append(f); srcs2.append(src); continue
+            nat = fa.pop(); oth = "tenebreux" if nat == "lumineux" else "lumineux"
+            nom = {"lumineux": "Forme lumineuse", "tenebreux": "Forme ténébreuse"}
+            forms2.append(f); srcs2.append({**src, "_opt": (src["_opt"] + " — " + nom[nat].lower()) if src.get("_opt") else nom[nat]})
+            src_o = _autre_face(src, oth)
+            forms2.append(build_spell(idx, {k: v for k, v in src_o.items() if k != "_opt"}))
+            srcs2.append({**src_o, "_opt": (src["_opt"] + " — " + nom[oth].lower()) if src.get("_opt") else nom[oth]})
+        forms, srcs = forms2, srcs2
     if single_note and len(forms) == 1 and not fiche.get("single_note") is False:
         f0 = forms[0]
         if fiche.get("why_single"): f0["notes"].append(fiche["why_single"])

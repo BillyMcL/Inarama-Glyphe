@@ -75,8 +75,16 @@ def _area(a):
     return None
 def _damage(txt, L):
     m = re.search(r"(\d+d\d+(?:\s*\+\s*\d+)?) (?:points of )?(\w+) damage", txt)
-    if not m or m.group(2).lower() not in DMG: return None
-    return {"damage_type": {"name": DMG[m.group(2).lower()]}, "damage_at_slot_level": {str(L): m.group(1).replace(" ", "")}}
+    if m and m.group(2).lower() in DMG:
+        return {"damage_type": {"name": DMG[m.group(2).lower()]}, "damage_at_slot_level": {str(L): m.group(1).replace(" ", "")}}
+    # « cold damage equal to 1d4 + your spellcasting modifier », « 2d4 (2d6 if melee) fire damage »
+    m = re.search(r"(\w+) damage equal to (\d+d\d+)", txt)
+    if m and m.group(1).lower() in DMG:
+        return {"damage_type": {"name": DMG[m.group(1).lower()]}, "damage_at_slot_level": {str(L): m.group(2)}}
+    m = re.search(r"(\d+d\d+) \([^)]*\) (\w+) damage", txt)
+    if m and m.group(2).lower() in DMG:
+        return {"damage_type": {"name": DMG[m.group(2).lower()]}, "damage_at_slot_level": {str(L): m.group(1)}}
+    return None
 
 def load(path):
     """renvoie (origine, remanié) : deux dictionnaires de sorts ordinaires, clés en nom anglais normalisé"""

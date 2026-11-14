@@ -9,7 +9,7 @@ WORDS = {
  "LOCALISATION": "l o k a l i s a s i o n", "CONDITION": "k o n d i s i o n", "IMPACT": "i m p a k t",
  "QUANTITE": "k a n t i t e", "COMPOSANTE": "k o m p o s a n t", "COSMETIQUE": "k o s m e t i k",
  "METRES": "m e t r", "KILOMETRES": "k i l o m e t r", "MINUTES": "m i n u t", "HEURES": "e r",
- "JOURS": "y u r", "SECONDES": "s e g o n d", "DIAMETRE": "d i a m e t r", "LONGUEUR": "l o ng e r",
+ "JOURS": "y u r", "ANS": "a n", "SECONDES": "s e g o n d", "DIAMETRE": "d i a m e t r", "LONGUEUR": "l o ng e r",
  "COTE": "k o t e", "FOIS": "f w a",
  "FEU": "f e", "FOUDRE": "f u d r", "TONNERRE": "t o n e r", "VIE": "v i", "TAILLE": "t a y",
  "MALADIE": "m a l a d i", "PIERRE": "p y e r", "BETE": "b e t", "IMAGE": "i m a g", "GARDE": "g a r d",

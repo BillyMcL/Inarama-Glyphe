@@ -31,6 +31,6 @@ CIBLE_MOTS = set().union(*CIBLE.values())
 
 # Impact : notions mesurées (une valeur chiffrée exige une unité) et unités admises (règle 7)
 MESURES = set("VISION VOL SAUT PAS ELEVATION PORTEE VITESSE STATURE PORT LECTURE ALLONGE".split())
-UNITES = set("METRES KILOMETRES KILOGRAMMES LITRES FOIS MINUTES HEURES JOURS CUBES".split())
+UNITES = set("METRES KILOMETRES KILOGRAMMES LITRES FOIS MINUTES HEURES JOURS ANS CUBES".split())
 # verbes sous lesquels « vie » chiffrée serait lue comme un soin alors que le sort blesse (règle 3)
 VERBES_NUISIBLES = set("Détruire Corrompre Révéler Séparer Dissimuler Réduire Ancrer Lier Déstabiliser Repousser Attirer Bannir".split())

@@ -23,7 +23,8 @@ def lint(spells):
                 ss = sats(r); mots = [l for v, l in ss if not isinstance(v, tuple)]
                 elems = [v for v, l in ss if isinstance(v, tuple) and v[1] in ("feu", "air", "terre", "eau")]
                 if fm["fam"] == "H" and r[1] == "plein" and not r[2] and not any(mots): err("règle 1", "hybride : Impact plein sans mot d'action")
-                if r[1] != "plein" and "VIE" in r[2] and verbe in L.VERBES_NUISIBLES: err("règle 3", "« vie » chiffrée sous un verbe qui nuit")
+                # (une part de la vie de la cible — « vie » avec un satellite « fractionné » — est une mesure, non un soin)
+                if r[1] != "plein" and "VIE" in r[2] and verbe in L.VERBES_NUISIBLES and not any("FRACTIONNE" in l for l in mots): err("règle 3", "« vie » chiffrée sous un verbe qui nuit")
                 if len(elems) > 4: err("règle 4", f"{len(elems)} symboles d'éléments sur un seul Impact")
                 if r[1] != "plein" and set(r[2]) & L.MESURES and not set(r[2]) & L.UNITES and not any("FRACTIONNE" in l for l in mots):
                     err("règle 7", "mesure sans unité : " + " · ".join(w.lower() for w in r[2]))

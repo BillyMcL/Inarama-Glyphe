@@ -1,3 +1,4 @@
+import re
 """Conversion d'un sort du SRD 5.1 en glyphe d'Inarama (cercle et bande, déclarée et non déclarée).
 Données D&D : srd/spells.json (SRD 5.1, CC-BY-4.0). Choix sémantiques : fiches.py."""
 import sys, io, json, math, re, contextlib, unicodedata
@@ -119,11 +120,13 @@ def localisation(rng):
     return (mm, "METRES", f"{mm} m")
 
 FORMES = {  # type D&D -> (silhouette, satellites, nom, grandeur)
- "sphere": ("plein", [(90, "plein")], "sphère", "DIAMETRE"),
- "cube": (4, [(90, "plein")], "cube", "COTE"),
- "cone": (3, [(90, 2), (210, "plein")], "cône (hauteur 2, rayon 1)", "LONGUEUR"),
- "line": (1, [(90, "plein")], "ligne", "LONGUEUR"),
- "cylinder": (9, [(90, "plein"), (210, "plein")], "cylindre", "DIAMETRE"),
+ # les satellites portent les proportions ; 1 s'écrit par le trait. « SYM » : la règle de symétrie les place
+ # (un seul, au nord ou au sud ; deux, nord-sud ou ouest-est ; le premier axe est celui du nord ou de l'ouest)
+ "sphere": ("plein", [("SYM", 1)], "sphère", "DIAMETRE"),
+ "cube": (4, [("SYM", 1)], "cube", "COTE"),
+ "cone": (3, [("SYM", 2), ("SYM", 1)], "cône (hauteur 2, rayon 1)", "LONGUEUR"),
+ "line": (1, [("SYM", 1)], "ligne", "LONGUEUR"),
+ "cylinder": (9, [("SYM", 1), ("SYM", 1)], "cylindre", "DIAMETRE"),
 }
 
 CIBLES = {1: "soi", 2: "un allié", 3: "un ennemi", 4: "un inconnu", 5: "un être dissimulé ou gardé", 7: "un être sans corps",
@@ -184,20 +187,57 @@ ELEM_UNITS = {"FEU": ["feu"], "AIR": ["air"], "TERRE": ["terre"], "EAU": ["eau"]
               # le métal et le bois ne sont pas des éléments à part : ils s'inscrivent par leur combinaison (Acier, Bronze, Bois)
               "ACIER": ["feu", "air", "terre", "terre"], "METAL": ["feu", "air", "terre", "terre"], "BRONZE": ["feu", "feu", "terre", "eau"],
               "BOIS": ["air", "terre", "terre", "eau"]}
-def place_sats(sats):
+_T_DIST = {"METRES", "KILOMETRES"}
+_T_TIME = {"SECONDES", "INSTANT", "INSTANTS", "ROUNDS", "MINUTE", "MINUTES", "HEURE", "HEURES", "JOUR", "JOURS", "SEMAINES", "MOIS", "ANS"}
+_T_DIM = {"RAYON", "HAUTEUR", "LONGUEUR", "LARGEUR", "DIAMETRE", "COTE"}
+from lexique import VERBES_NUISIBLES as L_NUISIBLES
+_T_CATEG = {"MORTVIVANT", "HOSTILE", "PLAN", "INTANGIBLE", "GRAND", "ELEMENTAIRE", "FER", "MOURANT"}     # ceux que l'effet touche : une Condition
+_T_FORME = {"EXPLOSION", "ORBE"}      # mots de forme : traités avec le cercle Forme (formes_mots), pas ici
+def sat_type(v, ws, parent=None):
+    """Un satellite qui porte une mesure n'est pas du critère de son cercle : il déclare le sien (arcane §4.2).
+    Une part → Quantité « fractionné » ; une distance → Localisation ; une dimension → Ampleur ; un temps → Durée
+    (« délai » quand c'est une attente). Renvoie (critère ou None, mots)."""
+    if not isinstance(v, (int, float)): return None, ws
+    S = {norm(w) for w in ws if not str(w).startswith("si:")}
+    crit, out = None, list(ws)
+    if S == {"FRACTIONNE"}: crit = "QUANTITE"
+    elif parent == "CONDITION" and S == {"VIE"}: crit = "IMPACT"            # seuil de vie : la Condition se mesure en Impact
+    elif parent == "CONDITION" and len(S) == 1 and S <= {"SPECTATEUR", "COUPS", "INTERDIT"}: crit = "QUANTITE"   # un nombre de choses, comme les officiants
+    elif S and S <= _T_DIST: crit = "LOCALISATION"
+    elif S and S <= _T_TIME: crit = "DUREE"
+    elif S & _T_DIST and S <= _T_DIST | _T_DIM | {"CUBES", "CARRES"}: crit = "AMPLEUR"
+    elif S == {"SEUIL"} and parent != "CONDITION": crit = "CONDITION"
+    elif parent == "CONDITION" and S == {"VALEUR", "PLATINE"}: crit = "COMPOSANTE"      # un prix que la chose doit valoir
+    elif "NIVEAU" in S and S <= {"SEUIL", "NIVEAU"}: crit = "CONDITION"     # l'effet ne vaut que jusqu'à tel niveau de sort : une Condition de seuil
+    elif S == {"KILOGRAMMES"}:        # un poids que l'effet ne dépasse pas : une Condition de seuil posée sur l'effet
+        crit = "CONDITION"; out = ["seuil", "kilo"]
+    elif S & {"DELAI", "RETARD"} and S & _T_TIME and S <= _T_TIME | {"DELAI", "RETARD"}:
+        crit = "DUREE"; out = ["délai" if norm(w) == "RETARD" else w for w in ws]
+    if crit == parent: crit = None
+    return crit, (out if crit else ws)
+def place_sats(sats, parent=None):
     """satellites annotés (valeur, [mots]) : un seul se place au nord ou au sud ; deux, de part et d'autre"""
     if not sats: return []
     # sur le cercle, plusieurs satellites d'un même encart se répartissent symétriquement : opposés, à 120°, en croix…
     n = len(sats)
-    angles = ["NS"] if n == 1 else [90, 270] if n == 2 else [(90 + k * 360 / n) % 360 for k in range(n)]
-    return [(a, v, " ".join(word(w[3:] if str(w).startswith("si:") else w) for w in ws)) for a, (v, ws) in zip(angles, sats)]
-def sat_reading(sats):
+    # un seul : au nord ou au sud ; deux : nord-sud ou ouest-est, selon ce qu'ils cachent (« SYM », résolu au tracé)
+    angles = ["NS"] if n == 1 else ["SYM", "SYM"] if n == 2 else [(90 + k * 360 / n) % 360 for k in range(n)]
+    out = []
+    for a, st_ in zip(angles, sats):
+        v, ws = st_[0], st_[1]
+        crit, ws = (st_[2], ws) if len(st_) > 2 and isinstance(st_[2], str) and st_[2] in SP.NAMES else sat_type(v, ws, parent)
+        lab = " ".join(word(w[3:] if str(w).startswith("si:") else w) for w in ws)
+        out.append((a, v, crit + " " + lab, {"crit": crit}) if crit else (a, v, lab))
+    return out
+def sat_reading(sats, parent=None):
     """un satellite peut porter sa propre Condition (« si:mort-vivant ») : il ne vaut que pour ce qui la remplit"""
     if not sats: return ""
     out = ""
-    for v, ws in sats:
+    for st_ in sats:
+        v, ws = st_[0], st_[1]
+        crit, ws = (st_[2], ws) if len(st_) > 2 and isinstance(st_[2], str) and st_[2] in SP.NAMES else sat_type(v, ws, parent)
         cs = [w[3:] for w in ws if str(w).startswith("si:")]; ns = [w for w in ws if not str(w).startswith("si:")]
-        out += (f" ; satellite {vshow(v)}" + (f" « {' · '.join(shown(w) for w in ns)} »" if ns else "")
+        out += (f" ; satellite {SP.NAMES[crit][1] + ' ' if crit else ''}{vshow(v)}" + (f" « {' · '.join(shown(w) for w in ns)} »" if ns else "")
                 + (f", seulement si « {' · '.join(shown(w) for w in cs)} »" if cs else ""))
     return out
 
@@ -238,6 +278,9 @@ def graft(idx, fiche, g, fam, s, fr, level, ecole, hemi, notes):
     for r in tmp["rings"]:
         if r[0] in ("CONDITION", "IMPACT", "QUANTITE") and fiche.get({"CONDITION": "cond", "IMPACT": "impact", "QUANTITE": "qty"}[r[0]]):
             rings.append(r)
+    # « retard » n'est plus un mot : une attente s'écrit « délai »
+    rings = [(r[0], r[1], [word("délai") if w == "RETARD" else w for w in r[2]], r[3].replace("retard", "délai"), *r[4:]) if "RETARD" in r[2] else r for r in rings]
+    rings = supports(formes_mots(rings))
     order = ["CIBLE", "FORME", "AMPLEUR", "DUREE", "LOCALISATION", "CONDITION", "IMPACT", "QUANTITE", "COMPOSANTE", "INTERACTION", "COSMETIQUE"]
     rings.sort(key=lambda r: order.index(r[0]))
     crits = []
@@ -358,7 +401,7 @@ def build_spell(idx, fiche):
     if conds:
         cw = [word(w) for w in conds]
         rd = " ; ".join(f"« {shown(w)} »" for w in conds)
-        rings.append(("CONDITION", len(cw), cw, rd + sat_reading(fiche.get("cond_sats")) + off_rd, place_sats(cond_sats)))
+        rings.append(("CONDITION", len(cw), cw, rd + sat_reading(fiche.get("cond_sats"), "CONDITION") + off_rd, place_sats(cond_sats, "CONDITION")))
     # 8 Impact
     imp = fiche.get("impact")
     if imp is None and (dmg or s.get("heal_at_slot_level")):
@@ -376,9 +419,11 @@ def build_spell(idx, fiche):
         isats = list(fiche.get("impact_sats") or [])
         if isinstance(med, list) and "fractionné" in med:
             med = [m for m in med if m != "fractionné"]; isats.append((v, ["fractionné"])); v = 1
+        plus_ = []      # effets seconds tirés des satellites : (valeur, mots, pourquoi, conditions, satellites)
         for j, st in enumerate(list(isats)):
-            if "fractionné" in (st[1] or []) and len(st[1]) > 1:
-                isats[j] = (1, [w for w in st[1] if w != "fractionné"]); isats.append((st[0], ["fractionné"]))
+            if "fractionné" in (st[1] or []) and len(st[1]) > 1:      # « une part de tel effet » : un cercle à lui, avec son diviseur
+                isats[j] = None; plus_.append((1, [w for w in st[1] if w != "fractionné"], "", [], [(st[0], ["fractionné"])]))
+        isats = [st for st in isats if st is not None]
         meds = med if isinstance(med, list) else ([med] if med else [])
         extra_imp = []; els = []
         # une face écrite en mot sur un satellite plein s'inscrit par son symbole
@@ -435,20 +480,62 @@ def build_spell(idx, fiche):
             if not meds: med = []
             fiche = {**fiche, "impact_add": add, "_eteint": list(dict.fromkeys(et_)),
                      "impact_sats": [st for st in fiche.get("impact_sats") or [] if not (len(st[1] or []) == 1 and norm(st[1][0]) in ET)]}
+        # un satellite « effet + mesure » (lenteur · mètres, rongement · secondes) n'est pas une mesure de cet Impact : c'est un
+        # second effet. Il devient un cercle d'Impact plein, lu après le premier, que précise un satellite du critère de la mesure.
+        mesures_ = []; garde_ = []
+        for st in fiche.get("impact_sats") or []:
+            ws_ = list(st[1] or []) if len(st) > 1 else []
+            S_ = {norm(w) for w in ws_}
+            u_ = S_ & (_T_DIST | _T_TIME); e_ = S_ - u_
+            if (isinstance(st[0], (int, float)) and u_ and e_ and not e_ & (_T_DIM | _T_FORME | {"DELAI", "RETARD", "CUBES", "CARRES"})
+                    and not any(str(w).startswith("si:") for w in ws_)):
+                mesures_.append((st[0], [w for w in ws_ if norm(w) not in u_], [w for w in ws_ if norm(w) in u_]))
+            else: garde_.append(st)
+        # Pas de satellite d'Impact sur un Impact (arcane §6.7) : un satellite « nombre + mot » ou « plein + mot » est un
+        # second effet. Il devient un cercle d'Impact à lui, lu après le premier. Un mot qui nomme ceux qu'il touche
+        # (mort-vivant, hostile…) devient un satellite Condition de ce cercle. Restent en satellite : les symboles, les
+        # mesures typées, l'emplacement de sort, et pour l'instant les seuils de niveau et les catégories pleines.
+        garde2_ = []
+        for st in garde_:
+            ws_ = list(st[1] or []) if len(st) > 1 else []
+            S_ = {norm(w[3:] if str(w).startswith("si:") else w) for w in ws_}
+            if S_ & _T_FORME and (st[0] == "plein" or isinstance(st[0], (int, float))):
+                # une explosion, un orbe : un second effet dont la forme sera inscrite en satellite de Forme (formes_mots)
+                if S_ & _T_DIST: plus_.append(("plein", [w for w in ws_ if norm(w) in _T_FORME], "", [], [(st[0], ["rayon", "mètres"], "AMPLEUR")]))
+                else: plus_.append((st[0], ws_, "", [], []))
+                continue
+            if st[0] == "plein" and ws_ and S_ <= _T_CATEG:
+                # « plein, seulement si mort-vivant » : l'effet du cercle ne vaut que pour ceux-là — une Condition, en satellite
+                garde2_.append(("plein", ws_, "CONDITION")); continue
+            if (st[0] is None or isinstance(st[0], tuple) or not ws_ or not (st[0] == "plein" or isinstance(st[0], (int, float)))
+                    or sat_type(st[0], ws_, "IMPACT")[0] or S_ in ({"SORT"}, {"FOIS"}, {"NOMBRE"}, {"FRACTIONNE"})
+                    or (st[0] != "plein" and S_ & (_T_DIST | _T_TIME))):
+                garde2_.append(st); continue
+            cd_ = [w[3:] if str(w).startswith("si:") else w for w in ws_ if str(w).startswith("si:") or norm(w) in _T_CATEG]
+            mw_ = [w for w in ws_ if not str(w).startswith("si:") and norm(w) not in _T_CATEG]
+            # sous un verbe qui nuit, « vie » chiffrée se lirait comme une blessure : la vie que le lanceur reprend s'écrit « regain »
+            # (« vie · temporaire » devient de même « regain · temporaire »)
+            if st[0] != "plein" and VERBS.get(tuple(fiche.get("verb") or ())) in L_NUISIBLES: mw_ = ["regain" if norm(w) == "VIE" else w for w in mw_]
+            plus_.append((st[0], mw_, "", cd_, []))
+        garde_ = garde2_
+        fiche = {**fiche, "impact_sats": garde_}
         nu = isinstance(med, list) and not meds     # Impact nu : liste vide, la force brute du verbe (§6.7)
         words = list(dict.fromkeys(([word(m) for m in meds] if meds else ([] if nu else ["VIE"])) + [word(a) for a in add]))
         nat = ((", " + " · ".join(shown(m) for m in meds)) if meds else (", sans nature : la force brute du verbe" if nu else " de vie")) + ((" · " if meds else ", ") + " · ".join(shown(a) for a in add) if add else "")
         head = "plein" if v == "plein" else f"intensité {v}"
         rings.append(("IMPACT", v, words, head + nat + (f" ({why})" if why else "") + sat_reading(fiche.get("impact_sats")),
                       place_sats(fiche.get("impact_sats"))))
+        for mv_, me_, mu_ in mesures_:
+            rings.append(("IMPACT", "plein", [word(m) for m in me_], "plein, " + " · ".join(shown(m) for m in me_)
+                          + sat_reading([(mv_, mu_)], "IMPACT"), place_sats([(mv_, mu_)], "IMPACT")))
         # les autres cercles d'Impact : une énergie de plus, ou un second effet saisi à part (impact_plus)
         vus_ = {tuple(ELEM_UNITS[norm(m)]) for m in (els[:1] if fam != "H" else [])}
         uniq_ = []
         for e_ in extra_imp:       # une même énergie dite par deux mots (vent, air) ne s'inscrit qu'une fois
             t_ = tuple(ELEM_UNITS.get(norm(e_[1][0]), [e_[1][0]]))
             if t_ not in vus_: vus_.add(t_); uniq_.append(e_)
-        for v2, w2, why2 in uniq_ + list(fiche.get("impact_plus", [])):
-            s2 = []; ww = []
+        for v2, w2, why2, *x2 in uniq_ + plus_ + list(fiche.get("impact_plus", [])):
+            s2 = [(("plein", [c_], "CONDITION")) for c_ in (x2[0] if x2 else []) if c_] + list(x2[1] if len(x2) > 1 else []); ww = []
             for m in w2:
                 if fam != "H" and norm(m) in ELEM_UNITS: s2 += [(sym(u_), []) for u_ in ELEM_UNITS[norm(m)]]
                 elif norm(m) in ("LUMINEUX", "TENEBREUX"): s2.append((sym(norm(m).lower()), []))
@@ -468,6 +555,8 @@ def build_spell(idx, fiche):
         c_ = fiche.get("prix") or cost(s); val = None; rd = ", ".join(shown(w) for w in fiche["comp"]) + (", consommé" if consumed else ", accompagnant")
         if c_:
             val = c_[0]; cw = cw + ([word(c_[1])] if word(c_[1]) not in cw else []); rd = f"valeur {c_[0]} pièce{'s' if c_[0] > 1 else ''} de {c_[1]} ; " + rd
+            if c_[1] not in ("cuivre", "argent", "or", "platine", "vie"):     # contrepartie : le lanceur cède une part de lui-même (lucidité, garde, résistance, guérison)
+                rd = f"{c_[0]} : contrepartie, le lanceur cède de lui-même « " + " · ".join(shown(w) for w in fiche["comp"]) + " »"
             if c_[1] == "vie":     # le lanceur se blesse pour lancer : il paie de sa propre substance, comme pour un coût en expérience
                 rd = f"{c_[0]} point{'s' if c_[0] > 1 else ''} de vie : le lanceur se blesse pour lancer le sort"
         rings.append(("COMPOSANTE", val, cw, rd))
@@ -530,7 +619,10 @@ def build_spell(idx, fiche):
         for i, r in enumerate(rings):
             if r[0] == crit_:
                 old_ = [(x[1], [x[2]] if len(x) > 2 and x[2] else []) for x in (r[4] if len(r) > 4 else [])]
-                rings[i] = (r[0], r[1], r[2], r[3] + sat_reading(sl), place_sats(old_ + list(sl))); break
+                rings[i] = (r[0], r[1], r[2], r[3] + sat_reading(sl, r[0]), place_sats(old_ + list(sl), r[0])); break
+    # « retard » n'est plus un mot : une attente s'écrit « délai »
+    rings = [(r[0], r[1], [word("délai") if w == "RETARD" else w for w in r[2]], r[3].replace("retard", "délai"), *r[4:]) if "RETARD" in r[2] else r for r in rings]
+    rings = supports(formes_mots(rings))
     order = ["CIBLE", "FORME", "AMPLEUR", "DUREE", "LOCALISATION", "CONDITION", "IMPACT", "QUANTITE", "COMPOSANTE", "INTERACTION", "COSMETIQUE"]
     rings.sort(key=lambda r: order.index(r[0]))
     crits = []
@@ -561,12 +653,180 @@ def build_spell(idx, fiche):
     return dict(idx=idx, fr=fr, en=s["name"], level=level, ecole=ecole, fam=fam, verb=verb, core=core, rings=rings, split=split, officiants=off_n,
                 bsplit=SP.PART[0], svg=svg, rows=rows, r0=r0, notes=notes, dnd=dnd_line(s, fr), pol=pol)
 
+# ---------- mots de forme ----------
+import formes_mots as FM
+_PAGE = [None]
+def _resats(sats):
+    """replace des satellites déjà posés quand on en ajoute : même règle de symétrie que place_sats"""
+    n = len(sats)
+    angles = ["NS"] if n == 1 else ["SYM", "SYM"] if n == 2 else [(90 + k * 360 / n) % 360 for k in range(n)]
+    return [(a, *st[1:]) for a, st in zip(angles, sats)]
+def _sans_mot(reading, w):
+    """retire un mot de la tête d'une lecture (« plein, pierre · mur (…) » → « plein, pierre (…) »)"""
+    cut = min([i for i in (reading.find(" ("), reading.find(" ;")) if i >= 0] or [len(reading)])
+    head, rest = reading[:cut], reading[cut:]
+    if ", " in head:
+        h0, lst = head.split(", ", 1)
+        items = [x for x in lst.split(" · ") if norm(x) != w]
+        head = h0 + (", " + " · ".join(items) if items else "")
+    else:
+        items = [x for x in head.split(" · ") if norm(x) != w]
+        head = " · ".join(items)
+    out = head + rest
+    return out[3:] if out.startswith(" ; ") else out
+def _sat_forme(prim, annot, taille):
+    sil, props, nom = FM.PRIM[prim]
+    out = [("SYM", sil, " ".join(["FORME"] + annot), {"crit": "FORME", "kids": list(props)})]
+    rd = f" ; satellite Forme : {nom}" + (f" « {' · '.join(shown(a) for a in annot)} »" if annot else "")
+    if taille:
+        out.append(("SYM", taille[0], " ".join(["AMPLEUR"] + [word(x) for x in taille[1]]), {"crit": "AMPLEUR"}))
+        rd += f" ; satellite Ampleur {taille[0]} « {' · '.join(taille[1])} »"
+    return out, rd
+def formes_mots(rings):
+    """Une géométrie dite en mot s'inscrit par le cercle Forme. Selon la place du mot : le sort a déjà un cercle Forme → le mot
+    disparaît ; mot sur le premier Impact sans cercle Forme → cercle Forme ajouté ; mot sur la Cosmétique ou sur un second
+    Impact → satellite de Forme à deux niveaux. « explosion » reste en annotation de la Forme. Tourbillon : cylindre + hélice."""
+    page = _PAGE[0]
+    tr_ = FM.trait(page)
+    if tr_ and any("TRAIT" in r[2] for r in rings):
+        tw_ = word(tr_)
+        rings = [(r[0], r[1], list(dict.fromkeys(tw_ if w == "TRAIT" else w for w in r[2])),
+                  re.sub(r"\btraits\b", tr_ + "s", re.sub(r"\btrait\b", tr_, r[3])), *r[4:]) if "TRAIT" in r[2] else r for r in rings]
+    def geo(r): return [(w, FM.forme_de(page, w)) for w in r[2] if FM.forme_de(page, w)]
+    if not any(r[0] in ("IMPACT", "COSMETIQUE") and geo(r) for r in rings): return rings
+    rings = [tuple(r) + ((),) * (5 - len(r)) if len(r) < 5 else tuple(r) for r in rings]
+    rings = [(r[0], r[1], list(r[2]), r[3], list(r[4] or [])) for r in rings]
+    def formes(): return [i for i, r in enumerate(rings) if r[0] == "FORME"]
+    def fam_(i): return (rings[i][1], len(rings[i][4]))
+    FAM = {p: (v[0], len(v[1])) for p, v in FM.PRIM.items()}
+    imp = [i for i, r in enumerate(rings) if r[0] == "IMPACT"]
+    i1 = imp[0] if imp else None
+    fait = set()          # primitives déjà inscrites par le cercle Forme, pour cette forme du sort
+    def drop(i, w, note=""):
+        r = rings[i]; rp = FM.REMPLACE.get((page, w)) if r[0] == "IMPACT" else None
+        if rp:
+            rings[i] = (r[0], r[1], [word(rp) if x == w else x for x in r[2]], r[3].replace(shown(w), rp, 1) + note, r[4]); return
+        rings[i] = (r[0], r[1], [x for x in r[2] if x != w], _sans_mot(r[3], w) + note, r[4])
+    def add_sat(i, prim, annot, taille):
+        r = rings[i]; ns, rd = _sat_forme(prim, annot, taille)
+        rings[i] = (r[0], r[1], r[2], r[3] + rd, _resats(list(r[4]) + ns))
+    def tourbillon():
+        """cylindre + hélice : la zone que donne la source (ou un cylindre) puis une hélice annotée « ajout »"""
+        fo = formes()
+        hel = FM.PRIM["helice"]
+        if fo:
+            f0 = fo[0]; r = rings[f0]
+            props = [st for st in r[4]]
+            degs = [90] if len(props) == 1 else [180, 0] if len(props) == 2 else [90, 210, 330]
+            sats = [(d, *st[1:]) for d, st in zip(degs, props)]; rd = r[3]
+            amp = next((j for j in range(f0 + 1, len(rings)) if rings[j][0] == "AMPLEUR"), None)
+            if amp is not None:          # forme composée : l'Ampleur devient le satellite sud de la forme qu'elle mesure
+                a = rings[amp]
+                sats.append((270, a[1], " ".join(["AMPLEUR"] + list(a[2])), {"crit": "AMPLEUR"}))
+                rd += f" ; satellite Ampleur : {a[3]}"
+                rings.pop(amp)
+            rings[f0] = (r[0], r[1], r[2], rd, sats)
+            at = f0 + 1
+        else:
+            cyl = FM.PRIM["cylindre"]
+            at = next((j for j, r in enumerate(rings) if r[0] not in ("CIBLE",)), len(rings))
+            rings.insert(at, ("FORME", cyl[0], [], cyl[2] + " (taille non donnée par la source)", [(180, cyl[1][0]), (0, cyl[1][1])])); at += 1
+        rings.insert(at, ("FORME", hel[0], [word("ajout")], "hélice ajoutée à la forme précédente : le tourbillon", [(90, hel[1][0]), (210, hel[1][1]), (330, hel[1][2])]))
+        fait.add("tourbillon")
+    # 1. le premier cercle d'Impact
+    for k_ in ("IMPACT1", "IMPACT2", "COSMETIQUE"):
+        for i in range(len(rings)):
+            imp = [j for j, r in enumerate(rings) if r[0] == "IMPACT"]
+            r = rings[i]
+            pos = ("IMPACT1" if imp and i == imp[0] else "IMPACT2") if r[0] == "IMPACT" else r[0]
+            if pos != k_: continue
+            for w, prim in geo(r):
+                annot = [w] if w in FM.ANNOTE else []
+                taille = FM.TAILLE.get((page, w))
+                fo = formes()
+                if prim == "tourbillon":
+                    if pos == "IMPACT1":
+                        if "tourbillon" not in fait: tourbillon()
+                        i = next(j for j, x in enumerate(rings) if x is not None and x[0] == r[0] and w in x[2] and x[3] == r[3])
+                        drop(i, w, " ; le tourbillon est inscrit par les cercles Forme (zone, puis hélice)")
+                    elif "tourbillon" in fait: drop(i, w)
+                    else: drop(i, w); add_sat(i, "helice", [], None)
+                    continue
+                if prim in FM.SATELLITE:
+                    drop(i, w); add_sat(i, prim, annot, taille)
+                elif pos == "IMPACT1":
+                    if fo:
+                        f0 = fo[0]; fr_ = rings[f0]
+                        if prim == "dome" and fam_(f0) == FAM["sphere"]:
+                            amp = next((j for j in range(f0 + 1, len(rings)) if rings[j][0] == "AMPLEUR"), None)
+                            a = rings[amp] if amp is not None else None
+                            if a and list(a[2])[-2:] == ["METRES", "CUBES"] and isinstance(a[1], (int, float)):
+                                ray = (3 * a[1] / (4 * math.pi)) ** (1 / 3); surf = max(1, rnd(2 * math.pi * ray ** 2))
+                                d_ = FM.PRIM["dome"]
+                                rings[f0] = ("FORME", d_[0], fr_[2], d_[2], [("SYM", d_[1][0]), ("SYM", d_[1][1])])
+                                rings[amp] = ("AMPLEUR", surf, [word("surface"), "METRES"], f"{surf} m² : la calotte d'un dôme de {rnd(ray)} m de rayon")
+                        elif prim == "helice" and fam_(f0) == FAM["ligne"]:
+                            h_ = FM.PRIM["helice"]
+                            rings[f0] = ("FORME", h_[0], fr_[2], h_[2], [(90, h_[1][0]), (210, h_[1][1]), (330, h_[1][2])])
+                        if annot:
+                            fr_ = rings[f0]
+                            if word(w) not in fr_[2]: rings[f0] = (fr_[0], fr_[1], list(fr_[2]) + [word(w)], fr_[3] + f" ; annotée « {shown(w)} »", fr_[4])
+                        drop(i, w); fait.add(prim)
+                    else:
+                        sil, props, nom = FM.PRIM[prim]
+                        at = next((j for j, x in enumerate(rings) if x[0] not in ("CIBLE",)), len(rings))
+                        rings.insert(at, ("FORME", sil, [word(a) for a in annot], nom + (" « " + " · ".join(shown(a) for a in annot) + " »" if annot else "")
+                                          + ("" if taille else " (taille non donnée par la source)"), [("SYM", p_) for p_ in props]))
+                        if taille:
+                            rings.insert(at + 1, ("AMPLEUR", taille[0], [word(x) for x in taille[1]], f"{taille[0]} « {' · '.join(taille[1])} »"))
+                        i = next(j for j, x in enumerate(rings) if x[0] == r[0] and w in x[2] and x[3] == r[3])
+                        drop(i, w); fait.add(prim)
+                elif pos == "COSMETIQUE" and fo and (prim in fait or fam_(fo[0]) == FAM[prim]
+                                                    or (prim == "dome" and fam_(fo[0]) == FAM["sphere"])):
+                    if prim == "dome" and fam_(fo[0]) == FAM["sphere"] and "dome" not in fait:      # un dôme dit par la seule Cosmétique
+                        add_sat(i, prim, annot, taille)
+                    drop(i, w)
+                else:
+                    drop(i, w); add_sat(i, prim, annot, taille)
+                r = rings[i]
+    return [r if len(r) > 4 and r[4] else r[:4] for r in rings]
+
+# ---------- supports ----------
+import supports_mots as SM
+def supports(rings):
+    """Ce sur quoi l'effet agit (une faculté, une part de l'être) se dit dans la Cible. Un seul cercle d'Impact : le mot passe
+    en annotation du cercle Cible. Plusieurs cercles d'Impact (chacun sa faculté et sa valeur), pas de cercle Cible, ou un
+    Impact plein qui resterait sans mot : il devient un satellite Cible de son cercle d'Impact."""
+    page = _PAGE[0]
+    imp = [i for i, r in enumerate(rings) if r[0] == "IMPACT"]
+    if not any(SM.support(page, w) for i in imp for w in rings[i][2]): return rings
+    rings = [(r[0], r[1], list(r[2]), r[3], list(r[4]) if len(r) > 4 and r[4] else []) for r in rings]
+    cib = next((i for i, r in enumerate(rings) if r[0] == "CIBLE"), None)
+    for i in imp:
+        r = rings[i]
+        sup = [w for w in r[2] if SM.support(page, w)]
+        if not sup: continue
+        reste = [w for w in r[2] if w not in sup]
+        rd = r[3]
+        for w in sup: rd = _sans_mot(rd, w)
+        noms = " · ".join(shown(w) for w in sup)
+        if len(imp) == 1 and cib is not None and (reste or r[1] != "plein"):
+            c = rings[cib]
+            neufs = [w for w in sup if w not in c[2]]       # déjà dit par la Cible : le mot quitte seulement l'Impact
+            if neufs: rings[cib] = (c[0], c[1], list(c[2]) + neufs, c[3] + f", précisé « {' · '.join(shown(w) for w in neufs)} »", c[4])
+            rings[i] = (r[0], r[1], reste, rd + f" ; ce que l'effet touche (« {noms} ») est dit par la Cible", r[4])
+        else:
+            rings[i] = (r[0], r[1], reste, rd + f" ; satellite Cible « {noms} »",
+                        _resats(list(r[4]) + [("SYM", None, " ".join(["CIBLE"] + sup), {"crit": "CIBLE"})]))
+    return [r if r[4] else r[:4] for r in rings]
+
 def glyph_key(f):
     return (repr(f["core"]), repr([(r[0], r[1], tuple(r[2]), repr(r[4:5])) for r in f["rings"]]), repr(f["split"]))
 
 def build_forms(idx, fiche):
     """toutes les formes d'un sort ; puis, pour un sort qui existe aussi dans les règles de 2024,
     ses formes de 2024 qui donnent un glyphe différent (un glyphe identique est le même sort)"""
+    _PAGE[0] = idx
     forms = _forms(idx, fiche)
     if fiche.get("src") == "pf2r": return forms
     seen = {glyph_key(f) for f in forms}
@@ -771,12 +1031,12 @@ def band_rings(sp):
         else: pol = "down" if (sp["core"][0] == "verb" and sp["core"][2]) else "up"
         spec, mult, ok = SP.val(v, pol) if v is not None else ([], False, False)
         raw = rest[0] if rest else []
-        if len(raw) >= 2 and crit != "FORME":
+        if len(raw) >= 2:
             # en bandeau, plusieurs satellites se centrent de part et d'autre du milieu, à intervalles égaux
             # (deux satellites : au quart et aux trois quarts, l'est et l'ouest du cercle déroulé)
             k = len(raw); xs = [0.5 + (i - (k - 1) / 2) / k for i in range(k)]
             raw = [((270 - 360 * x) % 360, sv, *rest_) for x, (d, sv, *rest_) in zip(xs, raw)]
-        sats = [((90 if d == "NS" or d % 360 == 270 else d), SP.val(sv, pol)[0], (x[0] if x else "")) for d, sv, *x in raw]
+        sats = [((90 if isinstance(d, str) or d % 360 == 270 else d), SP.val(sv, pol)[0], SP.sat_label(sv, x, pol), SP.sat_opts(x, pol)) for d, sv, *x in raw]
         out.append(dict(label=" ".join([crit] + list(words) + (["FOIS"] if mult else [])), spec=spec, sats=sats))
     return out
 def band_svg(sp, declared):

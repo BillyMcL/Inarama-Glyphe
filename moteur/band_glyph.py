@@ -144,8 +144,10 @@ def core_label(core):
     if core[0] == "hyb": return core[2]
     return None
 
-def sat_r(sp):
-    return 18 + 10 * max(0, len([t for t in sp if t[0] != "full"]) - 1)
+def sat_r(sp, opts=None):
+    r = 18 + 10 * max(0, len([t for t in sp if t[0] != "full"]) - 1)
+    if opts and opts.get("kids"): r = max(r, 24)      # un satellite de Forme porteur de satellites se trace plus grand
+    return r
 EL = 44              # hauteur de la voie élémentaire
 M = 44            # marge latérale où s'écrivent les chiffres
 def band(core, rings, declared=True, length=None, numerals=True, keep_sat_encart=True, thick=False):
@@ -185,7 +187,9 @@ def band(core, rings, declared=True, length=None, numerals=True, keep_sat_encart
         return t
     CH = [couronne_h(r["spec"]) for r in rings]
     HE = [BAND if texts(r) else 0 for r in rings]
-    RS = [max([sat_r(s[1]) + (GG.SBAND if len(s) > 2 and s[2] else 0) for s in r.get("sats", [])] or [0]) for r in rings]
+    def sat_o(s): return s[3] if len(s) > 3 and s[3] else {}
+    RS = [max([sat_r(s[1], sat_o(s)) + (GG.SBAND if len(s) > 2 and s[2] else 0) + GG.kid_reach(sat_o(s))
+               for s in r.get("sats", [])] or [0]) for r in rings]
     tail = 0
     ov = [max(0, rs + 4 - HE[i] / 2) if rs else 0 for i, rs in enumerate(RS)]   # débord d'un satellite hors de son encart
     for i in range(len(rings)):
@@ -213,9 +217,10 @@ def band(core, rings, declared=True, length=None, numerals=True, keep_sat_encart
         if he:
             parts.append(W(y + he))
             parts.append(annot(text, y, y + he, [s[0] for s in ring.get("sats", [])], Lb))
-        for d, sp, *lab in ring.get("sats", []):
-            if lab and lab[0]: sats_draw.append(GG.satellite_annot(Xb(d), y + he / 2, sat_r(sp), sp, lab[0]))
-            else: sats_draw.append(GG.satellite(Xb(d), y + he / 2, sat_r(sp), sp))
+        for d, sp, *x in ring.get("sats", []):
+            lab, opts = GG.sat_parts(x)
+            # sur la bande, « vers l'extérieur » est vers le bas : les satellites d'un satellite s'y rangent en miroir du cercle
+            sats_draw.append(GG.draw_sat(Xb(d), y + he / 2, sat_r(sp, opts), sp, lab, opts, 270, True))
         y += he
     y += tail
     _cid[0] += 1; cid = f"bandclip{_cid[0]}"

@@ -131,7 +131,29 @@ def element(el, s):
         return w
     return ""
 
-def satellite(cx, cy, rs, spec, label=None):
+KID = 9            # rayon d'un satellite de satellite : un nombre nu
+def dense(spec):
+    """deux formes à nombreux côtés superposées (9 + 9, 7 + 9) : il leur faut de la place pour ne pas se fondre en un cercle"""
+    return len([t for t in spec if t[0] == "poly" and t[1] >= 7]) >= 2
+def kid_r(spec): return KID + 5 * max(0, len([t for t in spec if t[0] != "full"]) - 1) + (10 if dense(spec) else 0)
+def kid_angles(n, out=90, mirror=False):
+    """Symétrie des satellites d'un satellite, par rapport à la direction qui s'éloigne du centre du glyphe :
+    un seul, vers l'extérieur ; deux, de part et d'autre (le premier à gauche) ; trois, répartis également."""
+    sg = -1 if mirror else 1
+    if n == 1: return [out]
+    if n == 2: return [out + sg * 90, out - sg * 90]
+    return [out + sg * k * 360 / n for k in range(n)]
+def kids_svg(ro, kids, out=90, mirror=False):
+    """satellites d'un satellite de Forme : ses proportions, greffées sur sa circonférence (deux niveaux au plus)"""
+    res = ""
+    kids = kids or []
+    for deg, spec in zip(kid_angles(len(kids), out, mirror), kids):
+        x, y = pt(ro, deg); r = kid_r(spec)
+        res += (f'<g transform="translate({f(x)},{f(y)})"><circle r="{r + 2}" class="paper-f"/>'
+                f'<circle r="{r}" class="paper-f ink-s"/>{value(r - 2, spec)}</g>')
+    return res
+
+def satellite(cx, cy, rs, spec, label=None, kids=None, out=90, mirror=False):
     s = f'<g transform="translate({f(cx)},{f(cy)})">'
     s += f'<circle r="{rs + 2.5}" class="paper-f"/><circle r="{rs}" class="paper-f ink-s"/>'
     if label:
@@ -146,16 +168,16 @@ def satellite(cx, cy, rs, spec, label=None):
         s += value(ri - 1.5, spec)
     else:
         s += value(rs - 2.5, spec)
-    return s + "</g>"
+    return s + kids_svg(rs, kids, out, mirror) + "</g>"
 
 SBAND, SAK = 10, 0.13
-def satellite_annot(cx, cy, base, spec, text):
+def satellite_annot(cx, cy, base, spec, text, kids=None, out=90, mirror=False):
     """satellite porteur de sa propre annotation : il se dédouble comme un cercle principal"""
     ri = base; ro = base + SBAND
     s = f'<g transform="translate({f(cx)},{f(cy)})">'
     s += f'<circle r="{f(ro + 2.5)}" class="paper-f"/><circle r="{f(ro)}" class="paper-f ink-s"/>'
-    s += value(ri, spec) + f'<circle r="{f(ri)}" class="ink-s"/>' + label_alde(ri, ro, text, [], ak=SAK)
-    return s + "</g>"
+    s += value(ri, spec) + f'<circle r="{f(ri)}" class="ink-s"/>' + label_alde(ri, ro, text, kid_angles(len(kids), out, mirror) if kids else [], ak=SAK)
+    return s + kids_svg(ro, kids, out, mirror) + "</g>"
 
 def label_sym(rmid, text, axis="v", size=8):
     """Annotation écrite deux fois, sur l'axe libre de satellites, haut des lettres vers l'extérieur."""
@@ -243,18 +265,45 @@ def strokes(r, spec):
             segs += [(P[k], P[(k + 1) % arg]) for k in range(arg)]
     return segs
 
-def sat_radius(spec):
-    return 10 + 7 * max(0, len([t for t in spec if t[0] != "full"]) - 1)
+def sat_radius(spec, opts=None):
+    r = min(28, 10 + 7 * max(0, len([t for t in spec if t[0] != "full"]) - 1) + (10 if dense(spec) else 0))
+    if opts and opts.get("crit"): r = max(r, 13)      # un satellite d'un autre critère : assez grand pour que son nom se lise
+    if opts and opts.get("kids"): r = max(r, 19)      # un satellite de Forme porteur de satellites se trace plus grand
+    return r
+def sat_parts(x):
+    """(annotation, options) d'un satellite (deg, spec, [annotation], [options])"""
+    return (x[0] if x else ""), (x[1] if len(x) > 1 and x[1] else {})
+def draw_sat(cx, cy, base, spec, lab, opts, out=90, mirror=False):
+    kids = opts.get("kids")
+    if lab: return satellite_annot(cx, cy, base, spec, lab, kids, out, mirror)
+    return satellite(cx, cy, base, spec, kids=kids, out=out, mirror=mirror)
+def kid_reach(opts):
+    return max([kid_r(k) for k in opts.get("kids") or []] or [0])
+
+def ring_geo(rings, r0, first_gap, has_text):
+    """Rayons (intérieur, extérieur) de chaque cercle. Quand deux cercles voisins portent un satellite à la même
+    orientation fixe (l'Ampleur de deux Formes composées, au sud), le second cercle s'écarte pour qu'ils ne se recouvrent pas."""
+    geo, prev = [], r0
+    def fixed(ring):
+        return {d % 360: sat_radius(sp, sat_parts(x)[1]) + (SBAND if x and x[0] else 0)
+                for d, sp, *x in ring.get("sats", []) if not isinstance(d, str)}
+    for i, ring in enumerate(rings):
+        g = first_gap if (i == 0 and first_gap) else GAP
+        band = BAND if has_text(ring) else 0
+        if i:
+            a, b = fixed(rings[i - 1]), fixed(ring)
+            mid_prev = (geo[-1][0] + geo[-1][1]) / 2
+            for d in a:
+                if d in b: g = max(g, mid_prev + a[d] + b[d] + 3 - band / 2 - prev)
+        rin = prev + g
+        geo.append((rin, rin + band)); prev = rin + band
+    return geo
 
 def resolve_ns(rings, r0=34, first_gap=None):
     """Satellite « NS » : placé au nord ou au sud, là où il recouvre le moins de tracé
     (formes du cercle porteur et du cercle suivant, dans leurs couronnes visibles)."""
-    if not any(s[0] == "NS" for r in rings for s in r.get("sats", [])): return rings
-    geo, prev = [], r0
-    for i, ring in enumerate(rings):
-        rin = prev + (first_gap if (i == 0 and first_gap) else GAP)
-        rout = rin + (BAND if ring["label"].split() else 0)
-        geo.append((rin, rout)); prev = rout
+    if not any(s[0] in ("NS", "SYM") for r in rings for s in r.get("sats", [])): return rings
+    geo = ring_geo(rings, r0, first_gap, lambda ring: bool(ring["label"].split()))
     def covered(i, deg, rs):
         cx, cy = pt((geo[i][0] + geo[i][1]) / 2, deg); tot = 0
         for j in (i, i + 1):
@@ -265,14 +314,31 @@ def resolve_ns(rings, r0=34, first_gap=None):
                     x, y = x1 + (x2 - x1) * t / 200, y1 + (y2 - y1) * t / 200
                     if lo <= math.hypot(x, y) <= hi and math.hypot(x - cx, y - cy) <= rs + 2.5: tot += 1
         return tot
-    out = []
+    # Règle de symétrie (« SYM ») : un satellite, au nord ou au sud ; deux, nord-sud ou ouest-est ; trois et plus, répartis
+    # également depuis le nord. Entre deux dispositions, celle qui cache le moins de tracé. Le premier satellite est
+    # celui du nord ou de l'ouest.
+    def rs_of(sp, x): return sat_radius(sp, sat_parts(x)[1]) + (SBAND if x and x[0] else 0)
+    out = []; placed = []
+    def clash(i, d, rs):
+        """un satellite ne doit pas en recouvrir un autre, posé sur un cercle voisin"""
+        cx, cy = pt((geo[i][0] + geo[i][1]) / 2, d)
+        return sum(10000 for (x, y, r) in placed if math.hypot(x - cx, y - cy) < r + rs + 3)
     for i, ring in enumerate(rings):
+        src = list(ring.get("sats", []))
+        sym = [j for j, s_ in enumerate(src) if s_[0] == "SYM"]
+        if sym:
+            n = len(sym)
+            cands = [[90], [270]] if n == 1 else [[90, 270], [180, 0]] if n == 2 else [[(90 + k * 360 / n) % 360 for k in range(n)]]
+            best = min(cands, key=lambda c: sum(covered(i, d, rs_of(src[j][1], src[j][2:])) + clash(i, d, rs_of(src[j][1], src[j][2:])) for d, j in zip(c, sym)))
+            for d, j in zip(best, sym): src[j] = (d, *src[j][1:])
         sats = []
-        for d, sp, *x in ring.get("sats", []):
+        for d, sp, *x in src:
             if d == "NS":
-                rs = sat_radius(sp) + (SBAND if x and x[0] else 0)
-                d = 90 if covered(i, 90, rs) <= covered(i, 270, rs) else 270
+                rs = sat_radius(sp, sat_parts(x)[1]) + (SBAND if x and x[0] else 0)
+                d = 90 if covered(i, 90, rs) + clash(i, 90, rs) <= covered(i, 270, rs) + clash(i, 270, rs) else 270
             sats.append((d, sp, *x))
+            cx_, cy_ = pt((geo[i][0] + geo[i][1]) / 2, d)
+            placed.append((cx_, cy_, rs_of(sp, x)))
         out.append(dict(ring, sats=sats))
     return out
 
@@ -280,28 +346,21 @@ def glyph(core, rings, **k):
     rings = resolve_ns(rings, k.get("r0", 34), k.get("first_gap"))
     return (_glyph(core, rings, declared=True, **k), _glyph(core, rings, declared=False, **k))
 
-def _glyph(core, rings, extract=None, first_gap=None, r0=34, declared=True):
+def _glyph(core, rings, first_gap=None, r0=34, declared=True):
     global R0
     R0 = r0
-    """rings"""
     geo = []
     prev = R0
     def has_text(ring):
         w = ring["label"].replace("·", " ").split()
         return len(w if declared else w[1:]) > 0
-    for i, ring in enumerate(rings):
-        g = first_gap if (i == 0 and first_gap) else GAP
-        rin = prev + g
-        rout = rin + (BAND if has_text(ring) else 0)   # sans annotation : une seule paroi, pas d'encart vide
-        geo.append((rin, rout))
-        prev = rout
-    outer = prev
+    geo = ring_geo(rings, R0, first_gap, has_text)   # sans annotation : une seule paroi, pas d'encart vide
+    outer = geo[-1][1] if geo else R0
     parts = []
     # du plus extérieur au plus intérieur : chaque cercle masque l'intérieur
     for idx in reversed(range(len(rings))):
         ring, (rin, rout) = rings[idx], geo[idx]
-        pad = 0
-        parts.append(f'<circle r="{f(rout + HALO + pad)}" class="paper-f"/>')
+        parts.append(f'<circle r="{f(rout + HALO)}" class="paper-f"/>')
         parts.append(value(rin, ring["spec"]))
         words = ring["label"].replace("·", " ").split()
         text = " ".join(words if declared else words[1:])
@@ -309,45 +368,20 @@ def _glyph(core, rings, extract=None, first_gap=None, r0=34, declared=True):
             parts.append(f'<circle r="{f(rin)}" class="ink-s"/><circle r="{f(rout)}" class="ink-s"/>')
         else:
             parts.append(f'<circle r="{f(rin)}" class="ink-s"/>')
-        a1, a2 = ring.get("arc", (215, 325))
         parts.append(label_alde(rin, rout, text, [s[0] for s in ring.get("sats", [])]))
     parts.append(f'<circle r="{R0}" class="paper-f"/>')
-    # extraction (avant le noyau, pour que les segments partent de sa paroi)
-    ext_parts = []
-    width = outer + 24
-    if extract:
-        dx = outer + 52
-        for side, ex in zip((-1, 1), extract):
-            cx = side * dx
-            ext_parts.append(f'<line x1="{f(side*R0)}" y1="0" x2="{f(cx - side*(ex["r"]+BAND))}" y2="0" class="ink-s seg"/>')
-        width = dx + 60
-    parts += ext_parts
     parts.append(noyau(core))
-    # extraits
-    if extract:
-        dx = outer + 52
-        for side, ex in zip((-1, 1), extract):
-            cx = side * dx
-            rin, rout = ex["r"], ex["r"] + BAND
-            g = f'<g transform="translate({f(cx)},0)">'
-            g += f'<circle r="{f(rout+HALO)}" class="paper-f"/>' + value(rin, ex["spec"])
-            g += f'<circle r="{f(rin)}" class="ink-s"/><circle r="{f(rout)}" class="ink-s"/>'
-            g += label_arc((rin + rout) / 2, ex["label"], 215, 325, size=7)
-            for deg, spec, lab in ex.get("sats", []):
-                sx, sy = pt(rout, deg)
-                g += satellite(sx, sy, 21, spec, lab)
-            g += "</g>"
-            parts.append(g)
+    width = outer + 24; h = outer + 26
     # satellites de la pile
     for ring, (rin, rout) in zip(rings, geo):
-        words = ring["label"].replace("·", " ").split()
-        has_enc = declared or len(words) > 1
-        for deg, spec, *lab in ring.get("sats", []):
+        for deg, spec, *x in ring.get("sats", []):
+            lab, opts = sat_parts(x)
             sx, sy = pt((rin + rout) / 2, deg)
-            if lab and lab[0]: parts.append(satellite_annot(sx, sy, sat_radius(spec), spec, lab[0]))
-            else: parts.append(satellite(sx, sy, sat_radius(spec), spec))
-    h = outer + 26
-    vb = f"{-width} {-h} {2*width} {2*h}"
+            base = sat_radius(spec, opts)
+            parts.append(draw_sat(sx, sy, base, spec, lab, opts, deg))
+            reach = base + (SBAND if lab else 0) + kid_reach(opts) + 6
+            width = max(width, abs(sx) + reach); h = max(h, abs(sy) + reach)
+    vb = f"{f(-width)} {f(-h)} {f(2*width)} {f(2*h)}"
     return f'<svg viewBox="{vb}" role="img" xmlns="http://www.w3.org/2000/svg">{"".join(parts)}</svg>'
 
 FULL = [("full", 0, 0)]

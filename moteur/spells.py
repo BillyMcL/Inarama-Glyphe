@@ -55,6 +55,7 @@ def best_factors(n):
 def val(n, pol):
     """renvoie (spec, multiplicatif ?, polarité lisible ?)"""
     if isinstance(n, tuple) and n[0] == "sym": return [("sym", n[1], 0)], False, True   # un symbole (élément, astre) à la place d'une valeur
+    if isinstance(n, tuple) and n[0] == "angle": return val_angle(n[1], pol), False, True   # courbure ou ouverture d'une Forme
     if n is None: return [], False, False                  # vide : un emplacement sans forme (le sort qu'on y inscrira)
     if n == "plein": return [("full", 0, 0)], False, False
     if n in PRIM: return [form(n, pol)], False, True
@@ -71,6 +72,19 @@ def val(n, pol):
     while rest >= 9: spec.append(form(9, pol, k)); rest -= 9; k += 1
     if rest: spec += val(rest, pol)[0]
     return spec, False, (k <= 1)
+
+def val_angle(n, pol):
+    """courbure ou ouverture : neuf unités par quart de tour, écrites en addition ; le tour complet est le plein.
+    Deux ennéagones au plus (les deux orientations) : le troisième neuf s'écrit 4 + 5 (27 = 9 + 9 + 4 + 5)."""
+    if n in ("plein", 36): return [("full", 0, 0)]
+    parts = []
+    for k in range(n // 9): parts += [9] if k < 2 else [4, 5]
+    rest = n % 9
+    if rest: parts += [3, 3] if rest == 6 else [4, 4] if rest == 8 else [rest]
+    spec, seen = [], {}
+    for p_ in parts:
+        spec.append(form(p_, pol, seen.get(p_, 0))); seen[p_] = seen.get(p_, 0) + 1
+    return spec
 
 # ---------------- un sort ----------------
 NAMES = {"CIBLE": ("2", "Cible"), "FORME": ("3", "Forme"), "AMPLEUR": ("4", "Ampleur"), "DUREE": ("5", "Durée"),
@@ -98,6 +112,19 @@ def _officiants(svg, n):
     H = max(h, D + ro + 8); W = max(w, H)
     return f'<svg viewBox="{-W:.1f} {-H:.1f} {2*W:.1f} {2*H:.1f}" role="img" xmlns="http://www.w3.org/2000/svg">{pre}{inner}{post}</svg>'
 
+def sat_opts(x, pol):
+    """options d'un satellite (deg, valeur, annotation, options) : « crit », le critère qu'il porte quand ce n'est pas celui
+    de son cercle ; « kids », les valeurs de ses propres satellites (les proportions d'un satellite de Forme)"""
+    o = dict(x[1]) if len(x) > 1 and x[1] else {}
+    if o.get("kids"): o["kids"] = [val(k, pol)[0] for k in o["kids"]]
+    return o
+
+def sat_label(sv, x, pol):
+    """annotation d'un satellite ; un satellite d'un autre critère dont la valeur se multiplie porte lui-même « fois »"""
+    lab = x[0] if x else ""
+    if len(x) > 1 and x[1] and x[1].get("crit") and val(sv, pol)[1]: lab += " FOIS"
+    return lab
+
 def build(core, pol, rings, r0=34, split=None, officiants=0):
     """split = (lumineux, ténébreux) : chaque cercle prend la polarité de son camp"""
     gr, rows, undet = [], [], []
@@ -106,12 +133,12 @@ def build(core, pol, rings, r0=34, split=None, officiants=0):
         p = pol
         if split: p = "up" if crit in split[0] else "down"
         spec, mult, ok = val(v, p) if v is not None else ([], False, False)
-        svals = [(d, val(sv, p), (x[0] if x else "")) for d, sv, *x in sats]
-        mult = mult or any(m for _, (_, m, _), _ in svals)
-        ok = ok or any(o for _, (_, _, o), _ in svals)
+        svals = [(d, val(sv, p), sat_label(sv, x, p), sat_opts(x, p)) for d, sv, *x in sats]
+        mult = mult or any(m for _, (_, m, _), _, o_ in svals if not o_.get("crit"))
+        ok = ok or any(o for _, (_, _, o), _, _ in svals)
         if not ok: undet.append(crit)
         words = list(words) + (["FOIS"] if mult else [])
-        gr.append(dict(label=" ".join([crit] + words), spec=spec, sats=[(d, sp, lab) for d, (sp, _, _), lab in svals]))
+        gr.append(dict(label=" ".join([crit] + words), spec=spec, sats=[(d, sp, lab, o) for d, (sp, _, _), lab, o in svals]))
         rows.append((NAMES[crit][0], NAMES[crit][1], reading))
     dec, epu = GG.glyph(core, gr, r0=r0)
     if officiants: dec, epu = _officiants(dec, officiants), _officiants(epu, officiants)
@@ -200,7 +227,7 @@ def S(group, title, verb_label, core, pol, dnd, rings, notes, r0=34, split=None)
 # ===== Groupe I =====
 S("I", "Mur de force", "Créer · existence +", verb("existence", False), "up",
   "Mur de force · niveau 5 · sphère de 3 m de rayon · portée 36 m · 10 minutes",
-  [("FORME", "plein", [], "sphère", [(SAT_UP, "plein")]),
+  [("FORME", "plein", [], "sphère", [(SAT_UP, 1)]),
    ("AMPLEUR", 6, ["DIAMETRE", "METRES"], "6 m de diamètre"),
    ("DUREE", 10, ["MINUTES"], "10 minutes"),
    ("LOCALISATION", 36, ["METRES"], "36 m")],
@@ -227,7 +254,7 @@ S("I", "Doux repos", "Préserver · nature −", verb("nature", True), "down",
   ["Le sel n'est pas consommé : il accompagne, et sa pertinence est évidente, il porte la forme de ce qui conserve."])
 S("I", "Détection de la magie", "Révéler · visibilité +", verb("visibilite", False), "up",
   "Détection de la magie · niveau 1 · sphère de 9 m autour de soi · 10 minutes",
-  [("FORME", "plein", [], "sphère", [(SAT_UP, "plein")]),
+  [("FORME", "plein", [], "sphère", [(SAT_UP, 1)]),
    ("AMPLEUR", 18, ["DIAMETRE", "METRES"], "18 m de diamètre"),
    ("DUREE", 10, ["MINUTES"], "10 minutes")],
   ["Pas de Cible : on révèle la trame elle-même. Pas de Localisation : la sphère est centrée sur le lanceur."])
@@ -286,7 +313,7 @@ S("II", "Foudre attirante", "Attirer · force directionnelle +", verb("force", F
 S("II", "Vague tonnante", "Repousser · force directionnelle −", verb("force", True), "down",
   "Vague tonnante · niveau 1 · cube de 4,5 m depuis soi · 2d8 de tonnerre · repousse de 3 m",
   [("CIBLE", "plein", [], "une zone"),
-   ("FORME", 4, [], "cube", [(SAT_DOWN, "plein")]),
+   ("FORME", 4, [], "cube", [(SAT_DOWN, 1)]),
    ("AMPLEUR", 5, ["COTE", "METRES"], "5 m de côté"),
    ("IMPACT", 9, ["TONNERRE"], "intensité 9, tonnerre (2d8)")],
   ["Pas de Localisation : le cube part du lanceur. La poussée de 3 m est ce que fait le verbe ; le tonnerre est son médium."])
@@ -348,7 +375,7 @@ S("III", "Épargner les mourants", "Stabiliser · ordre +", verb("ordre", False)
 S("III", "Confusion", "Déstabiliser · ordre −", verb("ordre", True), "down",
   "Confusion · niveau 4 · sphère de 3 m de rayon · portée 27 m · 1 minute",
   [("CIBLE", "plein", [], "une zone"),
-   ("FORME", "plein", [], "sphère", [(SAT_DOWN, "plein")]),
+   ("FORME", "plein", [], "sphère", [(SAT_DOWN, 1)]),
    ("AMPLEUR", 6, ["DIAMETRE", "METRES"], "6 m de diamètre"),
    ("DUREE", 1, ["MINUTES"], "1 minute"),
    ("LOCALISATION", 27, ["METRES"], "27 m")],
@@ -370,7 +397,7 @@ S("H", "Clairvoyance", "Divination · Hodolin · Verre (2F 1A 1T)", hyb(f=2, a=1
   ["Le Verre : ce qui laisse passer la vue. La composante de D&D (un œil de verre ou une corne ornée) devient pertinente."], r0=66, split=(["NOYAU", "DUREE", "COMPOSANTE"], ["LOCALISATION"]))
 S("H", "Image silencieuse", "Illusion · Hodolin · Plasma (1F 3A)", hyb(f=1, a=3, label="ILLUSION"), "up",
   "Image silencieuse · niveau 1 · cube de 4,5 m · portée 18 m · 10 minutes",
-  [("FORME", 4, [], "cube", [(SAT_UP, "plein")]),
+  [("FORME", 4, [], "cube", [(SAT_UP, 1)]),
    ("AMPLEUR", 5, ["COTE", "METRES"], "5 m de côté"),
    ("DUREE", 10, ["MINUTES"], "10 minutes"),
    ("LOCALISATION", 18, ["METRES"], "18 m"),
@@ -399,7 +426,7 @@ S("G", "Chair en pierre", "Transmutation · Galombar · Roche (1A 3T)", hyb(a=1,
 S("G", "Éclair", "Évocation · Galombar · Éclair (3F 1A)", hyb(f=3, a=1, label="EVOCATION"), "down",
   "Éclair · niveau 3 · ligne de 30 m depuis soi · 8d6 de foudre",
   [("CIBLE", "plein", [], "une zone"),
-   ("FORME", 1, [], "ligne", [(SAT_DOWN, "plein")]),
+   ("FORME", 1, [], "ligne", [(SAT_DOWN, 1)]),
    ("AMPLEUR", 30, ["LONGUEUR", "METRES"], "30 m de long"),
    ("IMPACT", 28, ["FOUDRE"], "intensité 28, foudre")],
   ["La combinaison porte littéralement le nom du sort."], r0=66, split=(["FORME"], ["NOYAU", "CIBLE", "AMPLEUR", "IMPACT"]))
@@ -414,7 +441,7 @@ S("G", "Animation des morts", "Nécromancie · Galombar · Sang (1F 1T 2E)", hyb
 S("R", "Lenteur", "Chronomancie · Corrompre (Qualité −) cerné des quatre éléments", chrono("qualite", True, "CHRONOMANCIE"), "down",
   "Lenteur · niveau 3 · jusqu'à 6 créatures dans un cube de 12 m · portée 36 m · 1 minute",
   [("CIBLE", 3, [], "six ennemis : satellite Quantité 6", [(90, 6)]),
-   ("FORME", 4, [], "cube", [(90, "plein")]),
+   ("FORME", 4, [], "cube", [(90, 1)]),
    ("AMPLEUR", 12, ["COTE", "METRES"], "12 m de côté"),
    ("DUREE", 1, ["MINUTES"], "1 minute"),
    ("LOCALISATION", 36, ["METRES"], "36 m"),
@@ -464,7 +491,7 @@ S("H", "Foulée brumeuse", "Invocation · Hodolin · Brume (3A 1E)", hyb(a=3, e=
 S("X", "Symbole", "Abjuration · Hodolin · Acier (1F 1A 2T)", hyb(f=1, a=1, t=2, label="ABJURATION"), "up",
   "Symbole (effet « Mort ») · niveau 7 · incantation 1 minute · au contact · sphère de 18 m de rayon · 10d10 nécrotiques · mercure, phosphore, poudre de diamant et d'opale (1 000 po) consommés · presque invisible · jusqu'à dissipation ou déclenchement",
   [("CIBLE", "plein", [], "une zone"),
-   ("FORME", "plein", [], "sphère", [(90, "plein")]),
+   ("FORME", "plein", [], "sphère", [(90, 1)]),
    ("AMPLEUR", 36, ["DIAMETRE", "METRES"], "36 m de diamètre"),
    ("DUREE", 1, ["MINUTES", "MINUTES"], "incantation : 1 minute ; fin de la lueur : 10 minutes", [(0, 10)]),
    ("LOCALISATION", 2, ["METRES"], "2 m : le contact"),

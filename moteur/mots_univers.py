@@ -316,3 +316,10 @@ for _k in "AGATE JACINTHE GEODE PYRITE BELLADONE MANDRAGORE ORTIE PAVOT LOTUS NE
 RENOMME.update({"PHALENE": ["papillon"]})                  # un papillon de nuit
 PAGE.update({("ironwood", "ACIER"): ["durcissement"]})     # « un bois aussi dur que l'acier » : la qualité, non l'énergie
 for _k in "EPAVE CREVASSE OURAGAN".split(): RENOMME.pop(_k, None)     # trois places libérées : trois mots retrouvent leur nom
+
+# ---------- Relecture de l'Impact, passe 2 (15 novembre 2026, soir) ----------
+# « vol » ne dit plus que le vol dans les airs (« envol » s'y fond) ; dérober s'écrit « larcin », déjà en usage.
+RENOMME["ENVOL"] = ["vol"]
+for _p in ("covetous-urge", "covetous-aura", "theft-ward", "healing-thief", "claim-identity", "envious-urge", "arcana-theft", "beacon-of-guilt", "swipe"):
+    PAGE[(_p, "VOL")] = ["larcin"]
+RENOMME.pop("COUSSIN", None)        # un coussin n'est pas un rempart : le mot reprend sa place (celle qu'« envol » a libérée)

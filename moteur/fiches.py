@@ -9945,3 +9945,7 @@ ELDEN_RING = {'er-glintstone-pebble': {'src': 'er', 'fr': 'Éclat arcanique', 'v
                                'aoe': {'type': 'sphere', 'size': 9.84},
                                'impact_plus': [(28, ['foudre'], ''), (25, ['choc'], '')]}}
 FICHES.update(ELDEN_RING)
+
+# --- relecture de l'Impact, passe 2 : cinq sorts d'ombre reçoivent leur face lumineuse (décision de Baptiste, 15 novembre 2026) ---
+for _k in ["penumbra", "protective-penumbra", "shifting-shadows", "shadow-illusion", "darklight"]:
+    FICHES[_k]["reciproque"] = True

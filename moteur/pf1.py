@@ -2,7 +2,7 @@
 
 Source des données : relevé d'Archives of Nethys (SpellTable-pf1e, licence MIT), tous les sorts, légaux ou non en
 Pathfinder Society (le tri se fait à la relecture, dans fiches.py), Technology Guide écarté. Les valeurs « par niveau » sont calculées au lanceur de référence :
-le plus petit lanceur capable du sort.
+le plus petit lanceur complet capable du sort (à défaut, le plus petit lanceur partiel).
 """
 import json, re
 from srd35 import idx_of, _range, _duration, _cast, _feet, _damage, _heal, TYPES
@@ -30,9 +30,13 @@ def _cl(cls, L):
     return max(1, 2 * L - 1)
 
 def caster(access):
-    """(niveau du sort, niveau du lanceur de référence, classe) : la classe qui lance le sort le plus tôt"""
+    """(niveau du sort, niveau du lanceur de référence, classe) : le lanceur complet (mage, prêtre, druide, sorcière,
+    chaman, psychiste) qui lance le sort le plus tôt ; à défaut seulement, la classe partielle la plus précoce.
+    Un lanceur partiel reçoit le sort à un cercle plus bas sans que le sort soit moindre : il fausserait le palier."""
     best = None
-    for cls, L in access.get("Level", []):
+    lv = access.get("Level", [])
+    if any(cls in FULL for cls, _ in lv): lv = [(c, L) for c, L in lv if c in FULL]
+    for cls, L in lv:
         if cls in NPC: continue
         c = (_cl(cls, L), L, cls)
         if best is None or c < best: best = c

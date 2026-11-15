@@ -2627,7 +2627,7 @@
  "lifes-flowing-river": "Un ruban de lumière pâle, pareil à un fleuve, éclaire à 3 m et file droit devant l'arcaniste : on y avance mal, on y tombe, et l'esprit des morts-vivants s'y blesse (2d6).",
  "painful-vibrations": "Des ondes sonores font vibrer les os et les organes d'un être vivant (8d6), lui donnent la nausée et l'assourdissent.",
  "radiant-beam": "Un rayon de lumière aveuglante jaillit des mains tendues (5d10) : il éblouit et défait les ténèbres magiques qu'il traverse. Forme lumineuse ou ténébreuse.",
- "weapon-storm": "L'arcaniste donne un coup de l'arme qu'il tient : elle se multiplie et frappe tous ceux d'un cône ou du cercle qui l'entoure, de 4 fois son dé.",
+ "weapon-storm": "L'arcaniste donne un coup de l'arme qu'il tient : elle se multiplie et frappe tous ceux d'un cône ou du cercle qui l'entoure, quatre fois plus fort qu'un coup ordinaire.",
  "acid-storm": "Une pluie d'acide tombe sur la zone une minute durant : elle brûle qui y commence son instant (3d8).",
  "blazing-fissure": "Une fissure mince déchire le sol, crache du magma et se referme : ceux qui se tiennent le long sont frappés et brûlés (4d6 + 6d6), et tombent.",
  "flowing-strike": "Une vague porte l'arcaniste sur 15 m sans qu'il prête le flanc ; il frappe au passage, et la vague s'abat sur sa cible à sa suite (2d10).",

@@ -283,7 +283,7 @@ def graft(idx, fiche, g, fam, s, fr, level, ecole, hemi, notes):
     for r in tmp["rings"]:
         if r[0] in ("CONDITION", "IMPACT", "QUANTITE") and fiche.get({"CONDITION": "cond", "IMPACT": "impact", "QUANTITE": "qty"}[r[0]]):
             rings.append(r)
-    rings = emprunt_et_rythme(mots_univers(rings))
+    rings = matieres(mesures_impact(emprunt_et_rythme(mots_univers(rings))))
     rings = energies_et_cibles(supports(formes_mots(rings)), fam, None)
     order = ["CIBLE", "FORME", "AMPLEUR", "DUREE", "LOCALISATION", "CONDITION", "IMPACT", "QUANTITE", "COMPOSANTE", "INTERACTION", "COSMETIQUE"]
     rings.sort(key=lambda r: order.index(r[0]))
@@ -311,6 +311,7 @@ def cost(s):
     return n, metals[i]
 
 def build_spell(idx, fiche):
+    _FACE[0] = fiche.get("face")
     s = {"2024": SRD24, "3.5": SRD35, "pf1": PF1, "pf2": PF2, "pf2r": PF2R, "er": ER}.get(fiche.get("src"), SRD)[fiche.get("src_idx", idx)]
     fr = fiche["fr"]
     level = fiche.get("niveau", s["level"])       # « niveau » : le niveau retenu sur l'échelle de D&D quand il s'écarte du rang d'origine
@@ -624,7 +625,7 @@ def build_spell(idx, fiche):
             if r[0] == crit_:
                 old_ = [(x[1], [x[2]] if len(x) > 2 and x[2] else []) for x in (r[4] if len(r) > 4 else [])]
                 rings[i] = (r[0], r[1], r[2], r[3] + sat_reading(sl, r[0]), place_sats(old_ + list(sl), r[0])); break
-    rings = emprunt_et_rythme(mots_univers(rings))
+    rings = matieres(mesures_impact(emprunt_et_rythme(mots_univers(rings))))
     try: _comb = (fiche.get("comb") or DAMAGE_COMBO.get(dtype) or comb_def) if fam not in ("A", "R") else None
     except NameError: _comb = None
     rings = energies_et_cibles(supports(formes_mots(rings)), fam, _comb)
@@ -732,6 +733,114 @@ def emprunt_et_rythme(rings):
             sats.append(chaque()); rd += " ; satellite Durée 1 « chaque · instants » : l'effet revient à chaque instant"
         out.append((r[0], r[1], ws, rd, _resats(sats)))
     return out + neufs
+
+# ---------- mesures écrites dans l'Impact ----------
+# Dans l'Impact il ne reste que ce que le sort fait. Une distance, une hauteur, un âge, une quantité de matière sont des
+# mesures : elles passent en satellite du critère qui les porte, posé sur le cercle d'Impact (arcane §4.2).
+_MES_AMPLEUR = {"beanstalk", "pillars-of-sand", "upheaval", "control-water"}          # le chiffre est une hauteur
+_MES_SCINDE = {"chilling-spray": 2, "clinging-ice": 2, "lifes-fresh-bloom": 2}      # le chiffre est une blessure ou un soin ; le ralentissement (1,5 m) à part
+_MES_RETIRE = {       # mots de mesure qui ne disent rien de plus que la Durée ou la Localisation du glyphe
+    "thought-shield-i": {"DUREE"}, "interrogation": {"DUREE"}, "object-possession-lesser": {"DUREE"},
+    "eagle-eye": {"HAUTEUR"}, "stabilize-pressure": {"INSTANTS"}, "momentary-recovery": {"INSTANTS"},
+    "synchronize": {"HEURES"}, "time-sense": {"HEURES"}}
+# Une allure (tant de mètres à chaque instant, aussi longtemps que dure le sort) n'est pas un élan (un seul mouvement de tant
+# de mètres) : l'allure porte en plus un satellite Durée 1 « chaque · instants ».
+_MES_ALLURE = {"VOL", "COURSE", "PAS", "VITESSE", "ALLURE", "LENTEUR", "FOULEE"}
+_MES_ALLURE_PAGES = {"tanglefoot", "magical-fetters", "sea-of-thought", "oneiric-mire", "swampcall", "antlion-trap", "feather-fall", "friendly-push"}
+_MES_LITRES = {7: 200, 9: 255}                                                        # Création : des pieds cubes aux litres
+def mesures_impact(rings):
+    page = _PAGE[0]
+    duree_pleine = any(r[0] == "DUREE" and (r[1] == "plein" or any(st[1] == "plein" for st in (r[4] if len(r) > 4 and r[4] else []))) for r in rings)
+    if page == "maze-of-locked-doors" and any(r[0] == "IMPACT" and r[2] == ["DISTANCE"] for r in rings):
+        # les portes tous les 9 m ne sont pas un effet : c'est la forme du lieu, un couloir en tronçons de 9 m
+        rings = [r for r in rings if not (r[0] == "IMPACT" and r[2] == ["DISTANCE"])]
+        i_ = next((i for i, r in enumerate(rings) if r[0] != "CIBLE"), len(rings))
+        rings[i_:i_] = [("FORME", 1, [], "ligne : un couloir", [("SYM", 1)]),
+                        ("AMPLEUR", 9, [word("longueur"), word("mètres")], "9 m de long entre deux portes")]
+    out = []
+    def sat(crit, v, *mots): return ("SYM", v, " ".join([crit] + [word(m) for m in mots]), {"crit": crit})
+    for r in rings:
+        if r[0] != "IMPACT": out.append(r); continue
+        v, ws, rd = r[1], list(r[2]), r[3]
+        sats = list(r[4]) if len(r) > 4 and r[4] else []
+        S = set(ws); neufs = []; plus = []
+        def ote(*mots):
+            nonlocal rd
+            for m in mots:
+                if m in ws: ws.remove(m); rd = _sans_mot(rd, m)
+        num = isinstance(v, (int, float))
+        for m in _MES_RETIRE.get(page, ()): ote(m)
+        if page == "perfection-of-essence" and ws == ["PERMANENCE"]:       # ne plus vieillir : la jeunesse, aussi longtemps que dure le rite
+            ws[0] = word("jeunesse"); rd = rd.replace("plein, permanence", "plein, jeunesse", 1); S = set(ws)
+        if "FOIS" in S and num:
+            # « deux fois plus » : le pendant de « fractionné ». « fois » reste l'annotation des formes qui se multiplient.
+            ote("FOIS")
+            if not any(len(st) > 2 and "FRACTIONNE" in str(st[2]) for st in sats):
+                neufs.append((sat("QUANTITE", v, "multiplié"), f"satellite Quantité {v} « multiplié »"))
+            v = "plein"; num = False
+        if page in ("clarion-call", "bombers-eye", "longshot", "sacred-bond") and S & {"PORTEE", "DISTANCE"}:
+            ote("PORTEE", "DISTANCE"); neufs.append((sat("LOCALISATION", "plein"), "satellite Localisation plein : au loin"))
+        if "PERMANENCE" in S and page != "permanency" and len(S) > 1:
+            ote("PERMANENCE")
+            if not duree_pleine: neufs.append((sat("DUREE", "plein"), "satellite Durée plein : pour toujours"))
+        if "DUREE" in S and page == "pain-strike":
+            ote("DUREE"); neufs.append((sat("DUREE", 1, "chaque", "instants"), "satellite Durée 1 « chaque · instants » : à chaque instant"))
+        if "DUREE" in S and page == "caustic-eruption":
+            ote("DUREE"); neufs.append((sat("DUREE", 2, "instants"), "satellite Durée 2 « instants » : ronge encore deux instants"))
+        if "ANS" in S:
+            ote("ANS")
+            if num: neufs.append((sat("DUREE", v, "ans"), f"satellite Durée {v} « ans »")); v = "plein"
+            elif word("âge") not in ws: ws.append(word("âge")); rd = rd.replace("plein, pourriture", "plein, pourriture · âge")
+        if "HEURES" in S and num and "KILOMETRES" not in S:
+            ote("HEURES"); neufs.append((sat("DUREE", v, "heures"), f"satellite Durée {v} « heures »")); v = "plein"
+        if S & {"LITRES", "KILO"} and num:
+            u = "LITRES" if "LITRES" in S else "KILO"; ote(u)
+            neufs.append((sat("AMPLEUR", v, u.lower()), f"satellite Ampleur {v} « {u.lower()} »")); v = "plein"
+        if "VOLUME" in S and num and page == "creation":
+            ote("VOLUME"); q = _MES_LITRES.get(v, v * 28)
+            neufs.append((sat("AMPLEUR", q, "litres"), f"satellite Ampleur {q} « litres »")); v = "plein"
+        if "VOL" in ws and num and not S & _T_DIST:
+            # le chiffre est une blessure ; s'élever dans les airs est un autre effet, sur son propre cercle
+            ote("VOL")
+            if not any(x[0] == "IMPACT" and x[1] == "plein" and x[2] == ["VOL"] for x in rings): plus.append(("IMPACT", "plein", ["VOL"], "plein, vol"))
+        if S & _T_DIST and num and "FOIS" not in S:
+            km = "KILOMETRES" in S
+            if page in _MES_SCINDE:
+                d = _MES_SCINDE[page]; eff = "LENTEUR" if "LENTEUR" in ws else "VITESSE"
+                ote("METRES")
+                if eff in ws: ote(eff)
+                plus.append(("IMPACT", "plein", [eff], f"plein, {shown(eff.lower())} ; satellite Localisation {d} « mètres » ; satellite Durée 1 « chaque · instants » : une allure",
+                             _resats([sat("LOCALISATION", d, "mètres"), sat("DUREE", 1, "chaque", "instants")])))
+            else:
+                ote("METRES", "KILOMETRES", "PORTEE")
+                if page in _MES_AMPLEUR:
+                    if "HAUTEUR" in ws: ws[ws.index("HAUTEUR")] = word("élévation"); rd = rd.replace("hauteur", "élévation", 1)
+                    neufs.append((sat("AMPLEUR", v, "hauteur", "mètres"), f"satellite Ampleur {v} « hauteur · mètres »"))
+                else:
+                    neufs.append((sat("LOCALISATION", v, "kilomètres" if km else "mètres"), f"satellite Localisation {v} « {'kilomètres' if km else 'mètres'} »"))
+                    if not km and (set(ws) & _MES_ALLURE or page in _MES_ALLURE_PAGES):
+                        neufs.append((sat("DUREE", 1, "chaque", "instants"), "satellite Durée 1 « chaque · instants » : une allure, non un élan"))
+                    if km and "HEURES" in ws:
+                        ote("HEURES"); neufs.append((sat("DUREE", 1, "chaque", "heures"), "satellite Durée 1 « chaque · heures »"))
+                        if not ws: ws.append("VOL"); rd = "vol" + rd
+                v = "plein"
+        if not neufs and not plus and ws == list(r[2]): out.append(r); continue
+        if v == "plein" and r[1] != "plein": rd = re.sub(r"^intensité \d+(, )?", lambda m: "plein" + (m.group(1) or ""), rd)
+        if neufs:
+            i_ = rd.find(")") if rd.find("(") >= 0 and rd.find(")") > rd.find("(") else 0      # pas dans la parenthèse d'explication
+            cut = rd.find(" ;", i_) if rd.find(" ;", i_) >= 0 else len(rd)
+            rd = rd[:cut] + "".join(" ; " + t for _, t in neufs) + rd[cut:]
+        sats = _resats(sats + [s for s, _ in neufs]) if neufs else sats
+        out.append((r[0], v, ws, rd, sats) if sats else (r[0], v, ws, rd))
+        out += plus
+    # les allures déjà écrites en satellite (saisies ainsi dans les fiches) reçoivent le même rythme
+    for i_, r in enumerate(out):
+        if r[0] != "IMPACT" or not set(r[2]) & {"VOL", "VITESSE", "ALLURE", "LENTEUR"} or len(r) < 5 or not r[4]: continue
+        labs = [str(st[2]) if len(st) > 2 else "" for st in r[4]]
+        if any(l.startswith("LOCALISATION") and isinstance(st[1], (int, float)) for l, st in zip(labs, r[4])) and not any("CHAQUE" in l for l in labs):
+            out[i_] = (r[0], r[1], r[2], r[3] + " ; satellite Durée 1 « chaque · instants » : une allure, non un élan",
+                       _resats(list(r[4]) + [sat("DUREE", 1, "chaque", "instants")]))
+    return out
 
 # ---------- mots de forme ----------
 import formes_mots as FM
@@ -899,6 +1008,89 @@ def supports(rings):
             rings[i] = (r[0], r[1], reste, rd + f" ; satellite Cible « {noms} »",
                         _resats(list(r[4]) + [("SYM", None, " ".join(["CIBLE"] + sup), {"crit": "CIBLE"})]))
     return [r if r[4] else r[:4] for r in rings]
+
+# ---------- matières et apparences écrites dans l'Impact ----------
+import matieres_mots as MM
+_FACE = [None]
+def matieres(rings):
+    """applique la table de matieres_mots : la matière ou l'apparence quitte l'Impact, le vrai effet y reste"""
+    t = MM.TABLE.get(_PAGE[0])
+    if not t: return rings
+    lum = norm(_FACE[0] or "") == "LUMINEUX"
+    if lum and t.get("lum"): t = {**t, **t["lum"], "rempl": {**t.get("rempl", {}), **t["lum"].get("rempl", {})}}
+    seul = word(t["seul"]) if t.get("seul") else None
+    N = lambda l: [word(x) for x in l]
+    rempl = {word(k): N(v) for k, v in t.get("rempl", {}).items()}
+    cosm, cible, ote = N(t.get("cosm", [])), N(t.get("cible", [])), N(t.get("ote", []))
+    sc, sk = N(t.get("sat_cible", [])), N(t.get("sat_cond", []))
+    part = set(rempl) | set(cosm) | set(cible) | set(ote) | set(sc) | set(sk)
+    def sat(crit, v, mots): return ("SYM", v, " ".join([crit] + N(mots)), {"crit": crit})
+    def lit(crit, v, mots): return f"satellite {crit.capitalize().replace('Duree', 'Durée')}" + ("" if v is None else f" {v}") + (f" « {' · '.join(mots)} »" if mots else "")
+    out, vus_c, vus_k, touche = [], [], [], False
+    for r in rings:
+        if r[0] != "IMPACT" or not (part & set(r[2])) or (seul and seul not in r[2]): out.append(r); continue
+        touche = True
+        ws, rd = [], r[3]
+        sats = list(r[4]) if len(r) > 4 and r[4] else []
+        ajout = []
+        for w in r[2]:
+            if w in rempl:
+                neufs = [x for x in rempl[w] if x not in ws and x not in r[2]]
+                rd = re.sub(r"[^\W\d_]+(?:-[^\W\d_]+)*", lambda m: (" · ".join(shown(x.lower()) for x in neufs) if norm(m.group()) == w else m.group()), rd, count=0) if neufs else _sans_mot(rd, w)
+                ws += neufs
+            elif w in cosm: vus_c.append(w); rd = _sans_mot(rd, w)
+            elif w in cible: vus_k.append(w); rd = _sans_mot(rd, w)
+            elif w in ote: rd = _sans_mot(rd, w)
+            elif w in sc: ajout.append((sat("CIBLE", None, [w]), f"satellite Cible « {shown(w.lower())} »")); rd = _sans_mot(rd, w)
+            elif w in sk: ajout.append((sat("CONDITION", "plein", [w]), f"satellite Condition « {shown(w.lower())} »")); rd = _sans_mot(rd, w)
+            else: ws.append(w)
+        for x in N(t.get("ajoute", [])):
+            if x not in ws: ws.append(x); rd = re.sub(r"^(plein|intensité \d+)(, )?", lambda m: m.group(1) + ", " + shown(x.lower()) + (" · " if m.group(2) else ""), rd, count=1)
+        for crit, v, mots in t.get("sats", []): ajout.append((sat(crit, v, mots), lit(crit, v, mots)))
+        astral_ = any(isinstance(st[1], tuple) and st[1][1] in ("lumineux", "tenebreux") for st in sats)
+        for e in t.get("sym", []):       # une face astrale déjà inscrite sur le cercle dit déjà l'ombre ou la lumière
+            if e in ("lumineux", "tenebreux") and astral_: continue
+            if e == "tenebreux" and lum: e = "lumineux"
+            ajout.append((("SYM", ("sym", e), ""), "satellite symbole : " + {"tenebreux": "la face ténébreuse du plan astral", "lumineux": "la face lumineuse du plan astral"}.get(e, e)))
+        if t.get("forme_prim"):
+            s_, txt = _sat_forme(t["forme_prim"], [], None)
+            ajout += [(x, None) for x in s_]; rd += txt
+        if t.get("forme"):
+            s_, txt = _sat_forme("ligne", [word(t["forme"])], None)
+            ajout += [(x, None) for x in s_]; rd += txt
+        rd += "".join(" ; " + x for _, x in ajout if x)
+        sats = _resats(sats + [s for s, _ in ajout]) if ajout else sats
+        v_ = r[1]
+        if t.get("valeur") and v_ != t["valeur"]:
+            v_ = t["valeur"]; rd = re.sub(r"^intensité \d+", "plein", rd)
+        out.append((r[0], v_, ws, rd, sats) if sats else (r[0], v_, ws, rd))
+    if not touche and not (t.get("cosm_plus") or t.get("cible_plus")): return rings
+    for v, mots, ss in (t.get("plus", []) if touche else []):
+        s2 = _resats([("SYM", ("sym", x), "") if c == "SYM" else sat(c, x, m) for c, x, m in ss])
+        rd = ("plein" if v == "plein" else f"intensité {v}") + (", " + " · ".join(mots) if mots else "") + "".join(" ; " + (f"satellite symbole : {x}" if c == "SYM" else lit(c, x, m)) for c, x, m in ss)
+        out.append(("IMPACT", v, N(mots), rd, s2) if s2 else ("IMPACT", v, N(mots), rd))
+    vus_c += [w for w in N(t.get("cosm_plus", [])) if touche]; vus_k += [w for w in N(t.get("cible_plus", [])) if touche]
+    if lum and t.get("lum") is not None:        # face lumineuse : ce que l'on voit n'est plus l'ombre mais la lumière
+        for i, r in enumerate(out):
+            if r[0] == "COSMETIQUE" and "OMBRE" in r[2]:
+                ws_ = list(dict.fromkeys(word("lumière") if w == "OMBRE" else w for w in r[2]))
+                out[i] = (r[0], r[1], ws_, " · ".join(shown(w.lower()) for w in ws_) + r[3][r[3].find(","):] if "," in r[3] else r[3], *r[4:])
+    if vus_c:
+        i = next((i for i, r in enumerate(out) if r[0] == "COSMETIQUE"), None)
+        if i is None: out.append(("COSMETIQUE", 1, list(dict.fromkeys(vus_c)), " · ".join(shown(w.lower()) for w in dict.fromkeys(vus_c)) + ", 1 sens"))
+        else:
+            c = out[i]; neufs = [w for w in dict.fromkeys(vus_c) if w not in c[2]]
+            if neufs: out[i] = (c[0], c[1], list(c[2]) + neufs, " · ".join(shown(w.lower()) for w in neufs) + " · " + c[3], *c[4:])
+    if vus_k:
+        i = next((i for i, r in enumerate(out) if r[0] == "CIBLE"), None)
+        if i is not None:
+            c = out[i]; neufs = [w for w in dict.fromkeys(vus_k) if w not in c[2]]
+            if neufs: out[i] = (c[0], c[1], list(c[2]) + neufs, c[3] + f", précisé « {' · '.join(shown(w.lower()) for w in neufs)} »", *c[4:])
+    if t.get("forme_cercle") and touche:
+        i = next((i for i, r in enumerate(out) if r[0] == "FORME"), None)
+        if i is not None:
+            c = out[i]; out[i] = (c[0], c[1], list(c[2]) + [word(t["forme_cercle"])], c[3] + f" « {t['forme_cercle']} »", *c[4:])
+    return out
 
 # ---------- énergies et cibles dites en mots ----------
 import combos as _K

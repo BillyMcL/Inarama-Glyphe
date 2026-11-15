@@ -32,7 +32,7 @@ GEO = {
  "PILIER": ("cylindre", {"rising-water"}, set()),
  "SPHERE": ("sphere", None, set()),
  "GLOBE": ("sphere", None, set()),
- "BOULE": ("sphere", None, {"fold-metal"}),
+ "BOULE": ("sphere", None, set()),
  "ORBE": ("sphere", None, set()),
  "EXPLOSION": ("sphere", None, set()),                          # sphère annotée « explosion » sur le cercle Forme
  "BULLE": ("coquille", {"personal-ocean"}, set()),

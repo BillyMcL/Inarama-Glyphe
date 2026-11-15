@@ -1,13 +1,24 @@
 # -*- coding: utf-8 -*-
 """Contrôle des glyphes : les règles de l'audit du 14 novembre. Une forme qui en enfreint une bloque la construction stricte."""
-import collections
+import collections, json, os
 import lexique as L
+# Le lexique fermé : les mille et un mots de l'Arcane. Toute annotation (d'un cercle ou d'un satellite) doit en être.
+_LX = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "donnees", "lexique_1001.json")
+MILLE_ET_UN = set(json.load(open(_LX, encoding="utf-8"))) if os.path.exists(_LX) else None
+CRITERES = {"CIBLE", "FORME", "AMPLEUR", "DUREE", "LOCALISATION", "CONDITION", "IMPACT", "QUANTITE", "COMPOSANTE", "INTERACTION", "COSMETIQUE"}
 
 def lint(spells):
     """spells : [{fr, forms:[{label, fam, verb, rings}]}] → liste de (règle, sort, forme, détail)"""
     out = []
     for sp in spells:
         for fm in sp["forms"]:
+            if MILLE_ET_UN is not None:
+                for r in fm["rings"]:
+                    mots = list(r[2])
+                    for x in (r[4] if len(r) > 4 and r[4] else []):
+                        if len(x) > 2 and x[2]: mots += [w for w in str(x[2]).split() if w not in CRITERES]
+                    for w in mots:
+                        if w not in MILLE_ET_UN: out.append(("lexique", sp["fr"], fm["label"], f"« {w.lower()} » n'est pas l'un des mille et un mots"))
             if "grimoire" in " ".join(fm.get("notes") or []).lower() and fm["notes"][0].startswith("Version du grimoire"): continue
             verbe = fm["verb"].split(" ·")[0]
             def err(regle, detail=""): out.append((regle, sp["fr"], fm["label"], detail))

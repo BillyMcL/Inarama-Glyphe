@@ -10077,3 +10077,11 @@ _f["vp2"] = _prisme((50, "le rayon rouge : 50 de feu"), [(60, ["acide"], "le ray
     ("plein", ["confusion"], "le rayon indigo", ["indigo"]), ("plein", ["lenteur", "bannissement"], "le rayon violet : ralentie une minute, voire jetée sur un autre plan", ["violet"])])
 FICHES["call-the-blood"]["impact_plus"] = []
 FICHES["impending-doom"]["impact"] = (21, ["présage", "mort"], "au bout de trois instants, elle voit sa mort : 6d6 en moyenne")
+
+# ── répétition (2026-11-16) ──
+FICHES["combustion"]["impact"] = (18, ["flamme"], "4d8 en moyenne")       # seul le feu qui reste revient à chaque instant
+# Poigne électrique, version PF2 : le courant ne persiste que dans le métal que porte la cible (une condition, non une nature)
+FICHES["shocking-grasp"]["vp2"] = {"impact_sats": [], "impact_plus": [(2, ["persistance", "foudre"], "1d4 en moyenne à chaque instant : le courant court dans le métal qu'elle porte", ["métal"])]}
+# Vague d'anéantissement : les éléments ne s'attardent qu'un instant, ce n'est pas un effet qui revient
+for _o in FICHES["elemental-annihilation-wave"]["options"]:
+    if _o.get("impact_plus"): _o["impact_plus"] = [("plein", ["vent"], "les éléments s'attardent un instant dans le cône et en interdisent l'approche", [], [(1, ["instants"], "DUREE")])]

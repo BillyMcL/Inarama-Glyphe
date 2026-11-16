@@ -1061,3 +1061,21 @@ M_("call-the-blood", plus=[
     ("plein", ["hâte", "vigueur"], [("CONDITION", "plein", ["mort-vivant"]), ("CIBLE", 1, [])], "mort-vivant, j'y gagne force d'emprunt et vitesse")])
 TABLE["impending-doom"] = {"toujours": True, "ordre": ["surprise", "effroi", "présage"], "plus": [
     ("plein", ["surprise"], [], "sa mort entrevue la prend au dépourvu"), (2, ["effroi"], [], "puis la peur monte")]}
+
+# ── « imparable » (2026-11-16) : le sort ne laisse à la cible aucun moyen de s'y soustraire ni d'y résister ──
+# page : (éditions concernées, cercles annotés). Éditions : 5e, 2024, 3.5, pf1, pf2, pf2r. Vérifié sur le texte d'origine de chaque édition.
+_T = "5e 2024 3.5 pf1 pf2 pf2r"
+IMPARABLE = {k: (set(e.split()), ou) for k, (e, ou) in {
+ "power-word-kill": (_T, "premier"), "power-word-stun": (_T, "premier"), "power-word-blind": ("3.5 pf1 pf2 pf2r", "premier"), "maze": (_T, "premier"),
+ "irresistible-dance": ("5e 3.5", "premier"), "forcecage": ("5e 2024 3.5", "premier"), "sleep": ("5e", "premier"), "color-spray": ("5e", "premier"),
+ "divine-word": ("3.5", "premier"), "mark-of-justice": ("3.5 pf1", "premier"), "geas": ("3.5 pf1", "premier"),
+ "waves-of-fatigue": ("3.5 pf1", "premier"), "scintillating-pattern": ("3.5 pf1", "premier"),
+ "faerie-fire": ("3.5 pf1 pf2 pf2r", "premier"), "ice-storm": ("3.5 pf1", "chiffrés"), "symbol-of-vulnerability": ("pf1", "premier"),
+ "reprobation": ("pf1", "premier"), "siphon-magic": ("pf1", "premier"), "litany-of-madness": ("pf1", "premier"), "litany-of-vengeance": ("pf1", "premier"),
+ "sands-of-time": ("pf1", "premier"), "hags-seasoning": ("pf1", "premier"), "litany-of-eloquence": ("pf1", "premier"), "pernicious-poison": ("pf1", "premier"),
+ "shared-suffering": ("pf1", "premier"), "litany-of-weakness": ("pf1", "premier"), "ill-omen": ("pf1", "premier"), "time-shudder": ("pf1", "premier"),
+ "unbearable-brightness": ("pf1", "premier"), "euphoric-tranquility": ("pf1", "premier"),
+ "fatal-aria": ("pf2 pf2r", "premier"), "elemental-betrayal": ("pf2 pf2r", "premier"), "dread-aura": ("pf2 pf2r", "premier"), "dirge-of-doom": ("pf2 pf2r", "premier"),
+ "menacing-lament": ("pf2 pf2r", "premier"), "destructive-aura": ("pf2 pf2r", "premier"),
+ "magic-missile": (_T, "premier"), "force-bolt": ("pf2 pf2r", "premier"),
+}.items()}

@@ -312,6 +312,7 @@ def cost(s):
 
 def build_spell(idx, fiche):
     _FACE[0] = fiche.get("face")
+    _ED[0] = fiche.get("src")
     s = {"2024": SRD24, "3.5": SRD35, "pf1": PF1, "pf2": PF2, "pf2r": PF2R, "er": ER}.get(fiche.get("src"), SRD)[fiche.get("src_idx", idx)]
     fr = fiche["fr"]
     level = fiche.get("niveau", s["level"])       # « niveau » : le niveau retenu sur l'échelle de D&D quand il s'écarte du rang d'origine
@@ -1020,7 +1021,22 @@ def matieres(rings):
     if _PAGE[0] in MM.AMPLEUR: rings = _portee(rings)
     if _PAGE[0] in MM.ALLURE: rings = _allure(rings)
     if t and t.get("ordre"): rings = _ordre(rings, t["ordre"])
+    imp = MM.IMPARABLE.get(_PAGE[0])
+    if imp and (_ED[0] or "5e") in imp[0]: rings = _imparable(rings, imp[1])
     return rings
+_ED = [None]       # l'édition de la forme en cours : None (D&D 5), « 2024 », « 3.5 », « pf1 », « pf2 », « pf2r »
+def _imparable(rings, ou):
+    """un effet auquel la cible ne peut ni se soustraire ni résister : le mot « imparable » annote son cercle d'Impact
+    (« premier » : le premier cercle ; « chiffrés » : tous les cercles chiffrés)"""
+    w = word("imparable"); out = []; fait = False
+    for r in rings:
+        if r[0] == "IMPACT" and w not in r[2] and ((ou == "chiffrés" and r[1] != "plein") or (ou == "premier" and not fait)):
+            fait = True; rd = r[3]
+            if "la force brute du verbe" in rd and not r[2]: rd = rd.replace("la force brute du verbe", "la force brute du verbe, imparable", 1)
+            else: rd = re.sub(r"^(plein|intensité \d+)(, )?", lambda m: m.group(1) + ", imparable" + (" · " if m.group(2) else ""), rd, count=1)
+            r = (r[0], r[1], list(r[2]) + [w], rd, *r[4:])
+        out.append(r)
+    return out
 def _ordre(rings, mots):
     """les cercles d'Impact se lisent du centre vers l'extérieur, dans l'ordre où les effets se produisent : « ordre » les range"""
     ks = [word(m) for m in mots]

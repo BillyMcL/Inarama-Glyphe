@@ -840,7 +840,6 @@ for _p, _k in {
  "sirocco": {"sur": ["chaleur"], "plus": [_R("le vent brûlant plaque au sol")]},
  "cave-fangs": {"toujours": True, "plus": [_R("les stalagmites renversent")]},
  "clashing-rocks": {"sur": ["écrasement"], "plus": [_R("pris entre les rocs, jeté à terre")]},
- "grasping-corpse": {"sur": ["saisie"], "plus": [_R("ou bien il fait tomber")]},
  "winds-of-vengeance": {"sur": ["vol"], "plus": [(22, ["riposte", "renversement"], [], "5d8 en moyenne à qui me frappe au corps à corps, cinglé par les vents")]},
 }.items(): M_(_p, **_k)
 for _p, _k in {
@@ -947,8 +946,8 @@ for _p, _k in {
  "snapdragon-fireworks": [_P(["éblouissement"], "l'éclat de la fusée")], "gritty-wheeze": [_P(["éblouissement"], "le sable dans les yeux")],
  "control-sand": [_P(["éblouissement"], "la tempête de sable autour de moi")], "pollen-pods": [_P(["éblouissement", "stupeur"], "le pollen brouille la vue et l'esprit")],
  "signal-skyrocket": [_P(["éblouissement"], "l'éclat de la fusée")], "zenith-star": [_P(["éblouissement"], "le halo qui la marque")],
- "fear-the-sun": [_P(["aveuglement", "éblouissement"], "la vive lumière l'aveugle puis l'éblouit", K_("lumière"))],
- "suns-disdain": [_P(["aveuglement", "éblouissement"], "la vive lumière l'aveugle puis l'éblouit", K_("lumière"))],
+ "fear-the-sun": [_P(["aveuglement"], "la vive lumière l'aveugle un instant", K_("lumière")), _P(["éblouissement"], "puis elle l'éblouit tant qu'elle y reste", K_("lumière"))],
+ "suns-disdain": [_P(["aveuglement"], "la vive lumière l'aveugle un instant", K_("lumière")), _P(["éblouissement"], "puis elle l'éblouit tant qu'elle y reste", K_("lumière"))],
  "prismatic-wall": [_P(["aveuglement"], "qui s'approche du mur")], "wall-of-silver": [_P(["aveuglement"], "les êtres hostiles qui le traversent")],
  "gloomblind-bolts": [_P(["aveuglement"], "les ténèbres lui couvrent la peau")], "firefall": [_P(["aveuglement"], "ceux qui regardaient le feu")],
  "cinder-swarm": [_P(["aveuglement"], "les braises dans les yeux")], "dazzling-flash": [_P(["aveuglement"], "un instant aveuglés, puis éblouis")],
@@ -1042,3 +1041,23 @@ TABLE["holy-whisper"] = {"refait": True, "plus": [
 TABLE["wake-of-light"] = {"refait": True, "cosm_plus": ["sillage"], "plus": [
     ("plein", ["aisance"], [K_("bienveillant")], "les bienveillants marchent sur la brume : le terrain pénible ne les freine plus"),
     ("plein", ["gêne"], [K_("hostile")], "la brume épaisse freine les hostiles")]}
+
+# ── ordre des effets : les cercles d'Impact se lisent du centre vers l'extérieur, dans l'ordre où les effets se produisent ──
+M_("dazzling-flash", ordre=["aveuglement", "éblouissement"])
+M_("life-link", ordre=["regain", "partage"])
+M_("sawtooth-terrain", ordre=["pointe", "saignement", "gêne"])
+
+# ── effets au choix ou selon les cas (2026-11-16) : une forme par choix du lanceur ; un satellite Condition quand les circonstances décident ──
+TABLE["cape-of-wasps"] = {"cercle": {
+    "garde": {"refait": True, "plus": [("plein", ["dissimulation"], [], "l'essaim me cache des tirs"), (7, ["riposte", "dard", "poison"], [], "2d6 en moyenne à qui me frappe au corps à corps")]},
+    "porteur": {"refait": True, "plus": [("plein", ["vol"], [("LOCALISATION", 6, ["mètres"]), CHAQUE], "l'essaim me porte, et ne me cache plus")]}}}
+TABLE["barbed-chains"] = {"cosm": ["chaîne"], "rempl": {"chaîne": ["arme"]}, "ote": ["peur"], "valeur": 4, "forme": "chaîne",
+    "cercle": {"renversement": {"ote": ["chaîne"], "forme": "chaîne"}},
+    "plus": [("plein", ["peur"], [], "qui est touché prend peur")]}
+M_("prismatic-spray", sat_cond=["rouge"])
+TABLE["waters-of-lamashtu"] = {"refait": True, "plus": [("plein", ["difformité", "faiblesse"], [("SYM", "eau", [])], "une eau qui a l'air pure : qui la boit a l'esprit rongé et le corps déformé")]}
+M_("call-the-blood", plus=[
+    ("plein", ["nausée"], [("CONDITION", "plein", ["vivant"]), ("CIBLE", 1, [])], "vivant, j'en ai la nausée"),
+    ("plein", ["hâte", "vigueur"], [("CONDITION", "plein", ["mort-vivant"]), ("CIBLE", 1, [])], "mort-vivant, j'y gagne force d'emprunt et vitesse")])
+TABLE["impending-doom"] = {"toujours": True, "ordre": ["surprise", "effroi", "présage"], "plus": [
+    ("plein", ["surprise"], [], "sa mort entrevue la prend au dépourvu"), (2, ["effroi"], [], "puis la peur monte")]}

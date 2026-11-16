@@ -1019,7 +1019,17 @@ def matieres(rings):
     if t: rings = _matieres(rings, t)
     if _PAGE[0] in MM.AMPLEUR: rings = _portee(rings)
     if _PAGE[0] in MM.ALLURE: rings = _allure(rings)
+    if t and t.get("ordre"): rings = _ordre(rings, t["ordre"])
     return rings
+def _ordre(rings, mots):
+    """les cercles d'Impact se lisent du centre vers l'extérieur, dans l'ordre où les effets se produisent : « ordre » les range"""
+    ks = [word(m) for m in mots]
+    rang = lambda r: min([ks.index(w) for w in r[2] if w in ks] or [len(ks)])
+    pos = [i for i, r in enumerate(rings) if r[0] == "IMPACT"]
+    tri = sorted((rings[i] for i in pos), key=rang)
+    out = list(rings)
+    for i, r in zip(pos, tri): out[i] = r
+    return out
 def _allure(rings):
     """une distance qui est une vitesse (X mètres à chaque instant) : la Localisation reçoit son satellite Durée 1 « chaque · instants »"""
     L = lambda st: len(st) > 2 and isinstance(st[2], str) and st[2].startswith("LOCALISATION")

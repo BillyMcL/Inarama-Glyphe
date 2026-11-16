@@ -10031,3 +10031,49 @@ for _v in ("vp2", "vr"):
     FICHES["fungal-infestation"][_v] = {**FICHES["fungal-infestation"][_v], "impact": (7, ["poison", "persistance"], "2d6 en moyenne de poison à chaque instant")}
 FICHES["wake-of-light"]["cond"] = ["monture"]       # le sort ne tient que tant que le lanceur est en selle
 FICHES["holy-whisper"]["impact_sats"] = []       # la condition « hostile » est portée cercle par cercle
+
+# un choix du lanceur au moment de lancer : une forme par choix (décision de Baptiste)
+_i = FICHES["vengeful-glare"]["impact"]
+FICHES["vengeful-glare"]["impact"] = (_i[0], ["regard", "froid"], "1d4 en moyenne, de froid ; 1 de plus par instant si je l'avais déjà blessée")
+FICHES["vengeful-glare"]["options"] = [{"label": "Vengeance glacée"}, {"label": "Colère ardente", "impact": (_i[0], ["regard", "feu"], "1d4 en moyenne, de feu ; 1 de plus par instant si je l'avais déjà blessée")}]
+FICHES["grasping-corpse"]["impact"] = ("plein", ["saisie"], "un cadavre qui agrippe")
+FICHES["grasping-corpse"]["options"] = [{"label": "Saisie"}, {"label": "Renversement", "impact": ("plein", ["renversement"], "un cadavre qui fait tomber")}]
+
+# ── effets au choix ou selon les cas (décisions de Baptiste, 2026-11-16) ──
+# le lanceur choisit, au lancement ou pendant le sort : une forme par choix
+FICHES["cape-of-wasps"]["impact"] = ("plein", ["garde"], "l'essaim me garde")
+FICHES["cape-of-wasps"]["options"] = [{"label": "Essaim protecteur"}, {"label": "Essaim porteur", "impact": ("plein", ["porteur"], "l'essaim me porte")}]
+_f = FICHES["pernicious-poltergeist"]
+_f["impact"] = (22, ["esprit", "hantise", "ténébreux"], "4d10 en moyenne à un être de la zone, que l'esprit traverse")
+_f["impact_plus"] = []
+_f["options"] = [{"label": "Assaut"},
+    {"label": "Apparition", "impact": (2, ["esprit", "effroi"], "l'esprit se montre : effroi de 2")},
+    {"label": "Tempête", "impact": (18, ["esprit", "force", "débris"], "l'esprit jette tout ce qui traîne : 4d8 en moyenne à tous")}]
+_f = FICHES["spiritual-guardian"]
+_f["impact"] = (12, ["force", "frappe"], "un gardien de force frappe (2d8 + 3 en moyenne)")
+_g = _f.pop("impact_plus")[0]; _s = _f.pop("impact_sats")
+_f["options"] = [{"label": "Attaque"}, {"label": "Garde", "impact": _g, "impact_sats": _s}]
+_f = FICHES["barbed-chains"]
+_f["options"] = [{"label": "Frappe — lumineux", "impact": ("plein", ["chaîne", "peur", "lumineux"], "des chaînes qui frappent et effraient, venues de la face lumineuse du plan astral")},
+    {"label": "Frappe — ténébreux", "impact": ("plein", ["chaîne", "peur", "ténébreux"], "des chaînes qui frappent et effraient, venues de la face ténébreuse du plan astral")},
+    {"label": "Renversement — lumineux", "impact": ("plein", ["chaîne", "renversement", "lumineux"], "des chaînes qui font tomber et effraient, venues de la face lumineuse du plan astral")},
+    {"label": "Renversement — ténébreux", "impact": ("plein", ["chaîne", "renversement", "ténébreux"], "des chaînes qui font tomber et effraient, venues de la face ténébreuse du plan astral")}]
+# les circonstances décident : chaque cercle d'Impact porte un satellite Condition qui dit dans quel cas il agit
+_f = FICHES["prismatic-spray"]
+def _prisme(d, autres):
+    return dict(impact=(d[0], ["feu", "rouge"], d[1]), impact_sats=[], impact_plus=autres)
+_f.update(_prisme((35, "le rayon rouge : 10d6 en moyenne"), [(35, ["acide"], "le rayon orange", ["orange"]), (35, ["foudre"], "le rayon jaune", ["jaune"]),
+    (35, ["poison"], "le rayon vert", ["vert"]), (35, ["froid"], "le rayon bleu", ["bleu"]),
+    ("plein", ["pétrification"], "le rayon indigo : entravée, puis changée en pierre", ["indigo"]), ("plein", ["aveuglement", "bannissement"], "le rayon violet : aveuglée, puis jetée sur un autre plan", ["violet"])]))
+_f["v24"] = _prisme((42, "le rayon rouge : 12d6 en moyenne"), [(42, ["acide"], "le rayon orange", ["orange"]), (42, ["foudre"], "le rayon jaune", ["jaune"]),
+    (42, ["poison"], "le rayon vert", ["vert"]), (42, ["froid"], "le rayon bleu", ["bleu"]),
+    ("plein", ["pétrification"], "le rayon indigo : entravée, puis changée en pierre", ["indigo"]), ("plein", ["aveuglement", "bannissement"], "le rayon violet : aveuglée, puis jetée sur un autre plan", ["violet"])])
+for _v in ("v35", "vpf"):
+    _f[_v] = _prisme((20, "le rayon rouge : 20 de feu"), [(40, ["acide"], "le rayon orange", ["orange"]), (80, ["foudre"], "le rayon jaune", ["jaune"]),
+        ("plein", ["poison", "mort"], "le rayon vert : un poison qui tue", ["vert"]), ("plein", ["pétrification"], "le rayon bleu : changée en pierre", ["bleu"]),
+        ("plein", ["démence"], "le rayon indigo", ["indigo"]), ("plein", ["bannissement"], "le rayon violet : jetée sur un autre plan", ["violet"])])
+_f["vp2"] = _prisme((50, "le rayon rouge : 50 de feu"), [(60, ["acide"], "le rayon orange", ["orange"]), (70, ["foudre"], "le rayon jaune", ["jaune"]),
+    (30, ["poison", "faiblesse"], "le rayon vert", ["vert"]), ("plein", ["pétrification"], "le rayon bleu : changée en pierre", ["bleu"]),
+    ("plein", ["confusion"], "le rayon indigo", ["indigo"]), ("plein", ["lenteur", "bannissement"], "le rayon violet : ralentie une minute, voire jetée sur un autre plan", ["violet"])])
+FICHES["call-the-blood"]["impact_plus"] = []
+FICHES["impending-doom"]["impact"] = (21, ["présage", "mort"], "au bout de trois instants, elle voit sa mort : 6d6 en moyenne")

@@ -323,3 +323,6 @@ RENOMME["ENVOL"] = ["vol"]
 for _p in ("covetous-urge", "covetous-aura", "theft-ward", "healing-thief", "claim-identity", "envious-urge", "arcana-theft", "beacon-of-guilt", "swipe"):
     PAGE[(_p, "VOL")] = ["larcin"]
 RENOMME.pop("COUSSIN", None)        # un coussin n'est pas un rempart : le mot reprend sa place (celle qu'« envol » a libérée)
+# faille = l'ouverture dans une défense ; faiblesse = la cible diminuée ; vulnérabilité = blessée davantage par une chose précise.
+# « affaiblissement » disait la même chose que « faiblesse » : fondu (décision de Baptiste, 16 novembre 2026)
+RENOMME["AFFAIBLISSEMENT"] = ["faiblesse"]; RENOMME["AMOINDRISSEMENT"] = ["faiblesse"]

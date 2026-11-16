@@ -9416,7 +9416,7 @@ ELDEN_RING = {'er-glintstone-pebble': {'src': 'er', 'fr': 'Éclat arcanique', 'v
                         'fr': 'Disque de lumière',
                         'verb': ('existence', True),
                         'cible': 'plein',
-                        'impact': (10, ['lumineux', 'retour'], ''),
+                        'impact': (10, ['lumineux', 'retour'], 'le disque traverse les ennemis puis revient'),
                         'aoe': {'type': 'line', 'size': 59.06},
                         'reciproque': True,
                         'options': [{'label': 'Un disque', 'src_idx': 'er-discus-of-light'}, {'label': 'Trois disques', 'aoe': {'type': 'cone', 'size': 59.06}, 'qty': 3, 'src_idx': 'er-triple-rings-of-light'}]},
@@ -9471,7 +9471,7 @@ ELDEN_RING = {'er-glintstone-pebble': {'src': 'er', 'fr': 'Éclat arcanique', 'v
                         'cible': 3,
                         'impact': (14, ['lance'], ''),
                         'options': [{'label': 'Lance', 'src_idx': 'er-lightning-spear'},
-                                    {'label': 'Lance — forme chargée', 'src_idx': 'er-lightning-spear', 'impact': (18, ['lance'], ''), 'impact_sats': [('plein', ['chute'])]},
+                                    {'label': 'Lance — forme chargée', 'src_idx': 'er-lightning-spear', 'impact': (18, ['lance'], ''), 'impact_sats': [('plein', ['ciel'])]},
                                     {'label': 'Lance plantée',
                                      'cible': 'plein',
                                      'impact': (36, ['lance'], ''),
@@ -9485,16 +9485,16 @@ ELDEN_RING = {'er-glintstone-pebble': {'src': 'er', 'fr': 'Éclat arcanique', 'v
                                 'impact': (12, ['lance'], ''),
                                 'impact_sats': [(4, ['escorte'])],
                                 'impact_plus': [(4, ['lance', 'escorte'], '')],
-                                'options': [{'label': 'Forme de base'}, {'label': 'Forme chargée', 'impact': (14, ['lance'], ''), 'impact_sats': [(6, ['escorte']), ('plein', ['chute'])]}]},
+                                'options': [{'label': 'Forme de base'}, {'label': 'Forme chargée', 'impact': (14, ['lance'], ''), 'impact_sats': [(6, ['escorte']), ('plein', ['ciel'])]}]},
  'er-lightning-strike': {'src': 'er',
                          'fr': 'Frappe de foudre',
                          'verb': ('existence', True),
                          'cible': 'plein',
-                         'impact': (15, ['sillage'], ''),
+                         'impact': (15, ['sillage'], "la ligne d'éclairs qui avance devant le lanceur"),
                          'aoe': {'type': 'line', 'size': 59.06},
                          'options': [{'label': "Ligne d'éclairs", 'src_idx': 'er-lightning-strike'},
-                                     {'label': "Rangées d'éclairs", 'impact': (30, ['rangées'], ''), 'aoe': {'type': 'sphere', 'size': 29.53}, 'src_idx': 'er-ancient-dragons-lightning-strike'},
-                                     {'label': "Rangées d'éclairs — forme chargée", 'impact': (36, ['rangées'], ''), 'aoe': {'type': 'sphere', 'size': 32.81}, 'src_idx': 'er-ancient-dragons-lightning-strike'}]},
+                                     {'label': "Rangées d'éclairs", 'impact': (30, ['sillage'], ''), 'aoe': {'type': 'sphere', 'size': 29.53}, 'src_idx': 'er-ancient-dragons-lightning-strike'},
+                                     {'label': "Rangées d'éclairs — forme chargée", 'impact': (36, ['sillage'], ''), 'aoe': {'type': 'sphere', 'size': 32.81}, 'src_idx': 'er-ancient-dragons-lightning-strike'}]},
  'er-honed-bolt': {'src': 'er', 'fr': 'Éclair ciblé', 'verb': ('existence', True), 'cible': 3, 'impact': (13, ['ciel'], '')},
  'er-lansseaxs-glaive': {'src': 'er',
                          'fr': 'Glaive de foudre',
@@ -9532,10 +9532,10 @@ ELDEN_RING = {'er-glintstone-pebble': {'src': 'er', 'fr': 'Éclat arcanique', 'v
                       'fr': 'Corps électrisé',
                       'verb': ('existence', True),
                       'cible': 'plein',
-                      'impact': (20, ['chute'], ''),
+                      'impact': (20, ['ciel'], 'la foudre tombe sur le lanceur et frappe alentour'),
                       'aoe': {'type': 'sphere', 'size': 6.56},
                       'impact_plus': [(4, ['décharge'], '')],
-                      'options': [{'label': 'Forme de base'}, {'label': 'Forme chargée', 'impact': (25, ['chute'], ''), 'impact_plus': [(5, ['décharge'], '')]}]},
+                      'options': [{'label': 'Forme de base'}, {'label': 'Forme chargée', 'impact': (25, ['ciel'], 'la foudre tombe sur le lanceur et frappe alentour'), 'impact_plus': [(5, ['décharge'], '')]}]},
  'er-dragonbolt-blessing': {'src': 'er',
                             'fr': 'Bénédiction de foudre',
                             'verb': ('relation', True),
@@ -9560,7 +9560,7 @@ ELDEN_RING = {'er-glintstone-pebble': {'src': 'er', 'fr': 'Éclat arcanique', 'v
                          'cible': 1,
                          'cible_obj': ['ARME'],
                          'impact': (5, ['arme'], ''),
-                         'impact_plus': [(2, ['charge', 'allègement'], '')],
+                         'impact_plus': [(2, ['fardeau', 'allègement'], 'le lanceur porte plus lourd')],
                          'comp': ['résistance', 'foudre'],
                          'prix': (1, 'résistance')},
  'er-golden-arcs': {'src': 'er',
@@ -9756,7 +9756,7 @@ ELDEN_RING = {'er-glintstone-pebble': {'src': 'er', 'fr': 'Éclat arcanique', 'v
                                  'fr': 'Lame furieuse',
                                  'verb': ('existence', True),
                                  'cible': 3,
-                                 'impact': (14, ['lame', 'élan'], ''),
+                                 'impact': (14, ['lame', 'élan'], "le lanceur s'élance et fauche"),
                                  'qty': 2,
                                  'impact_sats': [('plein', ['saignement'])],
                                  'impact_plus': [(10, ['vague'], '')],
@@ -9949,3 +9949,85 @@ FICHES.update(ELDEN_RING)
 # --- relecture de l'Impact, passe 2 : cinq sorts d'ombre reçoivent leur face lumineuse (décision de Baptiste, 15 novembre 2026) ---
 for _k in ["penumbra", "protective-penumbra", "shifting-shadows", "shadow-illusion", "darklight"]:
     FICHES[_k]["reciproque"] = True
+# --- relecture de l'Impact, passe 5, dernier paquet (décisions de Baptiste, 16 novembre 2026) ---
+# Terre maudite : trois malédictions au choix, donc trois formes ; la terre est la cible, non la matière
+FICHES["cursed-earth"]["impact"] = ("plein", ["famine"], "les plantes poussent moitié moins")
+FICHES["cursed-earth"]["options"] = [{"label": "Famine"},
+    {"label": "Morts sans repos", "impact": ("plein", ["éveil"], "ceux qui meurent là se relèvent")},
+    {"label": "Peste", "impact": ("plein", ["maladie"], "chaque soir, les vivants risquent la maladie")}]
+# Flamme sans cillement : le lanceur, distrait par l'emblème, se garde moins bien — un prix à payer
+FICHES["unblinking-flame-emblem"].update(comp=["garde"], prix=(1, "garde"))
+# Éclats éthériques, version PF2 : le chiffre est la blessure à chaque pas, non la lenteur
+FICHES["etheric-shards"]["vp2"] = {**FICHES["etheric-shards"]["vp2"], "impact": (2, ["éclat", "lame"], "1d4 en moyenne par pas fait dans la zone")}
+# Geyser, version PF1 : projetée en l'air, elle retombe à terre (la version PF2 le dit déjà par son élévation)
+FICHES["geyser"]["impact_add"] = ["projection"]
+FICHES["geyser"]["vp2"] = {**FICHES["geyser"]["vp2"], "impact_add": []}
+# Malédiction du vieux loup de mer : l'eau n'est pas la matière du sort
+_i = FICHES["old-salts-curse"]["impact"]; FICHES["old-salts-curse"]["impact"] = (_i[0], [w for w in _i[1] if w != "eau"], *_i[2:])
+
+# le déclencheur est porté par le cercle d'Impact (satellite Condition) : il ne s'écrit pas une seconde fois sur le cercle de Condition
+for _k in ("triggered-suggestion", "torpid-reanimation", "contingent-scroll"):
+    FICHES[_k]["cond"] = [c for c in FICHES[_k]["cond"] if c != "déclencheur"]
+# --- passe comparative : sorts à plusieurs usages au choix, découpés en formes (décision de Baptiste, 16 novembre 2026) ---
+FICHES["elemental-breath"]["options"] = [
+    {"label": "Élément tiré au sort", "impact": (33, ["souffle", "élément", "hasard"], "6d10 en moyenne, d'un élément tiré au sort")},
+    {"label": "Air", "comb": "Foudre", "impact": (33, ["souffle", "recul"], "6d10 en moyenne de vent et de foudre ; repoussés de 3 m")},
+    {"label": "Terre", "comb": "Boue", "impact": (27, ["souffle", "renversement"], "5d10 en moyenne de boue ; ceux qui sont au sol glissent et tombent")},
+    {"label": "Feu", "comb": "Feu", "impact": (38, ["souffle"], "7d10 en moyenne de feu")},
+    {"label": "Métal", "comb": "Acier", "impact": (27, ["souffle", "tranchant", "rouille"], "5d10 en moyenne : la rouille entaille les chairs et ronge le métal")},
+    {"label": "Eau", "comb": "Eau", "impact": (33, ["souffle", "choc"], "3d10 de froid et 3d10 de choc en moyenne : un torrent glacé")},
+    {"label": "Bois", "comb": "Bois", "impact": (33, ["souffle", "perce", "gêne"], "3d10 + 3d10 en moyenne : des branches transpercent, et le sol reste encombré une minute")}]
+FICHES["helpful-wood-spirits"]["options"] = [
+    {"label": "Corvées"},
+    {"label": "Distraction", "impact": ("plein", ["esprit", "surprise"], "les esprits grimpent sur les ennemis et les distraient")},
+    {"label": "Obstacle", "impact": ("plein", ["esprit", "gêne"], "une masse bondissante encombre la zone")},
+    {"label": "Fouille", "impact": ("plein", ["esprit", "fouille"], "les esprits cherchent pour moi dans la zone")}]
+# le lanceur en transe ne se garde plus : un prix à payer, comme pour Flamme sans cillement
+for _k in ("beastmaster-trance", "eyes-of-the-dead"): FICHES[_k].update(comp=["garde"], prix=(1, "garde"))
+# Mauvais œil : le sort a changé d'une édition à l'autre — une forme pour chaque effet (décision de Baptiste)
+_i = FICHES["evil-eye"]["impact"]
+FICHES["evil-eye"]["options"] = [{"label": "Effroi"}, {"label": "Nausée", "impact": (_i[0], ["nausée"], "le cœur lui tourne, sans répit tant que je la vois")}]
+# un prix payé en force vitale par le lanceur (décision de Baptiste)
+for _k in ("temporal-regression", "sharesister"): FICHES[_k].update(comp=["vie"], prix=(1, "vie"))
+# --- sorts à plusieurs usages au choix, découpés en formes (décision de Baptiste, 16 novembre 2026) ---
+_O = lambda label, mots, why, **k: {"label": label, "impact": ("plein", mots, why), **k}
+FICHES["elemental-motion"]["options"] = [
+    _O("Air", ["air", "vol"], "l'air me porte : je vole aussi vite que je marche"), _O("Terre", ["terre", "creuser"], "je fouis la terre"),
+    _O("Feu", ["feu", "vol"], "le feu me propulse : je vole aussi vite que je marche"), _O("Métal", ["acier", "creuser"], "je fouis comme une lame"),
+    _O("Eau", ["eau", "nage", "souffle"], "je nage aussi vite que je marche et je respire l'eau"), _O("Bois", ["escalade"], "je grimpe aussi vite que je marche")]
+FICHES["geniekind"]["options"] = [
+    _O("Génie de l'air", ["génie", "vol"], "je vole, le bas du corps en tourbillon", comb="Air", impact_plus=[(10, ["résistance", "foudre"], "10 retranché à la foudre reçue")]),
+    _O("Génie du feu", ["génie"], "la peau rouge, des cornes", comb="Feu", impact_plus=[(4, ["coup"], "mes coups brûlent de 1d6 en moyenne"), (10, ["résistance", "chaleur"], "10 retranché au feu reçu")]),
+    _O("Génie de l'eau", ["génie", "nage", "souffle"], "la peau bleue, les doigts palmés : je nage et je respire l'eau", comb="Eau", impact_plus=[(10, ["résistance", "glace"], "10 retranché au froid reçu")]),
+    _O("Génie de la terre", ["génie", "creuser"], "la peau de pierre : je fouis", comb="Terre", impact_plus=[(10, ["résistance", "acide"], "10 retranché à l'acide reçu")])]
+FICHES["animal-aspect"]["options"] = [
+    _O("Grenouille", ["bête", "saut"], "des jambes longues et musclées"), _O("Gorille", ["bête", "saisie"], "des bras longs et forts"),
+    _O("Singe", ["bête", "escalade", "lancer"], "des mains agiles : je grimpe et je lance"), _O("Loutre", ["bête", "nage", "apnée"], "des mains palmées : je nage et je retiens mon souffle"),
+    _O("Raton laveur", ["bête", "adresse", "discrétion"], "des mains fines, des pieds feutrés"), _O("Rapace coureur", ["bête", "vitesse"], "des jambes faites pour la course"),
+    _O("Lézard arboricole", ["bête", "escalade"], "des griffes et des coussinets pour grimper"),
+    {"label": "Aspect animal suprême", "src_idx": "animal-aspect-greater", "impact": (2, ["bête", "aspect"], "deux qualités d'animal")}]
+FICHES["rapid-adaptation"]["options"] = [
+    _O("Milieu aquatique", ["adaptation", "nage"], "il nage aussi vite qu'il marche"), _O("Milieu glacé", ["adaptation", "aplomb", "givre"], "le grand froid ne l'atteint plus ; il tient sur la glace"),
+    _O("Désert", ["adaptation", "aplomb", "chaleur"], "la grande chaleur ne l'atteint plus ; il tient sur le sable"), _O("Forêt", ["adaptation", "flair"], "il flaire à 9 m"),
+    _O("Montagne", ["adaptation", "escalade", "aplomb"], "il grimpe sans baisser sa garde ; il tient sur les éboulis"), _O("Plaine", ["adaptation", "vitesse"], "il court plus vite"),
+    _O("Souterrain", ["adaptation", "vision", "obscurité"], "il voit dans le noir")]
+FICHES["adapt-self"]["options"] = [
+    _O("Nager", ["adaptation", "nage"], "dans l'eau, je nage"), _O("Respirer l'eau", ["adaptation", "souffle"], "dans l'eau, je la respire"),
+    _O("Voir dans le noir", ["adaptation", "vision", "obscurité"], "quand il fait trop sombre"), _O("Chaleur ou froid extrêmes", ["adaptation", "protection"], "le grand chaud ou le grand froid ne m'atteint plus")]
+FICHES["phantom-limb"]["options"] = [
+    {"label": "Membre remplacé"}, _O("Bras en plus", ["griffe"], "deux bras de pensée qui griffent"), _O("Jambes en plus", ["vitesse", "aplomb"], "une croupe de cheval : plus rapide, mieux campé"),
+    _O("Queue de sirène", ["nage"], "une queue de pensée pour nager"), _O("Ailes fantômes", ["vol"], "des ailes de pensée pour voler")]
+FICHES["temporary-graft"]["options"] = [
+    _O("Nageoires", ["greffe", "nage"], "des nageoires greffées"), _O("Tête", ["greffe", "vision"], "une seconde tête : je vois tout autour, avec les sens qu'elle avait"),
+    _O("Jambe", ["greffe", "vitesse", "aplomb"], "une jambe de plus : un peu plus rapide, mieux campé"), _O("Ailes", ["greffe", "vol"], "des ailes greffées")]
+_EI = lambda el, why, plus: {"label": el, "impact": ("plein", ["forme", "élémentaire", "colosse", el.lower()], "un élémentaire colossal de " + why), "impact_plus": plus}
+FICHES["element-embodied"]["options"] = [
+    _EI("Feu", "feu", [(17, ["brûlure"], "sa chaleur brûle qui approche, 5d6 en moyenne"), (10, ["vulnérabilité", "givre"], "le froid la blesse de 10 de plus")]),
+    _EI("Air", "vent", [("plein", ["vol"], "elle vole"), ("plein", ["gêne", "oiseau"], "son vent gêne ce qui vole autour")]),
+    _EI("Terre", "terre", [("plein", ["creuser"], "elle fouit"), (5, ["rempart"], "5 retranché aux coups"), ("plein", ["gêne", "pointe"], "le sol hérissé autour blesse et gêne")]),
+    _EI("Eau", "eau", [("plein", ["nage"], "elle nage"), (10, ["résistance", "chaleur"], "10 retranché au feu reçu"), ("plein", ["gêne", "courant"], "son remous gêne les nageurs")])]
+# Infestation fongique, version PF2 : le texte dit un poison qui ronge à chaque instant, non un saignement
+for _v in ("vp2", "vr"):
+    FICHES["fungal-infestation"][_v] = {**FICHES["fungal-infestation"][_v], "impact": (7, ["poison", "persistance"], "2d6 en moyenne de poison à chaque instant")}
+FICHES["wake-of-light"]["cond"] = ["monture"]       # le sort ne tient que tant que le lanceur est en selle
+FICHES["holy-whisper"]["impact_sats"] = []       # la condition « hostile » est portée cercle par cercle

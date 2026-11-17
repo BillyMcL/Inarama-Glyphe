@@ -10093,3 +10093,21 @@ for _k in ("whirlwind", "vortex"):
 # Geyser (PF1) : les gouttes bouillantes retombent ensuite sur les voisins, 1d6 à chaque instant
 FICHES["geyser"]["impact_plus"] = [(4, ["brûlure"], "1d6 en moyenne à chaque instant : les gouttes retombent alentour", [], [(1, ["chaque", "instants"], "DUREE")])]
 FICHES["geyser"]["vp2"] = {**FICHES["geyser"]["vp2"], "impact_plus": []}
+
+# « prend feu » avec une brûlure chiffrée : le premier coup garde son cercle, la brûlure qui revient prend le sien (2026-11-17)
+_CH = [(1, ["chaque", "instants"], "DUREE")]
+FICHES["fire-storm"]["vpf"] = {**FICHES["fire-storm"]["vpf"], "impact_add": [], "impact_plus": [(14, ["embrasement"], "4d6 en moyenne à chaque instant tant qu'elle brûle", [], _CH)]}
+FICHES["spontaneous-immolation"]["impact"] = (11, ["feu"], "3d6 en moyenne")
+FICHES["spontaneous-immolation"]["impact_plus"] = [(4, ["embrasement"], "1d6 en moyenne à chaque instant tant qu'elle brûle", [], _CH)]
+FICHES["curse-of-burning-sleep"]["impact"] = (11, ["sommeil", "feu"], "1d6 par deux niveaux, une heure après qu'elle s'endort")
+FICHES["curse-of-burning-sleep"]["impact_plus"] = [(7, ["embrasement"], "2d6 en moyenne à chaque instant tant qu'elle brûle", [], _CH)]
+# Pathfinder 2 : un mal persistant plus faible que le premier coup prend un second cercle (l'effet suivant)
+FICHES["glass-sand"]["impact"] = (14, ["verre", "éclat"], "4d6 en moyenne")
+FICHES["glass-sand"]["impact_plus"] = [(1, ["éclat"], "1 à chaque instant, jusqu'à cesser de lui-même", [], _CH)]
+FICHES["grim-tendrils"]["impact"] = (5, ["vrille", "ténébreux"], "2d4 en moyenne aux vivants")
+FICHES["grim-tendrils"]["impact_plus"] = [(1, ["ténébreux"], "1 à chaque instant, jusqu'à cesser de lui-même", [], _CH)]
+FICHES["charged-javelin"]["impact"] = (4, ["javelot", "champ"], "1d6 en moyenne ; le champ gêne la cible")
+FICHES["charged-javelin"]["impact_plus"] = [(1, [], "1 à chaque instant, jusqu'à cesser de lui-même", [], _CH)]
+FICHES["tempest-surge"]["impact"] = (7, ["orage", "maladresse"], "1d12 en moyenne ; gauche de 2")
+FICHES["tempest-surge"]["impact_plus"] = [(1, [], "1 à chaque instant, jusqu'à cesser de lui-même", [], _CH)]
+FICHES["gouging-claw"]["impact_plus"] = [(2, ["saignement"], "2 à chaque instant, jusqu'à cesser de lui-même", [], _CH)]

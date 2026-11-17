@@ -1098,8 +1098,10 @@ REPETE = {k: set(e.split()) for k, e in {
  **{k: "pf2 pf2r" for k in """ash-cloud petal-storm visions-of-danger shadow-army gasping-marsh spirit-link positive-attunement lifes-fresh-bloom
    field-of-life corrosive-muck devouring-void cinder-swarm rust-cloud phantom-orchestra whirlpool buzzing-bites hymn-of-healing ki-form
    sepulchral-mask interstellar-void diamond-dust door-to-beyond darklight invoke-spirits rouse-skeletons dancing-fountain flammable-fumes
-   unblinking-flame-ignition enervation whispers-of-the-void blood-vendetta savor-the-sting""".split()},
+   unblinking-flame-ignition enervation whispers-of-the-void blood-vendetta savor-the-sting incendiary-aura implement-of-destruction over-the-coals""".split()},
+ "acid-arrow": "pf2",
 }.items()}
 REPETE_PREMIER = {"aura-of-cannibalism", "shadow-army", "ki-form", "sepulchral-mask", "flammable-fumes", "unblinking-flame-ignition"}       # seul le premier cercle chiffré revient à chaque instant
-# ── la répétition par la distance (2026-11-17) : la blessure revient à chaque pas franchi, satellite Localisation 1 « chaque · pas » ──
-REPETE_PAS = {k: set(e.split()) for k, e in {"spike-growth": _D5 + " 3.5 pf1", "spike-stones": "3.5 pf1 pf2 pf2r", "binding-earth": "pf1", "coral-eruption": "pf2 pf2r"}.items()}
+REPETE_SUITE = {"acid-arrow"}       # le premier coup ne revient pas : seul le cercle suivant (le mal persistant) porte le satellite
+# ── la répétition par la distance (2026-11-17) : la blessure revient à chaque pas franchi, satellite Localisation 3 « chaque · mètres » et Quantité 2 « fractionné » (3/2 = 1,5 m) ──
+REPETE_DISTANCE = {k: set(e.split()) for k, e in {"spike-growth": _D5 + " 3.5 pf1", "spike-stones": "3.5 pf1 pf2 pf2r", "binding-earth": "pf1", "coral-eruption": "pf2 pf2r"}.items()}

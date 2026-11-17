@@ -1024,16 +1024,31 @@ def matieres(rings):
     imp = MM.IMPARABLE.get(_PAGE[0])
     if imp and (_ED[0] or "5e") in imp[0]: rings = _imparable(rings, imp[1])
     rep = MM.REPETE.get(_PAGE[0])
-    if rep and (_ED[0] or "5e") in rep: rings = _repete(rings)
+    if rep and (_ED[0] or "5e") in rep: rings = _repete(rings, _PAGE[0] in MM.REPETE_PREMIER)
+    pas = MM.REPETE_PAS.get(_PAGE[0])
+    if pas and (_ED[0] or "5e") in pas: rings = _repete_pas(rings)
     return rings
-def _repete(rings):
+def _repete_pas(rings):
+    """une blessure qui revient à chaque pas franchi dans la zone : même principe que la répétition dans le temps, mais le
+    satellite est une Localisation 1 « chaque · pas » posée sur le premier cercle d'Impact chiffré"""
+    out = []; fait = False
+    vise = next((r for r in rings if r[0] == "IMPACT" and r[1] != "plein" and "chaque pas" in r[3]), None)       # le cercle qui dit déjà « à chaque pas »
+    for r in rings:
+        if r[0] == "IMPACT" and r[1] != "plein" and not fait and (vise is None or r is vise):
+            fait = True; s = list(r[4]) if len(r) > 4 and r[4] else []
+            s = _resats(s + [("SYM", 1, " ".join(["LOCALISATION", word("chaque"), word("pas")]), {"crit": "LOCALISATION"})])
+            r = (r[0], r[1], r[2], r[3] + " ; satellite Localisation 1 « chaque · pas » : l'effet revient à chaque pas franchi", s)
+        out.append(r)
+    return out
+def _repete(rings, premier=False):
     """une blessure ou un soin qui revient à chaque instant tant que le sort dure : chaque cercle d'Impact chiffré
     reçoit le satellite Durée 1 « chaque · instants » (tout ce que la description annonce s'inscrit)"""
-    out = []
+    out = []; fait = False       # « premier » : seul le premier cercle chiffré revient (les autres sont des états qui durent)
     for r in rings:
         s = list(r[4]) if len(r) > 4 and r[4] else []
         deja = any(len(st) > 2 and isinstance(st[2], str) and st[2].startswith("DUREE") for st in s)
-        if r[0] == "IMPACT" and r[1] != "plein" and not deja:
+        if r[0] == "IMPACT" and r[1] != "plein" and not deja and not (premier and fait):
+            fait = True
             s = _resats(s + [("SYM", 1, " ".join(["DUREE", word("chaque"), word("instants")]), {"crit": "DUREE"})])
             r = (r[0], r[1], r[2], r[3] + " ; satellite Durée 1 « chaque · instants » : l'effet revient à chaque instant", s)
         out.append(r)

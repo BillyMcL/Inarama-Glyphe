@@ -10085,3 +10085,11 @@ FICHES["shocking-grasp"]["vp2"] = {"impact_sats": [], "impact_plus": [(2, ["pers
 # Vague d'anéantissement : les éléments ne s'attardent qu'un instant, ce n'est pas un effet qui revient
 for _o in FICHES["elemental-annihilation-wave"]["options"]:
     if _o.get("impact_plus"): _o["impact_plus"] = [("plein", ["vent"], "les éléments s'attardent un instant dans le cône et en interdisent l'approche", [], [(1, ["instants"], "DUREE")])]
+
+# Tornade et Vortex (3.5, PF1) : qui est emporté subit ensuite 1d8 à chaque instant, sans recours — un second cercle d'Impact (l'effet suivant)
+for _k in ("whirlwind", "vortex"):
+    FICHES[_k]["impact_plus"] = [(5, ["choc", "imparable"], "1d8 en moyenne à chaque instant pour qui est emporté", [], [(1, ["chaque", "instants"], "DUREE")])]
+    if "vp2" in FICHES[_k]: FICHES[_k]["vp2"] = {**FICHES[_k]["vp2"], "impact_plus": []}
+# Geyser (PF1) : les gouttes bouillantes retombent ensuite sur les voisins, 1d6 à chaque instant
+FICHES["geyser"]["impact_plus"] = [(4, ["brûlure"], "1d6 en moyenne à chaque instant : les gouttes retombent alentour", [], [(1, ["chaque", "instants"], "DUREE")])]
+FICHES["geyser"]["vp2"] = {**FICHES["geyser"]["vp2"], "impact_plus": []}

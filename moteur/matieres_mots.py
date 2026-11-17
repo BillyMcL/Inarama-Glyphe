@@ -1089,4 +1089,17 @@ REPETE = {k: set(e.split()) for k, e in {
  "vampiric-touch": _D5, "black-tentacles": _D5 + " 3.5 pf1", "control-water": _D5, "faithful-hound": _D5 + " 3.5 pf1", "wall-of-fire": _D5 + " 3.5" + _PF,
  "cloudkill": _D5 + " 3.5 pf1 pf2 pf2r", "insect-plague": _D5, "blade-barrier": _D5 + " pf2", "forbiddance": _D5, "sunbeam": _D5 + " 3.5 pf1", "wall-of-thorns": _D5,
  "arcane-sword": _D5 + " 3.5 pf1", "incendiary-cloud": _D5 + " 3.5 pf1", "heat-metal": _D5, "acid-fog": "3.5 pf1", "sympathetic-vibration": "3.5 pf1",
+ # Pathfinder 1, relu sur le texte d'origine (2026-11-17)
+ **{k: "pf1" for k in """terrible-remorse wreath-of-blades gebs-hammer ball-lightning burning-gaze contagious-flame elemental-aura firestream flashfire
+   gusting-sphere hungry-darkness icy-prison lightning-lash scouring-winds spiritual-ally steam-ray-fusillade symbol-of-storms trial-of-fire-and-acid
+   burning-sands fleshworm-infestation soothing-mud swarm-of-fangs boiling-blood excruciating-deformation polar-midnight snapdragon-fireworks
+   strangling-hair tar-ball transmute-blood-to-acid aura-of-cannibalism blood-of-the-martyr fire-sneeze veil-of-ash jatembes-ire slough poison""".split()},
+ # Pathfinder 2, relu sur le texte d'origine (2026-11-17) ; les quatre derniers : un mal persistant, qui dure jusqu'à cesser de lui-même
+ **{k: "pf2 pf2r" for k in """ash-cloud petal-storm visions-of-danger shadow-army gasping-marsh spirit-link positive-attunement lifes-fresh-bloom
+   field-of-life corrosive-muck devouring-void cinder-swarm rust-cloud phantom-orchestra whirlpool buzzing-bites hymn-of-healing ki-form
+   sepulchral-mask interstellar-void diamond-dust door-to-beyond darklight invoke-spirits rouse-skeletons dancing-fountain flammable-fumes
+   unblinking-flame-ignition enervation whispers-of-the-void blood-vendetta savor-the-sting""".split()},
 }.items()}
+REPETE_PREMIER = {"aura-of-cannibalism", "shadow-army", "ki-form", "sepulchral-mask", "flammable-fumes", "unblinking-flame-ignition"}       # seul le premier cercle chiffré revient à chaque instant
+# ── la répétition par la distance (2026-11-17) : la blessure revient à chaque pas franchi, satellite Localisation 1 « chaque · pas » ──
+REPETE_PAS = {k: set(e.split()) for k, e in {"spike-growth": _D5 + " 3.5 pf1", "spike-stones": "3.5 pf1 pf2 pf2r", "binding-earth": "pf1", "coral-eruption": "pf2 pf2r"}.items()}

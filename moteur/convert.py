@@ -1023,7 +1023,21 @@ def matieres(rings):
     if t and t.get("ordre"): rings = _ordre(rings, t["ordre"])
     imp = MM.IMPARABLE.get(_PAGE[0])
     if imp and (_ED[0] or "5e") in imp[0]: rings = _imparable(rings, imp[1])
+    rep = MM.REPETE.get(_PAGE[0])
+    if rep and (_ED[0] or "5e") in rep: rings = _repete(rings)
     return rings
+def _repete(rings):
+    """une blessure ou un soin qui revient à chaque instant tant que le sort dure : chaque cercle d'Impact chiffré
+    reçoit le satellite Durée 1 « chaque · instants » (tout ce que la description annonce s'inscrit)"""
+    out = []
+    for r in rings:
+        s = list(r[4]) if len(r) > 4 and r[4] else []
+        deja = any(len(st) > 2 and isinstance(st[2], str) and st[2].startswith("DUREE") for st in s)
+        if r[0] == "IMPACT" and r[1] != "plein" and not deja:
+            s = _resats(s + [("SYM", 1, " ".join(["DUREE", word("chaque"), word("instants")]), {"crit": "DUREE"})])
+            r = (r[0], r[1], r[2], r[3] + " ; satellite Durée 1 « chaque · instants » : l'effet revient à chaque instant", s)
+        out.append(r)
+    return out
 _ED = [None]       # l'édition de la forme en cours : None (D&D 5), « 2024 », « 3.5 », « pf1 », « pf2 », « pf2r »
 def _imparable(rings, ou):
     """un effet auquel la cible ne peut ni se soustraire ni résister : le mot « imparable » annote son cercle d'Impact

@@ -1079,3 +1079,14 @@ IMPARABLE = {k: (set(e.split()), ou) for k, (e, ou) in {
  "menacing-lament": ("pf2 pf2r", "premier"), "destructive-aura": ("pf2 pf2r", "premier"),
  "magic-missile": (_T, "premier"), "force-bolt": ("pf2 pf2r", "premier"),
 }.items()}
+
+# ── répétition (2026-11-17) : la source dit que la blessure ou le soin revient à chaque instant tant que le sort dure ──
+# page : éditions concernées. Lot 1 : D&D 5 (et sa version 2024) et D&D 3.5, relus sur le texte d'origine ;
+# les mêmes sorts dans Pathfinder 1 et 2 quand leur texte dit la même chose (sinon la version ne différerait que par un oubli).
+_D5 = "5e 2024"; _PF = " pf1 pf2 pf2r"
+REPETE = {k: set(e.split()) for k, e in {
+ "flaming-sphere": _D5 + " 3.5" + _PF, "moonbeam": _D5, "spiritual-weapon": _D5 + " 3.5" + _PF, "call-lightning": _D5 + " 3.5" + _PF, "spirit-guardians": _D5,
+ "vampiric-touch": _D5, "black-tentacles": _D5 + " 3.5 pf1", "control-water": _D5, "faithful-hound": _D5 + " 3.5 pf1", "wall-of-fire": _D5 + " 3.5" + _PF,
+ "cloudkill": _D5 + " 3.5 pf1 pf2 pf2r", "insect-plague": _D5, "blade-barrier": _D5 + " pf2", "forbiddance": _D5, "sunbeam": _D5 + " 3.5 pf1", "wall-of-thorns": _D5,
+ "arcane-sword": _D5 + " 3.5 pf1", "incendiary-cloud": _D5 + " 3.5 pf1", "heat-metal": _D5, "acid-fog": "3.5 pf1", "sympathetic-vibration": "3.5 pf1",
+}.items()}

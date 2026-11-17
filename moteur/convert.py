@@ -1030,15 +1030,14 @@ def matieres(rings):
     return rings
 def _repete_distance(rings):
     """une blessure qui revient avec la distance franchie dans la zone (tous les 1,5 mètre) : même principe que la répétition
-    dans le temps, sur un autre satellite. 1,5 s'écrit 3/2 : satellite Localisation 3 « chaque · mètres », satellite Quantité 2 « fractionné »"""
+    dans le temps, sur un autre satellite : Localisation 2 « chaque · mètres » (1,5 m arrondi à 2 ; une fraction serait lue comme une part de l'Impact)"""
     out = []; fait = False
     vise = next((r for r in rings if r[0] == "IMPACT" and r[1] != "plein" and "chaque pas" in r[3]), None)       # le cercle qui dit déjà « à chaque pas »
     for r in rings:
         if r[0] == "IMPACT" and r[1] != "plein" and not fait and (vise is None or r is vise):
             fait = True; s = list(r[4]) if len(r) > 4 and r[4] else []
-            s = _resats(s + [("SYM", 3, " ".join(["LOCALISATION", word("chaque"), word("mètres")]), {"crit": "LOCALISATION"}),
-                             ("SYM", 2, " ".join(["QUANTITE", word("fractionné")]), {"crit": "QUANTITE"})])
-            r = (r[0], r[1], r[2], r[3] + " ; satellite Localisation 3 « chaque · mètres » et satellite Quantité 2 « fractionné » : l'effet revient tous les 3/2 = 1,5 mètre franchis", s)
+            s = _resats(s + [("SYM", 2, " ".join(["LOCALISATION", word("chaque"), word("mètres")]), {"crit": "LOCALISATION"})])
+            r = (r[0], r[1], r[2], r[3] + " ; satellite Localisation 2 « chaque · mètres » : l'effet revient tous les 2 mètres franchis (1,5 m arrondi à 2)", s)
         out.append(r)
     return out
 def _repete(rings, premier=False, suite=False):

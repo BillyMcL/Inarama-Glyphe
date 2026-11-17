@@ -1103,5 +1103,5 @@ REPETE = {k: set(e.split()) for k, e in {
 }.items()}
 REPETE_PREMIER = {"aura-of-cannibalism", "shadow-army", "ki-form", "sepulchral-mask", "flammable-fumes", "unblinking-flame-ignition"}       # seul le premier cercle chiffré revient à chaque instant
 REPETE_SUITE = {"acid-arrow"}       # le premier coup ne revient pas : seul le cercle suivant (le mal persistant) porte le satellite
-# ── la répétition par la distance (2026-11-17) : la blessure revient à chaque pas franchi, satellite Localisation 3 « chaque · mètres » et Quantité 2 « fractionné » (3/2 = 1,5 m) ──
+# ── la répétition par la distance (2026-11-17) : la blessure revient à chaque pas franchi, satellite Localisation 2 « chaque · mètres » (1,5 m arrondi à 2) ──
 REPETE_DISTANCE = {k: set(e.split()) for k, e in {"spike-growth": _D5 + " 3.5 pf1", "spike-stones": "3.5 pf1 pf2 pf2r", "binding-earth": "pf1", "coral-eruption": "pf2 pf2r"}.items()}

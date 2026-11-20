@@ -18,8 +18,10 @@ cercles, dans l'ordre donné. Un cercle « inchangé » reprend tel quel le cerc
 actuel (phrase et satellites compris). Un cercle « modifié » garde pour
 l'instant sa « lecture_d_origine », un cercle « ajouté » n'a pas encore de
 phrase : les phrases viennent à l'étape 3. Les satellites des cercles
-« modifié » et « ajouté » sont placés par la règle du moteur (_place).
-Aucune autre passe de la construction ordinaire n'est rejouée. La répartition lumineux/ténébreux
+« modifié » et « ajouté » sont placés par la règle du moteur (_place) ; les
+grands nombres décidés s'écrivent par multiplication (_grands) ; puis la passe
+supports du moteur est appliquée à la forme (_supports). Aucune autre passe de
+la construction ordinaire n'est rejouée. La répartition lumineux/ténébreux
 des formes hybrides et des arts rares est recalculée par la règle du moteur
 (split_hybrid, split_rare), puis le glyphe est redessiné (spells.build).
 
@@ -89,6 +91,38 @@ def _transcrire(c):
                 C.word(w)
 
 
+# Grands nombres (décision du 20 novembre) : un satellite trop long à dessiner s'écrit par multiplication, les formes
+# multipliées dans le satellite lui-même (spells.best_factors, cinq formes au plus, jamais trois fois la même), avec
+# l'annotation « fois ». (annotation, valeur du fichier) → valeur écrite ; une valeur différente est un arrondi.
+GRANDS = {("AMPLEUR KILOMETRES", 1400): 1400,          # 7 × 5 × 5 × 4 × 2
+          ("VIE REPARTIR", 68): 70,                    # 7 × 5 × 2
+          ("VIE REPARTIR", 117): 120,                  # 5 × 4 × 3 × 2
+          ("VIE REPARTIR", 124): 120}                  # 5 × 4 × 3 × 2
+ARRONDIS = {}     # (cle, rang) → [(annotation, valeur du fichier, valeur écrite)] : pour la phrase de lecture (étape 3)
+
+
+def _grands(sats, k):
+    out = []
+    for st in sats:
+        t = st[2] if len(st) > 2 else ""
+        n = GRANDS.get((t, st[1]))
+        if n is None:
+            out.append(st); continue
+        ARRONDIS.setdefault(k, []).append((t, st[1], n))
+        crit = len(st) > 3 and st[3] and st[3].get("crit")
+        t2 = t if crit else t + " FOIS"        # un satellite d'un autre critère reçoit « fois » au dessin (spells.sat_label)
+        out.append((st[0], n, t2, *st[3:]))
+    return out
+
+
+def _supports(cle, rings):
+    """la passe du moteur (convert.supports) : ce sur quoi l'effet agit quitte l'Impact pour la Cible ; un seul Impact :
+    le cercle Cible ; plusieurs : un satellite Cible de l'Impact concerné. Exceptions du moteur gardées (supports_mots)."""
+    import convert as C
+    C._PAGE[0] = cle
+    return C.supports(rings)
+
+
 def _place(sats):
     """placement des satellites par la règle du moteur (convert._resats, comme place_sats) : un seul au nord ou au sud,
     deux de part et d'autre, trois et plus en étoile. Appliqué aux seuls cercles « modifié » et « ajouté »."""
@@ -140,6 +174,9 @@ def appliquer(cle, formes):
             out.append(f)          # l'origine ne correspond pas : ne pas appliquer (signalé par bilan())
             continue
         rings, n, _ = _cercles(f, x)
+        rings = [(r[0], r[1], r[2], r[3], _grands(r[4], k)) if c["etat"] != "inchangé" and len(r) > 4 and r[4] else r
+                 for r, c in zip(rings, x["cercles"])]          # grands nombres : cercles modifiés et ajoutés seulement
+        rings = _supports(cle, rings)
         _faites[k] = n
         out.append(_redessine(f, rings))
     return out

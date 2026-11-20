@@ -58,7 +58,8 @@ ACCENTS = {"LUMIERE": "lumière", "NECROSE": "nécrose", "DUREE": "durée", "MET
  "MEMOIRE": "mémoire", "HUMANOIDE": "humanoïde", "COMPREHENSION": "compréhension", "ECOUTE": "écoute", "RESISTANCE": "résistance", "ESPECE": "espèce",
  "CELESTE": "céleste", "ELEMENTAIRE": "élémentaire", "FEE": "fée", "MORTVIVANT": "mort-vivant", "PROPRIETE": "propriété", "PRESAGE": "présage",
  "PENSEE": "pensée", "SANSPLOMB": "sans plomb", "SANSEAUVIVE": "sans eau vive", "LIEUCONNU": "lieu connu", "ETHERE": "éthéré", "OUIE": "ouïe",
- "OEIL": "œil", "REPONSE": "réponse", "DIVINITE": "divinité", "RENOMMEE": "renommée", "LEGENDE": "légende", "ECOLE": "école", "INTREPIDITE": "intrépidité"}
+ "OEIL": "œil", "REPONSE": "réponse", "DIVINITE": "divinité", "RENOMMEE": "renommée", "LEGENDE": "légende", "ECOLE": "école", "INTREPIDITE": "intrépidité",
+ "REPARTIR": "répartir"}     # phase 4a : mot ajouté au lexique (A8)
 def disp(w): return ACCENTS.get(w, w.lower())
 def shown(w):
     """le mot tel qu'on l'affiche : en clair s'il est écrit en minuscules accentuées dans la fiche"""

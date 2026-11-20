@@ -26,6 +26,7 @@ animus-mine;0;Mine mentale;PF1;Mine mentale;2;Repousser · force directionnelle 
 animus-mine;2;Mine mentale;PF2;Mine mentale — version PF2;2;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
 catatonia;0;Catatonie;PF1;Forme arcane;3;Détruire · existence −;Dissimuler;relecture sort par sort
 daywalker;0;Marcheur du jour;PF1;Forme arcane;5;Fusionner · identité +;Transformer;paraître autre écrit Fusionner
+deathwine;0;Vin de mort;PF1;Forme arcane;2;Détruire · existence −;Amplifier;le sort renforce le prochain sort de nécromancie : rien n'est détruit
 entrap-spirit;0;Esprit piégé;PF1;Forme arcane;5;Déstabiliser · ordre −;Ancrer;relecture sort par sort
 oath-of-justice;0;Serment de justice;PF1;Forme arcane;3;Stabiliser · ordre +;Lier;conduite écrite Stabiliser
 sculpt-corpse;0;Corps sculpté;PF1;Forme arcane;1;Fusionner · identité +;Transformer;paraître autre écrit Fusionner
@@ -224,6 +225,7 @@ thunderburst;0;Éclat de tonnerre;PF2;Forme arcane;3;Repousser · force directio
 eradicate-undeath;0;Non-vie éradiquée;PF2;Forme arcane;4;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
 waking-nightmare;0;Cauchemar éveillé;PF2;Forme arcane;1;Repousser · force directionnelle −;Déstabiliser;peur sous 8 écrite Repousser
 commanding-lash;0;Fouet du commandement;PF2;Forme arcane;4;Stabiliser · ordre +;Lier;conduite écrite Stabiliser
+cinder-gaze;1;Regard des braises;PF2;Vie nouvelle;1;Révéler · visibilité +;Amplifier;vie d'emprunt, comme les autres
 lift-natures-caul;0;Voile de la nature levé;PF2;Forme arcane;1;Repousser · force directionnelle −;Révéler;relecture sort par sort
 subjugate-undead;0;Mort-vivant subjugué;PF2;Forme arcane;3;Stabiliser · ordre +;Lier;conduite écrite Stabiliser
 sun-blade;0;Lame astrale ardente;PF2;Forme lumineuse;2;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure

@@ -1,9 +1,7 @@
 ﻿mot;cercle;role;emplois;sens
-faculté;Impact;mot de degré, en tête d'un bonus ou d'un malus (faculté 1 · combat);76;un bonus ou un malus à une faculté, en dixièmes de chance
 plusieurs;Cible;mot de Cible;25;plusieurs cibles qui se partagent un total
 répartir;satellite de la Cible;manière du satellite « vie N »;25;le total de vie est à répartir entre les cibles
 contrepartie;Composante;mot de tête d'un contrecoup;12;ce que le sort coûte au lanceur ou au bénéficiaire
-froid;Impact;manière ou nature;10;le froid (garde du climat, résistance)
 mesure;satellite de l'Impact;manière du seuil de puissance;8;à la mesure de l'être visé
 reste;satellite de l'Impact;manière d'un seuil;5;ce qui reste de l'état une fois levé
 nécromancie;Impact;manière;1;l'école de magie

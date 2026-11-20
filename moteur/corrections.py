@@ -17,7 +17,9 @@ n'est pas touchée.
 cercles, dans l'ordre donné. Un cercle « inchangé » reprend tel quel le cercle
 actuel (phrase et satellites compris). Un cercle « modifié » garde pour
 l'instant sa « lecture_d_origine », un cercle « ajouté » n'a pas encore de
-phrase : les phrases viennent à l'étape 3. La répartition lumineux/ténébreux
+phrase : les phrases viennent à l'étape 3. Les satellites des cercles
+« modifié » et « ajouté » sont placés par la règle du moteur (_place).
+Aucune autre passe de la construction ordinaire n'est rejouée. La répartition lumineux/ténébreux
 des formes hybrides et des arts rares est recalculée par la règle du moteur
 (split_hybrid, split_rare), puis le glyphe est redessiné (spells.build).
 
@@ -87,6 +89,13 @@ def _transcrire(c):
                 C.word(w)
 
 
+def _place(sats):
+    """placement des satellites par la règle du moteur (convert._resats, comme place_sats) : un seul au nord ou au sud,
+    deux de part et d'autre, trois et plus en étoile. Appliqué aux seuls cercles « modifié » et « ajouté »."""
+    import convert as C
+    return C._resats(sats) if sats else sats
+
+
 def _cercles(f, x):
     """étape 2 : les cercles de l'état cible, dans l'ordre ; renvoie (cercles, nombre de cercles changés)"""
     restants = list(f["rings"])
@@ -100,7 +109,8 @@ def _cercles(f, x):
         changes += 1
         _transcrire(c)
         lecture = c["lecture_d_origine"] if c["etat"] == "modifié" else ""
-        out.append((c["cercle"], c["valeur"], list(c["mots"]), lecture, [satellite_moteur(s) for s in c["satellites"]]))
+        sats = [satellite_moteur(s) for s in c["satellites"]]
+        out.append((c["cercle"], c["valeur"], list(c["mots"]), lecture, _place(sats)))
     retires = len(restants) - sum(c["etat"] == "modifié" for c in x["cercles"])     # un cercle modifié remplace un cercle actuel
     return out, changes + max(0, retires), len(restants)
 

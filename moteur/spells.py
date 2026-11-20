@@ -131,13 +131,18 @@ def sat_label(sv, x, pol):
     if len(x) > 1 and x[1] and x[1].get("crit") and val(sv, pol)[1]: lab += " FOIS"
     return lab
 
-def build(core, pol, rings, r0=34, split=None, officiants=0):
-    """split = (lumineux, ténébreux) : chaque cercle prend la polarité de son camp"""
+def build(core, pol, rings, r0=34, split=None, officiants=0, impacts=None):
+    """split = (lumineux, ténébreux) : chaque cercle prend la polarité de son camp.
+    impacts (phase 4b) : un pôle par cercle d'Impact, dans l'ordre (« lumineux » / « ténébreux ») ; il l'emporte sur le camp
+    du critère pour ce cercle. Sans lui (None), rien ne change."""
     gr, rows, undet = [], [], []
+    i_imp = 0
     for crit, v, words, reading, *rest in rings:
         sats = rest[0] if rest else []
         p = pol
         if split: p = "up" if crit in split[0] else "down"
+        if impacts and crit == "IMPACT":
+            p = "up" if impacts[i_imp] == "lumineux" else "down"; i_imp += 1
         spec, mult, ok = val(v, p) if v is not None else ([], False, False)
         svals = [(d, val(sv, p), sat_label(sv, x, p), sat_opts(x, p)) for d, sv, *x in sats]
         mult = mult or any(m for _, (_, m, _), _, o_ in svals if not o_.get("crit"))

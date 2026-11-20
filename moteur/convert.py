@@ -1312,7 +1312,7 @@ def energies_et_cibles(rings, fam=None, comb=None):
     return out
 
 def glyph_key(f):
-    return (repr(f["core"]), repr([(r[0], r[1], tuple(r[2]), repr(r[4:5])) for r in f["rings"]]), repr(f["split"]))
+    return (repr(f["core"]), repr([(r[0], r[1], tuple(r[2]), repr(r[4:5])) for r in f["rings"]]), repr(f["split"]))         + ((repr(f["poles_impacts"]),) if f.get("poles_impacts") else ())
 
 def build_forms(idx, fiche):
     """toutes les formes d'un sort ; puis, pour un sort qui existe aussi dans les règles de 2024,
@@ -1517,10 +1517,13 @@ def dnd_line(s, fr):
 # ---------- bande ----------
 def band_rings(sp):
     lum = sp["split"][0] if sp["split"] else None
+    impacts, i_imp = sp.get("poles_impacts"), 0          # phase 4b : un pôle par cercle d'Impact, s'il est donné
     out = []
     for crit, v, words, reading, *rest in sp["rings"]:
         if lum is not None: pol = "up" if crit in lum else "down"
         else: pol = "down" if (sp["core"][0] == "verb" and sp["core"][2]) else "up"
+        if impacts and crit == "IMPACT":
+            pol = "up" if impacts[i_imp] == "lumineux" else "down"; i_imp += 1
         spec, mult, ok = SP.val(v, pol) if v is not None else ([], False, False)
         raw = rest[0] if rest else []
         if len(raw) >= 2:

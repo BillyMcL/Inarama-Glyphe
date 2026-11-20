@@ -309,7 +309,7 @@ if __name__ == "__main__":
     seen, dups = {}, []
     for sp in spells:
         for fm in sp["forms"]:
-            key = (repr(fm["core"]), repr([(r[0], r[1], tuple(r[2]), repr(r[4:5])) for r in fm["rings"]]), repr(fm["split"]))
+            key = (repr(fm["core"]), repr([(r[0], r[1], tuple(r[2]), repr(r[4:5])) for r in fm["rings"]]), repr(fm["split"]))                 + ((repr(fm["poles_impacts"]),) if fm.get("poles_impacts") else ())      # phase 4b : pôle par cercle d'Impact
             if key in seen: dups.append((seen[key][1], f'{sp["fr"]} [{fm["label"]}]'))
             else: seen.setdefault(key, (sp["idx"], f'{sp["fr"]} [{fm["label"]}]'))
     if dups:

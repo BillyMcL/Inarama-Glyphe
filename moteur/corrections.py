@@ -405,7 +405,7 @@ def _cercles(f, x):
 def _redessine(f, rings):
     crits = list(dict.fromkeys(r[0] for r in rings))
     split = repartition(f, crits)
-    svg, rows = SP.build(f["core"], f["pol"], rings, f["r0"], split, officiants=f["officiants"])
+    svg, rows = SP.build(f["core"], f["pol"], rings, f["r0"], split, officiants=f["officiants"], impacts=f.get("poles_impacts"))
     return dict(f, rings=rings, split=split, svg=svg, rows=rows, bsplit=SP.PART[0])
 
 
@@ -548,7 +548,7 @@ def _symboles(f):
     rings, touche = _placer(f["rings"])
     if not touche: return f
     PLACES.extend((f["idx"], f["label"], c) for c in touche)
-    svg, rows = SP.build(f["core"], f["pol"], rings, f["r0"], f["split"], officiants=f["officiants"])
+    svg, rows = SP.build(f["core"], f["pol"], rings, f["r0"], f["split"], officiants=f["officiants"], impacts=f.get("poles_impacts"))
     return dict(f, rings=rings, svg=svg, rows=rows, bsplit=SP.PART[0])
 
 

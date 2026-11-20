@@ -300,8 +300,9 @@ def regles():
 if __name__ == "__main__":
     os.makedirs(OUT + "/sorts", exist_ok=True)
     spells = []
+    import corrections as _corr      # phase 4a : corrections décidées (donnees/phase4), appliquées aux formes construites
     for k, f in FICHES.items():
-        forms = C.build_forms(k, f)
+        forms = _corr.appliquer(k, C.build_forms(k, f))
         spells.append(dict(idx=k, fr=f["fr"], en=forms[0]["en"], level=forms[0]["level"], ecole=forms[0]["ecole"], forms=forms, src=C.sources_of(k, f)))
     spells.sort(key=lambda s: (s["level"], s["fr"]))
     # contrôle d'unicité : deux glyphes strictement identiques sont, par définition, le même sort

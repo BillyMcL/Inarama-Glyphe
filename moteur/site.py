@@ -323,6 +323,12 @@ if __name__ == "__main__":
         print(f"ATTENTION : {len(errs)} défaut(s) de lecture")
         print(_lint.rapport(errs))
         if os.environ.get("STRICT"): raise SystemExit("construction arrêtée : défauts de lecture")
+    # phase 4a, étape 7 : plus d'élément par défaut selon l'école ; une forme hybride doit avoir son élément donné
+    sans = [f'{sp["fr"]} [{fm["label"]}]' for sp in spells for fm in sp["forms"] if fm.get("element_par_defaut")]
+    if sans:
+        print(f"ATTENTION : {len(sans)} forme(s) hybride(s) sans élément donné (l'élément d'école n'est plus une règle)")
+        for x in sans: print("   ", x)
+        if os.environ.get("STRICT"): raise SystemExit("construction arrêtée : élément non donné")
     for i, sp in enumerate(spells):
         prev = spells[i - 1] if i else None; nxt = spells[i + 1] if i + 1 < len(spells) else None
         open(f"{OUT}/sorts/{sp['idx']}.html", "w", encoding="utf-8").write(compact(page(sp, prev, nxt)))

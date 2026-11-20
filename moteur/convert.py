@@ -650,6 +650,10 @@ def build_spell(idx, fiche):
         notes.insert(0, f"Art rare ({art}) : verbe arcanique au cœur, quatre éléments, équilibre astral 50/50.")
     else:
         comb = fiche.get("comb") or DAMAGE_COMBO.get(dtype) or comb_def
+        # phase 4a, étape 7 : la règle d'école par défaut est retirée. Un sort hybride dont l'élément n'est donné ni par sa
+        # fiche ni par ses dégâts ne prend plus l'élément de son école : la combinaison de l'école ne sert qu'à le dessiner
+        # en attendant, la forme est marquée, et la construction stricte (site.py) refuse toute forme encore marquée.
+        defaut = bool(fiche.get("_comb_defaut")) or not (fiche.get("comb") or DAMAGE_COMBO.get(dtype))
         f_, a_, t_, e_ = COMBOS[comb]
         core = SP.hyb(f=f_, a=a_, t=t_, e=e_, label=norm(ecole)); r0 = 66
         if norm(ecole) not in GG.LEX: word(ecole)
@@ -659,7 +663,8 @@ def build_spell(idx, fiche):
         notes.insert(0, f"Magie hybride, combinaison {comb} : {why}.")
     svg, rows = SP.build(core, pol, rings, r0, split, officiants=off_n)
     return dict(idx=idx, fr=fr, en=s["name"], level=level, ecole=ecole, fam=fam, verb=verb, core=core, rings=rings, split=split, officiants=off_n,
-                bsplit=SP.PART[0], svg=svg, rows=rows, r0=r0, notes=notes, dnd=dnd_line(s, fr), pol=pol)
+                bsplit=SP.PART[0], svg=svg, rows=rows, r0=r0, notes=notes, dnd=dnd_line(s, fr), pol=pol,
+                element_par_defaut=(fam not in ("A", "R") and defaut))
 
 # ---------- mots de l'univers ----------
 import mots_univers as MU
@@ -1297,6 +1302,7 @@ def build_forms(idx, fiche):
             elif fe["fam"] == "H" and not fe.get("comb"):
                 d0 = SRD.get(idx, {}).get("damage") or {}; d0 = d0[0] if isinstance(d0, list) else d0
                 fe["comb"] = DAMAGE_COMBO.get((d0.get("damage_type") or {}).get("name")) or ECOLES[SRD[idx]["school"]["name"]][2]
+                fe["_comb_defaut"] = not DAMAGE_COMBO.get((d0.get("damage_type") or {}).get("name"))     # étape 7 : élément d'école, marqué
         if "options" in v and v["options"] is None: fe.pop("options", None)
         # une option de même nom garde ce que le sort donne à percevoir (Cosmétique), sauf si la version le redit
         if v.get("options") and fiche.get("options"):

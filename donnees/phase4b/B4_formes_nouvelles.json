@@ -1,0 +1,2422 @@
+{
+ "_lisez_moi": [
+  "Formes nouvelles de la phase 4b, validées le 20 novembre 2026.",
+  "Chaque entrée part d'une forme modèle (cle + rang_forme_modele dans la bibliothèque construite, Elden Ring exclu).",
+  "action « ajouter » : la forme modèle reste, la forme nouvelle s'ajoute après elle. action « remplacer la forme modèle » : les formes nouvelles prennent sa place.",
+  "cercles : liste complète, dans l'ordre. etat inchangé = recopier tel quel, phrase comprise ; modifié = régénérer le début de la phrase et mettre « parenthese » si elle est donnée, sinon garder la parenthèse d'origine ; ajouté = générer la phrase, avec « parenthese ».",
+  "Une forme nouvelle d'Arcane reçoit sa jumelle hybride d'après la ligne de sa forme modèle dans B3_formes_hybrides.csv."
+ ],
+ "formes": [
+  {
+   "cle": "suppress-charms-and-compulsions",
+   "sort": "Charmes suspendus",
+   "jeu": "PF1",
+   "rang_forme_modele": 0,
+   "forme_modele": "Forme arcane",
+   "action": "ajouter",
+   "nom_de_la_forme": "Volonté raffermie",
+   "famille": "Arcane",
+   "niveau": 2,
+   "cercles": [
+    {
+     "cercle": "CIBLE",
+     "valeur": "plein",
+     "mots": [
+      "APTITUDE"
+     ],
+     "satellites": [],
+     "etat": "modifié",
+     "lecture_d_origine": "une zone"
+    },
+    {
+     "cercle": "DUREE",
+     "valeur": 10,
+     "mots": [
+      "MINUTES"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "10 minutes"
+    },
+    {
+     "cercle": "LOCALISATION",
+     "valeur": 9,
+     "mots": [
+      "METRES"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "9 m"
+    },
+    {
+     "cercle": "CONDITION",
+     "valeur": 1,
+     "mots": [
+      "PAROLE"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "« parole »"
+    },
+    {
+     "cercle": "IMPACT",
+     "valeur": 2,
+     "mots": [
+      "VOLONTE"
+     ],
+     "satellites": [],
+     "etat": "modifié",
+     "lecture_d_origine": "plein, charme · conduite · suspension (charmes et contraintes suspendus) ; satellite Impact plein « charme » ; satellite Impact plein « conduite »",
+     "parenthese": "4 de mieux contre les charmes et les contraintes"
+    },
+    {
+     "cercle": "INTERACTION",
+     "valeur": 3,
+     "mots": [],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "3 : sort de niveau 2"
+    }
+   ],
+   "verbe": "Amplifier",
+   "forme_modele_renommee": "Charmes suspendus",
+   "note": "la forme modèle reste ; elle prend le nom « Charmes suspendus »"
+  },
+  {
+   "cle": "gate",
+   "sort": "Portail",
+   "jeu": "5e",
+   "rang_forme_modele": 0,
+   "forme_modele": "Art rare",
+   "action": "ajouter",
+   "nom_de_la_forme": "Appel d'un être",
+   "famille": "Art rare",
+   "niveau": 9,
+   "cercles": [
+    {
+     "cercle": "CIBLE",
+     "valeur": 9,
+     "mots": [],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "un être qui relève d'un plan"
+    },
+    {
+     "cercle": "DUREE",
+     "valeur": 1,
+     "mots": [
+      "MINUTES"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "1 minute"
+    },
+    {
+     "cercle": "LOCALISATION",
+     "valeur": 18,
+     "mots": [
+      "METRES"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "18 m"
+    },
+    {
+     "cercle": "CONDITION",
+     "valeur": 1,
+     "mots": [
+      "PAROLE"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "« parole »"
+    },
+    {
+     "cercle": "IMPACT",
+     "valeur": "plein",
+     "mots": [
+      "PUISSANCE"
+     ],
+     "satellites": [
+      {
+       "position": "NS",
+       "valeur": "plein",
+       "texte": "IMPACT PUISSANCE MESURE",
+       "options": {
+        "crit": "IMPACT"
+       }
+      }
+     ],
+     "etat": "modifié",
+     "lecture_d_origine": "plein, passage · plan (un portail vers un autre plan)",
+     "parenthese": "l'être nommé vient à travers le portail ; rien ne l'oblige à obéir"
+    },
+    {
+     "cercle": "COMPOSANTE",
+     "valeur": 500,
+     "mots": [
+      "DIAMANT",
+      "PLATINE"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "valeur 500 pièces de platine ; diamant, accompagnant"
+    },
+    {
+     "cercle": "INTERACTION",
+     "valeur": 10,
+     "mots": [],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "10 : sort de niveau 9"
+    },
+    {
+     "cercle": "COSMETIQUE",
+     "valeur": 1,
+     "mots": [
+      "PORTAIL"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "portail ; 1 sens : vue"
+    }
+   ],
+   "art": "spatiomancie",
+   "verbe": "Invoquer",
+   "forme_modele_renommee": "Passage",
+   "note": "la forme modèle reste ; elle prend le nom « Passage ». Verbe proposé : Invoquer ; s'il fait un glyphe en double, garder Lier et le signaler."
+  },
+  {
+   "cle": "gate",
+   "sort": "Portail",
+   "jeu": "3.5",
+   "rang_forme_modele": 1,
+   "forme_modele": "Art rare — version 3.5",
+   "action": "ajouter",
+   "nom_de_la_forme": "Appel d'un être",
+   "famille": "Art rare",
+   "niveau": 9,
+   "cercles": [
+    {
+     "cercle": "CIBLE",
+     "valeur": 9,
+     "mots": [],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "un être qui relève d'un plan"
+    },
+    {
+     "cercle": "DUREE",
+     "valeur": 100,
+     "mots": [
+      "SECONDES"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "102 secondes ; arrondi de 102 à 100 pour s'écrire en 3 formes"
+    },
+    {
+     "cercle": "LOCALISATION",
+     "valeur": 81,
+     "mots": [
+      "METRES"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "81 m"
+    },
+    {
+     "cercle": "CONDITION",
+     "valeur": 1,
+     "mots": [
+      "PAROLE"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "« parole »"
+    },
+    {
+     "cercle": "IMPACT",
+     "valeur": "plein",
+     "mots": [
+      "PUISSANCE"
+     ],
+     "satellites": [
+      {
+       "position": "NS",
+       "valeur": "plein",
+       "texte": "IMPACT PUISSANCE MESURE",
+       "options": {
+        "crit": "IMPACT"
+       }
+      }
+     ],
+     "etat": "modifié",
+     "lecture_d_origine": "plein, passage · plan (un portail vers un autre plan)",
+     "parenthese": "l'être nommé vient à travers le portail ; rien ne l'oblige à obéir"
+    },
+    {
+     "cercle": "COMPOSANTE",
+     "valeur": 1,
+     "mots": [
+      "VIE"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "1000 points d'expérience au niveau 17, soit 0,26 point de vie : 1 point de vie"
+    },
+    {
+     "cercle": "INTERACTION",
+     "valeur": 10,
+     "mots": [],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "10 : sort de niveau 9"
+    },
+    {
+     "cercle": "COSMETIQUE",
+     "valeur": 1,
+     "mots": [
+      "PORTAIL"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "portail ; 1 sens : vue"
+    }
+   ],
+   "art": "spatiomancie",
+   "verbe": "Invoquer",
+   "forme_modele_renommee": "Passage",
+   "note": "la forme modèle reste ; elle prend le nom « Passage ». Verbe proposé : Invoquer ; s'il fait un glyphe en double, garder Lier et le signaler."
+  },
+  {
+   "cle": "gate",
+   "sort": "Portail",
+   "jeu": "PF1",
+   "rang_forme_modele": 2,
+   "forme_modele": "Art rare — version PF1",
+   "action": "ajouter",
+   "nom_de_la_forme": "Appel d'un être",
+   "famille": "Art rare",
+   "niveau": 9,
+   "cercles": [
+    {
+     "cercle": "CIBLE",
+     "valeur": 9,
+     "mots": [],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "un être qui relève d'un plan"
+    },
+    {
+     "cercle": "DUREE",
+     "valeur": 100,
+     "mots": [
+      "SECONDES"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "102 secondes ; arrondi de 102 à 100 pour s'écrire en 3 formes"
+    },
+    {
+     "cercle": "LOCALISATION",
+     "valeur": 81,
+     "mots": [
+      "METRES"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "81 m"
+    },
+    {
+     "cercle": "CONDITION",
+     "valeur": 1,
+     "mots": [
+      "PAROLE"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "« parole »"
+    },
+    {
+     "cercle": "IMPACT",
+     "valeur": "plein",
+     "mots": [
+      "PUISSANCE"
+     ],
+     "satellites": [
+      {
+       "position": "NS",
+       "valeur": "plein",
+       "texte": "IMPACT PUISSANCE MESURE",
+       "options": {
+        "crit": "IMPACT"
+       }
+      }
+     ],
+     "etat": "modifié",
+     "lecture_d_origine": "plein, passage · plan (un portail vers un autre plan)",
+     "parenthese": "l'être nommé vient à travers le portail ; rien ne l'oblige à obéir"
+    },
+    {
+     "cercle": "COMPOSANTE",
+     "valeur": 40,
+     "mots": [
+      "ENCENS",
+      "CONSOMME",
+      "PLATINE"
+     ],
+     "satellites": [
+      {
+       "position": "NS",
+       "valeur": 25,
+       "texte": "FOIS",
+       "options": {}
+      }
+     ],
+     "etat": "inchangé",
+     "lecture_d_origine": "valeur 1000 pièces de platine ; encens, consommé ; 1000 s'écrit 40 × 25 : satellite 25 « fois »"
+    },
+    {
+     "cercle": "INTERACTION",
+     "valeur": 10,
+     "mots": [],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "10 : sort de niveau 9"
+    },
+    {
+     "cercle": "COSMETIQUE",
+     "valeur": 1,
+     "mots": [
+      "PORTAIL"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "portail ; 1 sens : vue"
+    }
+   ],
+   "art": "spatiomancie",
+   "verbe": "Invoquer",
+   "forme_modele_renommee": "Passage",
+   "note": "la forme modèle reste ; elle prend le nom « Passage ». Verbe proposé : Invoquer ; s'il fait un glyphe en double, garder Lier et le signaler."
+  },
+  {
+   "cle": "shadow-raid",
+   "sort": "Raid astral",
+   "jeu": "PF2",
+   "rang_forme_modele": 0,
+   "forme_modele": "Forme ténébreuse",
+   "action": "remplacer la forme modèle",
+   "nom_de_la_forme": "Forme ténébreuse — choc",
+   "famille": "Arcane",
+   "niveau": 7,
+   "cercles": [
+    {
+     "cercle": "CIBLE",
+     "valeur": "plein",
+     "mots": [],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "une zone"
+    },
+    {
+     "cercle": "FORME",
+     "valeur": "plein",
+     "mots": [],
+     "satellites": [
+      {
+       "position": "SYM",
+       "valeur": 1,
+       "texte": "",
+       "options": {}
+      }
+     ],
+     "etat": "inchangé",
+     "lecture_d_origine": "sphère"
+    },
+    {
+     "cercle": "AMPLEUR",
+     "valeur": 3087,
+     "mots": [
+      "VOLUME",
+      "METRES",
+      "CUBES"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "3203 m³ ; taille d'origine : sphère de 9 m de rayon ; arrondi de 3203 à 3087 pour s'écrire en 4 formes"
+    },
+    {
+     "cercle": "DUREE",
+     "valeur": 1,
+     "mots": [
+      "MINUTES"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "1 minute"
+    },
+    {
+     "cercle": "LOCALISATION",
+     "valeur": 36,
+     "mots": [
+      "METRES"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "36 m"
+    },
+    {
+     "cercle": "CONDITION",
+     "valeur": 1,
+     "mots": [
+      "PAROLE"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "« parole »"
+    },
+    {
+     "cercle": "IMPACT",
+     "valeur": 27,
+     "mots": [
+      "ASSAUT",
+      "CHOC"
+     ],
+     "satellites": [
+      {
+       "position": "NS",
+       "valeur": {
+        "sym": "tenebreux"
+       },
+       "texte": "",
+       "options": {}
+      }
+     ],
+     "etat": "modifié",
+     "lecture_d_origine": "intensité 27, assaut (6d8 en moyenne à l'apparition ; tissé de la face ténébreuse) ; satellite symbole de la face ténébreuse"
+    },
+    {
+     "cercle": "IMPACT",
+     "valeur": 14,
+     "mots": [
+      "CHOC"
+     ],
+     "satellites": [
+      {
+       "position": "NS",
+       "valeur": 1,
+       "texte": "DUREE CHAQUE INSTANTS",
+       "options": {
+        "crit": "DUREE"
+       }
+      }
+     ],
+     "etat": "modifié",
+     "lecture_d_origine": "intensité 14, sans nature : la force brute du verbe (3d8 en moyenne à chaque instant ; tous y sont estompés) ; satellite Durée 1 « chaque · instants » : l'effet revient à chaque instant"
+    },
+    {
+     "cercle": "IMPACT",
+     "valeur": 2,
+     "mots": [
+      "DISSIMULATION"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "intensité 2, dissimulation"
+    },
+    {
+     "cercle": "INTERACTION",
+     "valeur": 8,
+     "mots": [],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "8 : sort de niveau 7"
+    },
+    {
+     "cercle": "COSMETIQUE",
+     "valeur": 1,
+     "mots": [
+      "SILHOUETTE"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "silhouette ; 1 sens : vue"
+    }
+   ],
+   "verbe": "Créer",
+   "note": "trois formes prennent la place de la forme modèle"
+  },
+  {
+   "cle": "shadow-raid",
+   "sort": "Raid astral",
+   "jeu": "PF2",
+   "rang_forme_modele": 0,
+   "forme_modele": "Forme ténébreuse",
+   "action": "remplacer la forme modèle",
+   "nom_de_la_forme": "Forme ténébreuse — perce",
+   "famille": "Arcane",
+   "niveau": 7,
+   "cercles": [
+    {
+     "cercle": "CIBLE",
+     "valeur": "plein",
+     "mots": [],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "une zone"
+    },
+    {
+     "cercle": "FORME",
+     "valeur": "plein",
+     "mots": [],
+     "satellites": [
+      {
+       "position": "SYM",
+       "valeur": 1,
+       "texte": "",
+       "options": {}
+      }
+     ],
+     "etat": "inchangé",
+     "lecture_d_origine": "sphère"
+    },
+    {
+     "cercle": "AMPLEUR",
+     "valeur": 3087,
+     "mots": [
+      "VOLUME",
+      "METRES",
+      "CUBES"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "3203 m³ ; taille d'origine : sphère de 9 m de rayon ; arrondi de 3203 à 3087 pour s'écrire en 4 formes"
+    },
+    {
+     "cercle": "DUREE",
+     "valeur": 1,
+     "mots": [
+      "MINUTES"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "1 minute"
+    },
+    {
+     "cercle": "LOCALISATION",
+     "valeur": 36,
+     "mots": [
+      "METRES"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "36 m"
+    },
+    {
+     "cercle": "CONDITION",
+     "valeur": 1,
+     "mots": [
+      "PAROLE"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "« parole »"
+    },
+    {
+     "cercle": "IMPACT",
+     "valeur": 27,
+     "mots": [
+      "ASSAUT",
+      "PERCE"
+     ],
+     "satellites": [
+      {
+       "position": "NS",
+       "valeur": {
+        "sym": "tenebreux"
+       },
+       "texte": "",
+       "options": {}
+      }
+     ],
+     "etat": "modifié",
+     "lecture_d_origine": "intensité 27, assaut (6d8 en moyenne à l'apparition ; tissé de la face ténébreuse) ; satellite symbole de la face ténébreuse"
+    },
+    {
+     "cercle": "IMPACT",
+     "valeur": 14,
+     "mots": [
+      "PERCE"
+     ],
+     "satellites": [
+      {
+       "position": "NS",
+       "valeur": 1,
+       "texte": "DUREE CHAQUE INSTANTS",
+       "options": {
+        "crit": "DUREE"
+       }
+      }
+     ],
+     "etat": "modifié",
+     "lecture_d_origine": "intensité 14, sans nature : la force brute du verbe (3d8 en moyenne à chaque instant ; tous y sont estompés) ; satellite Durée 1 « chaque · instants » : l'effet revient à chaque instant"
+    },
+    {
+     "cercle": "IMPACT",
+     "valeur": 2,
+     "mots": [
+      "DISSIMULATION"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "intensité 2, dissimulation"
+    },
+    {
+     "cercle": "INTERACTION",
+     "valeur": 8,
+     "mots": [],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "8 : sort de niveau 7"
+    },
+    {
+     "cercle": "COSMETIQUE",
+     "valeur": 1,
+     "mots": [
+      "SILHOUETTE"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "silhouette ; 1 sens : vue"
+    }
+   ],
+   "verbe": "Créer",
+   "note": "trois formes prennent la place de la forme modèle"
+  },
+  {
+   "cle": "shadow-raid",
+   "sort": "Raid astral",
+   "jeu": "PF2",
+   "rang_forme_modele": 0,
+   "forme_modele": "Forme ténébreuse",
+   "action": "remplacer la forme modèle",
+   "nom_de_la_forme": "Forme ténébreuse — tranchant",
+   "famille": "Arcane",
+   "niveau": 7,
+   "cercles": [
+    {
+     "cercle": "CIBLE",
+     "valeur": "plein",
+     "mots": [],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "une zone"
+    },
+    {
+     "cercle": "FORME",
+     "valeur": "plein",
+     "mots": [],
+     "satellites": [
+      {
+       "position": "SYM",
+       "valeur": 1,
+       "texte": "",
+       "options": {}
+      }
+     ],
+     "etat": "inchangé",
+     "lecture_d_origine": "sphère"
+    },
+    {
+     "cercle": "AMPLEUR",
+     "valeur": 3087,
+     "mots": [
+      "VOLUME",
+      "METRES",
+      "CUBES"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "3203 m³ ; taille d'origine : sphère de 9 m de rayon ; arrondi de 3203 à 3087 pour s'écrire en 4 formes"
+    },
+    {
+     "cercle": "DUREE",
+     "valeur": 1,
+     "mots": [
+      "MINUTES"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "1 minute"
+    },
+    {
+     "cercle": "LOCALISATION",
+     "valeur": 36,
+     "mots": [
+      "METRES"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "36 m"
+    },
+    {
+     "cercle": "CONDITION",
+     "valeur": 1,
+     "mots": [
+      "PAROLE"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "« parole »"
+    },
+    {
+     "cercle": "IMPACT",
+     "valeur": 27,
+     "mots": [
+      "ASSAUT",
+      "TRANCHANT"
+     ],
+     "satellites": [
+      {
+       "position": "NS",
+       "valeur": {
+        "sym": "tenebreux"
+       },
+       "texte": "",
+       "options": {}
+      }
+     ],
+     "etat": "modifié",
+     "lecture_d_origine": "intensité 27, assaut (6d8 en moyenne à l'apparition ; tissé de la face ténébreuse) ; satellite symbole de la face ténébreuse"
+    },
+    {
+     "cercle": "IMPACT",
+     "valeur": 14,
+     "mots": [
+      "TRANCHANT"
+     ],
+     "satellites": [
+      {
+       "position": "NS",
+       "valeur": 1,
+       "texte": "DUREE CHAQUE INSTANTS",
+       "options": {
+        "crit": "DUREE"
+       }
+      }
+     ],
+     "etat": "modifié",
+     "lecture_d_origine": "intensité 14, sans nature : la force brute du verbe (3d8 en moyenne à chaque instant ; tous y sont estompés) ; satellite Durée 1 « chaque · instants » : l'effet revient à chaque instant"
+    },
+    {
+     "cercle": "IMPACT",
+     "valeur": 2,
+     "mots": [
+      "DISSIMULATION"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "intensité 2, dissimulation"
+    },
+    {
+     "cercle": "INTERACTION",
+     "valeur": 8,
+     "mots": [],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "8 : sort de niveau 7"
+    },
+    {
+     "cercle": "COSMETIQUE",
+     "valeur": 1,
+     "mots": [
+      "SILHOUETTE"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "silhouette ; 1 sens : vue"
+    }
+   ],
+   "verbe": "Créer",
+   "note": "trois formes prennent la place de la forme modèle"
+  },
+  {
+   "cle": "shadow-raid",
+   "sort": "Raid astral",
+   "jeu": "PF2",
+   "rang_forme_modele": 1,
+   "forme_modele": "Forme lumineuse",
+   "action": "remplacer la forme modèle",
+   "nom_de_la_forme": "Forme lumineuse — choc",
+   "famille": "Arcane",
+   "niveau": 7,
+   "cercles": [
+    {
+     "cercle": "CIBLE",
+     "valeur": "plein",
+     "mots": [],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "une zone"
+    },
+    {
+     "cercle": "FORME",
+     "valeur": "plein",
+     "mots": [],
+     "satellites": [
+      {
+       "position": "SYM",
+       "valeur": 1,
+       "texte": "",
+       "options": {}
+      }
+     ],
+     "etat": "inchangé",
+     "lecture_d_origine": "sphère"
+    },
+    {
+     "cercle": "AMPLEUR",
+     "valeur": 3087,
+     "mots": [
+      "VOLUME",
+      "METRES",
+      "CUBES"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "3203 m³ ; taille d'origine : sphère de 9 m de rayon ; arrondi de 3203 à 3087 pour s'écrire en 4 formes"
+    },
+    {
+     "cercle": "DUREE",
+     "valeur": 1,
+     "mots": [
+      "MINUTES"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "1 minute"
+    },
+    {
+     "cercle": "LOCALISATION",
+     "valeur": 36,
+     "mots": [
+      "METRES"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "36 m"
+    },
+    {
+     "cercle": "CONDITION",
+     "valeur": 1,
+     "mots": [
+      "PAROLE"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "« parole »"
+    },
+    {
+     "cercle": "IMPACT",
+     "valeur": 27,
+     "mots": [
+      "ASSAUT",
+      "CHOC"
+     ],
+     "satellites": [
+      {
+       "position": "NS",
+       "valeur": {
+        "sym": "lumineux"
+       },
+       "texte": "",
+       "options": {}
+      }
+     ],
+     "etat": "modifié",
+     "lecture_d_origine": "intensité 27, assaut (6d8 en moyenne à l'apparition ; tissé de la face lumineuse) ; satellite symbole de la face lumineuse"
+    },
+    {
+     "cercle": "IMPACT",
+     "valeur": 14,
+     "mots": [
+      "CHOC"
+     ],
+     "satellites": [
+      {
+       "position": "NS",
+       "valeur": 1,
+       "texte": "DUREE CHAQUE INSTANTS",
+       "options": {
+        "crit": "DUREE"
+       }
+      }
+     ],
+     "etat": "modifié",
+     "lecture_d_origine": "intensité 14, sans nature : la force brute du verbe (3d8 en moyenne à chaque instant ; tous y sont estompés) ; satellite Durée 1 « chaque · instants » : l'effet revient à chaque instant"
+    },
+    {
+     "cercle": "IMPACT",
+     "valeur": 2,
+     "mots": [
+      "DISSIMULATION"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "intensité 2, dissimulation"
+    },
+    {
+     "cercle": "INTERACTION",
+     "valeur": 8,
+     "mots": [],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "8 : sort de niveau 7"
+    },
+    {
+     "cercle": "COSMETIQUE",
+     "valeur": 1,
+     "mots": [
+      "SILHOUETTE"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "silhouette ; 1 sens : vue"
+    }
+   ],
+   "verbe": "Créer",
+   "note": "trois formes prennent la place de la forme modèle"
+  },
+  {
+   "cle": "shadow-raid",
+   "sort": "Raid astral",
+   "jeu": "PF2",
+   "rang_forme_modele": 1,
+   "forme_modele": "Forme lumineuse",
+   "action": "remplacer la forme modèle",
+   "nom_de_la_forme": "Forme lumineuse — perce",
+   "famille": "Arcane",
+   "niveau": 7,
+   "cercles": [
+    {
+     "cercle": "CIBLE",
+     "valeur": "plein",
+     "mots": [],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "une zone"
+    },
+    {
+     "cercle": "FORME",
+     "valeur": "plein",
+     "mots": [],
+     "satellites": [
+      {
+       "position": "SYM",
+       "valeur": 1,
+       "texte": "",
+       "options": {}
+      }
+     ],
+     "etat": "inchangé",
+     "lecture_d_origine": "sphère"
+    },
+    {
+     "cercle": "AMPLEUR",
+     "valeur": 3087,
+     "mots": [
+      "VOLUME",
+      "METRES",
+      "CUBES"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "3203 m³ ; taille d'origine : sphère de 9 m de rayon ; arrondi de 3203 à 3087 pour s'écrire en 4 formes"
+    },
+    {
+     "cercle": "DUREE",
+     "valeur": 1,
+     "mots": [
+      "MINUTES"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "1 minute"
+    },
+    {
+     "cercle": "LOCALISATION",
+     "valeur": 36,
+     "mots": [
+      "METRES"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "36 m"
+    },
+    {
+     "cercle": "CONDITION",
+     "valeur": 1,
+     "mots": [
+      "PAROLE"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "« parole »"
+    },
+    {
+     "cercle": "IMPACT",
+     "valeur": 27,
+     "mots": [
+      "ASSAUT",
+      "PERCE"
+     ],
+     "satellites": [
+      {
+       "position": "NS",
+       "valeur": {
+        "sym": "lumineux"
+       },
+       "texte": "",
+       "options": {}
+      }
+     ],
+     "etat": "modifié",
+     "lecture_d_origine": "intensité 27, assaut (6d8 en moyenne à l'apparition ; tissé de la face lumineuse) ; satellite symbole de la face lumineuse"
+    },
+    {
+     "cercle": "IMPACT",
+     "valeur": 14,
+     "mots": [
+      "PERCE"
+     ],
+     "satellites": [
+      {
+       "position": "NS",
+       "valeur": 1,
+       "texte": "DUREE CHAQUE INSTANTS",
+       "options": {
+        "crit": "DUREE"
+       }
+      }
+     ],
+     "etat": "modifié",
+     "lecture_d_origine": "intensité 14, sans nature : la force brute du verbe (3d8 en moyenne à chaque instant ; tous y sont estompés) ; satellite Durée 1 « chaque · instants » : l'effet revient à chaque instant"
+    },
+    {
+     "cercle": "IMPACT",
+     "valeur": 2,
+     "mots": [
+      "DISSIMULATION"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "intensité 2, dissimulation"
+    },
+    {
+     "cercle": "INTERACTION",
+     "valeur": 8,
+     "mots": [],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "8 : sort de niveau 7"
+    },
+    {
+     "cercle": "COSMETIQUE",
+     "valeur": 1,
+     "mots": [
+      "SILHOUETTE"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "silhouette ; 1 sens : vue"
+    }
+   ],
+   "verbe": "Créer",
+   "note": "trois formes prennent la place de la forme modèle"
+  },
+  {
+   "cle": "shadow-raid",
+   "sort": "Raid astral",
+   "jeu": "PF2",
+   "rang_forme_modele": 1,
+   "forme_modele": "Forme lumineuse",
+   "action": "remplacer la forme modèle",
+   "nom_de_la_forme": "Forme lumineuse — tranchant",
+   "famille": "Arcane",
+   "niveau": 7,
+   "cercles": [
+    {
+     "cercle": "CIBLE",
+     "valeur": "plein",
+     "mots": [],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "une zone"
+    },
+    {
+     "cercle": "FORME",
+     "valeur": "plein",
+     "mots": [],
+     "satellites": [
+      {
+       "position": "SYM",
+       "valeur": 1,
+       "texte": "",
+       "options": {}
+      }
+     ],
+     "etat": "inchangé",
+     "lecture_d_origine": "sphère"
+    },
+    {
+     "cercle": "AMPLEUR",
+     "valeur": 3087,
+     "mots": [
+      "VOLUME",
+      "METRES",
+      "CUBES"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "3203 m³ ; taille d'origine : sphère de 9 m de rayon ; arrondi de 3203 à 3087 pour s'écrire en 4 formes"
+    },
+    {
+     "cercle": "DUREE",
+     "valeur": 1,
+     "mots": [
+      "MINUTES"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "1 minute"
+    },
+    {
+     "cercle": "LOCALISATION",
+     "valeur": 36,
+     "mots": [
+      "METRES"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "36 m"
+    },
+    {
+     "cercle": "CONDITION",
+     "valeur": 1,
+     "mots": [
+      "PAROLE"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "« parole »"
+    },
+    {
+     "cercle": "IMPACT",
+     "valeur": 27,
+     "mots": [
+      "ASSAUT",
+      "TRANCHANT"
+     ],
+     "satellites": [
+      {
+       "position": "NS",
+       "valeur": {
+        "sym": "lumineux"
+       },
+       "texte": "",
+       "options": {}
+      }
+     ],
+     "etat": "modifié",
+     "lecture_d_origine": "intensité 27, assaut (6d8 en moyenne à l'apparition ; tissé de la face lumineuse) ; satellite symbole de la face lumineuse"
+    },
+    {
+     "cercle": "IMPACT",
+     "valeur": 14,
+     "mots": [
+      "TRANCHANT"
+     ],
+     "satellites": [
+      {
+       "position": "NS",
+       "valeur": 1,
+       "texte": "DUREE CHAQUE INSTANTS",
+       "options": {
+        "crit": "DUREE"
+       }
+      }
+     ],
+     "etat": "modifié",
+     "lecture_d_origine": "intensité 14, sans nature : la force brute du verbe (3d8 en moyenne à chaque instant ; tous y sont estompés) ; satellite Durée 1 « chaque · instants » : l'effet revient à chaque instant"
+    },
+    {
+     "cercle": "IMPACT",
+     "valeur": 2,
+     "mots": [
+      "DISSIMULATION"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "intensité 2, dissimulation"
+    },
+    {
+     "cercle": "INTERACTION",
+     "valeur": 8,
+     "mots": [],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "8 : sort de niveau 7"
+    },
+    {
+     "cercle": "COSMETIQUE",
+     "valeur": 1,
+     "mots": [
+      "SILHOUETTE"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "silhouette ; 1 sens : vue"
+    }
+   ],
+   "verbe": "Créer",
+   "note": "trois formes prennent la place de la forme modèle"
+  },
+  {
+   "cle": "one-with-the-land",
+   "sort": "Uni à la terre",
+   "jeu": "PF2",
+   "rang_forme_modele": 0,
+   "forme_modele": "Forme arcane",
+   "action": "remplacer la forme modèle",
+   "nom_de_la_forme": "Choc",
+   "famille": "Arcane",
+   "niveau": 9,
+   "cercles": [
+    {
+     "cercle": "CIBLE",
+     "valeur": 1,
+     "mots": [],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "soi"
+    },
+    {
+     "cercle": "DUREE",
+     "valeur": 1,
+     "mots": [
+      "MINUTES"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "1 minute"
+    },
+    {
+     "cercle": "CONDITION",
+     "valeur": 1,
+     "mots": [
+      "PAROLE"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "« parole »"
+    },
+    {
+     "cercle": "IMPACT",
+     "valeur": "plein",
+     "mots": [
+      "FUSION",
+      "ABRI"
+     ],
+     "satellites": [
+      {
+       "position": "NS",
+       "valeur": null,
+       "texte": "CIBLE TERRAIN",
+       "options": {
+        "crit": "CIBLE"
+       }
+      }
+     ],
+     "etat": "inchangé",
+     "lecture_d_origine": "plein, fusion · abri (fondu dans le sol ou un grand arbre, abrité) ; satellite Cible « terrain »"
+    },
+    {
+     "cercle": "IMPACT",
+     "valeur": "plein",
+     "mots": [
+      "VIBRATION"
+     ],
+     "satellites": [
+      {
+       "position": "NS",
+       "valeur": 60,
+       "texte": "AMPLEUR METRES",
+       "options": {
+        "crit": "AMPLEUR"
+       }
+      }
+     ],
+     "etat": "inchangé",
+     "lecture_d_origine": "plein, vibration (je sens tout ce qui bouge alentour) ; satellite Ampleur 60 « mètres »"
+    },
+    {
+     "cercle": "IMPACT",
+     "valeur": 32,
+     "mots": [
+      "CHOC"
+     ],
+     "satellites": [
+      {
+       "position": "SYM",
+       "valeur": 18,
+       "texte": "AMPLEUR METRES",
+       "options": {
+        "crit": "AMPLEUR"
+       }
+      },
+      {
+       "position": "SYM",
+       "valeur": null,
+       "texte": "CIBLE TERRAIN",
+       "options": {
+        "crit": "CIBLE"
+       }
+      }
+     ],
+     "etat": "modifié",
+     "lecture_d_origine": "intensité 32 (le terrain frappe pour moi, 5d12 en moyenne) ; satellite Ampleur 18 « mètres » ; satellite Cible « terrain »"
+    },
+    {
+     "cercle": "INTERACTION",
+     "valeur": 10,
+     "mots": [],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "10 : sort de niveau 9"
+    }
+   ],
+   "verbe": "Fusionner",
+   "note": "trois formes prennent la place de la forme modèle"
+  },
+  {
+   "cle": "one-with-the-land",
+   "sort": "Uni à la terre",
+   "jeu": "PF2",
+   "rang_forme_modele": 0,
+   "forme_modele": "Forme arcane",
+   "action": "remplacer la forme modèle",
+   "nom_de_la_forme": "Perce",
+   "famille": "Arcane",
+   "niveau": 9,
+   "cercles": [
+    {
+     "cercle": "CIBLE",
+     "valeur": 1,
+     "mots": [],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "soi"
+    },
+    {
+     "cercle": "DUREE",
+     "valeur": 1,
+     "mots": [
+      "MINUTES"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "1 minute"
+    },
+    {
+     "cercle": "CONDITION",
+     "valeur": 1,
+     "mots": [
+      "PAROLE"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "« parole »"
+    },
+    {
+     "cercle": "IMPACT",
+     "valeur": "plein",
+     "mots": [
+      "FUSION",
+      "ABRI"
+     ],
+     "satellites": [
+      {
+       "position": "NS",
+       "valeur": null,
+       "texte": "CIBLE TERRAIN",
+       "options": {
+        "crit": "CIBLE"
+       }
+      }
+     ],
+     "etat": "inchangé",
+     "lecture_d_origine": "plein, fusion · abri (fondu dans le sol ou un grand arbre, abrité) ; satellite Cible « terrain »"
+    },
+    {
+     "cercle": "IMPACT",
+     "valeur": "plein",
+     "mots": [
+      "VIBRATION"
+     ],
+     "satellites": [
+      {
+       "position": "NS",
+       "valeur": 60,
+       "texte": "AMPLEUR METRES",
+       "options": {
+        "crit": "AMPLEUR"
+       }
+      }
+     ],
+     "etat": "inchangé",
+     "lecture_d_origine": "plein, vibration (je sens tout ce qui bouge alentour) ; satellite Ampleur 60 « mètres »"
+    },
+    {
+     "cercle": "IMPACT",
+     "valeur": 32,
+     "mots": [
+      "PERCE"
+     ],
+     "satellites": [
+      {
+       "position": "SYM",
+       "valeur": 18,
+       "texte": "AMPLEUR METRES",
+       "options": {
+        "crit": "AMPLEUR"
+       }
+      },
+      {
+       "position": "SYM",
+       "valeur": null,
+       "texte": "CIBLE TERRAIN",
+       "options": {
+        "crit": "CIBLE"
+       }
+      }
+     ],
+     "etat": "modifié",
+     "lecture_d_origine": "intensité 32 (le terrain frappe pour moi, 5d12 en moyenne) ; satellite Ampleur 18 « mètres » ; satellite Cible « terrain »"
+    },
+    {
+     "cercle": "INTERACTION",
+     "valeur": 10,
+     "mots": [],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "10 : sort de niveau 9"
+    }
+   ],
+   "verbe": "Fusionner",
+   "note": "trois formes prennent la place de la forme modèle"
+  },
+  {
+   "cle": "one-with-the-land",
+   "sort": "Uni à la terre",
+   "jeu": "PF2",
+   "rang_forme_modele": 0,
+   "forme_modele": "Forme arcane",
+   "action": "remplacer la forme modèle",
+   "nom_de_la_forme": "Tranchant",
+   "famille": "Arcane",
+   "niveau": 9,
+   "cercles": [
+    {
+     "cercle": "CIBLE",
+     "valeur": 1,
+     "mots": [],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "soi"
+    },
+    {
+     "cercle": "DUREE",
+     "valeur": 1,
+     "mots": [
+      "MINUTES"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "1 minute"
+    },
+    {
+     "cercle": "CONDITION",
+     "valeur": 1,
+     "mots": [
+      "PAROLE"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "« parole »"
+    },
+    {
+     "cercle": "IMPACT",
+     "valeur": "plein",
+     "mots": [
+      "FUSION",
+      "ABRI"
+     ],
+     "satellites": [
+      {
+       "position": "NS",
+       "valeur": null,
+       "texte": "CIBLE TERRAIN",
+       "options": {
+        "crit": "CIBLE"
+       }
+      }
+     ],
+     "etat": "inchangé",
+     "lecture_d_origine": "plein, fusion · abri (fondu dans le sol ou un grand arbre, abrité) ; satellite Cible « terrain »"
+    },
+    {
+     "cercle": "IMPACT",
+     "valeur": "plein",
+     "mots": [
+      "VIBRATION"
+     ],
+     "satellites": [
+      {
+       "position": "NS",
+       "valeur": 60,
+       "texte": "AMPLEUR METRES",
+       "options": {
+        "crit": "AMPLEUR"
+       }
+      }
+     ],
+     "etat": "inchangé",
+     "lecture_d_origine": "plein, vibration (je sens tout ce qui bouge alentour) ; satellite Ampleur 60 « mètres »"
+    },
+    {
+     "cercle": "IMPACT",
+     "valeur": 32,
+     "mots": [
+      "TRANCHANT"
+     ],
+     "satellites": [
+      {
+       "position": "SYM",
+       "valeur": 18,
+       "texte": "AMPLEUR METRES",
+       "options": {
+        "crit": "AMPLEUR"
+       }
+      },
+      {
+       "position": "SYM",
+       "valeur": null,
+       "texte": "CIBLE TERRAIN",
+       "options": {
+        "crit": "CIBLE"
+       }
+      }
+     ],
+     "etat": "modifié",
+     "lecture_d_origine": "intensité 32 (le terrain frappe pour moi, 5d12 en moyenne) ; satellite Ampleur 18 « mètres » ; satellite Cible « terrain »"
+    },
+    {
+     "cercle": "INTERACTION",
+     "valeur": 10,
+     "mots": [],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "10 : sort de niveau 9"
+    }
+   ],
+   "verbe": "Fusionner",
+   "note": "trois formes prennent la place de la forme modèle"
+  },
+  {
+   "cle": "establish-ward",
+   "sort": "Domaine établi",
+   "jeu": "PF2",
+   "rang_forme_modele": 0,
+   "forme_modele": "Forme arcane",
+   "action": "remplacer la forme modèle",
+   "nom_de_la_forme": "Choc",
+   "famille": "Arcane",
+   "niveau": 5,
+   "cercles": [
+    {
+     "cercle": "CIBLE",
+     "valeur": "plein",
+     "mots": [],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "une zone"
+    },
+    {
+     "cercle": "FORME",
+     "valeur": "plein",
+     "mots": [],
+     "satellites": [
+      {
+       "position": "SYM",
+       "valeur": 1,
+       "texte": "",
+       "options": {}
+      }
+     ],
+     "etat": "inchangé",
+     "lecture_d_origine": "sphère"
+    },
+    {
+     "cercle": "AMPLEUR",
+     "valeur": 3087,
+     "mots": [
+      "VOLUME",
+      "METRES",
+      "CUBES"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "3203 m³ ; taille d'origine : sphère de 9 m de rayon ; arrondi de 3203 à 3087 pour s'écrire en 4 formes"
+    },
+    {
+     "cercle": "DUREE",
+     "valeur": 1,
+     "mots": [
+      "MINUTES"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "1 minute"
+    },
+    {
+     "cercle": "CONDITION",
+     "valeur": 1,
+     "mots": [
+      "PAROLE"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "« parole »"
+    },
+    {
+     "cercle": "IMPACT",
+     "valeur": "plein",
+     "mots": [
+      "LIEN"
+     ],
+     "satellites": [
+      {
+       "position": "NS",
+       "valeur": null,
+       "texte": "CIBLE TERRAIN",
+       "options": {
+        "crit": "CIBLE"
+       }
+      }
+     ],
+     "etat": "inchangé",
+     "lecture_d_origine": "plein, lien (je me lie au lieu) ; satellite Cible « terrain »"
+    },
+    {
+     "cercle": "IMPACT",
+     "valeur": 9,
+     "mots": [
+      "CHOC"
+     ],
+     "satellites": [
+      {
+       "position": "SYM",
+       "valeur": null,
+       "texte": "CIBLE TERRAIN",
+       "options": {
+        "crit": "CIBLE"
+       }
+      },
+      {
+       "position": "SYM",
+       "valeur": 1,
+       "texte": "DUREE CHAQUE INSTANTS",
+       "options": {
+        "crit": "DUREE"
+       }
+      }
+     ],
+     "etat": "modifié",
+     "lecture_d_origine": "intensité 9 (le terrain frappe pour moi de 2d8 en moyenne, un coup de plus par instant) ; satellite Cible « terrain » ; satellite Durée 1 « chaque · instants »"
+    },
+    {
+     "cercle": "IMPACT",
+     "valeur": 3,
+     "mots": [
+      "LENTEUR"
+     ],
+     "satellites": [
+      {
+       "position": "NS",
+       "valeur": "plein",
+       "texte": "CONDITION PASSAGE",
+       "options": {
+        "crit": "CONDITION"
+       }
+      }
+     ],
+     "etat": "inchangé",
+     "lecture_d_origine": "intensité 3, lenteur (hors du domaine, je suis ralenti de 1) ; satellite Condition plein « passage »"
+    },
+    {
+     "cercle": "INTERACTION",
+     "valeur": 6,
+     "mots": [],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "6 : sort de niveau 5"
+    }
+   ],
+   "verbe": "Lier",
+   "note": "trois formes prennent la place de la forme modèle"
+  },
+  {
+   "cle": "establish-ward",
+   "sort": "Domaine établi",
+   "jeu": "PF2",
+   "rang_forme_modele": 0,
+   "forme_modele": "Forme arcane",
+   "action": "remplacer la forme modèle",
+   "nom_de_la_forme": "Perce",
+   "famille": "Arcane",
+   "niveau": 5,
+   "cercles": [
+    {
+     "cercle": "CIBLE",
+     "valeur": "plein",
+     "mots": [],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "une zone"
+    },
+    {
+     "cercle": "FORME",
+     "valeur": "plein",
+     "mots": [],
+     "satellites": [
+      {
+       "position": "SYM",
+       "valeur": 1,
+       "texte": "",
+       "options": {}
+      }
+     ],
+     "etat": "inchangé",
+     "lecture_d_origine": "sphère"
+    },
+    {
+     "cercle": "AMPLEUR",
+     "valeur": 3087,
+     "mots": [
+      "VOLUME",
+      "METRES",
+      "CUBES"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "3203 m³ ; taille d'origine : sphère de 9 m de rayon ; arrondi de 3203 à 3087 pour s'écrire en 4 formes"
+    },
+    {
+     "cercle": "DUREE",
+     "valeur": 1,
+     "mots": [
+      "MINUTES"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "1 minute"
+    },
+    {
+     "cercle": "CONDITION",
+     "valeur": 1,
+     "mots": [
+      "PAROLE"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "« parole »"
+    },
+    {
+     "cercle": "IMPACT",
+     "valeur": "plein",
+     "mots": [
+      "LIEN"
+     ],
+     "satellites": [
+      {
+       "position": "NS",
+       "valeur": null,
+       "texte": "CIBLE TERRAIN",
+       "options": {
+        "crit": "CIBLE"
+       }
+      }
+     ],
+     "etat": "inchangé",
+     "lecture_d_origine": "plein, lien (je me lie au lieu) ; satellite Cible « terrain »"
+    },
+    {
+     "cercle": "IMPACT",
+     "valeur": 9,
+     "mots": [
+      "PERCE"
+     ],
+     "satellites": [
+      {
+       "position": "SYM",
+       "valeur": null,
+       "texte": "CIBLE TERRAIN",
+       "options": {
+        "crit": "CIBLE"
+       }
+      },
+      {
+       "position": "SYM",
+       "valeur": 1,
+       "texte": "DUREE CHAQUE INSTANTS",
+       "options": {
+        "crit": "DUREE"
+       }
+      }
+     ],
+     "etat": "modifié",
+     "lecture_d_origine": "intensité 9 (le terrain frappe pour moi de 2d8 en moyenne, un coup de plus par instant) ; satellite Cible « terrain » ; satellite Durée 1 « chaque · instants »"
+    },
+    {
+     "cercle": "IMPACT",
+     "valeur": 3,
+     "mots": [
+      "LENTEUR"
+     ],
+     "satellites": [
+      {
+       "position": "NS",
+       "valeur": "plein",
+       "texte": "CONDITION PASSAGE",
+       "options": {
+        "crit": "CONDITION"
+       }
+      }
+     ],
+     "etat": "inchangé",
+     "lecture_d_origine": "intensité 3, lenteur (hors du domaine, je suis ralenti de 1) ; satellite Condition plein « passage »"
+    },
+    {
+     "cercle": "INTERACTION",
+     "valeur": 6,
+     "mots": [],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "6 : sort de niveau 5"
+    }
+   ],
+   "verbe": "Lier",
+   "note": "trois formes prennent la place de la forme modèle"
+  },
+  {
+   "cle": "establish-ward",
+   "sort": "Domaine établi",
+   "jeu": "PF2",
+   "rang_forme_modele": 0,
+   "forme_modele": "Forme arcane",
+   "action": "remplacer la forme modèle",
+   "nom_de_la_forme": "Tranchant",
+   "famille": "Arcane",
+   "niveau": 5,
+   "cercles": [
+    {
+     "cercle": "CIBLE",
+     "valeur": "plein",
+     "mots": [],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "une zone"
+    },
+    {
+     "cercle": "FORME",
+     "valeur": "plein",
+     "mots": [],
+     "satellites": [
+      {
+       "position": "SYM",
+       "valeur": 1,
+       "texte": "",
+       "options": {}
+      }
+     ],
+     "etat": "inchangé",
+     "lecture_d_origine": "sphère"
+    },
+    {
+     "cercle": "AMPLEUR",
+     "valeur": 3087,
+     "mots": [
+      "VOLUME",
+      "METRES",
+      "CUBES"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "3203 m³ ; taille d'origine : sphère de 9 m de rayon ; arrondi de 3203 à 3087 pour s'écrire en 4 formes"
+    },
+    {
+     "cercle": "DUREE",
+     "valeur": 1,
+     "mots": [
+      "MINUTES"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "1 minute"
+    },
+    {
+     "cercle": "CONDITION",
+     "valeur": 1,
+     "mots": [
+      "PAROLE"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "« parole »"
+    },
+    {
+     "cercle": "IMPACT",
+     "valeur": "plein",
+     "mots": [
+      "LIEN"
+     ],
+     "satellites": [
+      {
+       "position": "NS",
+       "valeur": null,
+       "texte": "CIBLE TERRAIN",
+       "options": {
+        "crit": "CIBLE"
+       }
+      }
+     ],
+     "etat": "inchangé",
+     "lecture_d_origine": "plein, lien (je me lie au lieu) ; satellite Cible « terrain »"
+    },
+    {
+     "cercle": "IMPACT",
+     "valeur": 9,
+     "mots": [
+      "TRANCHANT"
+     ],
+     "satellites": [
+      {
+       "position": "SYM",
+       "valeur": null,
+       "texte": "CIBLE TERRAIN",
+       "options": {
+        "crit": "CIBLE"
+       }
+      },
+      {
+       "position": "SYM",
+       "valeur": 1,
+       "texte": "DUREE CHAQUE INSTANTS",
+       "options": {
+        "crit": "DUREE"
+       }
+      }
+     ],
+     "etat": "modifié",
+     "lecture_d_origine": "intensité 9 (le terrain frappe pour moi de 2d8 en moyenne, un coup de plus par instant) ; satellite Cible « terrain » ; satellite Durée 1 « chaque · instants »"
+    },
+    {
+     "cercle": "IMPACT",
+     "valeur": 3,
+     "mots": [
+      "LENTEUR"
+     ],
+     "satellites": [
+      {
+       "position": "NS",
+       "valeur": "plein",
+       "texte": "CONDITION PASSAGE",
+       "options": {
+        "crit": "CONDITION"
+       }
+      }
+     ],
+     "etat": "inchangé",
+     "lecture_d_origine": "intensité 3, lenteur (hors du domaine, je suis ralenti de 1) ; satellite Condition plein « passage »"
+    },
+    {
+     "cercle": "INTERACTION",
+     "valeur": 6,
+     "mots": [],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "6 : sort de niveau 5"
+    }
+   ],
+   "verbe": "Lier",
+   "note": "trois formes prennent la place de la forme modèle"
+  },
+  {
+   "cle": "cinder-swarm",
+   "sort": "Nuée de braises",
+   "jeu": "PF2",
+   "rang_forme_modele": 0,
+   "forme_modele": "Forme hybride",
+   "action": "ajouter",
+   "nom_de_la_forme": "Fourmis de feu",
+   "famille": "Magie hybride",
+   "niveau": 4,
+   "cercles": [
+    {
+     "cercle": "CIBLE",
+     "valeur": 3,
+     "mots": [],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "un ennemi"
+    },
+    {
+     "cercle": "DUREE",
+     "valeur": 1,
+     "mots": [
+      "MINUTES"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "1 minute"
+    },
+    {
+     "cercle": "LOCALISATION",
+     "valeur": 18,
+     "mots": [
+      "METRES"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "18 m"
+    },
+    {
+     "cercle": "CONDITION",
+     "valeur": 1,
+     "mots": [
+      "PAROLE"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "« parole »"
+    },
+    {
+     "cercle": "IMPACT",
+     "valeur": 11,
+     "mots": [
+      "PERCE"
+     ],
+     "satellites": [
+      {
+       "position": "NS",
+       "valeur": 1,
+       "texte": "DUREE CHAQUE INSTANTS",
+       "options": {
+        "crit": "DUREE"
+       }
+      }
+     ],
+     "etat": "ajouté",
+     "parenthese": "3d6 en moyenne à elle et à ses voisins, à chaque instant : des fourmis de feu qui mordent"
+    },
+    {
+     "cercle": "IMPACT",
+     "valeur": 7,
+     "mots": [
+      "BRULURE"
+     ],
+     "satellites": [
+      {
+       "position": "NS",
+       "valeur": 1,
+       "texte": "DUREE CHAQUE INSTANTS",
+       "options": {
+        "crit": "DUREE"
+       }
+      }
+     ],
+     "etat": "ajouté",
+     "parenthese": "2d6 en moyenne de brûlure qui dure"
+    },
+    {
+     "cercle": "IMPACT",
+     "valeur": "plein",
+     "mots": [
+      "DEPLACEMENT"
+     ],
+     "satellites": [
+      {
+       "position": "NS",
+       "valeur": 2,
+       "texte": "LOCALISATION METRES",
+       "options": {
+        "crit": "LOCALISATION"
+       }
+      }
+     ],
+     "etat": "ajouté",
+     "parenthese": "qui cède fuit de 1,5 m, là où je le veux"
+    },
+    {
+     "cercle": "INTERACTION",
+     "valeur": 5,
+     "mots": [],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "5 : sort de niveau 4"
+    },
+    {
+     "cercle": "COSMETIQUE",
+     "valeur": 1,
+     "mots": [
+      "INSECTE",
+      "BRAISE"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "insecte · braise, 1 sens"
+    }
+   ],
+   "combinaison": "Feu",
+   "ecole": "Évocation",
+   "forme_modele_renommee": "Lucioles",
+   "impacts_poles": "0:ténébreux | 1:ténébreux | 2:ténébreux",
+   "note": "la forme modèle reste ; elle prend le nom « Lucioles »"
+  },
+  {
+   "cle": "element-embodied",
+   "sort": "Élément incarné",
+   "jeu": "PF2",
+   "rang_forme_modele": 1,
+   "forme_modele": "Air",
+   "action": "ajouter",
+   "nom_de_la_forme": "Énergie pure",
+   "famille": "Magie hybride",
+   "niveau": 10,
+   "cercles": [
+    {
+     "cercle": "CIBLE",
+     "valeur": 1,
+     "mots": [],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "soi"
+    },
+    {
+     "cercle": "DUREE",
+     "valeur": 1,
+     "mots": [
+      "MINUTES"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "1 minute"
+    },
+    {
+     "cercle": "CONDITION",
+     "valeur": 1,
+     "mots": [
+      "PAROLE"
+     ],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "« parole »"
+    },
+    {
+     "cercle": "IMPACT",
+     "valeur": "plein",
+     "mots": [
+      "FORME",
+      "ELEMENTAIRE",
+      "COLOSSE"
+     ],
+     "satellites": [],
+     "etat": "modifié",
+     "lecture_d_origine": "plein, forme · élémentaire · colosse (un élémentaire colossal de vent) ; satellite symbole de l'air",
+     "parenthese": "un élémentaire colossal d'énergie pure"
+    },
+    {
+     "cercle": "IMPACT",
+     "valeur": 30,
+     "mots": [
+      "VIE"
+     ],
+     "satellites": [
+      {
+       "position": "SYM",
+       "valeur": "plein",
+       "texte": "DUREE",
+       "options": {
+        "crit": "DUREE"
+       }
+      },
+      {
+       "position": "SYM",
+       "valeur": 1,
+       "texte": "QUANTITE",
+       "options": {
+        "crit": "QUANTITE"
+       }
+      }
+     ],
+     "etat": "inchangé",
+     "lecture_d_origine": "intensité 30, vie ; satellite Durée plein : d'emprunt, elle ne dure que ce que dure le sort ; satellite Quantité 1 : une seule à la fois, elle ne s'ajoute pas à une autre"
+    },
+    {
+     "cercle": "IMPACT",
+     "valeur": "plein",
+     "mots": [
+      "VOL"
+     ],
+     "satellites": [
+      {
+       "position": "SYM",
+       "valeur": 24,
+       "texte": "LOCALISATION METRES",
+       "options": {
+        "crit": "LOCALISATION"
+       }
+      },
+      {
+       "position": "SYM",
+       "valeur": 1,
+       "texte": "DUREE CHAQUE INSTANTS",
+       "options": {
+        "crit": "DUREE"
+       }
+      }
+     ],
+     "etat": "inchangé",
+     "lecture_d_origine": "plein, vol (elle vole) ; satellite Localisation 24 « mètres » ; satellite Durée 1 « chaque · instants »"
+    },
+    {
+     "cercle": "IMPACT",
+     "valeur": "plein",
+     "mots": [
+      "CREUSER"
+     ],
+     "satellites": [
+      {
+       "position": "SYM",
+       "valeur": 6,
+       "texte": "LOCALISATION METRES",
+       "options": {
+        "crit": "LOCALISATION"
+       }
+      },
+      {
+       "position": "SYM",
+       "valeur": 1,
+       "texte": "DUREE CHAQUE INSTANTS",
+       "options": {
+        "crit": "DUREE"
+       }
+      }
+     ],
+     "etat": "ajouté",
+     "parenthese": "plein, creuser (elle fouit) ; satellite Localisation 6 « mètres » ; satellite Durée 1 « chaque · instants »"
+    },
+    {
+     "cercle": "IMPACT",
+     "valeur": "plein",
+     "mots": [
+      "NAGE"
+     ],
+     "satellites": [
+      {
+       "position": "SYM",
+       "valeur": 24,
+       "texte": "LOCALISATION METRES",
+       "options": {
+        "crit": "LOCALISATION"
+       }
+      },
+      {
+       "position": "SYM",
+       "valeur": 1,
+       "texte": "DUREE CHAQUE INSTANTS",
+       "options": {
+        "crit": "DUREE"
+       }
+      }
+     ],
+     "etat": "ajouté",
+     "parenthese": "plein, nage (elle nage) ; satellite Localisation 24 « mètres » ; satellite Durée 1 « chaque · instants »"
+    },
+    {
+     "cercle": "IMPACT",
+     "valeur": 10,
+     "mots": [],
+     "satellites": [
+      {
+       "position": "NS",
+       "valeur": "",
+       "texte": "CIBLE RESISTANCE",
+       "options": {
+        "crit": "CIBLE"
+       }
+      },
+      {
+       "position": "NS",
+       "valeur": {
+        "sym": "feu"
+       },
+       "texte": "",
+       "options": {}
+      },
+      {
+       "position": "NS",
+       "valeur": {
+        "sym": "air"
+       },
+       "texte": "",
+       "options": {}
+      },
+      {
+       "position": "NS",
+       "valeur": {
+        "sym": "terre"
+       },
+       "texte": "",
+       "options": {}
+      },
+      {
+       "position": "NS",
+       "valeur": {
+        "sym": "eau"
+       },
+       "texte": "",
+       "options": {}
+      }
+     ],
+     "etat": "ajouté",
+     "parenthese": "10 retranché à toute blessure du feu, de l'air, de la terre ou de l'eau"
+    },
+    {
+     "cercle": "INTERACTION",
+     "valeur": 11,
+     "mots": [],
+     "satellites": [],
+     "etat": "inchangé",
+     "lecture_d_origine": "11 : sort de niveau 10"
+    }
+   ],
+   "combinaison": "Énergie pure",
+   "ecole": "Transmutation",
+   "impacts_poles": "tous lumineux",
+   "note": "pas de forme d'Arcane : cinquième forme hybride du sort. Écrire le satellite Cible « résistance » comme dans la forme Eau."
+  }
+ ]
+}

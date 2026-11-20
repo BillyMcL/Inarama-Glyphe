@@ -35,7 +35,7 @@ P4 = os.path.join(D, "..", "donnees", "phase4")
 CIBLE = json.load(open(os.path.join(P4, "A_etat_cible_final.json"), encoding="utf-8"))["formes"]
 PAR_CLE = {(x["cle"], x["rang"]): x for x in CIBLE}
 
-ETAPE = int(os.environ.get("PHASE4_ETAPE", "4"))     # étapes de la phase 4a appliquées (2 : cercles ; 3 : phrases ; 4 : verbes ; 5 : éléments ; 6 : niveaux et retraits)
+ETAPE = int(os.environ.get("PHASE4_ETAPE", "5"))     # étapes de la phase 4a appliquées (2 : cercles ; 3 : phrases ; 4 : verbes ; 5 : éléments ; 6 : niveaux et retraits)
 _vues = {}        # (cle, rang) → (forme construite, cercles actuels) pour chaque forme de l'état cible retrouvée
 _faites = {}      # (cle, rang) → nombre de cercles changés (modifiés + ajoutés + retirés)
 

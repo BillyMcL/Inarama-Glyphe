@@ -857,6 +857,42 @@ def _resats(sats):
     n = len(sats)
     angles = ["NS"] if n == 1 else ["SYM", "SYM"] if n == 2 else [(90 + k * 360 / n) % 360 for k in range(n)]
     return [(a, *st[1:]) for a, st in zip(angles, sats)]
+# Symboles à côté d'autres satellites (règle validée, branche « placement ») : seulement sur un cercle qui porte au moins un
+# symbole (élément ou face) ET au moins un autre satellite. Les autres satellites prennent l'axe nord-sud (un : nord ;
+# deux : nord et sud) ; les symboles se placent symétriquement de part et d'autre, dans leur ordre, en tournant dans le
+# sens du moteur (depuis le nord, vers l'ouest, le sud, l'est). Exception : 1 symbole + 2 satellites, le symbole au nord.
+# Angles : 90 = nord, 180 = ouest, 270 = sud, 0 = est ; 45 = nord-est, 135 = nord-ouest, 225 = sud-ouest, 315 = sud-est.
+PLACEMENT_SYMBOLES = {          # (symboles, autres) : (angles des autres, angles des symboles)
+    (1, 1): ([90], [270]),
+    (4, 1): ([90], [135, 225, 315, 45]),
+    (4, 2): ([90, 270], [135, 225, 315, 45]),
+    (5, 1): ([90], [135, 225, 315, 45]),    # + le symbole de face au sud, en face du satellite (voir placer_symboles)
+    (2, 1): ([90], [225, 315]),
+    (1, 2): ([225, 315], [90]),
+}
+FACE_AU_SUD = {(5, 1)}          # configurations où le symbole de face va au sud, quelle que soit sa place dans l'ordre de pose
+SYMBOLES_NON_TRAITES = []       # cercles à 5 symboles sans exactement un symbole de face : laissés au placement d'origine
+def est_symbole(v): return isinstance(v, (tuple, list)) and len(v) == 2 and v[0] == "sym"
+def est_face(v): return est_symbole(v) and v[1] in ("lumineux", "tenebreux")
+def placer_symboles(sats):
+    """angles des satellites d'un cercle selon la règle des symboles ; None si le cercle n'est pas concerné
+    (que des symboles, ou que des satellites ordinaires) ou si sa configuration n'a pas de règle"""
+    if not sats: return None
+    sy = [i for i, s in enumerate(sats) if est_symbole(s[1])]
+    au = [i for i, s in enumerate(sats) if not est_symbole(s[1])]
+    if not sy or not au: return None
+    r = PLACEMENT_SYMBOLES.get((len(sy), len(au)))
+    if r is None: return None
+    ang = {}
+    if (len(sy), len(au)) in FACE_AU_SUD:
+        faces = [i for i in sy if est_face(sats[i][1])]
+        if len(faces) != 1:
+            SYMBOLES_NON_TRAITES.append(tuple(s[1] for s in sats)); return None
+        ang[faces[0]] = 270
+        sy = [i for i in sy if i != faces[0]]
+    for i, a in zip(au, r[0]): ang[i] = a
+    for i, a in zip(sy, r[1]): ang[i] = a
+    return [(ang[i], *s[1:]) for i, s in enumerate(sats)]
 def _sans_mot(reading, w):
     """retire un mot de la tête d'une lecture (« plein, pierre · mur (…) » → « plein, pierre (…) »)"""
     cut = min([i for i in (reading.find(" ("), reading.find(" ;")) if i >= 0] or [len(reading)])

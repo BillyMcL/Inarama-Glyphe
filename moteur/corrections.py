@@ -29,6 +29,7 @@ des formes hybrides et des arts rares est recalculée par la règle du moteur
 """
 import os, json
 import spells as SP
+import phase4b as P4B
 
 D = os.path.dirname(os.path.abspath(__file__))
 P4 = os.path.join(D, "..", "donnees", "phase4")
@@ -70,6 +71,8 @@ def satellite_moteur(s):
 def repartition(f, crits):
     """la répartition des cercles entre les deux pôles, par la règle du moteur"""
     import convert as C
+    if f.get("regle_4b"):                     # phase 4b : règle des pôles (Impact par cercle)
+        return P4B.repartition(f, crits)
     if f["fam"] == "H":
         return C.split_hybrid(crits, "H" if "Hodolin" in f["verb"] else "G", f["level"])
     if f["fam"] == "R":
@@ -519,6 +522,8 @@ def appliquer(cle, formes):
             g2 = _niveau_lecture(g, [l for l in ls if l["action"] != "retirer la forme"], k); change |= g2 is not g; g = g2
             if any(l["action"] == "retirer la forme" for l in ls):
                 retirer = True; FAITS["retrait"].append(k)
+        if not retirer:                       # phase 4b (couche voisine phase4b.py) : formes existantes de B3
+            g2, retirer = P4B.existante(g, k); change |= g2 is not g; g = g2
         if retirer:
             continue
         if change:

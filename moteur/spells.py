@@ -221,7 +221,7 @@ def hyb(f=0, a=0, t=0, e=0, label=None):
     if "eau" in units: slots[270] = "eau"; units.remove("eau")
     for s_ in (180, 0, 90, 270):
         if s_ not in slots and units: slots[s_] = units.pop(0)
-    return ("hyb", tuple(slots[s_] for s_ in (90, 180, 0, 270)), label)
+    return ("hyb", tuple(slots.get(s_) for s_ in (90, 180, 0, 270)), label)      # Noyau vide (phase 4b) : emplacements vides (None)
 
 SAT_UP, SAT_DOWN = 270, 90      # satellite unique de la Forme : à l'opposé des pointes
 L2 = ("LOCALISATION", 2, ["METRES"], "2 m : le contact")

@@ -35,7 +35,7 @@ P4 = os.path.join(D, "..", "donnees", "phase4")
 CIBLE = json.load(open(os.path.join(P4, "A_etat_cible_final.json"), encoding="utf-8"))["formes"]
 PAR_CLE = {(x["cle"], x["rang"]): x for x in CIBLE}
 
-ETAPE = int(os.environ.get("PHASE4_ETAPE", "3"))     # étapes de la phase 4a appliquées (2 : cercles ; 3 : phrases)
+ETAPE = int(os.environ.get("PHASE4_ETAPE", "4"))     # étapes de la phase 4a appliquées (2 : cercles ; 3 : phrases ; 4 : verbes ; 5 : éléments ; 6 : niveaux et retraits)
 _vues = {}        # (cle, rang) → (forme construite, cercles actuels) pour chaque forme de l'état cible retrouvée
 _faites = {}      # (cle, rang) → nombre de cercles changés (modifiés + ajoutés + retirés)
 
@@ -409,8 +409,83 @@ def _redessine(f, rings):
     return dict(f, rings=rings, split=split, svg=svg, rows=rows, bsplit=SP.PART[0])
 
 
+# ---------- étapes 4, 5, 6 : verbes, éléments des formes hybrides, niveaux et formes en trop ----------
+import csv as _csv
+def _lire(nom):
+    p = os.path.join(P4, nom)
+    return list(_csv.DictReader(open(p, encoding="utf-8-sig"), delimiter=";")) if os.path.exists(p) else []
+VERBES = {(l["cle"], int(l["rang"])): l for l in _lire("A1_verbes.csv")}
+ELEMENTS = {(l["cle"], int(l["rang"])): l for l in _lire("A2a_hybride_changements_element.csv")}
+A4 = [l for l in _lire("A4_niveaux_formes.csv") if l["action"] in ("corriger le niveau", "corriger la lecture", "retirer la forme")]
+FAITS = {"verbe": [], "element": [], "niveau": [], "lecture": [], "retrait": []}      # (cle, rang) appliqués
+REFUS = {"verbe": [], "element": [], "niveau": [], "lecture": [], "retrait": []}      # (ligne, raison)
+
+
+def _a4(f, k):
+    """les lignes d'A4 qui visent cette forme : par « cle, rang » quand la ligne les donne, sinon par sort et forme"""
+    import re
+    out = []
+    for l in A4:
+        m = re.search(r"\(cle ([^,]+), rang (\d+)\)", l["forme"])
+        if (m and (m.group(1), int(m.group(2))) == k) or (not m and l["sort"] == f["fr"] and l["forme"] == f["label"]):
+            out.append(l)
+    return out
+
+
+def _verbe(g, l, k):
+    """étape 4 : le verbe du Noyau d'une forme arcane devient verbe_nouveau (contrôle : verbe_actuel)"""
+    import convert as C
+    if l["verbe_actuel"] != g["verb"] or g["fam"] != "A":
+        REFUS["verbe"].append((l, f"verbe actuel « {g['verb']} »")); return g
+    vk, vn = next(key for key, nom in C.VERBS.items() if nom == l["verbe_nouveau"])
+    FAITS["verbe"].append(k)
+    return dict(g, core=SP.verb(vk, vn), pol="down" if vn else "up",
+                verb=f"{C.VERBS[(vk, vn)]} · {C.VERB_GROUP[vk].lower()} {'−' if vn else '+'}")
+
+
+def _element(g, l, k):
+    """étape 5 : la combinaison du Noyau d'une forme hybride devient element_nouveau ; pôle donné : Hodolin (Noyau
+    lumineux) ou Galombar (Noyau ténébreux), comme le moteur les relie (split_hybrid) ; contrôles : noyau et élément actuels"""
+    import convert as C, combos as KB, re
+    m = re.match(r"(.+) · (Hodolin|Galombar) · (.+) \(", g["verb"])
+    if g["fam"] != "H" or l["noyau_actuel"] != g["verb"] or not m or m.group(3) != l["element_actuel"]:
+        REFUS["element"].append((l, f"noyau actuel « {g['verb']} »")); return g
+    if l["element_nouveau"] not in KB.COMBOS:
+        REFUS["element"].append((l, f"combinaison inconnue « {l['element_nouveau']} »")); return g
+    ecole, hemi = m.group(1), m.group(2)
+    if l["pole"]: hemi = {"lumineux": "Hodolin", "ténébreux": "Galombar"}[l["pole"]]
+    comb = l["element_nouveau"]; f_, a_, t_, e_ = KB.COMBOS[comb]
+    notes = [n.replace(f"combinaison {l['element_actuel']}", f"combinaison {comb}", 1) if i == 0 else n for i, n in enumerate(g["notes"])]
+    FAITS["element"].append(k)
+    return dict(g, core=SP.hyb(f=f_, a=a_, t=t_, e=e_, label=C.norm(ecole)), verb=f"{ecole} · {hemi} · {comb} ({KB.code(comb)})", notes=notes)
+
+
+def _niveau_lecture(g, ls, k):
+    """étape 6 : le niveau corrigé (et le cercle Interaction, qui vaut niveau + 1) ; une lecture corrigée"""
+    import re
+    for l in ls:
+        if l["action"] == "corriger le niveau":
+            a, b = [int(x) for x in re.findall(r"\d+", l["detail"])[:2]]
+            if g["level"] != a:
+                REFUS["niveau"].append((l, f"niveau actuel {g['level']}")); continue
+            rings = []
+            for r in g["rings"]:
+                if r[0] == "INTERACTION" and r[1] == a + 1:
+                    rd = re.sub(rf"^{a + 1} : sort de niveau {a}\b", f"{b + 1} : sort de niveau {b}", r[3])
+                    r = (r[0], b + 1, r[2], rd, *r[4:])
+                rings.append(r)
+            g = dict(g, level=b, rings=rings); FAITS["niveau"].append(k)
+        elif l["action"] == "corriger la lecture":
+            av, ap = re.findall(r"« ([^»]+) »", l["detail"])[:2]
+            if not any(av in r[3] for r in g["rings"]):
+                REFUS["lecture"].append((l, "texte « " + av + " » absent")); continue
+            g = dict(g, rings=[(r[0], r[1], r[2], r[3].replace(av, ap), *r[4:]) for r in g["rings"]]); FAITS["lecture"].append(k)
+    return g
+
+
 def appliquer(cle, formes):
-    """reçoit les formes construites d'un sort et les rend corrigées"""
+    """reçoit les formes construites d'un sort et les rend corrigées ; les formes sont retrouvées par leur rang d'origine,
+    et les formes retirées le sont en dernier"""
     rang, out = 0, []
     for f in formes:
         if est_elden_ring(f):
@@ -418,24 +493,34 @@ def appliquer(cle, formes):
             continue
         k = (cle, rang)
         rang += 1
+        g, change = f, False
         x = PAR_CLE.get(k)
-        if x is None:
-            out.append(f)
+        if x is not None:
+            _vues[k] = (f, cercles_actuels(f))
+            if _norm(x["origine"]) == cercles_actuels(f):          # sinon : ne pas appliquer (signalé par bilan())
+                rings, n, _ = _cercles(f, x)
+                rings = [(r[0], r[1], r[2], r[3], _grands(r[4], k)) if c["etat"] != "inchangé" and len(r) > 4 and r[4] else r
+                         for r, c in zip(rings, x["cercles"])]          # grands nombres : cercles modifiés et ajoutés seulement
+                with _Accentue():
+                    if ETAPE >= 3:
+                        rings = _noyau(f, rings, x, k)
+                        rings = _phrases(rings, x, k, f)
+                    rings = _supports(cle, rings, k)
+                _faites[k] = n
+                g, change = dict(f, rings=rings), True
+        if ETAPE >= 4 and k in VERBES:
+            g2 = _verbe(g, VERBES[k], k); change |= g2 is not g; g = g2
+        if ETAPE >= 5 and k in ELEMENTS:
+            g2 = _element(g, ELEMENTS[k], k); change |= g2 is not g; g = g2
+        retirer = False
+        if ETAPE >= 6:
+            ls = _a4(f, k)
+            g2 = _niveau_lecture(g, [l for l in ls if l["action"] != "retirer la forme"], k); change |= g2 is not g; g = g2
+            if any(l["action"] == "retirer la forme" for l in ls):
+                retirer = True; FAITS["retrait"].append(k)
+        if retirer:
             continue
-        _vues[k] = (f, cercles_actuels(f))
-        if _norm(x["origine"]) != cercles_actuels(f):
-            out.append(f)          # l'origine ne correspond pas : ne pas appliquer (signalé par bilan())
-            continue
-        rings, n, _ = _cercles(f, x)
-        rings = [(r[0], r[1], r[2], r[3], _grands(r[4], k)) if c["etat"] != "inchangé" and len(r) > 4 and r[4] else r
-                 for r, c in zip(rings, x["cercles"])]          # grands nombres : cercles modifiés et ajoutés seulement
-        with _Accentue():
-            if ETAPE >= 3:
-                rings = _noyau(f, rings, x, k)
-                rings = _phrases(rings, x, k, f)
-            rings = _supports(cle, rings, k)
-        _faites[k] = n
-        out.append(_redessine(f, rings))
+        out.append(_redessine(g, g["rings"]) if change else f)
     return out
 
 

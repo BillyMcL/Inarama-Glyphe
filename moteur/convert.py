@@ -866,11 +866,14 @@ PLACEMENT_SYMBOLES = {          # (symboles, autres) : (angles des autres, angle
     (1, 1): ([90], [270]),
     (4, 1): ([90], [135, 225, 315, 45]),
     (4, 2): ([90, 270], [135, 225, 315, 45]),
-    (5, 1): ([90], [135, 225, 270, 315, 45]),
+    (5, 1): ([90], [135, 225, 315, 45]),    # + le symbole de face au sud, en face du satellite (voir placer_symboles)
     (2, 1): ([90], [225, 315]),
     (1, 2): ([225, 315], [90]),
 }
+FACE_AU_SUD = {(5, 1)}          # configurations où le symbole de face va au sud, quelle que soit sa place dans l'ordre de pose
+SYMBOLES_NON_TRAITES = []       # cercles à 5 symboles sans exactement un symbole de face : laissés au placement d'origine
 def est_symbole(v): return isinstance(v, (tuple, list)) and len(v) == 2 and v[0] == "sym"
+def est_face(v): return est_symbole(v) and v[1] in ("lumineux", "tenebreux")
 def placer_symboles(sats):
     """angles des satellites d'un cercle selon la règle des symboles ; None si le cercle n'est pas concerné
     (que des symboles, ou que des satellites ordinaires) ou si sa configuration n'a pas de règle"""
@@ -881,6 +884,12 @@ def placer_symboles(sats):
     r = PLACEMENT_SYMBOLES.get((len(sy), len(au)))
     if r is None: return None
     ang = {}
+    if (len(sy), len(au)) in FACE_AU_SUD:
+        faces = [i for i in sy if est_face(sats[i][1])]
+        if len(faces) != 1:
+            SYMBOLES_NON_TRAITES.append(tuple(s[1] for s in sats)); return None
+        ang[faces[0]] = 270
+        sy = [i for i in sy if i != faces[0]]
     for i, a in zip(au, r[0]): ang[i] = a
     for i, a in zip(sy, r[1]): ang[i] = a
     return [(ang[i], *s[1:]) for i, s in enumerate(sats)]

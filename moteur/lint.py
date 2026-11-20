@@ -37,7 +37,8 @@ def lint(spells):
                 # (une part de la vie de la cible — « vie » avec un satellite « fractionné » — est une mesure, non un soin)
                 if r[1] != "plein" and "VIE" in r[2] and verbe in L.VERBES_NUISIBLES and not any("FRACTIONNE" in l for l in mots): err("règle 3", "« vie » chiffrée sous un verbe qui nuit")
                 if len(elems) > 4: err("règle 4", f"{len(elems)} symboles d'éléments sur un seul Impact")
-                if r[1] != "plein" and set(r[2]) & L.MESURES and not set(r[2]) & L.UNITES and not any("FRACTIONNE" in l for l in mots):
+                degre = bool(r[2]) and r[2][0] in L.DEGRES        # premier mot de degré : un degré, pas une mesure (phase 4a)
+                if r[1] != "plein" and set(r[2]) & L.MESURES and not set(r[2]) & L.UNITES and not any("FRACTIONNE" in l for l in mots) and not degre:
                     err("règle 7", "mesure sans unité : " + " · ".join(w.lower() for w in r[2]))
                 for v, l in ss:
                     if not isinstance(v, tuple) and not l: err("satellite", "satellite d'Impact sans annotation")

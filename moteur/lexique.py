@@ -25,12 +25,18 @@ levre œil jambe barbe articulation poing cheveux croc langue vie age"""
 FACULTE = """garde resistance force coup frappe aptitude endurance lucidite prestance adresse raison volonte"""
 LIEU = """ville village lieu plan surface terrain ethere"""
 TRAME = """sort magie"""
-QUALITE = """invisibilite nature petit hostile lumineux tenebreux mort vivant naturelle toutes secret invisible"""
+QUALITE = """invisibilite nature petit hostile lumineux tenebreux mort vivant naturelle toutes secret invisible
+plusieurs"""
 CIBLE = {c: set(v.upper().split()) for c, v in dict(ETRE=ETRE, OBJET=OBJET, PART=PART, FACULTE=FACULTE, LIEU=LIEU, TRAME=TRAME, QUALITE=QUALITE).items()}
 CIBLE_MOTS = set().union(*CIBLE.values())
 
 # Impact : notions mesurées (une valeur chiffrée exige une unité) et unités admises (règle 7)
 MESURES = set("VISION VOL SAUT PAS ELEVATION PORTEE VITESSE STATURE PORT LECTURE ALLONGE".split())
 UNITES = set("METRES KILOMETRES KILOGRAMMES LITRES FOIS MINUTES HEURES JOURS ANS CUBES".split())
+# mots de degré (phase 4a, A7) : un Impact chiffré dont le PREMIER mot en est un dit un degré, pas une mesure ;
+# il n'a pas besoin d'unité, et les mots qui suivent sont des manières (règle 7)
+import os as _os
+_A7 = _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "..", "donnees", "phase4", "A7_mots_de_degre.txt")
+DEGRES = set(open(_A7, encoding="utf-8-sig").read().split()) if _os.path.exists(_A7) else set()
 # verbes sous lesquels « vie » chiffrée serait lue comme un soin alors que le sort blesse (règle 3)
 VERBES_NUISIBLES = set("Détruire Corrompre Révéler Séparer Dissimuler Réduire Ancrer Lier Déstabiliser Repousser Attirer Bannir".split())

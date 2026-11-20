@@ -1,4 +1,4 @@
-sort;jeu;forme;action;detail;source
+﻿sort;jeu;forme;action;detail;source
 Contrat de magie;PF1;Contrat de magie;corriger le niveau;5 → 7;séries S1 (vérifié en ligne)
 Fracas de sort;PF1;Fracas de sort;corriger le niveau;4 → 6;séries S2 (vérifié en ligne)
 Fée enjôlée;PF1;Fée enjôlée;corriger le niveau;5 → 7;séries S2 (vérifié en ligne)
@@ -14,3 +14,5 @@ Raid astral;PF2;(nouvelles);créer en 4b;une forme par nature de blessure au cho
 Uni à la terre;PF2;(nouvelles);créer en 4b;une forme par nature de blessure au choix;2.3
 Domaine établi;PF2;(nouvelles);créer en 4b;une forme par choix;2.3
 Nuée de braises;PF2;(nouvelles);créer en 4b;une forme par choix;2.3
+Aspect astral;PF1;Aspect astral — lumineux (cle angelic-aspect-lesser, rang 2);corriger le niveau;2 → 5;second lot (texte lu en ligne le 20 novembre)
+Aspect astral;PF1;Aspect astral — ténébreux (cle angelic-aspect-lesser, rang 3);corriger le niveau;2 → 5;second lot (texte lu en ligne le 20 novembre)

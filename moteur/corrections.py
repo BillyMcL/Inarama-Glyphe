@@ -490,7 +490,7 @@ def appliquer(cle, formes):
     rang, out = 0, []
     for f in formes:
         if est_elden_ring(f):
-            out.append(f)
+            out.append(_symboles(f))          # règle de dessin : elle vaut aussi pour Elden Ring
             continue
         k = (cle, rang)
         rang += 1
@@ -521,8 +521,35 @@ def appliquer(cle, formes):
                 retirer = True; FAITS["retrait"].append(k)
         if retirer:
             continue
-        out.append(_redessine(g, g["rings"]) if change else f)
+        if change:
+            rings, touche = _placer(g["rings"])
+            PLACES.extend((g["idx"], g["label"], c) for c in touche)
+            out.append(_redessine(g, rings))
+        else:
+            out.append(_symboles(f))
     return out
+
+
+# ---------- placement des symboles à côté d'autres satellites (règle de dessin, après toutes les corrections) ----------
+PLACES = []         # (cle, libellé de la forme, critère du cercle) des cercles replacés
+def _placer(rings):
+    import convert as C
+    out, touche = [], []
+    for r in rings:
+        s = r[4] if len(r) > 4 and r[4] else None
+        p = C.placer_symboles(s) if s else None
+        if p is not None and p != list(s):
+            out.append((*r[:4], p, *r[5:])); touche.append(r[0])
+        else:
+            out.append(r)
+    return out, touche
+def _symboles(f):
+    """une forme que rien d'autre ne change : seuls les angles bougent ; la répartition des pôles est gardée"""
+    rings, touche = _placer(f["rings"])
+    if not touche: return f
+    PLACES.extend((f["idx"], f["label"], c) for c in touche)
+    svg, rows = SP.build(f["core"], f["pol"], rings, f["r0"], f["split"], officiants=f["officiants"])
+    return dict(f, rings=rings, svg=svg, rows=rows, bsplit=SP.PART[0])
 
 
 def bilan():

@@ -1,0 +1,237 @@
+﻿cle;rang;sort;jeu;forme;niveau;verbe_actuel;verbe_nouveau;motif
+fear;2;Terreur;PF2;Forme arcane — version PF2;1;Repousser · force directionnelle −;Déstabiliser;peur sous 8 écrite Repousser
+fire-shield;2;Bouclier de feu;5e;Forme arcane;4;Repousser · force directionnelle −;Séparer;À VALIDER : garde qui riposte
+fire-shield;5;Bouclier de feu;3.5;Forme arcane — version 3.5;4;Repousser · force directionnelle −;Séparer;À VALIDER : garde qui riposte
+fire-shield;7;Bouclier de feu;PF2;Forme arcane — version PF2;4;Repousser · force directionnelle −;Séparer;À VALIDER : garde qui riposte
+symbol;8;Symbole;5e;Étourdissement;7;Ancrer · mouvement −;Déstabiliser;relecture sort par sort
+power-word-stun;0;Mot de pouvoir étourdissant;5e;Forme arcane;8;Ancrer · mouvement −;Déstabiliser;relecture sort par sort
+power-word-stun;1;Mot de pouvoir étourdissant;PF2;Forme arcane — version PF2;8;Ancrer · mouvement −;Déstabiliser;relecture sort par sort
+symbol-of-stunning;0;Symbole d'étourdissement;3.5;Forme arcane;7;Ancrer · mouvement −;Déstabiliser;relecture sort par sort
+rainbow-pattern;0;Motif chatoyant;3.5;Forme arcane;4;Ancrer · mouvement −;Lier;relecture sort par sort
+open-close;1;Ouverture/fermeture;3.5;Fermeture;0;Lier · relation +;Ancrer;relecture sort par sort
+baleful-polymorph;0;Métamorphose funeste;3.5;Forme arcane;5;Préserver · nature −;Transformer;relecture sort par sort
+baleful-polymorph;1;Métamorphose funeste;PF2;Forme arcane — version PF2;6;Préserver · nature −;Transformer;relecture sort par sort
+miasmal-dread;0;Effroi méphitique;PF1;Forme arcane;2;Repousser · force directionnelle −;Déstabiliser;peur sous 8 écrite Repousser
+stage-fright;0;Trac;PF1;Forme arcane;3;Repousser · force directionnelle −;Déstabiliser;peur sous 8 écrite Repousser
+they-know;0;Ils savent;PF1;Forme arcane;4;Repousser · force directionnelle −;Déstabiliser;peur sous 8 écrite Repousser
+mirror-mantis;0;Tueur au miroir;PF1;Forme arcane;1;Repousser · force directionnelle −;Déstabiliser;peur sous 8 écrite Repousser
+body-double;0;Sosie;PF1;Forme arcane;2;Fusionner · identité +;Transformer;paraître autre écrit Fusionner
+haunting-mists;0;Brumes hantées;PF1;Forme arcane;2;Repousser · force directionnelle −;Déstabiliser;peur sous 8 écrite Repousser
+symbol-of-mirroring;0;Symbole des miroirs;PF1;Forme arcane;2;Révéler · visibilité +;Créer;relecture sort par sort
+vision-of-hell;0;Vision du plan astral;PF1;Forme arcane — Vision du plan astral — lumineux;3;Repousser · force directionnelle −;Déstabiliser;peur sous 8 écrite Repousser
+vision-of-hell;1;Vision du plan astral;PF1;Forme arcane — Vision du plan astral — ténébreux;3;Repousser · force directionnelle −;Déstabiliser;peur sous 8 écrite Repousser
+baleful-shadow-transmutation;0;Métamorphose d'ombre funeste;PF1;Forme arcane — Forme lumineuse;6;Préserver · nature −;Transformer;relecture sort par sort
+baleful-shadow-transmutation;1;Métamorphose d'ombre funeste;PF1;Forme arcane — Forme ténébreuse;6;Préserver · nature −;Transformer;relecture sort par sort
+animus-mine;0;Mine mentale;PF1;Mine mentale;2;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+animus-mine;2;Mine mentale;PF2;Mine mentale — version PF2;2;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+catatonia;0;Catatonie;PF1;Forme arcane;3;Détruire · existence −;Dissimuler;relecture sort par sort
+daywalker;0;Marcheur du jour;PF1;Forme arcane;5;Fusionner · identité +;Transformer;paraître autre écrit Fusionner
+deathwine;0;Vin de mort;PF1;Forme arcane;2;Détruire · existence −;Amplifier;le sort renforce le prochain sort de nécromancie : rien n'est détruit
+entrap-spirit;0;Esprit piégé;PF1;Forme arcane;5;Déstabiliser · ordre −;Ancrer;relecture sort par sort
+oath-of-justice;0;Serment de justice;PF1;Forme arcane;3;Stabiliser · ordre +;Lier;conduite écrite Stabiliser
+sculpt-corpse;0;Corps sculpté;PF1;Forme arcane;1;Fusionner · identité +;Transformer;paraître autre écrit Fusionner
+temporary-resurrection;0;Résurrection temporaire;PF1;Forme arcane;7;Créer · existence +;Invoquer;relecture sort par sort
+admonishing-ray;0;Rayon de remontrance;PF1;Forme arcane;2;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+admonishing-ray;1;Rayon de remontrance;PF2;Forme arcane — version PF2;1;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+betraying-sting;0;Piqûre de trahison;PF1;Forme arcane;6;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+biting-words;0;Mots mordants;PF1;Forme arcane;1;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+biting-words;1;Mots mordants;PF2;Forme arcane — version PF2;1;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+burst-bonds;0;Liens brisés;PF1;Forme arcane;1;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+chains-of-fire;0;Chaînes de feu;PF1;Forme arcane;6;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+chord-of-shards;0;Accord d'éclats;PF1;Forme arcane;1;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+controlled-fireball;0;Boule de feu maîtrisée;PF1;Forme arcane;4;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+cosmic-ray;0;Rayon cosmique;PF1;Forme arcane;6;Repousser · force directionnelle −;Détruire;relecture sort par sort
+detonate;0;Détonation;PF1;Forme arcane;4;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+dread-bolt;0;Trait de charge;PF1;Trait d'écœurement — contre l'hostile;2;Repousser · force directionnelle −;Détruire;relecture sort par sort
+dread-bolt;1;Trait de charge;PF1;Trait de cécité — contre l'hostile;2;Repousser · force directionnelle −;Détruire;relecture sort par sort
+dread-bolt;2;Trait de charge;PF1;Trait d'hébétude — contre le ténébreux;2;Repousser · force directionnelle −;Détruire;relecture sort par sort
+dread-bolt;3;Trait de charge;PF1;Trait de lenteur — contre le lumineux;2;Repousser · force directionnelle −;Détruire;relecture sort par sort
+etheric-shards;1;Éclats éthériques;PF2;Forme arcane — version PF2;5;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+explode-head;0;Tête explosée;PF1;Forme arcane;5;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+final-sacrifice;1;Ultime sacrifice;PF2;Forme arcane — version PF2;2;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+heatstroke;0;Coup de chaleur;PF1;Forme arcane;3;Repousser · force directionnelle −;Détruire;relecture sort par sort
+holy-whisper;0;Murmure sacré;PF1;Forme arcane;3;Repousser · force directionnelle −;Détruire;relecture sort par sort
+hungry-darkness;0;Ténèbres affamées;PF1;Forme arcane;7;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+icy-prison;0;Prison de glace;PF1;Prison de glace;5;Repousser · force directionnelle −;Ancrer;relecture sort par sort
+icy-prison;1;Prison de glace;PF1;Prison de glace de groupe;9;Repousser · force directionnelle −;Ancrer;relecture sort par sort
+light-lance;0;Lance de lumière;PF1;Forme arcane;2;Attirer · force directionnelle +;Révéler;relecture sort par sort
+light-prison;0;Prison de lumière;PF1;Forme arcane;2;Repousser · force directionnelle −;Ancrer;relecture sort par sort
+night-of-blades;0;Nuit de lames;PF1;Forme arcane;3;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+pain-strike;0;Frappe de douleur;PF1;Frappe de douleur;2;Repousser · force directionnelle −;Détruire;relecture sort par sort
+pain-strike;1;Frappe de douleur;PF1;Frappe de douleur de groupe;4;Repousser · force directionnelle −;Détruire;relecture sort par sort
+pinecone-bomb;0;Bombe de pomme de pin;PF1;Forme arcane;2;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+pyrotechnic-eruption;0;Éruption pyrotechnique;PF1;Forme arcane;4;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+rebuke;0;Semonce;PF1;Forme arcane;4;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+rend-body-i;0;Corps déchiré;PF1;Corps déchiré I;5;Repousser · force directionnelle −;Détruire;relecture sort par sort
+rend-body-i;1;Corps déchiré;PF1;Corps déchiré II;6;Repousser · force directionnelle −;Détruire;relecture sort par sort
+rend-body-i;2;Corps déchiré;PF1;Corps déchiré III;7;Repousser · force directionnelle −;Détruire;relecture sort par sort
+rend-body-i;3;Corps déchiré;PF1;Corps déchiré IV;8;Repousser · force directionnelle −;Détruire;relecture sort par sort
+shield-of-darkness;0;Bouclier de ténèbres;PF1;Forme arcane;3;Séparer · relation −;Dissimuler;relecture sort par sort
+telekinetic-projectile;0;Projectile télékinétique;PF1;Forme arcane;0;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+telekinetic-projectile;1;Projectile télékinétique;PF2;Forme arcane — version PF2;0;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+trial-by-fire;0;Épreuve du feu;PF1;Forme arcane;3;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+volcanic-storm;0;Tempête volcanique;PF1;Forme arcane;4;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+winds-of-vengeance;0;Vents de vengeance;PF1;Forme arcane;9;Fusionner · identité +;Déplacer;relecture sort par sort
+breath-of-life;0;Souffle de vie;PF1;Forme arcane;5;Créer · existence +;Invoquer;relecture sort par sort
+breath-of-life;1;Souffle de vie;PF2;Forme arcane — version PF2;5;Créer · existence +;Invoquer;relecture sort par sort
+breath-of-life;2;Souffle de vie;PF2;Forme arcane — version PF2 remaniée;5;Créer · existence +;Invoquer;relecture sort par sort
+gloomblind-bolts;0;Traits de ténèbres;PF1;Forme ténébreuse;3;Créer · existence +;Détruire;relecture sort par sort
+gloomblind-bolts;1;Traits de ténèbres;PF1;Forme lumineuse;3;Créer · existence +;Détruire;relecture sort par sort
+adjustable-polymorph;0;Métamorphose ajustable;PF1;Forme arcane;4;Fusionner · identité +;Transformer;écart de forme écrit Fusionner
+animal-aspect;0;Aspect animal;PF1;Grenouille;2;Fusionner · identité +;Transformer;relecture sort par sort
+animal-aspect;1;Aspect animal;PF1;Gorille;2;Fusionner · identité +;Transformer;relecture sort par sort
+animal-aspect;2;Aspect animal;PF1;Singe;2;Fusionner · identité +;Transformer;relecture sort par sort
+animal-aspect;3;Aspect animal;PF1;Loutre;2;Fusionner · identité +;Transformer;relecture sort par sort
+animal-aspect;4;Aspect animal;PF1;Raton laveur;2;Fusionner · identité +;Transformer;relecture sort par sort
+animal-aspect;5;Aspect animal;PF1;Rapace coureur;2;Fusionner · identité +;Transformer;relecture sort par sort
+animal-aspect;6;Aspect animal;PF1;Lézard arboricole;2;Fusionner · identité +;Transformer;relecture sort par sort
+animal-aspect;7;Aspect animal;PF1;Aspect animal suprême;3;Fusionner · identité +;Transformer;relecture sort par sort
+assume-appearance;0;Apparence empruntée;PF1;Forme arcane;3;Fusionner · identité +;Transformer;paraître autre écrit Fusionner
+baphomets-blessing;0;Tête de taureau;PF1;Forme arcane;4;Fusionner · identité +;Transformer;écart de forme écrit Fusionner
+beast-shape-i;0;Forme bestiale;PF1;Forme bestiale I;3;Fusionner · identité +;Transformer;écart de forme écrit Fusionner
+beast-shape-i;1;Forme bestiale;PF1;Forme bestiale II;4;Fusionner · identité +;Transformer;écart de forme écrit Fusionner
+beast-shape-i;2;Forme bestiale;PF1;Forme bestiale III;5;Fusionner · identité +;Transformer;écart de forme écrit Fusionner
+beast-shape-i;3;Forme bestiale;PF1;Forme bestiale IV;6;Fusionner · identité +;Transformer;écart de forme écrit Fusionner
+beast-shape-i;4;Forme bestiale;PF1;Forme partagée;4;Fusionner · identité +;Transformer;écart de forme écrit Fusionner
+beast-shape-i;5;Forme bestiale;PF2;Forme bestiale I — version PF2;2;Fusionner · identité +;Transformer;écart de forme écrit Fusionner
+carry-companion;0;Compagnon de poche;PF1;Forme arcane;2;Fusionner · identité +;Réduire;relecture sort par sort
+claim-identity;0;Visage volé;PF1;Forme arcane;3;Fusionner · identité +;Transformer;paraître autre écrit Fusionner
+cloud-shape;0;Forme de nuage;PF1;Forme arcane;4;Fusionner · identité +;Transformer;relecture sort par sort
+divine-vessel;0;Vaisseau divin;PF1;Forme arcane;8;Fusionner · identité +;Transformer;relecture sort par sort
+divine-vessel;1;Vaisseau divin;PF2;Forme arcane — version PF2;7;Fusionner · identité +;Transformer;relecture sort par sort
+dust-form;0;Forme de poussière;PF1;Forme arcane;6;Fusionner · identité +;Transformer;relecture sort par sort
+elemental-body-i;0;Corps élémentaire;PF1;Corps élémentaire I;4;Fusionner · identité +;Transformer;écart de forme écrit Fusionner
+elemental-body-i;1;Corps élémentaire;PF1;Corps élémentaire II;5;Fusionner · identité +;Transformer;écart de forme écrit Fusionner
+elemental-body-i;2;Corps élémentaire;PF1;Corps élémentaire III;6;Fusionner · identité +;Transformer;écart de forme écrit Fusionner
+elemental-body-i;3;Corps élémentaire;PF1;Corps élémentaire IV;7;Fusionner · identité +;Transformer;écart de forme écrit Fusionner
+elemental-body-i;4;Corps élémentaire;PF2;Corps élémentaire I — version PF2;5;Fusionner · identité +;Transformer;écart de forme écrit Fusionner
+false-age;0;Âge trompeur;PF1;Forme arcane;2;Fusionner · identité +;Transformer;paraître autre écrit Fusionner
+fey-form-i;0;Forme féerique;PF1;Forme féerique I;3;Fusionner · identité +;Transformer;écart de forme écrit Fusionner
+fey-form-i;1;Forme féerique;PF1;Forme féerique II;5;Fusionner · identité +;Transformer;écart de forme écrit Fusionner
+fey-form-i;2;Forme féerique;PF1;Forme féerique III;6;Fusionner · identité +;Transformer;écart de forme écrit Fusionner
+fey-form-i;3;Forme féerique;PF1;Forme féerique IV;8;Fusionner · identité +;Transformer;écart de forme écrit Fusionner
+fey-form-i;4;Forme féerique;PF2;Forme féerique I — version PF2;4;Fusionner · identité +;Transformer;écart de forme écrit Fusionner
+form-of-the-dragon-i;0;Forme draconique;PF1;Forme draconique I;6;Fusionner · identité +;Transformer;écart de forme écrit Fusionner
+form-of-the-dragon-i;1;Forme draconique;PF1;Forme draconique II;7;Fusionner · identité +;Transformer;écart de forme écrit Fusionner
+form-of-the-dragon-i;2;Forme draconique;PF1;Forme draconique III;8;Fusionner · identité +;Transformer;écart de forme écrit Fusionner
+form-of-the-dragon-i;3;Forme draconique;PF2;Forme draconique I — version PF2;6;Fusionner · identité +;Transformer;écart de forme écrit Fusionner
+giant-form-i;0;Forme de géant;PF1;Forme de géant;7;Fusionner · identité +;Transformer;écart de forme écrit Fusionner
+monstrous-physique-i;0;Physique monstrueux;PF1;Physique monstrueux I;3;Fusionner · identité +;Transformer;écart de forme écrit Fusionner
+monstrous-physique-i;1;Physique monstrueux;PF1;Physique monstrueux II;4;Fusionner · identité +;Transformer;écart de forme écrit Fusionner
+monstrous-physique-i;2;Physique monstrueux;PF1;Physique monstrueux III;5;Fusionner · identité +;Transformer;écart de forme écrit Fusionner
+monstrous-physique-i;3;Physique monstrueux;PF1;Physique monstrueux IV;6;Fusionner · identité +;Transformer;écart de forme écrit Fusionner
+monstrous-physique-i;4;Physique monstrueux;PF2;Physique monstrueux I — version PF2;8;Fusionner · identité +;Transformer;écart de forme écrit Fusionner
+plant-shape-i;0;Forme végétale;PF1;Forme végétale I;5;Fusionner · identité +;Transformer;écart de forme écrit Fusionner
+plant-shape-i;1;Forme végétale;PF1;Forme végétale II;6;Fusionner · identité +;Transformer;écart de forme écrit Fusionner
+plant-shape-i;2;Forme végétale;PF1;Forme végétale III;7;Fusionner · identité +;Transformer;écart de forme écrit Fusionner
+plant-shape-i;3;Forme végétale;PF2;Forme végétale I — version PF2;5;Fusionner · identité +;Transformer;écart de forme écrit Fusionner
+magical-beast-shape;0;Forme de créature magique;PF1;Forme arcane;7;Fusionner · identité +;Transformer;écart de forme écrit Fusionner
+frightful-aspect;0;Aspect terrifiant;PF1;Forme arcane;8;Fusionner · identité +;Transformer;relecture sort par sort
+harmless-form;0;Forme inoffensive;PF1;Forme arcane;2;Fusionner · identité +;Transformer;écart de forme écrit Fusionner
+monstrous-extremities;0;Extrémités monstrueuses;PF1;Forme arcane;3;Fusionner · identité +;Transformer;écart de forme écrit Fusionner
+polymorph-familiar;0;Métamorphose du familier;PF1;Forme arcane;3;Fusionner · identité +;Transformer;écart de forme écrit Fusionner
+sculpt-simulacrum;0;Simulacre sculpté;PF1;Forme arcane;2;Fusionner · identité +;Transformer;paraître autre écrit Fusionner
+shapechangers-gift;0;Don du métamorphe;PF1;Don du métamorphe;5;Fusionner · identité +;Transformer;écart de forme écrit Fusionner
+shapechangers-gift;1;Don du métamorphe;PF1;Don du métamorphe suprême;7;Fusionner · identité +;Transformer;écart de forme écrit Fusionner
+staggering-fall;0;Chute écrasante;PF1;Forme arcane;2;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+swarm-skin;0;Peau de nuée;PF1;Peau de nuée;6;Fusionner · identité +;Transformer;écart de forme écrit Fusionner
+swarm-skin;1;Peau de nuée;PF1;Transformation vermineuse;7;Fusionner · identité +;Transformer;écart de forme écrit Fusionner
+threefold-aspect;0;Aspect triple;PF1;Forme arcane;4;Fusionner · identité +;Transformer;paraître autre écrit Fusionner
+threefold-aspect;1;Aspect triple;PF2;Forme arcane — version PF2;3;Fusionner · identité +;Transformer;paraître autre écrit Fusionner
+undead-anatomy-i;0;Anatomie morte-vivante;PF1;Anatomie morte-vivante I;3;Fusionner · identité +;Transformer;écart de forme écrit Fusionner
+undead-anatomy-i;1;Anatomie morte-vivante;PF1;Anatomie morte-vivante II;5;Fusionner · identité +;Transformer;écart de forme écrit Fusionner
+undead-anatomy-i;2;Anatomie morte-vivante;PF1;Anatomie morte-vivante III;6;Fusionner · identité +;Transformer;écart de forme écrit Fusionner
+undead-anatomy-i;3;Anatomie morte-vivante;PF1;Anatomie morte-vivante IV;8;Fusionner · identité +;Transformer;écart de forme écrit Fusionner
+vermin-shape-i;0;Forme de vermine;PF1;Forme de vermine I;3;Fusionner · identité +;Transformer;écart de forme écrit Fusionner
+vermin-shape-i;1;Forme de vermine;PF1;Forme de vermine II;4;Fusionner · identité +;Transformer;écart de forme écrit Fusionner
+vermin-shape-i;2;Forme de vermine;PF2;Forme de vermine I — version PF2;3;Fusionner · identité +;Transformer;écart de forme écrit Fusionner
+wave-form;0;Forme de vague;PF1;Forme arcane;4;Fusionner · identité +;Transformer;relecture sort par sort
+windy-escape;0;Fuite venteuse;PF1;Forme arcane;1;Fusionner · identité +;Transformer;relecture sort par sort
+wizened-appearance;0;Apparence flétrie;PF1;Apparence flétrie;1;Fusionner · identité +;Transformer;paraître autre écrit Fusionner
+wizened-appearance;1;Apparence flétrie;PF1;Apparence juvénile;1;Fusionner · identité +;Transformer;paraître autre écrit Fusionner
+wooden-wing-shield;0;Bouclier d'ailes de bois;PF1;Forme arcane;4;Fusionner · identité +;Transformer;relecture sort par sort
+agonizing-rebuke;0;Réprimande douloureuse;PF1;Forme arcane;3;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+recorporeal-incarnation;0;Incarnation d'emprunt;PF1;Forme arcane;7;Fusionner · identité +;Transformer;paraître autre écrit Fusionner
+sotto-voce;0;Sotto voce;PF1;Forme arcane;0;Repousser · force directionnelle −;Déstabiliser;peur sous 8 écrite Repousser
+dark-light;0;Lumière aveuglante;PF1;Forme arcane;3;Réduire · intensité −;Dissimuler;relecture sort par sort
+assume-appearance-greater;0;Apparence empruntée supérieure;PF1;Forme arcane;4;Fusionner · identité +;Transformer;paraître autre écrit Fusionner
+break-greater;0;Brisure supérieure;PF1;Forme arcane;6;Transformer · nature +;Détruire;relecture sort par sort
+claim-identity-greater;0;Visage volé supérieur;PF1;Forme arcane;5;Fusionner · identité +;Transformer;relecture sort par sort
+transplant-visage;0;Greffe de visage;PF1;Forme arcane;4;Fusionner · identité +;Transformer;paraître autre écrit Fusionner
+contagious-idea;1;Idée contagieuse;PF2;Pensée terrifiante;0;Repousser · force directionnelle −;Déstabiliser;peur sous 8 écrite Repousser
+charitable-urge;0;Élan charitable;PF2;Forme arcane;2;Stabiliser · ordre +;Lier;conduite écrite Stabiliser
+compel-true-name;0;Contrainte du vrai nom;PF2;Forme arcane;4;Stabiliser · ordre +;Lier;conduite écrite Stabiliser
+implement-of-destruction;0;Instrument de destruction;PF2;Forme arcane;4;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+infectious-melody;0;Mélodie entêtante;PF2;Forme arcane;4;Stabiliser · ordre +;Lier;conduite écrite Stabiliser
+subconscious-suggestion;0;Suggestion enfouie;PF2;Forme arcane;5;Stabiliser · ordre +;Lier;conduite écrite Stabiliser
+astral-rain;0;Pluie de lames mentales;PF2;Forme arcane;0;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+dancing-blade;0;Lame dansante;PF2;Forme arcane;0;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+divine-lance;0;Lance astrale;PF2;Forme ténébreuse;0;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+divine-lance;1;Lance astrale;PF2;Forme lumineuse;0;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+divine-lance;2;Lance astrale;PF2;Forme ténébreuse — version PF2 remaniée;0;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+divine-lance;3;Lance astrale;PF2;Forme lumineuse — version PF2 remaniée;0;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+phase-bolt;0;Trait déphasé;PF2;Forme arcane;0;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+redistribute-potential;0;Chaleur redistribuée;PF2;Forme arcane;0;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+shatter-mind;0;Esprits fracassés;PF2;Forme arcane;0;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+telekinetic-rend;0;Déchirure télékinétique;PF2;Forme arcane;0;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+animated-assault;0;Assaut animé;PF2;Forme arcane;2;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+chromatic-ray;0;Rayon chromatique;PF2;Rouge;4;Repousser · force directionnelle −;Détruire;relecture sort par sort
+chromatic-ray;1;Rayon chromatique;PF2;Orange;4;Repousser · force directionnelle −;Détruire;relecture sort par sort
+chromatic-ray;2;Rayon chromatique;PF2;Jaune;4;Repousser · force directionnelle −;Détruire;relecture sort par sort
+chromatic-ray;3;Rayon chromatique;PF2;Vert;4;Repousser · force directionnelle −;Détruire;relecture sort par sort
+radiant-beam;0;Rayon radieux;PF2;Forme lumineuse;4;Repousser · force directionnelle −;Détruire;relecture sort par sort
+radiant-beam;1;Rayon radieux;PF2;Forme ténébreuse;4;Repousser · force directionnelle −;Détruire;relecture sort par sort
+scouring-pulse;0;Onde purificatrice;PF2;Forme arcane;5;Repousser · force directionnelle −;Détruire;relecture sort par sort
+shadow-blast;0;Déflagration astrale;PF2;Forme ténébreuse;5;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+shadow-blast;1;Déflagration astrale;PF2;Forme lumineuse;5;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+poltergeists-fury;0;Fureur du poltergeist;PF2;Forme arcane;6;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+deitys-strike;0;Frappe de l'arme céleste;PF2;Forme arcane;7;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+falling-sky;0;Ciel qui tombe;PF2;Forme arcane;8;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+weapon-of-judgment;0;Arme du jugement;PF2;Guerre;9;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+weapon-of-judgment;1;Arme du jugement;PF2;Paix;9;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+inner-radiance-torrent;0;Torrent de rayonnement intérieur;PF2;Forme de base;2;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+inner-radiance-torrent;1;Torrent de rayonnement intérieur;PF2;Forme maximale;2;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+attacked-from-within;0;Attaqué du dedans;PF2;Forme arcane;7;Repousser · force directionnelle −;Déstabiliser;peur sous 8 écrite Repousser
+cordyceps-command;0;Ordre du cordyceps;PF2;Forme arcane;3;Stabiliser · ordre +;Lier;conduite écrite Stabiliser
+hippocampus-retreat;0;Retraite de l'hippocampe;PF2;Forme arcane;1;Repousser · force directionnelle −;Déplacer;À VALIDER : le but du sort est la retraite
+threefold-limb;0;Membre aux trois états;PF2;Glace;1;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+threefold-limb;1;Membre aux trois états;PF2;Eau;1;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+crescent-scepter;0;Sceptre d'autorité;PF2;Forme arcane;1;Séparer · relation −;Déstabiliser;relecture sort par sort
+vengeful-glare;0;Regard vengeur;PF2;Vengeance glacée;1;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+vengeful-glare;1;Regard vengeur;PF2;Colère ardente;1;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+force-bolt;0;Trait de force;PF2;Forme arcane;1;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+dread-aura;0;Aura d'effroi;PF2;Forme arcane;4;Repousser · force directionnelle −;Déstabiliser;peur sous 8 écrite Repousser
+unravel-knowledge;0;Savoir détricoté;PF2;Forme arcane;3;Déstabiliser · ordre −;Séparer;relecture sort par sort
+evil-eye;0;Mauvais œil;PF2;Effroi;0;Repousser · force directionnelle −;Déstabiliser;peur sous 8 écrite Repousser
+over-the-coals;0;Sur les charbons;PF2;Forme arcane;5;Stabiliser · ordre +;Lier;relecture sort par sort
+dirge-of-doom;0;Chant funèbre;PF2;Forme arcane;0;Repousser · force directionnelle −;Déstabiliser;peur sous 8 écrite Repousser
+enlarge-companion;0;Compagnon agrandi;PF2;Forme arcane;4;Transformer · nature +;Amplifier;relecture sort par sort
+wronged-monks-wrath;0;Colère du moine outragé;PF2;Forme de base;5;Repousser · force directionnelle −;Détruire;relecture sort par sort
+wronged-monks-wrath;1;Colère du moine outragé;PF2;Forme maximale;5;Repousser · force directionnelle −;Détruire;relecture sort par sort
+diabolic-edict;0;Édit imposé;PF2;Forme arcane;1;Stabiliser · ordre +;Lier;conduite écrite Stabiliser
+flurry-of-claws;0;Volée de griffes;PF2;Forme arcane;1;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+dragon-breath;0;Souffle du dragon;PF2;Forme arcane;3;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+elemental-toss;0;Jet élémentaire;PF2;Forme arcane;1;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+elemental-blast;0;Déflagration élémentaire;PF2;Forme arcane;5;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+horrific-visage;0;Visage horrifiant;PF2;Forme arcane;3;Repousser · force directionnelle −;Déstabiliser;peur sous 8 écrite Repousser
+youre-mine;0;Tu es à moi;PF2;Forme arcane;5;Stabiliser · ordre +;Lier;conduite écrite Stabiliser
+sepulchral-mask;0;Masque sépulcral;PF2;Forme arcane;1;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+abyssal-wrath;0;Courroux astral;PF2;Forme ténébreuse;5;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+abyssal-wrath;1;Courroux astral;PF2;Forme lumineuse;5;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+ancestral-touch;0;Toucher des ancêtres;PF2;Forme arcane;1;Repousser · force directionnelle −;Déstabiliser;peur sous 8 écrite Repousser
+claim-undead;0;Mort-vivant revendiqué;PF2;Forme arcane;6;Stabiliser · ordre +;Lier;conduite écrite Stabiliser
+thunderburst;0;Éclat de tonnerre;PF2;Forme arcane;3;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+eradicate-undeath;0;Non-vie éradiquée;PF2;Forme arcane;4;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+waking-nightmare;0;Cauchemar éveillé;PF2;Forme arcane;1;Repousser · force directionnelle −;Déstabiliser;peur sous 8 écrite Repousser
+commanding-lash;0;Fouet du commandement;PF2;Forme arcane;4;Stabiliser · ordre +;Lier;conduite écrite Stabiliser
+cinder-gaze;1;Regard des braises;PF2;Vie nouvelle;1;Révéler · visibilité +;Amplifier;vie d'emprunt, comme les autres
+lift-natures-caul;0;Voile de la nature levé;PF2;Forme arcane;1;Repousser · force directionnelle −;Révéler;relecture sort par sort
+subjugate-undead;0;Mort-vivant subjugué;PF2;Forme arcane;3;Stabiliser · ordre +;Lier;conduite écrite Stabiliser
+sun-blade;0;Lame astrale ardente;PF2;Forme lumineuse;2;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+sun-blade;1;Lame astrale ardente;PF2;Forme ténébreuse;2;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+draconic-barrage;0;Barrage draconique;PF2;Forme arcane;1;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+lament;0;Lamentation;PF2;Forme arcane;1;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+remember-the-lost;0;Souvenir des oubliés;PF2;Forme arcane;4;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+roar-of-the-wyrm;0;Rugissement du dragon;PF2;Forme arcane;4;Repousser · force directionnelle −;Déstabiliser;peur sous 8 écrite Repousser
+winter-bolt;0;Trait d'hiver;PF2;Forme arcane;1;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure
+unfolding-wind-crash;0;Vent déployé : fracas;PF2;Forme arcane;9;Repousser · force directionnelle −;Détruire;Repousser posé sur une blessure pure

@@ -51,6 +51,12 @@ def best_factors(n):
             prod = 1
             for c in combo: prod *= c
             if prod == n: return list(combo)
+    # cinq formes quand il le faut (phase 4a), jamais plus de deux fois la même forme dans un cercle :
+    # deux formes égales se placent à 0° et 180°, une troisième casserait la symétrie
+    for combo in itertools.combinations_with_replacement([9, 7, 5, 4, 3, 2], 5):
+        prod = 1
+        for c in combo: prod *= c
+        if prod == n and max(combo.count(c) for c in combo) <= 2: return list(combo)
     return None
 def val(n, pol):
     """renvoie (spec, multiplicatif ?, polarité lisible ?)"""

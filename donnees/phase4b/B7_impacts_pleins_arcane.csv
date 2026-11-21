@@ -1,0 +1,104 @@
+﻿cle;rang;sort;jeu;forme;action;impact;cercle_actuel;valeur;mots;satellites_a_retirer;satellites_a_ajouter;symboles;pole_hybride;note
+shield;1;Bouclier;5e;Forme arcane;modifier;1;plein;plein;BARRIERE;;;garder;lumineux;les projectiles magiques ne passent pas
+shield;3;Bouclier;3.5;Forme arcane — version 3.5;modifier;1;plein;plein;BARRIERE;;;garder;lumineux;les projectiles magiques ne passent pas
+shield;5;Bouclier;PF2;Forme arcane — version PF2;modifier;1;plein;3;PROTECTION;CONDITION PROJECTILE;;garder;lumineux;l'écran absorbe 5 sur un coup
+fire-shield;2;Bouclier de feu;5e;Forme arcane;modifier;1;plein;5;PROTECTION;;;garder;lumineux;résistance au froid, la moitié arrêtée
+fire-shield;5;Bouclier de feu;3.5;Forme arcane — version 3.5;modifier;1;plein;5;PROTECTION;;;garder;lumineux;résistance au froid, la moitié arrêtée
+hallow;3;Sanctification;5e;Protection contre l'énergie;modifier;1;plein;5;PROTECTION;;;garder;lumineux;résistance à une énergie choisie
+wave-shield;0;Bouclier de vague;PF1;Forme arcane;modifier;0;plein;1;PROTECTION;;;garder;lumineux;réduit un coup de 1
+wave-shield;0;Bouclier de vague;PF1;Forme arcane;modifier;1;plein;1;PROTECTION;;;garder;lumineux;réduit une flamme de 1
+dragon-turtle-shell;0;Carapace de tortue-dragon;PF1;Forme arcane;modifier;0;plein;1;PROTECTION;;;garder;lumineux;crocs et griffes blessent comme ceux d'un être d'une taille en dessous
+death-from-below;0;Mort d'en bas;PF1;Forme arcane;modifier;0;plein;1;;;;garder;lumineux;"1 ajouté à la défense contre les plus grands ; bonus écrit comme sur main : mot de support en Cible (« garde », déjà là), Impact chiffré sans mot"
+antitoxin-touch;0;Toucher antitoxique;PF1;Forme arcane;modifier;0;plein;plein;IMMUNITE;;;garder;lumineux;"ne peut plus s'empoisonner par accident ; la jumelle hybride porte déjà ce mot"
+spawn-ward;0;Garde contre les rejetons;PF1;Forme arcane;modifier;0;plein;plein;DRAIN;CIBLE RESISTANCE;7|IMPACT PUISSANCE;garder;lumineux;garde du drain, sans effet si le mort-vivant est de puissance 7 au plus (9 dés de vie = indice 8, vérifié sur la grande ombre)
+litany-of-defense;0;Litanie de défense;PF1;Forme arcane;modifier;0;plein;1;;;;garder;lumineux;le bonus de l'armure doublé : 1 de plus au niveau le plus bas
+litany-of-defense;0;Litanie de défense;PF1;Forme arcane;ajouter après;0;;plein;PEUR;;;;lumineux;garde de la peur : insensible à la peur
+book-ward;0;Garde du livre;PF1;Forme arcane;modifier;0;5 PROTECTION;plein;PROTECTION;;;garder;lumineux;comme Protection contre l'énergie 3.5 : tout est absorbé jusqu'au plafond
+book-ward;0;Garde du livre;PF1;Forme arcane;modifier;1;5 PROTECTION;plein;PROTECTION;;;garder;lumineux;idem pour l'acide
+book-ward;0;Garde du livre;PF1;Forme arcane;ajouter après;1;;36;PLAFOND;;;;lumineux;"plafond de ce qui est absorbé : 12 par niveau, 36 au niveau le plus bas ; même écriture que Protection contre l'énergie 3.5 (Impact 60 « plafond »)"
+scamper;0;Gambade;PF1;Forme arcane;modifier;0;plein;3;;;;garder;lumineux;+6 au niveau le plus bas
+overwhelming-poison;0;Poison écrasant;PF1;Forme arcane;modifier;0;plein;3;;;;garder;ténébreux;5 de plus pour neutraliser le poison
+marids-mastery;0;Maîtrise des eaux;PF1;Forme arcane;modifier;0;plein;1;;;;garder;lumineux;+1 pour frapper quand l'eau le touche
+marids-mastery;0;Maîtrise des eaux;PF1;Forme arcane;ajouter un cercle Composante;;;2;CONTREPARTIE APTITUDE;;;;;"contrepartie : −4 à terre ; même écriture que la contrepartie de Hâte 3.5"
+inheritors-smite;0;Coup repoussant;PF1;Forme arcane;modifier;0;plein;3;;;;garder;lumineux;+5 pour toucher
+inheritors-smite;0;Coup repoussant;PF1;Forme arcane;ajouter après;0;;plein;RECUL;;2|LOCALISATION METRES;;ténébreux;"l'ennemi est repoussé de 1,5 m ; même écriture que Vague tonnante"
+true-strike-2024;0;Coup au but (2024);2024;Forme lumineuse;modifier;0;plein;plein;FRAPPE;;;garder;inchangé;la jumelle hybride porte déjà ce mot
+true-strike-2024;1;Coup au but (2024);2024;Forme ténébreuse;modifier;0;plein;plein;FRAPPE;;;garder;inchangé;la jumelle hybride porte déjà ce mot
+sea-steed;0;Monture marine;PF1;Monture marine;modifier;0;plein;plein;NAGE;;;garder;lumineux;la monture gagne la nage et respire sous l'eau
+divine-arrow;0;Flèche divine;PF1;Forme lumineuse;modifier;0;plein;7;;;;garder;selon la face;2d6 en plus contre les morts-vivants
+divine-arrow;1;Flèche divine;PF1;Forme ténébreuse;modifier;0;plein;7;;;;garder;selon la face;2d6 en plus contre les morts-vivants
+empower-holy-water;0;Eau bénite renforcée;PF1;Forme lumineuse;modifier;0;plein;4;;;;garder;selon la face;4 en plus contre les morts-vivants au niveau le plus bas
+empower-holy-water;1;Eau bénite renforcée;PF1;Forme ténébreuse;modifier;0;plein;4;;;;garder;selon la face;4 en plus contre les morts-vivants au niveau le plus bas
+venomous-bolt;0;Trait venimeux;PF1;Forme arcane;modifier;0;plein;plein;POISON;;;garder;ténébreux;le trait empoisonne comme le sort de poison
+weapons-against-evil;0;Armes contre l'hostile;PF1;Forme arcane;modifier;0;plein;plein;PROTECTION;;3|IMPACT PROTECTION;garder;lumineux;agit malgré une protection : ignore une réduction de 5 ou moins (degré 3)
+sanctify-weapons;0;Armes contre les êtres astraux;PF1;Contre le lumineux;modifier;0;plein;plein;PROTECTION;;;garder;lumineux;agit malgré une protection : ignore toute la réduction de cette sorte d'êtres
+sanctify-weapons;1;Armes contre les êtres astraux;PF1;Contre le ténébreux;modifier;0;plein;plein;PROTECTION;;;garder;lumineux;agit malgré une protection : ignore toute la réduction de cette sorte d'êtres
+heart-of-the-metal;0;Cœur du métal;PF1;Forme arcane;modifier;0;plein;plein;PROTECTION;;;garder;lumineux;agit malgré une protection : les armes passent la réduction liée au métal
+planeslayers-call;0;Appel du tueur de plans;PF1;Forme arcane;modifier;0;plein;1;;"CIBLE COUP ; CONDITION PLAN";CIBLE SORT;garder;lumineux;+2 pour percer la résistance à la magie
+planeslayers-call;0;Appel du tueur de plans;PF1;Forme arcane;ajouter après;0;;plein;PROTECTION;;"4|IMPACT PROTECTION ; plein|CONDITION PLAN";;lumineux;agit malgré une protection : les sorts ignorent 10 de résistance (degré 4), contre les êtres d'outre-plan
+blade-snare;0;Piège à lames;PF1;Forme arcane;modifier;0;plein;7;ENTRAVE;;;garder;ténébreux;l'arme ou le membre reste pris, l'attaquant est agrippé
+hide-weapon;0;Arme cachée;PF1;Forme arcane;modifier;0;plein;5;DISSIMULATION;;;garder;ténébreux;"l'arme disparaît dans le bras ; le satellite Cible « arme » reste : c'est l'arme qui est dissimulée"
+frigid-souls;0;Âmes glacées;PF1;Forme arcane;modifier;0;plein;plein;PROTECTION;;4|INTERACTION;garder;ténébreux;défait les protections contre le froid, comme une dissipation : seuil en Interaction, comme Dissipation de la magie
+fear-the-sun;0;Crainte astrale;PF1;Forme lumineuse;modifier;0;plein;plein;VULNERABILITE;;;garder;inchangé;"la cible devient sensible à la lumière ; la jumelle hybride porte déjà ce mot"
+fear-the-sun;1;Crainte astrale;PF1;Forme ténébreuse;modifier;0;plein;plein;VULNERABILITE;;;garder;inchangé;"la cible devient sensible à la lumière ; la jumelle hybride porte déjà ce mot"
+fear-the-sun;2;Crainte astrale;PF2;Forme lumineuse — version PF2;retirer;0;plein;;;;;;;en PF2 l'échec ordinaire éblouit seulement
+fear-the-sun;2;Crainte astrale;PF2;Forme lumineuse — version PF2;retirer;1;plein AVEUGLEMENT;;;;;;;"l'aveuglement n'est que le pire cas, non compté ; il reste le cercle éblouissement 3"
+fear-the-sun;3;Crainte astrale;PF2;Forme ténébreuse — version PF2;retirer;0;plein;;;;;;;en PF2 l'échec ordinaire éblouit seulement
+fear-the-sun;3;Crainte astrale;PF2;Forme ténébreuse — version PF2;retirer;1;plein AVEUGLEMENT;;;;;;;"l'aveuglement n'est que le pire cas, non compté ; il reste le cercle éblouissement 3"
+unshakable-chill;0;Froid tenace;PF1;Forme arcane;modifier;0;plein;4;;;10|DUREE CHAQUE MINUTES;garder;ténébreux;1d6 de froid, répété toutes les 10 minutes
+toxic-rupture;0;Rupture toxique;PF1;Forme arcane;modifier;0;plein;plein;POISON;;;garder;ténébreux;l'ennemi subit son propre poison
+poison-breath;0;Souffle empoisonné;PF1;Forme arcane;modifier;0;plein;plein;POISON;;;garder;ténébreux;un cône qui empoisonne
+toxic-blood;0;Sang toxique;PF1;Forme arcane;modifier;0;plein;plein;POISON;;plein|CONDITION COUP;garder;ténébreux;le sang empoisonne celui qui blesse l'allié
+poisonous-cloud;0;Nuage empoisonné;PF1;Forme arcane;modifier;0;plein;plein;POISON;;1|DUREE CHAQUE INSTANTS;garder;ténébreux;toxique à chaque tour
+poisonous-cloud;0;Nuage empoisonné;PF1;Forme arcane;ajouter après;0;;7;OBSCURITE;;;;ténébreux;un brouillard épais, comme Nappe de brouillard
+concealments-curtain;1;Rideau de dissimulation;PF2;Rituel manqué;modifier;0;plein;plein;AVEUGLEMENT;;;garder;inchangé;"les officiants sont aveugles un jour ; la jumelle hybride porte déjà ce mot"
+ransack-the-night;2;Pillage de la nuit;PF2;Rituel manqué;modifier;0;plein;2;DISSIMULATION;;;garder;ténébreux;"les officiants voient ces êtres comme à demi cachés ; sur la jumelle hybride, remplace « trouble » au plein"
+defoliate;0;Défoliation;PF1;Forme ténébreuse;modifier;0;plein;9;;;;garder;inchangé;2d8 à une créature végétale
+defoliate;1;Défoliation;PF1;Forme lumineuse;modifier;0;plein;9;;;;garder;inchangé;2d8 à une créature végétale
+seamantle;0;Manteau marin;PF1;Forme arcane;modifier;3;plein;4;;;;garder;ténébreux;un coup de bras d'eau, de la force d'un être de sa taille
+final-sacrifice;0;Ultime sacrifice;PF1;Forme arcane;modifier;0;plein;plein;DESTRUCTION;;;garder;ténébreux;l'invoqué meurt
+final-sacrifice;0;Ultime sacrifice;PF1;Forme arcane;ajouter après;0;;8;;;;symbole du feu;ténébreux;il explose : 1d4 par niveau du sort qui l'avait appelé, pris au niveau 3
+elemental-absorption;0;Absorption élémentaire;PF2;Feu;retirer;2;plein;;;;;;;ce n'est pas un effet : c'est la portée du coup rendu
+elemental-absorption;0;Absorption élémentaire;PF2;Feu;modifier;1;30;30;;;18|LOCALISATION METRES;remplacer les symboles de l'Éclair par ceux de l'élément de la forme (les mêmes que le premier cercle d'Impact de cette forme);ténébreux;le coup rendu est de l'élément choisi, à 18 m
+elemental-absorption;1;Absorption élémentaire;PF2;Air;retirer;2;plein;;;;;;;ce n'est pas un effet : c'est la portée du coup rendu
+elemental-absorption;1;Absorption élémentaire;PF2;Air;modifier;1;30;30;;;18|LOCALISATION METRES;remplacer les symboles de l'Éclair par ceux de l'élément de la forme (les mêmes que le premier cercle d'Impact de cette forme);ténébreux;le coup rendu est de l'élément choisi, à 18 m
+elemental-absorption;2;Absorption élémentaire;PF2;Terre;retirer;2;plein;;;;;;;ce n'est pas un effet : c'est la portée du coup rendu
+elemental-absorption;2;Absorption élémentaire;PF2;Terre;modifier;1;30;30;;;18|LOCALISATION METRES;remplacer les symboles de l'Éclair par ceux de l'élément de la forme (les mêmes que le premier cercle d'Impact de cette forme);ténébreux;le coup rendu est de l'élément choisi, à 18 m
+elemental-absorption;3;Absorption élémentaire;PF2;Eau;retirer;2;plein;;;;;;;ce n'est pas un effet : c'est la portée du coup rendu
+elemental-absorption;3;Absorption élémentaire;PF2;Eau;modifier;1;30;30;;;18|LOCALISATION METRES;remplacer les symboles de l'Éclair par ceux de l'élément de la forme (les mêmes que le premier cercle d'Impact de cette forme);ténébreux;le coup rendu est de l'élément choisi, à 18 m
+elemental-absorption;4;Absorption élémentaire;PF2;Métal;retirer;2;plein;;;;;;;ce n'est pas un effet : c'est la portée du coup rendu
+elemental-absorption;4;Absorption élémentaire;PF2;Métal;modifier;1;30;30;;;18|LOCALISATION METRES;remplacer les symboles de l'Éclair par ceux de l'élément de la forme (les mêmes que le premier cercle d'Impact de cette forme);ténébreux;le coup rendu est de l'élément choisi, à 18 m
+elemental-absorption;5;Absorption élémentaire;PF2;Bois;retirer;2;plein;;;;;;;ce n'est pas un effet : c'est la portée du coup rendu
+elemental-absorption;5;Absorption élémentaire;PF2;Bois;modifier;1;30;30;;;18|LOCALISATION METRES;remplacer les symboles de l'Éclair par ceux de l'élément de la forme (les mêmes que le premier cercle d'Impact de cette forme);ténébreux;le coup rendu est de l'élément choisi, à 18 m
+creeping-doom;0;Fléau rampant;3.5;Forme arcane;modifier;0;plein;4;PUISSANCE;;;garder;école;des nuées de mille-pattes (indice 4)
+creeping-doom;0;Fléau rampant;3.5;Forme arcane;ajouter après;0;;8;INJONCTION;;;;école;le lanceur les dirige
+expel-blood;0;Sang expulsé;PF1;Forme arcane;modifier;0;plein;3;FAIBLESSE;;;garder;ténébreux;la cible perd de sa constitution (2d4 points, soit −3)
+expel-blood;0;Sang expulsé;PF1;Forme arcane;ajouter après;0;;plein;PUISSANCE;;même satellite de seuil « à la mesure de l'être » que Portail « Appel d'un être » (B4);;école;"son sang devient un élémentaire de sa taille ; pas de cercle d'obéissance : le lanceur ne le commande pas"
+lead-anchor;0;Ancre de plomb;PF1;Forme arcane;modifier;0;plein;plein;FARDEAU;;;"retirer les symboles de Lave ; mettre le symbole de l'eau";ténébreux;la cible coule au fond de l'eau
+dousing-rain;0;Pluie étouffante;PF1;Forme arcane;modifier;1;plein;1;VULNERABILITE;;;garder;ténébreux;1 de plus à chaque blessure d'électricité
+dousing-rain;0;Pluie étouffante;PF1;Forme arcane;ajouter après;1;;3;PROTECTION;;;symbole du feu;lumineux;résistance de 5 au feu pour tous
+cleanse-air;0;Air purifié;PF2;Forme arcane;modifier;1;plein;plein;BARRIERE;;;garder;lumineux;l'air vicié ne rentre plus
+ephemeral-tracking;0;Piste éphémère;PF2;Forme arcane;retirer;1;plein;;;;;;;c'est le même effet que le premier cercle
+ephemeral-tracking;0;Piste éphémère;PF2;Forme arcane;modifier;0;plein TRACE;plein;TRACE;;;ajouter le symbole de l'eau à côté de celui de l'air;inchangé;la trace se lit dans l'air et dans l'eau
+calm-air;0;Air apaisé;PF1;Forme arcane;modifier;0;plein;2;CLIMAT;;;garder;école;le vent baisse d'un cran
+alter-winds;0;Vents altérés;PF1;Forme arcane;modifier;0;plein;2;CLIMAT;;;garder;école;le vent monte ou baisse d'un cran
+wall-of-mist;0;Mur de brume;PF1;Forme arcane;modifier;0;plein;2;DISSIMULATION;;;garder;ténébreux;une chance sur cinq de manquer celui qui est derrière
+songbird;0;Chant astral;PF1;Chant astral — lumineux;modifier;0;plein;2;;;CIBLE MUSIQUE;garder;lumineux;"+3 à une épreuve de chant ou de musique ; sur la jumelle hybride, « musique » quitte les mots du cercle pour ce satellite si elle le portait en mot"
+songbird;1;Chant astral;PF1;Chant astral — ténébreux;modifier;0;plein;2;;;CIBLE MUSIQUE;garder;lumineux;"+3 à une épreuve de chant ou de musique ; sur la jumelle hybride, « musique » quitte les mots du cercle pour ce satellite si elle le portait en mot"
+fickle-winds;0;Vents capricieux;PF1;Forme arcane;modifier;0;plein;plein;BARRIERE;;plein|CONDITION PROJECTILE;garder;lumineux;les traits sont déviés, comme par un mur de vent
+unfolding-wind-rush;0;Vent déployé : ruée;PF2;Forme arcane;modifier;1;plein;plein;BARRIERE;;plein|CONDITION PROJECTILE;garder;lumineux;un mur de vent reste là où il est passé
+ice-body;0;Corps de glace;PF1;Forme arcane;modifier;0;plein;3;PROTECTION;;;garder;lumineux;5 retranché à chaque coup
+ice-body;0;Corps de glace;PF1;Forme arcane;ajouter après;0;;plein;BARRIERE;;;mêmes symboles de Glace;lumineux;insensible au poison, à la maladie, à l'étourdissement
+blast-barrier;0;Barrière de terre;PF1;Forme arcane;modifier;0;plein;plein;BARRIERE;;;garder;lumineux;un abri total
+blast-barrier;0;Barrière de terre;PF1;Forme arcane;ajouter après;0;;7;TRANCHANT;;;;ténébreux;quand il cède : 2d6 d'éclats
+blast-barrier;0;Barrière de terre;PF1;Forme arcane;ajouter après;0 (après le cercle ajouté juste avant);;4;FRACAS;;;symboles de la combinaison Orage;ténébreux;et 1d6 de son
+holy-ice;0;Glace bénite;PF1;Mur de glace bénite — lumineux;modifier;0;plein;plein;BARRIERE;;;garder;lumineux;un mur de glace
+holy-ice;0;Glace bénite;PF1;Mur de glace bénite — lumineux;ajouter après;0;;13;;;;le symbole de face de la forme;selon la face;qui le traverse prend 1d6 + 9
+holy-ice;1;Glace bénite;PF1;Mur de glace maudite — ténébreux;modifier;0;plein;plein;BARRIERE;;;garder;lumineux;un mur de glace
+holy-ice;1;Glace bénite;PF1;Mur de glace maudite — ténébreux;ajouter après;0;;13;;;;le symbole de face de la forme;selon la face;qui le traverse prend 1d6 + 9
+aqueous-orb;0;Orbe aqueux;PF1;Forme arcane;modifier;0;plein;7;;;1|DUREE CHAQUE INSTANTS;garder;ténébreux;2d6 à chaque tour
+aqueous-orb;0;Orbe aqueux;PF1;Forme arcane;ajouter après;0;;7;ENTRAVE;;;;ténébreux;celui qui est englouti est emporté
+aqueous-orb;1;Orbe aqueux;PF2;Forme arcane — version PF2;modifier;0;plein;7;ENTRAVE;;;garder;ténébreux;en PF2 l'orbe engloutit sans blesser (texte lu en partie)
+aqueous-orb;2;Orbe aqueux;PF2;Forme arcane — version PF2 remaniée;modifier;0;plein;7;ENTRAVE;;;garder;ténébreux;en PF2 l'orbe engloutit sans blesser (texte lu en partie)
+wilderness-soldiers;0;Soldats sauvages;PF1;Forme arcane;modifier;0;plein;6;;;;garder;ténébreux;un arbre frappe pour 1d8 + 1
+wall-of-light;0;Mur astral;PF1;Forme lumineuse;modifier;0;plein;plein;AVEUGLEMENT;;;garder;inchangé;"le rideau aveugle qui l'approche ; la jumelle hybride porte déjà « aveuglement · lumière » : ne pas la changer"

@@ -57,7 +57,7 @@ ACCENTS = {"LUMIERE": "lumière", "NECROSE": "nécrose", "DUREE": "durée", "MET
  "REVEIL": "réveil", "INTREPIDITE": "intrépidité", "HOSTILITE": "hostilité", "REPULSION": "répulsion", "ETOURDISSEMENT": "étourdissement",
  "MEMOIRE": "mémoire", "HUMANOIDE": "humanoïde", "COMPREHENSION": "compréhension", "ECOUTE": "écoute", "RESISTANCE": "résistance", "ESPECE": "espèce",
  "CELESTE": "céleste", "ELEMENTAIRE": "élémentaire", "FEE": "fée", "MORTVIVANT": "mort-vivant", "PROPRIETE": "propriété", "PRESAGE": "présage",
- "PENSEE": "pensée", "SANSPLOMB": "sans plomb", "SANSEAUVIVE": "sans eau vive", "LIEUCONNU": "lieu connu", "ETHERE": "éthéré", "OUIE": "ouïe",
+ "PENSEE": "pensée", "LIEUCONNU": "lieu connu", "ETHERE": "éthéré", "OUIE": "ouïe",
  "OEIL": "œil", "REPONSE": "réponse", "DIVINITE": "divinité", "RENOMMEE": "renommée", "LEGENDE": "légende", "ECOLE": "école", "INTREPIDITE": "intrépidité",
  "REPARTIR": "répartir"}     # phase 4a : mot ajouté au lexique (A8)
 def disp(w): return ACCENTS.get(w, w.lower())

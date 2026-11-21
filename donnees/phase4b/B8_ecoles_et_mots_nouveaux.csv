@@ -1,0 +1,40 @@
+﻿cle;sort;jeu;forme;cercle;numero;action;cercle_actuel;valeur;mots;satellites_a_retirer;satellites_a_ajouter;pole_hybride;note
+break-enchantment;Délivrance;3.5;Forme arcane;IMPACT;0;modifier;plein CHARME CONDUITE FORME MALEDICTION;garder;ENCHANTEMENT TRANSMUTATION MALEDICTION;;;inchangé;libère des enchantements, des transmutations et des malédictions
+break-enchantment;Délivrance;PF1;Forme arcane — version PF1;IMPACT;0;modifier;plein CHARME CONDUITE FORME MALEDICTION;garder;ENCHANTEMENT TRANSMUTATION MALEDICTION;;;inchangé;libère des enchantements, des transmutations et des malédictions
+alluring-spores;Spores enjôleuses;PF1;Forme arcane;IMPACT;0;modifier;1 FAIBLESSE CHARME;garder;FAIBLESSE ENCHANTEMENT;;;inchangé;malus contre les sorts d'enchantement du lanceur
+frigid-souls;Âmes glacées;PF1;Forme arcane;IMPACT;0;modifier;plein PROTECTION;garder;ABJURATION;;;inchangé;"défait les effets d'abjuration qui protègent du froid ; symboles de Glace et seuil d'Interaction gardés"
+sequester;Séquestration;5e;Forme arcane;IMPACT;0;ajouter après;;plein;DIVINATION;;;ténébreux;garde de la divination : aucune divination ne détecte ni ne situe la cible
+sequester;Séquestration;3.5;Forme arcane — version 3.5;IMPACT;0;ajouter après;;plein;DIVINATION;;;ténébreux;garde de la divination : aucune divination ne détecte ni ne situe la cible
+misdirection;Détournement;3.5;Forme arcane;IMPACT;0;modifier;2 IMAGE AURA;garder;IMAGE AURA DIVINATION;;;inchangé;trompe les divinations qui lisent les auras
+seeds-of-influence;Graines d'influence;PF1;Graines d'influence;IMPACT;0;modifier;plein INFLUENCE;1;FAIBLESSE DIVINATION;;;ténébreux;−2 contre les divinations du lanceur
+seeds-of-influence;Graines d'influence;PF1;Graines d'influence suprêmes;IMPACT;0;modifier;plein INFLUENCE DISSIPATION;1;FAIBLESSE DIVINATION DISSIPATION;;;ténébreux;"−2 contre les divinations du lanceur ; la forme suprême tente aussi de dissiper les protections"
+psychic-surgery;Chirurgie psychique;PF1;Forme arcane;IMPACT;0;ajouter après;;plein;ENCHANTEMENT;;6|INTERACTION;lumineux;lève les sorts d'enchantement, jusqu'au niveau 6
+cast-out;Expulsion;PF1;Forme arcane;IMPACT;0;modifier;12 DISSIPATION;12;;;;ténébreux;frappe : 2d8 + niveau
+cast-out;Expulsion;PF1;Forme arcane;IMPACT;0;ajouter après;;plein;ENCHANTEMENT POSSESSION;;4|INTERACTION;lumineux;dissipe les possessions et les contraintes d'enchantement
+painful-revelation;Révélation douloureuse;PF1;Forme arcane;CIBLE;0;modifier;plein;garder;ILLUSION;;;;le sort se pose sur une illusion en cours : ajouter le mot à la Cible
+hallowed-ground;Sol béni;PF2;Forme arcane;IMPACT;1;modifier;1 VULNERABILITE;garder;VULNERABILITE;;plein|CONDITION NECROMANCIE;inchangé;les morts-vivants y craignent davantage la vie et les sorts de nécromancie du lanceur
+corpse-lanterns;Lanternes de cadavre;PF1;Forme arcane;IMPACT;0;ajouter après;;1;CONTRE ILLUSION;;;lumineux;+2 pour résister aux illusions
+conditional-favor;Faveur conditionnelle;PF1;Forme arcane;CONDITION;0;modifier;1 PAROLE;garder;PAROLE ABJURATION INVOCATION ENCHANTEMENT TRANSMUTATION;;;;le sort jumelé doit être d'abjuration, d'invocation de soin, d'enchantement ou de transmutation
+locate-object;Localisation d'objet;5e;Forme arcane;CONDITION;0;modifier;3 PAROLE VU SANSPLOMB;garder;PAROLE VU SANS PLOMB;;;;arrêtée par une feuille de plomb
+locate-object;Localisation d'objet;3.5;Forme arcane — version 3.5;CONDITION;0;modifier;3 PAROLE VU SANSPLOMB;garder;PAROLE VU SANS PLOMB;;;;arrêtée par une feuille de plomb
+locate-object;Localisation d'objet;PF2;Forme arcane — version PF2;CONDITION;0;modifier;3 PAROLE VU SANSPLOMB;garder;PAROLE VU SANS PLOMB;;;;arrêtée par une feuille de plomb
+locate-creature;Localisation de créature;5e;Forme arcane;CONDITION;0;modifier;3 PAROLE VU SANSEAUVIVE;garder;PAROLE VU SANS EAU COURANT;;;;arrêtée par l'eau vive
+locate-creature;Localisation de créature;3.5;Forme arcane — version 3.5;CONDITION;0;modifier;3 PAROLE VU SANSEAUVIVE;garder;PAROLE VU SANS EAU COURANT;;;;arrêtée par l'eau vive
+mage-armor;Armure de mage;5e;Forme arcane;CONDITION;0;modifier;2 PAROLE SANSARMURE;garder;PAROLE SANS ARMURE;;;;sur un être sans armure
+mage-armor;Armure de mage;PF2;Forme arcane — version PF2;CONDITION;0;modifier;2 PAROLE SANSARMURE;garder;PAROLE SANS ARMURE;;;;sur un être sans armure
+chill-touch;Contact glacial;5e;Forme arcane — Forme ténébreuse;IMPACT;1;modifier;plein SANSGUERISON;garder;SANS GUERISON;;;inchangé;la cible ne peut plus être soignée
+chill-touch;Contact glacial;5e;Forme arcane — Forme lumineuse;IMPACT;1;modifier;plein SANSGUERISON;garder;SANS GUERISON;;;inchangé;la cible ne peut plus être soignée
+chill-touch;Contact glacial;2024;Forme arcane — Forme ténébreuse — version 2024;IMPACT;1;modifier;plein SANSGUERISON;garder;SANS GUERISON;;;inchangé;la cible ne peut plus être soignée
+chill-touch;Contact glacial;2024;Forme arcane — Forme lumineuse — version 2024;IMPACT;1;modifier;plein SANSGUERISON;garder;SANS GUERISON;;;inchangé;la cible ne peut plus être soignée
+pass-without-trace;Passage sans trace;5e;Forme arcane;IMPACT;0;modifier;5 DISCRETION SANSTRACE;garder;DISCRETION SANS TRACE;;;inchangé;aucune trace
+pass-without-trace;Passage sans trace;3.5;Forme arcane — version 3.5;IMPACT;0;modifier;plein SANSTRACE;garder;SANS TRACE;;;inchangé;aucune trace
+pass-without-trace;Passage sans trace;PF2;Forme arcane — version PF2;IMPACT;0;modifier;2 SANSTRACE;garder;SANS TRACE;;;inchangé;aucune trace
+aboleths-lung;Poumon des profondeurs;PF1;Forme arcane;IMPACT;1;modifier;plein;garder;SANS;;;inchangé;"ne respire plus l'air ; le symbole de l'air reste"
+weapons-against-evil;Armes contre l'hostile;PF1;Forme arcane;IMPACT;0;modifier;plein PROTECTION;garder;MALGRE PROTECTION;;;inchangé;les armes frappent malgré une réduction de 5 ou moins
+sanctify-weapons;Armes contre les êtres astraux;PF1;Contre le lumineux;IMPACT;0;modifier;plein PROTECTION;garder;MALGRE PROTECTION;;;inchangé;les armes frappent malgré la réduction de cette sorte d'êtres
+sanctify-weapons;Armes contre les êtres astraux;PF1;Contre le ténébreux;IMPACT;0;modifier;plein PROTECTION;garder;MALGRE PROTECTION;;;inchangé;les armes frappent malgré la réduction de cette sorte d'êtres
+heart-of-the-metal;Cœur du métal;PF1;Forme arcane;IMPACT;0;modifier;plein PROTECTION;garder;MALGRE PROTECTION;;;inchangé;les armes frappent malgré la réduction liée au métal
+planeslayers-call;Appel du tueur de plans;PF1;Forme arcane;IMPACT;1;modifier;plein PROTECTION;garder;MALGRE PROTECTION;;;inchangé;les sorts passent malgré 10 de résistance
+ethereal-fists;Poings éthérés;PF1;Forme arcane;IMPACT;0;modifier;plein TOUCHER IMMATERIEL;garder;TOUCHER MALGRE IMMATERIEL;;;inchangé;frappe les êtres immatériels
+ghostly-weapon;Arme spectrale;PF2;Forme arcane;IMPACT;0;modifier;plein TOUCHER INTANGIBLE;garder;TOUCHER MALGRE INTANGIBLE;;;inchangé;l'arme touche les êtres intangibles
+lead-plating;Gaine de plomb;PF1;Forme arcane;IMPACT;0;modifier;plein DIVINATION CONTENANT;garder;DIVINATION PLOMB;;;inchangé;une mince gaine de plomb arrête les divinations

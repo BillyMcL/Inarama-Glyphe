@@ -14,7 +14,7 @@ un Impact est opposé. Chaque cercle d'Impact garde son pôle (champ poles_impac
 import os, csv, re
 import spells as SP
 
-ETAPE = int(os.environ.get("PHASE4B_ETAPE", "9"))     # 9 : B7 (Impacts pleins d'Arcane)      # étapes de la phase 4b appliquées (0 ou 1 : aucune donnée)
+ETAPE = int(os.environ.get("PHASE4B_ETAPE", "10"))     # 9 : B7 (Impacts pleins d'Arcane)      # étapes de la phase 4b appliquées (0 ou 1 : aucune donnée)
 D = os.path.dirname(os.path.abspath(__file__))
 P4B = os.path.join(D, "..", "donnees", "phase4b")
 B3 = list(csv.DictReader(open(os.path.join(P4B, "B3_formes_hybrides.csv"), encoding="utf-8-sig"), delimiter=";")) \
@@ -365,6 +365,7 @@ def hybride(g, l, k, plusieurs):
     ps = _poles_b6(ps, k, POLE_HEMI[hemi])
     face_ = "lumineux" if "lumineu" in g["label"].lower() else "ténébreux" if "ténébreu" in g["label"].lower() else POLE_HEMI[hemi]
     ps = poles_b7(ps, k, POLE_HEMI[hemi], face_)      # B7 : cercles ajoutés, retirés, pôles donnés
+    ps = poles_b8(ps, k, g["label"], POLE_HEMI[hemi], face_)      # B8 : cercles ajoutés, pôles donnés
     if len(ps) != n_imp: _refus(l, f"{len(ps)} pôles pour {n_imp} cercles d'Impact"); return None
     une_des_faces = any(x in g["label"].lower() for x in ("lumineu", "ténébreu"))
     if l["face"] and une_des_faces and POLE_HEMI[hemi] != {"lumineuse": "lumineux", "ténébreuse": "ténébreux"}[l["face"]]:
@@ -453,7 +454,7 @@ def creer(g, k):
             nf = hybride(modele, l, k, plusieurs)
             if nf is not None: out.append(nf)
         elif l["type"] == "art rare":
-            nf = art_rare(g, l, k)
+            nf = art_rare(g.get("_modele_art_rare", g), l, k)
             if nf is not None: out.append(nf)
         elif l["type"] == "forme d'Arcane nouvelle":
             arcane = arcane_nouvelle(g, l, k)
@@ -826,4 +827,126 @@ def b7_jumelle(g, kh):
         p = {"lumineux": "lumineux", "ténébreux": "ténébreux", "école": ecole, "selon la face": face}.get(spec, base)
         nps.append(p if p else ecole)
     B7_FAITS.append((kh[0], kh[1], g["label"] + " (jumelle antérieure)", [r[3] for r in g["rings"] if r[0] == "IMPACT"], [r[3] for r in rings if r[0] == "IMPACT"]))
+    return dict(g, rings=rings, poles_impacts=tuple(nps) or None)
+
+
+# ---------- B8 : noms d'écoles et mots nouveaux du lexique (décision du 21 novembre 2026) ----------
+# Lignes repérées par cle et nom de la forme d'Arcane ; « numero » compte les cercles du même critère dans la forme telle
+# qu'elle est avant B8 (B7 compris) ; toutes les lignes d'une forme s'appliquent ensemble, à la forme d'Arcane et à ses
+# jumelles (créées en 4b : d'après le modèle corrigé ; antérieures : JUMELLES_B8), comme B7.
+_B8 = os.path.join(P4B, "B8_ecoles_et_mots_nouveaux.csv")
+B8 = _dd(list)
+for _l in (csv.DictReader(open(_B8, encoding="utf-8-sig"), delimiter=";") if os.path.exists(_B8) else []):
+    B8[(_l["cle"], _l["forme"])].append(_l)
+JUMELLES_B8 = {("chill-touch", 2): "Forme arcane — Forme ténébreuse", ("chill-touch", 3): "Forme arcane — Forme lumineuse",
+               ("chill-touch", 6): "Forme arcane — Forme ténébreuse — version 2024",
+               ("chill-touch", 7): "Forme arcane — Forme lumineuse — version 2024",
+               ("misdirection", 1): "Forme arcane"}          # hybride antérieure → nom de sa forme d'Arcane (mêmes cercles)
+B8_FAITS, B8_REFUS = [], []
+
+
+def _tete_b8(crit, v, mots):
+    """début de phrase (règles de la phase 4a) ; « sans » se lit avec le ou les mots qui le suivent : « sans · armure »"""
+    import convert as C, corrections as K
+    if crit == "CONDITION" and "SANS" in mots:
+        i = mots.index("SANS")
+        avant = [f"« {C.shown(w)} »" for w in mots[:i]]
+        return " ; ".join(avant + ["« " + " · ".join(C.shown(w) for w in mots[i:]) + " »"])
+    return K._tete(crit, v, mots)
+
+
+def _cercle_b8(r, l, k, ajout=False):
+    import convert as C, corrections as K, lint as LI
+    crit = l["cercle"]
+    ws = l["mots"].split()
+    hors = [w for w in ws if LI.MILLE_ET_UN is not None and w not in LI.MILLE_ET_UN]
+    if hors: raise ValueError(f"hors lexique : {hors}")
+    ws = [C.word(w) for w in ws]
+    if crit == "CIBLE" and not ajout: ws = list(r[2]) + ws          # le mot s'ajoute à ce que la Cible porte
+    if l["valeur"] == "garder": v = r[1]
+    else: v = "plein" if l["valeur"] == "plein" else int(l["valeur"])
+    sats = [] if ajout else (list(r[4]) if len(r) > 4 and r[4] else [])
+    for t in [x.strip() for x in l["satellites_a_retirer"].split(";") if x.strip()]:
+        sats = [s for s in sats if not (len(s) > 2 and s[2] == t)]
+    for t in [x for x in l["satellites_a_ajouter"].split(";") if x.strip()]: sats.append(_sat_b7(t))
+    sats = C._resats(sats) if sats else sats
+    par = (" (" + l["note"].split(" ; ")[0].strip() + ")") if ajout else K.parenthese(r[3])
+    with K._Accentue():
+        rd = _tete_b8(crit, v, ws) + par + K._lecture_sats(sats, k, ws)
+    return (crit, v, ws, rd, sats) if sats else (crit, v, ws, rd)
+
+
+def b8_cercles(f, rows, k):
+    out, ops, cpt = [], [], _dd(int)
+    par = _dd(list)
+    for l in rows: par[(l["cercle"], int(l["numero"]))].append(l)
+    ii = 0
+    for r in f["rings"]:
+        n = cpt[r[0]]; cpt[r[0]] += 1
+        ls = par.get((r[0], n), [])
+        mod = [l for l in ls if l["action"] == "modifier"]
+        out.append(_cercle_b8(r, mod[0], k) if mod else r)
+        if r[0] == "IMPACT":
+            ops.append(("orig", ii, mod[0]["pole_hybride"] if mod else "inchangé")); ii += 1
+        for l in [l for l in ls if l["action"] == "ajouter après"]:
+            out.append(_cercle_b8(r, l, k, ajout=True))
+            if l["cercle"] == "IMPACT": ops.append(("ajout", None, l["pole_hybride"]))
+    return out, ops
+
+
+def b8(g, k):
+    rows = B8.get((k[0], g["label"])) if ETAPE >= 10 else None
+    if not rows: return g
+    if g["fam"] != "A": B8_REFUS.append((k, f"famille {g['fam']}")); return g
+    try:
+        rings, _ = b8_cercles(g, rows, k)
+    except Exception as e:
+        B8_REFUS.append((k, str(e))); return g
+    B8_FAITS.append((k[0], k[1], g["label"]))
+    return dict(g, rings=rings)
+
+
+def poles_b8(ps, k, label, ecole, face):
+    rows = B8.get((k[0], label)) if ETAPE >= 10 else None
+    if not rows: return ps
+    imp_n = len(ps)
+    # opérations de pôle sur les seuls cercles d'Impact
+    par = _dd(list)
+    for l in rows:
+        if l["cercle"] == "IMPACT": par[int(l["numero"])].append(l)
+    out = []
+    for j in range(imp_n):
+        ls = par.get(j, []); mod = [l for l in ls if l["action"] == "modifier"]
+        spec = mod[0]["pole_hybride"] if mod else "inchangé"
+        out.append({"lumineux": "lumineux", "ténébreux": "ténébreux", "école": ecole, "selon la face": face}.get(spec, ps[j]))
+        for l in [l for l in ls if l["action"] == "ajouter après"]:
+            out.append({"lumineux": "lumineux", "ténébreux": "ténébreux", "école": ecole, "selon la face": face}.get(l["pole_hybride"], ecole))
+    return out
+
+
+def b8_jumelle(g, kh):
+    """une forme hybride antérieure retenue comme jumelle (JUMELLES_B8) : mêmes corrections que sa forme d'Arcane"""
+    import combos as KB
+    lab = JUMELLES_B8.get(kh)
+    rows = B8.get((kh[0], lab)) if lab and ETAPE >= 10 else None
+    if not rows: return g
+    try:
+        rings, ops = b8_cercles(g, rows, kh)
+    except Exception as e:
+        B8_REFUS.append((kh, str(e))); return g
+    m = re.match(r"(.+) · (Hodolin|Galombar) · (.+?) \(", g["verb"])
+    comb = m.group(3) if m else None
+    if comb in KB.COMBOS:
+        chang = [r for r in rings if r not in g["rings"]]
+        red = dict(zip(map(id, chang), _redit(chang, comb, kh[0], kh[1]))) if chang else {}
+        rings = [red.get(id(r), r) for r in rings]
+    ecole = POLE_HEMI[m.group(2)] if m else "lumineux"
+    face = "lumineux" if "lumineu" in g["label"].lower() else "ténébreux" if "ténébreu" in g["label"].lower() else ecole
+    ps = list(g.get("poles_impacts") or [])
+    nps = []
+    for kind, j, spec in ops:
+        base = ps[j] if kind == "orig" and j < len(ps) else None
+        p = {"lumineux": "lumineux", "ténébreux": "ténébreux", "école": ecole, "selon la face": face}.get(spec, base)
+        nps.append(p if p else ecole)
+    B8_FAITS.append((kh[0], kh[1], g["label"] + " (jumelle antérieure)"))
     return dict(g, rings=rings, poles_impacts=tuple(nps) or None)

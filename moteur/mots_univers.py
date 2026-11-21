@@ -3,6 +3,7 @@ Une annotation doit se lire du point de vue d'un arcaniste d'Inarama : aucun ter
 Restent tels quels, par décision : « ki », « demi-plan ».
 « temporaire », « persistance » et « par tour » ne sont plus des mots : ce sont des satellites (convert.emprunt_et_rythme)."""
 # mot -> mots qui le remplacent, partout
+# (lexique, 21 novembre 2026 : un nom d'école n'est plus renommé — INVOCATION, NECROMANCIE, TRANSMUTATION restent)
 RENOMME = {
  "RETARD": ["délai"],            # une attente
  "ESSAI": ["chance"],            # « le meilleur de deux essais »
@@ -170,7 +171,7 @@ FUSIONS = {
  "IDEE": ["pensée"], "IMITATION": ["copie"], "IMMEDIAT": ["vitesse"], "IMMORTALITE": ["permanence"], "IMPACT": ["choc"], "IMPENETRABLE": ["barrière"],
  "IMPREGNATION": ["marque"], "IMPRESSION": ["empreinte"], "INCONSCIENT": ["torpeur"], "INDETECTABLE": ["dissimulation"], "INERTE": ["immobilité"],
  "INFAILLIBLE": ["précision"], "INFIRMITE": ["difformité"], "INNE": ["nature"], "INOFFENSIF": ["paix"], "INONDATION": ["vague"], "INSIGNE": ["symbole"],
- "INTERCESSION": ["faveur"], "INTERRUPTION": ["arrêt"], "INTERVALLE": ["distance"], "INTUITION": ["présage"], "INVOCATION": ["invoqué"],
+ "INTERCESSION": ["faveur"], "INTERRUPTION": ["arrêt"], "INTERVALLE": ["distance"], "INTUITION": ["présage"], 
  "INVULNERABILITE": ["immunité"], "INVULNERABLE": ["immunité"], "IRIS": ["œil"], "ISOLANT": ["protection"], "ISSUE": ["passage"], "JACINTHE": ["gemme"],
  "JALOUSIE": ["haine"], "JAMBE": ["membre"], "JET": ["lancer"], "JEU": ["hasard"], "JOUET": ["objet"], "JOUTE": ["duel"], "JOYAU": ["gemme"],
  "JUGEMENT": ["condamnation"], "KILOGRAMMES": ["kilo"], "LABORATOIRE": ["outil"], "LACHETE": ["peur"], "LAIDEUR": ["difformité"], "LAMBEAUX": ["déchirure"],
@@ -183,7 +184,7 @@ FUSIONS = {
  "MINUIT": ["nuit"], "MIRAGE": ["illusion"], "MISERICORDE": ["pitié"], "MOBILE": ["mouvement"], "MOITIE": ["partage"], "MONNAIE": ["pièce"],
  "MONOCLE": ["lentille"], "MOQUERIE": ["mépris"], "MOTDEPASSE": ["secret"], "MOYEN": ["stature"], "MULTIPLE": ["répétition"], "MULTIPLICATION": ["répétition"],
  "MULTIVERS": ["plan"], "MUSC": ["odeur"], "MUSICIENS": ["musique"], "MUTISME": ["silence"], "NAGEOIRE": ["nage"], "NARCISSISME": ["orgueil"],
- "NATURELLE": ["nature"], "NAVIGATION": ["voyage"], "NEANT": ["vide"], "NECROMANCIE": ["mort"], "NENUPHAR": ["fleur"], "NERVOSITE": ["trouble"],
+ "NATURELLE": ["nature"], "NAVIGATION": ["voyage"], "NEANT": ["vide"], "NENUPHAR": ["fleur"], "NERVOSITE": ["trouble"],
  "NETTETE": ["précision"], "NEUTRALISATION": ["dissipation"], "NIMBE": ["halo"], "NOBLESSE": ["prestance"], "NON": ["réponse"], "NORD": ["direction"],
  "OBSERVATION": ["vigilance"], "OBSTACLE": ["entrave"], "OCCASION": ["chance"], "ONGLE": ["griffe"], "ONGUENT": ["huile"], "OPACITE": ["obscurité"],
  "ORBE": ["cristal"], "ORCHESTRE": ["musique"], "OREILLE": ["tête"], "ORIENTATION": ["direction"], "ORTIE": ["herbe"], "OSSEMENTS": ["os"],
@@ -221,7 +222,7 @@ FUSIONS = {
  "TAUREAU": ["bête"], "TEINT": ["couleur"], "TERRASSEMENT": ["trou"], "TERRESTRE": ["terre"], "TERTRE": ["terrain"], "TEXTE": ["écrit"],
  "THE": ["nourriture"], "THRENE": ["chant"], "TIGE": ["plante"], "TIR": ["lancer"], "TOURMENT": ["douleur"], "TOUS": ["toutes"], "TOXIQUE": ["poison"],
  "TRAC": ["peur"], "TRAITRISE": ["trahison"], "TRAJECTOIRE": ["direction"], "TRANCHEE": ["trou"], "TRANSFORMATION": ["métamorphose"],
- "TRANSGRESSION": ["offense"], "TRANSLUCIDE": ["transparence"], "TRANSMUTATION": ["métamorphose"], "TREMBLEMENT": ["secousse"], "TRESSAGE": ["ouvrage"],
+ "TRANSGRESSION": ["offense"], "TRANSLUCIDE": ["transparence"], "TREMBLEMENT": ["secousse"], "TRESSAGE": ["ouvrage"],
  "TRI": ["ordre"], "TRIDENT": ["lance"], "TRIPLE": ["répétition"], "TROMPETTE": ["musique"], "TRONC": ["arbre"], "TUNNEL": ["passage"],
  "UNISSON": ["accord"], "USURE": ["rongement"], "VACILLEMENT": ["chancellement"], "VAILLANCE": ["courage"], "VANITE": ["orgueil"], "VASE": ["contenant"],
  "VEGETATION": ["plante"], "VEHICULE": ["monture"], "VERDATRE": ["couleur"], "VERGLAS": ["givre"], "VERTICAL": ["élévation"],

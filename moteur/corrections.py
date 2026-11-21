@@ -55,6 +55,27 @@ def cercles_actuels(forme):
     return [[r[0], _norm(r[1]), _norm(list(r[2]))] for r in forme["rings"]]
 
 
+# chantier du lexique (21 novembre 2026) : le moteur ne renomme plus ces noms d'école ; l'état cible de la phase 4a a été
+# relevé quand il les renommait. Le contrôle reconnaît donc un cercle avec le nom d'école comme avec l'ancien mot.
+ANCIENS_MOTS = {"NECROMANCIE": "MORT", "TRANSMUTATION": "METAMORPHOSE", "INVOCATION": "INVOQUE"}
+
+
+def _variantes(mots):
+    """les mots d'un cercle tels que l'état cible a pu les relever : tels quels, avec l'ancien mot de remplacement, ou sans
+    le nom d'école (quand une autre règle retirait ensuite le mot de remplacement, comme « mort » sur Vin de mort)"""
+    return [list(mots), [ANCIENS_MOTS.get(w, w) for w in mots], [w for w in mots if w not in ANCIENS_MOTS]]
+
+
+def _anciens(mots):
+    return [ANCIENS_MOTS.get(w, w) for w in mots]
+
+
+def origine_reconnue(origine, forme):
+    o, a = _norm(origine), cercles_actuels(forme)
+    if len(o) != len(a): return False
+    return all(oc == ac and ov == av and om in _variantes(am) for (oc, ov, om), (ac, av, am) in zip(o, a))
+
+
 def satellite_moteur(s):
     """un satellite du fichier {position, valeur, texte, options} → le tuple du moteur (position, valeur[, texte[, options]])"""
     v = s["valeur"]
@@ -392,7 +413,8 @@ def _cercles(f, x):
     out, changes = [], 0
     for c in x["cercles"]:
         if c["etat"] == "inchangé":
-            r = next(r for r in restants if r[0] == c["cercle"] and _norm(r[1]) == c["valeur"] and _norm(list(r[2])) == c["mots"])
+            r = next(r for r in restants if r[0] == c["cercle"] and _norm(r[1]) == c["valeur"]
+                     and c["mots"] in _variantes(_norm(list(r[2]))))
             restants.remove(r)
             out.append(r)
             continue
@@ -501,7 +523,7 @@ def appliquer(cle, formes):
         x = PAR_CLE.get(k)
         if x is not None:
             _vues[k] = (f, cercles_actuels(f))
-            if _norm(x["origine"]) == cercles_actuels(f):          # sinon : ne pas appliquer (signalé par bilan())
+            if origine_reconnue(x["origine"], f):                  # sinon : ne pas appliquer (signalé par bilan())
                 rings, n, _ = _cercles(f, x)
                 rings = [(r[0], r[1], r[2], r[3], _grands(r[4], k)) if c["etat"] != "inchangé" and len(r) > 4 and r[4] else r
                          for r, c in zip(rings, x["cercles"])]          # grands nombres : cercles modifiés et ajoutés seulement
@@ -525,6 +547,7 @@ def appliquer(cle, formes):
         if not retirer:                       # phase 4b (couche voisine phase4b.py) : formes existantes de B3
             g2, retirer = P4B.existante(g, k); change |= g2 is not g; g = g2
             g2 = P4B.b7_jumelle(g, k); change |= g2 is not g; g = g2      # B7 : jumelle hybride antérieure retenue
+            g2 = P4B.b8_jumelle(g, k); change |= g2 is not g; g = g2      # B8 : jumelle hybride antérieure retenue
         g2 = P4B.relecture(g, k, True); change |= g2 is not g; g = g2       # B6 : modèle et formes hybrides créées
         b4 = P4B.b4(k)                        # étape 7 : formes nouvelles (B4)
         remplace = [b for b in b4 if b["action"] == "remplacer la forme modèle"]
@@ -539,12 +562,15 @@ def appliquer(cle, formes):
             for b in b4:
                 g2 = P4B.renomme(g, b); change |= g2 is not g; g = g2
             gh = g if k in P4B.B7_SANS_JUMELLE else P4B.b7(g, k)  # B7 : le modèle corrigé (après son nouveau nom), pour ses jumelles
+            gh2 = P4B.b8(gh, k)                                    # B8 : de même, pour les jumelles hybrides seulement :
+            gh = dict(gh2, _modele_art_rare=gh) if gh2 is not gh else gh   # un art rare créé garde le modèle d'avant B8
             nouvelles = P4B.creer(gh, k)      # phase 4b : formes créées d'après ce modèle, placées juste après lui
             for b in b4:                      # « ajouter » : la forme nouvelle (et ses jumelles) après le modèle
                 nf = P4B.nouvelle(g, b, k)
                 if nf is not None: nouvelles += [nf] + (P4B.jumelles(nf, k) if nf["fam"] == "A" else [])
         g2 = P4B.relecture(g, k, False); change |= g2 is not g; g = g2      # B6 : forme d'Arcane modèle seulement
         g2 = P4B.b7(g, k); change |= g2 is not g; g = g2                    # B7 : la forme d'Arcane
+        g2 = P4B.b8(g, k); change |= g2 is not g; g = g2                    # B8 : la forme d'Arcane
         if not retirer:
             if change:
                 rings, touche = _placer(g["rings"])

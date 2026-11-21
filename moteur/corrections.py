@@ -562,8 +562,7 @@ def appliquer(cle, formes):
             for b in b4:
                 g2 = P4B.renomme(g, b); change |= g2 is not g; g = g2
             gh = g if k in P4B.B7_SANS_JUMELLE else P4B.b7(g, k)  # B7 : le modèle corrigé (après son nouveau nom), pour ses jumelles
-            gh2 = P4B.b8(gh, k)                                    # B8 : de même, pour les jumelles hybrides seulement :
-            gh = dict(gh2, _modele_art_rare=gh) if gh2 is not gh else gh   # un art rare créé garde le modèle d'avant B8
+            gh = P4B.b8(gh, k)                                     # B8 : de même (jumelles hybrides et art rare créé)
             nouvelles = P4B.creer(gh, k)      # phase 4b : formes créées d'après ce modèle, placées juste après lui
             for b in b4:                      # « ajouter » : la forme nouvelle (et ses jumelles) après le modèle
                 nf = P4B.nouvelle(g, b, k)

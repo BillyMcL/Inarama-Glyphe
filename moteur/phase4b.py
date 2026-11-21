@@ -454,7 +454,7 @@ def creer(g, k):
             nf = hybride(modele, l, k, plusieurs)
             if nf is not None: out.append(nf)
         elif l["type"] == "art rare":
-            nf = art_rare(g.get("_modele_art_rare", g), l, k)
+            nf = art_rare(g, l, k)
             if nf is not None: out.append(nf)
         elif l["type"] == "forme d'Arcane nouvelle":
             arcane = arcane_nouvelle(g, l, k)

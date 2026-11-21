@@ -14,7 +14,7 @@ un Impact est opposé. Chaque cercle d'Impact garde son pôle (champ poles_impac
 import os, csv, re
 import spells as SP
 
-ETAPE = int(os.environ.get("PHASE4B_ETAPE", "6"))      # étapes de la phase 4b appliquées (0 ou 1 : aucune donnée)
+ETAPE = int(os.environ.get("PHASE4B_ETAPE", "7"))      # étapes de la phase 4b appliquées (0 ou 1 : aucune donnée)
 D = os.path.dirname(os.path.abspath(__file__))
 P4B = os.path.join(D, "..", "donnees", "phase4b")
 B3 = list(csv.DictReader(open(os.path.join(P4B, "B3_formes_hybrides.csv"), encoding="utf-8-sig"), delimiter=";")) \
@@ -452,4 +452,119 @@ def creer(g, k):
             if arcane is not None: out.append(arcane)
         else:
             _refus(l, f"type « {l['type']} » non traité")
+    return out
+
+
+# ---------- étape 7 : les formes nouvelles (B4_formes_nouvelles.json) ----------
+import json as _json
+_B4 = os.path.join(P4B, "B4_formes_nouvelles.json")
+NOUVELLES = _dd(list)               # (cle, rang d'origine du modèle) → formes nouvelles, dans l'ordre du fichier
+for _b in (_json.load(open(_B4, encoding="utf-8"))["formes"] if os.path.exists(_B4) else []):
+    NOUVELLES[(_b["cle"], int(_b["rang_forme_modele"]))].append(_b)
+B4_FAITES, B4_REFUS = [], []        # (cle, rang, nom) ; (forme, raison)
+PARENTHESES_ENTIERES = []           # cercles de B4 dont le champ « parenthese » était la phrase entière
+VERBE_PORTAIL = "Invoquer"          # Portail « Appel d'un être » : verbe proposé ; Lier s'il donne un glyphe en double
+
+
+def b4(k):
+    return NOUVELLES.get(k, []) if ETAPE >= 7 else []
+
+
+def _suffixe(modele):
+    """la précision d'édition d'un nom de forme (« — version 3.5 »), pour que deux formes d'un sort n'aient pas le même nom"""
+    m = re.search(r"( — version .+)$", modele)
+    return m.group(1) if m else ""
+
+
+def renomme(g, b):
+    """action « ajouter » : la forme modèle prend le nom donné (précision d'édition gardée)"""
+    return dict(g, label=b["forme_modele_renommee"] + _suffixe(g["label"])) if b.get("forme_modele_renommee") else g
+
+
+def _cercles_b4(g, b, k):
+    """les cercles de la forme nouvelle (même format que l'état cible de la phase 4a) : inchangé = recopié, phrase comprise ;
+    modifié = début régénéré et parenthèse donnée, sinon celle d'origine ; ajouté = phrase générée avec la parenthèse"""
+    import corrections as K
+    cs = [dict(c, satellites=[dict(s, valeur=None if s["valeur"] == "" else s["valeur"]) for s in c["satellites"]]) for c in b["cercles"]]
+    try:
+        rings, _, _ = K._cercles(g, {"cercles": cs})
+    except StopIteration:
+        B4_REFUS.append((b, "un cercle « inchangé » ne se retrouve pas dans la forme modèle")); return None
+    out = []
+    with K._Accentue():
+        for r, c in zip(rings, cs):
+            if c["etat"] == "inchangé":
+                out.append(r); continue
+            sats = list(r[4]) if len(r) > 4 and r[4] else []
+            tete = K._tete(r[0], r[1], r[2])
+            if c.get("parenthese", "").startswith(tete + " ("):        # B4 donne parfois la phrase entière : n'en garder que la parenthèse
+                PARENTHESES_ENTIERES.append((b["cle"], b["nom_de_la_forme"], r[0], c["parenthese"])); par = K.parenthese(c["parenthese"])
+            elif c.get("parenthese"): par = f" ({c['parenthese']})"
+            elif c["etat"] == "modifié": par = K.parenthese(c.get("lecture_d_origine") or "")
+            else: par = ""
+            rd = K._tete(r[0], r[1], r[2]) + par + K._lecture_sats(sats, k, r[2])
+            out.append((r[0], r[1], r[2], rd, sats) if sats else (r[0], r[1], r[2], rd))
+    return out
+
+
+def nouvelle(g, b, k):
+    """une forme nouvelle de B4, d'après la forme modèle g"""
+    import convert as C, combos as KB, lint as LI
+    rings = _cercles_b4(g, b, k)
+    if rings is None: return None
+    mots = []
+    for r in rings:
+        mots += list(r[2])
+        for s in (r[4] if len(r) > 4 and r[4] else []):
+            if len(s) > 2 and s[2]: mots += [x for x in str(s[2]).split() if x not in SP.NAMES]
+    hors = sorted({w for w in mots if LI.MILLE_ET_UN is not None and w not in LI.MILLE_ET_UN})
+    if hors:
+        B4_REFUS.append((b, f"hors lexique : {hors}")); return None
+    if b["niveau"] != g["level"]:
+        B4_REFUS.append((b, f"niveau {b['niveau']} / modèle {g['level']}")); return None
+    nom = b["nom_de_la_forme"] + _suffixe(g["label"])
+    base = dict(g, rings=rings, label=nom, poles_impacts=None, regle_4b=False, element_par_defaut=False,
+                cree_4b=(k[1], "forme nouvelle (B4)"))
+    fam = b["famille"]
+    if fam == "Arcane":
+        v = _verbe_de(b["verbe"])
+        if v is None:
+            B4_REFUS.append((b, f"verbe « {b['verbe']} »")); return None
+        vk, vn = v
+        notes = ["Arcane : aucun élément en jeu, un verbe suffit." if n.startswith("Art rare (") else n for n in g["notes"]]
+        f = dict(base, fam="A", core=SP.verb(vk, vn), pol="down" if vn else "up", split=None, r0=34, notes=notes,
+                 verb=f"{C.VERBS[(vk, vn)]} · {C.VERB_GROUP[vk].lower()} {'−' if vn else '+'}")
+    elif fam == "Art rare":
+        if g["core"][0] != "chrono":
+            B4_REFUS.append((b, "modèle sans Noyau d'art rare")); return None
+        vk, vn = _verbe_de(VERBE_PORTAIL if b["cle"] == "gate" else b["verbe"])
+        art = g["core"][4]
+        f = dict(base, fam="R", core=SP.chrono(vk, vn, art), r0=66, split=None,
+                 verb=f"{art.capitalize()} · {C.VERBS[(vk, vn)]} ({C.VERB_GROUP[vk]} {'−' if vn else '+'}) cerné des quatre éléments")
+    else:       # Magie hybride sans forme d'Arcane
+        comb, ecole = b["combinaison"], b["ecole"]
+        hemi = HEMI_ECOLE[ecole]
+        n_imp = sum(1 for r in rings if r[0] == "IMPACT")
+        if b["impacts_poles"].strip() in ("tous lumineux", "tous ténébreux"): ps = [b["impacts_poles"].split()[1]] * n_imp
+        else: ps = [x.split(":")[1].strip() for x in b["impacts_poles"].split("|")]
+        if len(ps) != n_imp:
+            B4_REFUS.append((b, f"{len(ps)} pôles pour {n_imp} Impacts")); return None
+        f_, a_, t_, e_ = KB.COMBOS[comb]
+        if g["fam"] == "H": notes = g["notes"]
+        else: notes = [f"Magie hybride, combinaison {comb} : l'élément en jeu."] + [n for n in g["notes"] if n not in NOTES_RETIREES]
+        f = dict(base, fam="H", core=SP.hyb(f=f_, a=a_, t=t_, e=e_, label=C.norm(ecole)), r0=66, split=None, notes=notes,
+                 verb=f"{ecole} · {hemi} · {comb} ({KB.code(comb)})", poles_impacts=tuple(ps), regle_4b=True)
+    B4_FAITES.append((k[0], k[1], nom))
+    CREEES.append((k[0], k[1], "forme nouvelle (B4)", fam, nom))
+    return f
+
+
+def jumelles(nf, k):
+    """les jumelles hybrides d'une forme nouvelle d'Arcane, d'après les lignes B3 de sa forme modèle"""
+    ls = [l for l in CREER.get(k, []) if l["type"] in HYBRIDES and l["type"] in types_actifs()]
+    out = []
+    for l in ls:
+        plusieurs = sum(1 for x in ls if x["type"] == l["type"] == "élément choisi") > 1
+        h = hybride(nf, l, k, plusieurs)
+        if h is not None: out.append(dict(h, cree_4b=(k[1], "jumelle d'une forme nouvelle (B4)")))
     return out

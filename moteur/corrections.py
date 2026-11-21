@@ -525,7 +525,22 @@ def appliquer(cle, formes):
         if not retirer:                       # phase 4b (couche voisine phase4b.py) : formes existantes de B3
             g2, retirer = P4B.existante(g, k); change |= g2 is not g; g = g2
         g2 = P4B.relecture(g, k, True); change |= g2 is not g; g = g2       # B6 : modèle et formes hybrides créées
-        nouvelles = P4B.creer(g, k)           # phase 4b : formes créées d'après ce modèle, placées juste après lui
+        b4 = P4B.b4(k)                        # étape 7 : formes nouvelles (B4)
+        remplace = [b for b in b4 if b["action"] == "remplacer la forme modèle"]
+        if remplace:                          # les formes nouvelles et leurs jumelles prennent la place du modèle et de ses jumelles
+            nouvelles = []
+            for b in remplace:
+                nf = P4B.nouvelle(g, b, k)
+                if nf is not None: nouvelles += [nf] + (P4B.jumelles(nf, k) if nf["fam"] == "A" else [])
+            if nouvelles:
+                retirer = True; P4B.FAITS["retrait"].append(k)
+        else:
+            for b in b4:
+                g2 = P4B.renomme(g, b); change |= g2 is not g; g = g2
+            nouvelles = P4B.creer(g, k)       # phase 4b : formes créées d'après ce modèle, placées juste après lui
+            for b in b4:                      # « ajouter » : la forme nouvelle (et ses jumelles) après le modèle
+                nf = P4B.nouvelle(g, b, k)
+                if nf is not None: nouvelles += [nf] + (P4B.jumelles(nf, k) if nf["fam"] == "A" else [])
         g2 = P4B.relecture(g, k, False); change |= g2 is not g; g = g2      # B6 : forme d'Arcane modèle seulement
         if not retirer:
             if change:

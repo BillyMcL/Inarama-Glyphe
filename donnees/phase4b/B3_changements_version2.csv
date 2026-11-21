@@ -1,0 +1,50 @@
+﻿changement;statut;type;cle;rang_forme_modele;sort;jeu;forme_modele;combinaison;avant;apres
+ligne retirée : forme à ne pas créer;à créer;combinaison fixe;protection-from-evil-and-good;3;Protection contre le mal et le bien;3.5;Contre le lumineux — version 3.5;Eau;;
+ligne retirée : forme à ne pas créer;à créer;combinaison fixe;protection-from-evil-and-good;6;Protection contre le mal et le bien;PF1;Contre le lumineux — partagée — version PF1;Eau;;
+ligne retirée : forme à ne pas créer;à créer;combinaison fixe;magic-circle;2;Cercle magique;3.5;Contre le lumineux — version 3.5;Sel gemme;;
+ligne retirée : forme à ne pas créer;à créer;combinaison fixe;dispel-evil-and-good;4;Dissipation du mal et du bien;3.5;Contre le lumineux — version 3.5;Sel gemme;;
+ecole;à créer;combinaison fixe;divine-word;3;Mot divin;3.5;Mot de chaos — contre le lumineux — version 3.5;Orage;Abjuration;Évocation
+hemisphere;à créer;combinaison fixe;divine-word;3;Mot divin;3.5;Mot de chaos — contre le lumineux — version 3.5;Orage;Hodolin;Galombar
+ecole;à créer;combinaison fixe;divine-word;7;Mot divin;PF1;Mot de chaos — contre le lumineux — version PF1;Orage;Abjuration;Évocation
+hemisphere;à créer;combinaison fixe;divine-word;7;Mot divin;PF1;Mot de chaos — contre le lumineux — version PF1;Orage;Hodolin;Galombar
+ecole;à créer;combinaison fixe;holy-aura;3;Aura sacrée;3.5;Manteau du chaos — contre le lumineux — version 3.5;Bronze;Abjuration;Nécromancie
+hemisphere;à créer;combinaison fixe;holy-aura;3;Aura sacrée;3.5;Manteau du chaos — contre le lumineux — version 3.5;Bronze;Hodolin;Galombar
+ecole;à créer;combinaison fixe;holy-smite;2;Châtiment sacré;3.5;Marteau du chaos — contre le lumineux;Foudre;Abjuration;Évocation
+hemisphere;à créer;combinaison fixe;holy-smite;2;Châtiment sacré;3.5;Marteau du chaos — contre le lumineux;Foudre;Hodolin;Galombar
+ecole;à créer;élément choisi;align-weapon;1;Arme orientée;3.5;Contre le lumineux;Acier;Abjuration;Transmutation
+hemisphere;à créer;élément choisi;align-weapon;1;Arme orientée;3.5;Contre le lumineux;Acier;Hodolin;Galombar
+impacts_poles;à créer;élément choisi;align-weapon;1;Arme orientée;3.5;Contre le lumineux;Acier;0:lumineux;0:ténébreux
+ecole;à créer;élément choisi;align-weapon;1;Arme orientée;3.5;Contre le lumineux;Bois;Abjuration;Transmutation
+hemisphere;à créer;élément choisi;align-weapon;1;Arme orientée;3.5;Contre le lumineux;Bois;Hodolin;Galombar
+impacts_poles;à créer;élément choisi;align-weapon;1;Arme orientée;3.5;Contre le lumineux;Bois;0:lumineux;0:ténébreux
+ecole;à créer;élément choisi;align-weapon;1;Arme orientée;3.5;Contre le lumineux;Bronze;Abjuration;Transmutation
+hemisphere;à créer;élément choisi;align-weapon;1;Arme orientée;3.5;Contre le lumineux;Bronze;Hodolin;Galombar
+impacts_poles;à créer;élément choisi;align-weapon;1;Arme orientée;3.5;Contre le lumineux;Bronze;0:lumineux;0:ténébreux
+ecole;à créer;élément choisi;align-weapon;1;Arme orientée;3.5;Contre le lumineux;Roche;Abjuration;Transmutation
+hemisphere;à créer;élément choisi;align-weapon;1;Arme orientée;3.5;Contre le lumineux;Roche;Hodolin;Galombar
+impacts_poles;à créer;élément choisi;align-weapon;1;Arme orientée;3.5;Contre le lumineux;Roche;0:lumineux;0:ténébreux
+ecole;à créer;élément choisi;align-weapon;1;Arme orientée;3.5;Contre le lumineux;Sel gemme;Abjuration;Transmutation
+hemisphere;à créer;élément choisi;align-weapon;1;Arme orientée;3.5;Contre le lumineux;Sel gemme;Hodolin;Galombar
+impacts_poles;à créer;élément choisi;align-weapon;1;Arme orientée;3.5;Contre le lumineux;Sel gemme;0:lumineux;0:ténébreux
+impacts_poles;à créer;élément choisi;align-weapon;2;Arme orientée;3.5;Contre le ténébreux;Acier;0:ténébreux;0:lumineux
+impacts_poles;à créer;élément choisi;align-weapon;2;Arme orientée;3.5;Contre le ténébreux;Bois;0:ténébreux;0:lumineux
+impacts_poles;à créer;élément choisi;align-weapon;2;Arme orientée;3.5;Contre le ténébreux;Bronze;0:ténébreux;0:lumineux
+impacts_poles;à créer;élément choisi;align-weapon;2;Arme orientée;3.5;Contre le ténébreux;Roche;0:ténébreux;0:lumineux
+impacts_poles;à créer;élément choisi;align-weapon;2;Arme orientée;3.5;Contre le ténébreux;Sel gemme;0:ténébreux;0:lumineux
+ligne retirée : forme à ne pas créer;à créer;combinaison fixe;corruption-resistance;1;Résistance à la charge;PF1;Contre le lumineux;Obsidienne;;
+ecole;à créer;combinaison fixe;veil-of-heaven;0;Voile astral;PF1;Contre le lumineux;Tempête;Illusion;Évocation
+hemisphere;à créer;combinaison fixe;veil-of-heaven;0;Voile astral;PF1;Contre le lumineux;Tempête;Hodolin;Galombar
+impacts_poles;à créer;combinaison fixe;veil-of-heaven;0;Voile astral;PF1;Contre le lumineux;Tempête;0:lumineux;0:ténébreux
+impacts_poles;à créer;combinaison fixe;veil-of-heaven;1;Voile astral;PF1;Contre le ténébreux;Tempête;0:ténébreux;0:lumineux
+ecole;à créer;combinaison fixe;dread-bolt;3;Trait de charge;PF1;Trait de lenteur — contre le lumineux;Foudre;Invocation;Évocation
+hemisphere;à créer;combinaison fixe;dread-bolt;3;Trait de charge;PF1;Trait de lenteur — contre le lumineux;Foudre;Hodolin;Galombar
+ecole;à créer;combinaison fixe;sanctify-weapons;0;Armes contre les êtres astraux;PF1;Contre le lumineux;Acier;Abjuration;Transmutation
+hemisphere;à créer;combinaison fixe;sanctify-weapons;0;Armes contre les êtres astraux;PF1;Contre le lumineux;Acier;Hodolin;Galombar
+impacts_poles;à créer;combinaison fixe;sanctify-weapons;0;Armes contre les êtres astraux;PF1;Contre le lumineux;Acier;0:lumineux;0:ténébreux
+impacts_poles;à créer;combinaison fixe;sanctify-weapons;1;Armes contre les êtres astraux;PF1;Contre le ténébreux;Acier;0:ténébreux;0:lumineux
+ecole;à créer;combinaison fixe;wrathful-weapon;1;Arme courroucée;PF1;Contre le lumineux;Plasma;Abjuration;Transmutation
+hemisphere;à créer;combinaison fixe;wrathful-weapon;1;Arme courroucée;PF1;Contre le lumineux;Plasma;Hodolin;Galombar
+impacts_poles;à créer;combinaison fixe;wrathful-weapon;1;Arme courroucée;PF1;Contre le lumineux;Plasma;0:lumineux;0:ténébreux
+ligne ajoutée : forme à créer;à créer;combinaison fixe;detect-evil-and-good;4;Détection du mal et du bien;3.5;Ténébreux — version 3.5;Air;;Divination
+ligne ajoutée : forme à créer;à créer;combinaison fixe;see-alignment;2;Vision des intentions;PF1;Ténébreux;Plasma;;Divination
+ligne ajoutée : forme à créer;à créer;combinaison fixe;follow-aura;2;Suivre l'aura;PF1;Ténébreux;Pollen;;Divination

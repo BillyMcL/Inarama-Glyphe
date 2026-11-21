@@ -1,0 +1,153 @@
+﻿sort;cle;niveau;verbe_arcane;formes;art;doute;validation
+Affrontement fatidique;fated-confrontation;10;Lier;1;chronomancie;oui;validé le 20 novembre
+Augure;augury;2;Révéler;2;chronomancie;;validé le 20 novembre
+Avenir défait;unraveling-blast;1;Déstabiliser;1;chronomancie;;validé le 20 novembre
+Balise temporelle;time-beacon;7;Stabiliser;1;chronomancie;;validé le 20 novembre
+Bourbier des âges;morass-of-ages;4;Réduire;1;chronomancie;;validé le 20 novembre
+Chemin de fortune;fortunes-path;3;Révéler;1;chronomancie;;validé le 20 novembre
+Chemin entrevu;foresee-the-path;0;Révéler;1;chronomancie;;validé le 20 novembre
+Châtiment suspendu;suspended-retribution;6;Déstabiliser;1;chronomancie;;validé le 20 novembre
+Cible véritable;true-target;7;Révéler;1;chronomancie;;validé le 20 novembre
+Conséquence différée;delay-consequence;1;Stabiliser;1;chronomancie;;validé le 20 novembre
+Contemplation de la trame;behold-the-weave;3;Stabiliser;1;chronomancie;;validé le 20 novembre
+Coup de pouce au destin;nudge-fate;0;Amplifier;1;chronomancie;;validé le 20 novembre
+Danger pressenti;anticipate-peril;1;Révéler;2;chronomancie;;validé le 20 novembre
+Distorsion temporelle;temporal-distortion;1;Déstabiliser;1;chronomancie;;validé le 20 novembre
+Divergence temporelle;temporal-divergence;7;Déplacer;1;chronomancie;;validé le 20 novembre
+Divination;divination;4;Révéler;3;chronomancie;;validé le 20 novembre
+Désastre inévitable;inevitable-disaster;5;Déstabiliser;1;chronomancie;;validé le 20 novembre
+Faux avenir;false-future;4;Dissimuler;2;chronomancie;;validé le 20 novembre
+Fin imminente;impending-doom;3;Repousser;1;chronomancie;;validé le 20 novembre
+Flèche du temps;loose-times-arrow;2;Amplifier;1;chronomancie;;validé le 20 novembre
+Frappe miroir;mirror-strike;1;Amplifier;1;chronomancie;;validé le 20 novembre
+Frisson du temps;time-shudder;2;Déplacer;1;chronomancie;;validé le 20 novembre
+Garde temporelle;temporal-ward;6;Déplacer;1;chronomancie;;validé le 20 novembre
+Grâce préservée;preserve-grace;2;Amplifier;1;chronomancie;oui;validé le 20 novembre
+Instant de renouveau;moment-of-renewal;8;Créer;1;chronomancie;;validé le 20 novembre
+Instant réparateur;restorative-moment;5;Créer;1;chronomancie;;validé le 20 novembre
+Jeté dans le temps;cast-into-time;6;Bannir;1;chronomancie;;validé le 20 novembre
+Jumeau temporel;temporal-twin;3;Scinder;1;chronomancie;;validé le 20 novembre
+Lecture du destin;read-fate;1;Révéler;1;chronomancie;;validé le 20 novembre
+Oreilles de la cité;ears-of-the-city;1;Révéler;1;chronomancie;;validé le 20 novembre
+Pas à rebours;rewinding-step;5;Déplacer;1;chronomancie;;validé le 20 novembre
+Poche de temps;time-pocket;3;Déplacer;1;chronomancie;;validé le 20 novembre
+Poids du jour;days-weight;3;Détruire;1;chronomancie;;validé le 20 novembre
+Possible réécrit;rewrite-possibility;5;Amplifier;1;chronomancie;;validé le 20 novembre
+Pronostic;prognostication;6;Révéler;1;chronomancie;;validé le 20 novembre
+Pronostic véritable;true-prognostication;8;Révéler;1;chronomancie;;validé le 20 novembre
+Prédiction de l'échec;prediction-of-failure;8;Corrompre;1;chronomancie;;validé le 20 novembre
+Regard des braises;cinder-gaze;1;Révéler;4;chronomancie;;validé le 20 novembre
+Régression temporelle;temporal-regression;8;Déplacer;1;chronomancie;;validé le 20 novembre
+Rétrocognition;retrocognition;5;Révéler;2;chronomancie;;validé le 20 novembre
+Saut d'instant;time-skip;3;Amplifier;1;chronomancie;;validé le 20 novembre
+Saut dans le temps;time-jump;3;Déplacer;1;chronomancie;;validé le 20 novembre
+Savoir prophétique;prophetic-lore;6;Révéler;1;chronomancie;;validé le 20 novembre
+Sens du temps;time-sense;1;Révéler;1;chronomancie;;validé le 20 novembre
+Stase;stasis;4;Stabiliser;1;chronomancie;;validé le 20 novembre
+Temps emprunté;borrowed-time;6;Amplifier;1;chronomancie;;validé le 20 novembre
+Temps esquivé;elude-time;7;Transformer;1;chronomancie;;validé le 20 novembre
+Temps hâté;quicken-time;5;Amplifier;1;chronomancie;;validé le 20 novembre
+Temps stagnant;stagnate-time;5;Réduire;1;chronomancie;;validé le 20 novembre
+Vies multiples;manifold-lives;6;Déstabiliser;1;chronomancie;;validé le 20 novembre
+Voie de moindre résistance;path-of-least-resistance;4;Déplacer;1;chronomancie;;validé le 20 novembre
+Échec prédit;foretell-failure;4;Révéler;1;chronomancie;;validé le 20 novembre
+Élan et retour;flash-forward;5;Déplacer;1;chronomancie;oui;validé le 20 novembre
+Ancre dimensionnelle;dimensional-anchor;4;Ancrer;2;spatiomancie;;validé le 20 novembre
+Appel de l'artefact;call-construct;8;Déplacer;1;spatiomancie;;validé le 20 novembre
+Apport;apport-object;2;Déplacer;2;spatiomancie;;validé le 20 novembre
+Armure gardienne;guardian-armor;1;Déplacer;1;spatiomancie;;validé le 20 novembre
+Balise de retour;return-beacon;5;Déplacer;1;spatiomancie;;validé le 20 novembre
+Bannissement;banishment;4;Bannir;5;spatiomancie;;validé le 20 novembre
+Bibliothèque de poche;pocket-library;1;Créer;1;spatiomancie;;validé le 20 novembre
+Bilocation;bilocation;8;Créer;2;spatiomancie;;validé le 20 novembre
+Boîte aux lettres magique;magic-mailbox;4;Déplacer;1;spatiomancie;;validé le 20 novembre
+Cache du compagnon;pet-cache;1;Déplacer;2;spatiomancie;;validé le 20 novembre
+Cachette du miroir;mirror-hideaway;2;Transformer;1;spatiomancie;;validé le 20 novembre
+Cachette sylvestre;sylvan-hideaway;3;Créer;1;spatiomancie;;validé le 20 novembre
+Charge clignotante;blink-charge;5;Déplacer;1;spatiomancie;;validé le 20 novembre
+Contre-téléportation;conjuration-foil;4;Séparer;1;spatiomancie;;validé le 20 novembre
+Corps vide;empty-body;9;Séparer;1;spatiomancie;;validé le 20 novembre
+Création de demi-plan;create-demiplane-lesser;7;Créer;3;spatiomancie;;validé le 20 novembre
+Dissolution;dissolution;5;Transformer;1;spatiomancie;oui;validé le 20 novembre
+Dédale de portes closes;maze-of-locked-doors;7;Bannir;1;spatiomancie;;validé le 20 novembre
+Défi de phase;phasic-challenge;7;Lier;1;spatiomancie;;validé le 20 novembre
+Déphasage spectral;ghostly-shift;0;Séparer;1;spatiomancie;;validé le 20 novembre
+Enveloppe éthérée;ethereal-envelope;5;Déplacer;2;spatiomancie;;validé le 20 novembre
+Envoi scellé;sealed-sending;5;Déplacer;1;spatiomancie;;validé le 20 novembre
+Espace tordu;twisted-space;2;Corrompre;1;spatiomancie;;validé le 20 novembre
+Estomac sans fond;bottomless-stomach;3;Créer;1;spatiomancie;;validé le 20 novembre
+Excursion en surface;surface-excursion;5;Déplacer;1;spatiomancie;;validé le 20 novembre
+Fosse;create-pit;2;Créer;6;spatiomancie;;validé le 20 novembre
+Foulée brumeuse;misty-step;2;;1;spatiomancie;;validé le 20 novembre
+Fuite du maître;masters-escape;4;Déplacer;1;spatiomancie;;validé le 20 novembre
+Fuite du ménestrel;bards-escape;5;Déplacer;1;spatiomancie;;validé le 20 novembre
+Genèse;genesis;9;Créer;1;spatiomancie;;validé le 20 novembre
+Grimoire reclus;secluded-grimoire;1;Déplacer;1;spatiomancie;;validé le 20 novembre
+Gueule astrale;maw-of-chaos;8;Détruire;2;spatiomancie;;validé le 20 novembre
+Géométrie étrange;strange-geometry;5;Déstabiliser;1;spatiomancie;;validé le 20 novembre
+Interdiction;forbiddance;6;Séparer;2;spatiomancie;;validé le 20 novembre
+Interstice ectoplasmique;ectoplasmic-interstice;4;Transformer;1;spatiomancie;;validé le 20 novembre
+Invasion astrale;shadow-invasion;4;Dissimuler;2;spatiomancie;;validé le 20 novembre
+Juxtaposition hostile;hostile-juxtaposition;5;Déplacer;2;spatiomancie;;validé le 20 novembre
+Labyrinthe astral;astral-labyrinth;9;Séparer;2;spatiomancie;;validé le 20 novembre
+Lame dimensionnelle;dimensional-blade;6;Transformer;1;spatiomancie;;validé le 20 novembre
+Lentille de distorsion;distortion-lens;0;Transformer;1;spatiomancie;;validé le 20 novembre
+Litanie d'évasion;litany-of-escape;3;Déplacer;1;spatiomancie;;validé le 20 novembre
+Localisation des portails;locate-portal;2;Révéler;1;spatiomancie;;validé le 20 novembre
+Localisation des portes;locate-gate;5;Révéler;1;spatiomancie;;validé le 20 novembre
+Marche dans l'espace;walk-through-space;7;Déplacer;1;spatiomancie;;validé le 20 novembre
+Oubliette démente;maddening-oubliette;7;Déplacer;1;spatiomancie;;validé le 20 novembre
+Parole d'appel;word-of-beckoning;7;Déplacer;1;spatiomancie;;validé le 20 novembre
+Pas abondant;abundant-step;4;Déplacer;2;spatiomancie;;validé le 20 novembre
+Pas d'éther;ether-step;6;Déplacer;1;spatiomancie;;validé le 20 novembre
+Pas de damnation;damnation-stride;5;;1;spatiomancie;;validé le 20 novembre
+Pas de phase;phase-step;3;Déplacer;1;spatiomancie;;validé le 20 novembre
+Pas dimensionnel;dimensional-steps;4;Déplacer;1;spatiomancie;;validé le 20 novembre
+Pas urbain;urban-step;3;Déplacer;1;spatiomancie;;validé le 20 novembre
+Piège à téléportation;teleport-trap;7;Attirer;1;spatiomancie;;validé le 20 novembre
+Poche arcanique;arcane-pocket;1;Créer;1;spatiomancie;;validé le 20 novembre
+Poings éthérés;ethereal-fists;3;Amplifier;1;spatiomancie;;validé le 20 novembre
+Porte vers l'au-delà;door-to-beyond;4;Attirer;1;spatiomancie;;validé le 20 novembre
+Projection astrale;astral-projection;9;Scinder;6;spatiomancie;;validé le 20 novembre
+Présent attentionné;thoughtful-gift;1;Déplacer;2;spatiomancie;;validé le 20 novembre
+Ralliement;signifers-rally;7;Déplacer;1;spatiomancie;;validé le 20 novembre
+Rappel;callback;2;Déplacer;2;spatiomancie;;validé le 20 novembre
+Rappel commode;efficient-apport;1;Déplacer;2;spatiomancie;;validé le 20 novembre
+Rebond dimensionnel;dimensional-bounce;7;Déplacer;1;spatiomancie;;validé le 20 novembre
+Refuge astral;shadowy-haven;4;Transformer;2;spatiomancie;;validé le 20 novembre
+Refuge planaire;planar-refuge;7;Stabiliser;1;spatiomancie;;validé le 20 novembre
+Renvoi;dismissal;5;Bannir;2;spatiomancie;;validé le 20 novembre
+Retour au foyer;homeward-bound;3;Bannir;1;spatiomancie;;validé le 20 novembre
+Retraite du cercle des fées;fairy-ring-retreat;7;Créer;1;spatiomancie;;validé le 20 novembre
+Retraite rapide;rapid-retreat;4;Déplacer;1;spatiomancie;;validé le 20 novembre
+Roque;kings-castle;4;Déplacer;2;spatiomancie;;validé le 20 novembre
+Répit d'un instant;momentary-recovery;7;Déplacer;1;spatiomancie;oui;validé le 20 novembre
+Réveil de portail;awaken-portal;3;Amplifier;2;spatiomancie;;validé le 20 novembre
+Saut cruel;cruel-jaunt;6;Déplacer;1;spatiomancie;;validé le 20 novembre
+Saut d'ombre;shadow-jaunt;4;Déplacer;3;spatiomancie;;validé le 20 novembre
+Saut du bouffon;jesters-jaunt;3;Déplacer;1;spatiomancie;;validé le 20 novembre
+Saut à écho;echo-jump;3;Déplacer;1;spatiomancie;;validé le 20 novembre
+Spirale;spiral-ascent;3;Déplacer;2;spatiomancie;;validé le 20 novembre
+Toast à la liberté;freedoms-toast;4;Déplacer;1;spatiomancie;;validé le 20 novembre
+Trace de téléportation;trace-teleport;4;Révéler;1;spatiomancie;;validé le 20 novembre
+Traction salvatrice;warping-pull;2;Déplacer;1;spatiomancie;;validé le 20 novembre
+Trait déphasé;phase-bolt;0;Détruire;1;spatiomancie;;validé le 20 novembre
+Transport spirituel;spiritual-transport;5;Déplacer;1;spatiomancie;;validé le 20 novembre
+Transposition brutale;sudden-transposition;8;Déplacer;1;spatiomancie;;validé le 20 novembre
+Transposition collective;collective-transposition;6;Déplacer;1;spatiomancie;;validé le 20 novembre
+Transposition de terrain;terrain-transposition;5;Déplacer;1;spatiomancie;;validé le 20 novembre
+Transposition imprévue;unexpected-transposition;6;Déplacer;1;spatiomancie;;validé le 20 novembre
+Trou piège;stumble-gap;1;Créer;1;spatiomancie;;validé le 20 novembre
+Tunnel du tesseract;tesseract-tunnel;0;Déplacer;1;spatiomancie;;validé le 20 novembre
+Téléportation d'objet;teleport-object;7;Déplacer;1;spatiomancie;;validé le 20 novembre
+Téléportation du cristal de glace;ice-crystal-teleport;6;Déplacer;1;spatiomancie;;validé le 20 novembre
+Téléportation traîtresse;treacherous-teleport;6;Déplacer;1;spatiomancie;;validé le 20 novembre
+Verrou dimensionnel;dimensional-lock;8;Ancrer;2;spatiomancie;;validé le 20 novembre
+Vide dévorant;devouring-void;7;Détruire;2;spatiomancie;;validé le 20 novembre
+Voile du génie;genies-veil;1;Dissimuler;1;spatiomancie;;validé le 20 novembre
+Voyage du génie;jannis-jaunt;4;Déplacer;1;spatiomancie;;validé le 20 novembre
+Échange avec le compagnon;companion-transportation;5;Déplacer;1;spatiomancie;;validé le 20 novembre
+Échange d'objets;trade-items;4;Déplacer;2;spatiomancie;;validé le 20 novembre
+Échappée;getaway;6;Déplacer;1;spatiomancie;;validé le 20 novembre
+Épée-bâton;arodens-spellsword;3;Transformer;1;spatiomancie;;validé le 20 novembre
+Éther condensé;condensed-ether;4;Transformer;1;spatiomancie;;validé le 20 novembre

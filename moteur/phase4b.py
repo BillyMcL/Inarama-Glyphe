@@ -14,7 +14,7 @@ un Impact est opposé. Chaque cercle d'Impact garde son pôle (champ poles_impac
 import os, csv, re
 import spells as SP
 
-ETAPE = int(os.environ.get("PHASE4B_ETAPE", "4"))      # étapes de la phase 4b appliquées (0 ou 1 : aucune donnée)
+ETAPE = int(os.environ.get("PHASE4B_ETAPE", "5"))      # étapes de la phase 4b appliquées (0 ou 1 : aucune donnée)
 D = os.path.dirname(os.path.abspath(__file__))
 P4B = os.path.join(D, "..", "donnees", "phase4b")
 B3 = list(csv.DictReader(open(os.path.join(P4B, "B3_formes_hybrides.csv"), encoding="utf-8-sig"), delimiter=";")) \
@@ -271,7 +271,9 @@ def hybride(g, l, k, plusieurs):
 
 def creer(g, k):
     """formes créées d'après la forme modèle g (rang d'origine k), pour les étapes atteintes ; à redessiner par l'appelant"""
-    ls = [l for l in CREER.get(k, []) if l["type"] in types_actifs()]
+    ls = [l for l in CREER.get(k, []) if l["type"] in types_actifs()
+          # le modèle de ces lignes est la forme d'Arcane créée à l'étape 6 (Lenteur) : elles attendent l'étape 6
+          and not (l["note"].startswith("modèle : la forme d'Arcane de cette édition") and ETAPE < 6)]
     out = []
     for l in ls:
         if l["type"] in HYBRIDES:

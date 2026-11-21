@@ -524,14 +524,18 @@ def appliquer(cle, formes):
                 retirer = True; FAITS["retrait"].append(k)
         if not retirer:                       # phase 4b (couche voisine phase4b.py) : formes existantes de B3
             g2, retirer = P4B.existante(g, k); change |= g2 is not g; g = g2
-        if retirer:
-            continue
-        if change:
-            rings, touche = _placer(g["rings"])
-            PLACES.extend((g["idx"], g["label"], c) for c in touche)
-            out.append(_redessine(g, rings))
-        else:
-            out.append(_symboles(f))
+        nouvelles = P4B.creer(g, k)           # phase 4b : formes créées d'après ce modèle, placées juste après lui
+        if not retirer:
+            if change:
+                rings, touche = _placer(g["rings"])
+                PLACES.extend((g["idx"], g["label"], c) for c in touche)
+                out.append(_redessine(g, rings))
+            else:
+                out.append(_symboles(f))
+        for nf in nouvelles:
+            rings, touche = _placer(nf["rings"])
+            PLACES.extend((nf["idx"], nf["label"], c) for c in touche)
+            out.append(_redessine(nf, rings))
     return out
 
 

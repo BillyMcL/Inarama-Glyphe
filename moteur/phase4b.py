@@ -14,7 +14,7 @@ un Impact est opposé. Chaque cercle d'Impact garde son pôle (champ poles_impac
 import os, csv, re
 import spells as SP
 
-ETAPE = int(os.environ.get("PHASE4B_ETAPE", "2"))      # étapes de la phase 4b appliquées (0 ou 1 : aucune donnée)
+ETAPE = int(os.environ.get("PHASE4B_ETAPE", "4"))      # étapes de la phase 4b appliquées (0 ou 1 : aucune donnée)
 D = os.path.dirname(os.path.abspath(__file__))
 P4B = os.path.join(D, "..", "donnees", "phase4b")
 B3 = list(csv.DictReader(open(os.path.join(P4B, "B3_formes_hybrides.csv"), encoding="utf-8-sig"), delimiter=";")) \
@@ -121,3 +121,163 @@ def existante(g, k):
                     verb=f"{C.VERBS[(vk, vn)]} · {C.VERB_GROUP[vk].lower()} {'−' if vn else '+'}",
                     label=g["label"].replace("Art rare", "Forme arcane", 1)), False
     _refus(l, f"type « {t} » non traité à l'étape 2"); return g, False
+
+
+# ---------- étapes 4 à 7 : formes créées ----------
+from collections import defaultdict as _dd
+CREER = _dd(list)                   # (cle, rang d'origine du modèle) → lignes « à créer », dans l'ordre du fichier
+for _l in B3:
+    if _l["statut"] == "à créer": CREER[(_l["cle"], int(_l["rang_forme_modele"]))].append(_l)
+TYPES = {4: {"combinaison fixe", "énergie pure"},
+         5: {"élément choisi", "élément au choix (noyau vide)", "contre-sort (noyau vide)"},
+         6: {"art rare", "forme d'Arcane nouvelle"}}
+HYBRIDES = {"combinaison fixe", "énergie pure", "élément choisi", "élément au choix (noyau vide)", "contre-sort (noyau vide)"}
+CREEES = []                         # (cle, rang du modèle, type, combinaison, nom de la forme)
+REDITS = []                         # (cle, rang du modèle, combinaison, critère, lecture avant, lecture après)
+NOTES_RETIREES = ("Arcane : aucun élément en jeu, un verbe suffit.", "Pas de forme hybride : aucune combinaison naturelle ne porte cet effet.")
+
+
+def types_actifs():
+    return set().union(*(TYPES[e] for e in TYPES if e <= ETAPE))
+
+
+def nom_hybride(modele, comb, plusieurs):
+    """nom d'une forme hybride créée (décision du 21 novembre 2026)"""
+    if modele == "Forme arcane": n = "Forme hybride"
+    elif modele.startswith("Forme arcane — "): n = "Forme hybride — " + modele[len("Forme arcane — "):]
+    else: n = "Forme hybride — " + modele
+    return n + (f" — {comb}" if plusieurs else "")
+
+
+def _redit(rings, comb, cle, rang):
+    """règle REDIT du moteur appliquée à une forme créée : les symboles d'un Impact que la combinaison du Noyau dit déjà ne
+    sont pas posés — l'Impact porte exactement les symboles de la combinaison, ou, pour une combinaison d'un seul élément,
+    seulement le symbole de cet élément. La lecture retire la mention de ces symboles et dit que le noyau porte l'énergie."""
+    import combos as KB, convert as C
+    f_, a_, t_, e_ = KB.COMBOS[comb]
+    units = sorted(["feu"] * f_ + ["air"] * a_ + ["terre"] * t_ + ["eau"] * e_)
+    mono = len(set(units)) == 1
+    ELS = ("feu", "air", "terre", "eau")
+    out = []
+    for r in rings:
+        sats = list(r[4]) if len(r) > 4 and r[4] else []
+        sy = [s for s in sats if C.est_symbole(s[1]) and s[1][1] in ELS]
+        cas = None
+        if r[0] == "IMPACT" and sy:
+            el = sorted(s[1][1] for s in sy)
+            if el == units: cas = comb.lower()
+            elif mono and set(el) == {units[0]}: cas = units[0]
+        if cas is None:
+            out.append(r); continue
+        reste = [s for s in sats if s not in sy]
+        if r[1] == "plein" and not r[2] and not any(not C.est_symbole(s[1]) for s in reste):
+            # Impact plein dont l'énergie est le seul contenu : comme le moteur (energies_et_cibles), l'énergie reste en mot
+            # d'action ; le mot est celui de la fiche que le moteur traduit exactement par ces symboles
+            mot = _mot_energie(cle, sorted(s[1][1] for s in sy))
+            import lint as LI
+            if mot is not None and LI.MILLE_ET_UN is not None and mot not in LI.MILLE_ET_UN:
+                HORS_LEXIQUE.append((cle, rang, comb, mot)); mot = None          # un mot hors lexique se signale, il ne s'ajoute pas
+            if mot is None:
+                out.append((*r[:3], r[3], r[4], "SANS_MOT")); continue
+            rd = r[3]
+            for e in set(s[1][1] for s in sy):
+                for pat in (f" ; satellite symbole de {C.SYM_FR[e]}", f" ; satellite : symbole de {C.SYM_FR[e]}"):
+                    rd = rd.replace(pat, "")
+            rd = rd.replace(f" ; satellites : les symboles de la combinaison {comb}", "")
+            vu = C.shown(mot)
+            if rd.startswith("plein, sans nature : la force brute du verbe"): rd = f"plein, {vu}" + rd[len("plein, sans nature : la force brute du verbe"):]
+            elif rd.startswith("plein"): rd = f"plein, {vu}" + rd[len("plein"):]
+            REDITS.append((cle, rang, comb, r[0], r[3], rd))
+            out.append((r[0], r[1], [mot], rd, C._resats(reste)) if reste else (r[0], r[1], [mot], rd))
+            continue
+        rd = r[3]
+        for e in set(s[1][1] for s in sy):
+            for pat in (f" ; satellite symbole de {C.SYM_FR[e]}", f" ; satellite : symbole de {C.SYM_FR[e]}"):
+                rd = rd.replace(pat, "")
+        rd = rd.replace(f" ; satellites : les symboles de la combinaison {comb}", "")
+        rd += f" ; l'énergie (« {cas} ») est dite par le noyau"
+        REDITS.append((cle, rang, comb, r[0], r[3], rd))
+        out.append((r[0], r[1], r[2], rd, C._resats(reste)) if reste else (r[0], r[1], r[2], rd))
+    return out
+
+
+def _mot_energie(cle, symboles):
+    """le mot d'Impact de la fiche que le moteur traduit exactement par ces symboles ; None s'il n'y en a pas un seul"""
+    import convert as C, combos as KB, mots_univers as MU
+    from fiches import FICHES
+    imp = (FICHES.get(cle) or {}).get("impact")
+    if not imp or len(imp) < 2: return None
+    def unites(W):
+        if W in ("FEU", "AIR", "TERRE", "EAU"): return [W.lower()]
+        if W in C.ELEM_UNITS: return list(C.ELEM_UNITS[W])
+        if W in MU.ENERGIES:
+            f_, a_, t_, e_ = KB.COMBOS[MU.ENERGIES[W]]; return ["feu"] * f_ + ["air"] * a_ + ["terre"] * t_ + ["eau"] * e_
+        return None
+    ok = [w for w in imp[1] if unites(C.norm(w)) is not None and sorted(unites(C.norm(w))) == symboles]
+    return C.word(ok[0]) if len({C.norm(w) for w in ok}) == 1 else None      # convert.word : le mot se dessine, comme tout mot de fiche
+
+
+def sans_mot(rings):
+    """numéros (parmi les Impacts) des cercles d'Impact « plein » sans mot ni satellite à mot : refusés par la règle 1 en hybride"""
+    import convert as C
+    out, i = [], 0
+    for r in rings:
+        if r[0] != "IMPACT": continue
+        sats = r[4] if len(r) > 4 and r[4] else []
+        if r[1] == "plein" and not r[2] and not any(not C.est_symbole(s[1]) and len(s) > 2 and s[2] for s in sats): out.append(i)
+        i += 1
+    return out
+
+
+HORS_LEXIQUE = []                   # (cle, rang du modèle, combinaison, mot) : mot d'énergie gardé mais absent du lexique fermé
+EN_ATTENTE = []                     # formes non créées faute de mot d'action : (cle, rang du modèle, type, combinaison, n° d'Impact, lecture)
+
+
+def hybride(g, l, k, plusieurs):
+    """une forme hybride créée d'après la forme modèle g (recette du prompt de la phase 4b)"""
+    import convert as C, combos as KB
+    comb, ecole, hemi = l["combinaison"], l["ecole"], l["hemisphere"]
+    if HEMI_ECOLE.get(ecole) != hemi: _refus(l, f"hémisphère {hemi} hors de l'école {ecole}"); return None
+    vide = comb == "(vide)"
+    if not vide and comb not in KB.COMBOS: _refus(l, f"combinaison inconnue « {comb} »"); return None
+    rings = list(g["rings"]) if vide else _redit(g["rings"], comb, k[0], k[1])
+    rings = [r[:5] if len(r) > 5 and r[5] == "SANS_MOT" else r for r in rings]
+    attente = sans_mot(rings)
+    if attente:             # règle 1 : un Impact plein hybride demande un mot d'action ; la forme attend son mot (décision du 21 novembre)
+        imps = [r for r in rings if r[0] == "IMPACT"]
+        for i in attente: EN_ATTENTE.append((k[0], k[1], l["type"], comb, i, imps[i][3]))
+        return None
+    n_imp = sum(1 for r in rings if r[0] == "IMPACT")
+    ps = poles(l)
+    if len(ps) != n_imp: _refus(l, f"{len(ps)} pôles pour {n_imp} cercles d'Impact"); return None
+    opp = {i for i, p in enumerate(ps) if p != POLE_HEMI[hemi]}
+    if opp != {int(x) for x in l["impacts_opposes"].split("|") if x.strip()}: _refus(l, f"Impacts opposés / pôles {ps}"); return None
+    une_des_faces = any(x in g["label"].lower() for x in ("lumineu", "ténébreu"))
+    if l["face"] and une_des_faces and POLE_HEMI[hemi] != {"lumineuse": "lumineux", "ténébreuse": "ténébreux"}[l["face"]]:
+        _refus(l, f"face {l['face']} sous {hemi}"); return None
+    if vide:
+        core = SP.hyb(label=C.norm(ecole)); verb = f"{ecole} · {hemi} · combinaison vide"
+        tete = [l["note"].replace("mention : ", "", 1)] if l["note"].startswith("mention : ") else []
+    else:
+        f_, a_, t_, e_ = KB.COMBOS[comb]
+        core = SP.hyb(f=f_, a=a_, t=t_, e=e_, label=C.norm(ecole)); verb = f"{ecole} · {hemi} · {comb} ({KB.code(comb)})"
+        tete = [f"Magie hybride, combinaison {comb} : l'élément en jeu."]
+    notes = tete + [n for n in g["notes"] if n not in NOTES_RETIREES]
+    nom = nom_hybride(g["label"], comb if not vide else "", plusieurs)
+    CREEES.append((k[0], k[1], l["type"], comb, nom))
+    return dict(g, fam="H", core=core, verb=verb, rings=rings, notes=notes, r0=66, label=nom, split=None,
+                poles_impacts=tuple(ps) or None, regle_4b=True, element_par_defaut=False, cree_4b=(k[1], l["type"]))
+
+
+def creer(g, k):
+    """formes créées d'après la forme modèle g (rang d'origine k), pour les étapes atteintes ; à redessiner par l'appelant"""
+    ls = [l for l in CREER.get(k, []) if l["type"] in types_actifs()]
+    out = []
+    for l in ls:
+        if l["type"] in HYBRIDES:
+            plusieurs = sum(1 for x in ls if x["type"] == l["type"] == "élément choisi") > 1
+            nf = hybride(g, l, k, plusieurs)
+            if nf is not None: out.append(nf)
+        else:
+            _refus(l, f"type « {l['type']} » pas encore traité")
+    return out

@@ -4,7 +4,7 @@ import os as _os
 D = _os.path.dirname(_os.path.abspath(__file__))
 DATA = _os.path.join(D, "..", "donnees")
 sys.path.insert(0, D)
-from compact import compact
+from compact import compact, ranger, sprite_js
 import convert as C
 from fiches import FICHES
 OUT = sys.argv[1] if len(sys.argv) > 1 else _os.path.join(D, "..", "site")
@@ -63,6 +63,7 @@ footer { font-size:.8rem; color:var(--muted); border-top:1px solid var(--rule); 
 .box ol, .box ul { margin:0; padding-left:20px; display:grid; gap:8px; max-width:90ch; }
 @media (max-width:760px) { .pair { grid-template-columns:1fr; } }
 @media (max-width:600px) { body { font-size:15px; } .wrap { padding-block:14px 48px; gap:22px; } figure { padding:6px; } table { font-size:.85rem; } td, th { padding:5px 4px; } td.num { width:2em; } .nav { font-size:.75rem; } }
+.sans-js, .echec { font-family:var(--f-mono); font-size:.8rem; color:var(--muted); border-left:3px solid var(--accent); padding:6px 10px; margin:0; }
 /* glyphes */
 .ink-s { fill:none; stroke:var(--ink); stroke-width:1.4; } .ink-f { fill:var(--ink); stroke:none; } .paper-f { fill:var(--paper); }
 .el { fill:none; stroke:var(--ink); stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
@@ -331,7 +332,9 @@ if __name__ == "__main__":
         if os.environ.get("STRICT"): raise SystemExit("construction arrêtée : élément non donné")
     for i, sp in enumerate(spells):
         prev = spells[i - 1] if i else None; nxt = spells[i + 1] if i + 1 < len(spells) else None
-        open(f"{OUT}/sorts/{sp['idx']}.html", "w", encoding="utf-8").write(compact(page(sp, prev, nxt)))
+        # poids du site : syllabes communes (e1) et dessins rangés compressés (f2) ; le SVG du moteur ne change pas
+        open(f"{OUT}/sorts/{sp['idx']}.html", "w", encoding="utf-8").write(ranger(compact(page(sp, prev, nxt), partage=True)))
+    open(OUT + "/alde.js", "w", encoding="utf-8").write(sprite_js())
     open(OUT + "/index.html", "w", encoding="utf-8").write(index(spells))
     open(OUT + "/regles.html", "w", encoding="utf-8").write(regles())
     open(OUT + "/style.css", "w", encoding="utf-8").write(CSS)

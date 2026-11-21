@@ -230,6 +230,38 @@ def sans_mot(rings):
 
 
 HORS_LEXIQUE = []                   # (cle, rang du modèle, combinaison, mot) : mot d'énergie gardé mais absent du lexique fermé
+_B5 = os.path.join(P4B, "B5_mots_d_action.csv")
+MOTS = {(l["cle"], int(l["rang_forme_modele"]), l["combinaison"], int(l["impact"])): l
+        for l in (csv.DictReader(open(_B5, encoding="utf-8-sig"), delimiter=";") if os.path.exists(_B5) else [])}
+MOTS_FAITS, MOTS_REFUS = [], []     # lignes de B5 appliquées ; (ligne, raison) refusées
+
+
+def _mots_action(rings, l, k):
+    """B5 : un cercle d'Impact en attente reçoit ses mots d'action et sa valeur (forme hybride seulement) ; les satellites
+    sont gardés (sauf un satellite ajouté que la note demande) ; le début de la phrase est régénéré, la parenthèse gardée"""
+    import convert as C, corrections as K, lint as LI
+    imps = [j for j, r in enumerate(rings) if r[0] == "IMPACT"]
+    out = list(rings)
+    for i, j in enumerate(imps):
+        m = MOTS.get((k[0], k[1], l["combinaison"], i))
+        if m is None: continue
+        r = rings[j]
+        if r[3] != m["lecture_actuelle"]: MOTS_REFUS.append((m, f"lecture actuelle « {r[3]} »")); continue
+        ws = m["mots"].split()
+        hors = [w for w in ws if LI.MILLE_ET_UN is not None and w not in LI.MILLE_ET_UN]
+        if hors: MOTS_REFUS.append((m, f"hors lexique : {hors}")); continue
+        ws = [C.word(w) for w in ws]
+        v = "plein" if m["valeur"] == "plein" else int(m["valeur"])
+        sats = list(r[4]) if len(r) > 4 and r[4] else []
+        if "IMPACT CLIMAT" in m["note"]:        # Plumes d'hiver : garde du climat, écrite comme les autres gardes du dépôt
+            sats = C._resats(sats + [("SYM", 5, "IMPACT CLIMAT", {"crit": "IMPACT"})])
+        with K._Accentue():                    # orthographe accentuée relevée dans les textes du moteur (comme en phase 4a)
+            rd = K._tete("IMPACT", v, ws) + K.parenthese(r[3]) + K._lecture_sats(sats, k, ws)
+        out[j] = (r[0], v, ws, rd, sats) if sats else (r[0], v, ws, rd)
+        MOTS_FAITS.append((m, r[3], rd))
+    return out
+
+
 EN_ATTENTE = []                     # formes non créées faute de mot d'action : (cle, rang du modèle, type, combinaison, n° d'Impact, lecture)
 
 
@@ -242,6 +274,7 @@ def hybride(g, l, k, plusieurs):
     if not vide and comb not in KB.COMBOS: _refus(l, f"combinaison inconnue « {comb} »"); return None
     rings = list(g["rings"]) if vide else _redit(g["rings"], comb, k[0], k[1])
     rings = [r[:5] if len(r) > 5 and r[5] == "SANS_MOT" else r for r in rings]
+    rings = _mots_action(rings, l, k)
     attente = sans_mot(rings)
     if attente:             # règle 1 : un Impact plein hybride demande un mot d'action ; la forme attend son mot (décision du 21 novembre)
         imps = [r for r in rings if r[0] == "IMPACT"]

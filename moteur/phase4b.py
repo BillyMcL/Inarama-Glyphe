@@ -165,8 +165,11 @@ def _redit(rings, comb, cle, rang):
         cas = None
         if r[0] == "IMPACT" and sy:
             el = sorted(s[1][1] for s in sy)
+            cnt = tuple(el.count(e) for e in ELS)
+            nom = next((n for n, c in KB.COMBOS.items() if tuple(c) == cnt), None)
             if el == units: cas = comb.lower()
             elif mono and set(el) == {units[0]}: cas = units[0]
+            elif nom and C.norm(nom) in C.REDIT.get(comb, set()): cas = nom.lower()     # table REDIT du moteur (Éclair dit la foudre…)
         if cas is None:
             out.append(r); continue
         reste = [s for s in sats if s not in sy]
@@ -194,7 +197,9 @@ def _redit(rings, comb, cle, rang):
         for e in set(s[1][1] for s in sy):
             for pat in (f" ; satellite symbole de {C.SYM_FR[e]}", f" ; satellite : symbole de {C.SYM_FR[e]}"):
                 rd = rd.replace(pat, "")
-        rd = rd.replace(f" ; satellites : les symboles de la combinaison {comb}", "")
+        rd = rd.replace(f" ; satellites : les symboles de la combinaison {comb}", "").replace(" ; satellite : symbole du feu", "")
+        if nom: rd = rd.replace(f" ; satellites : les symboles de la combinaison {nom}", "")
+        rd = re.sub(r" ; satellites : symboles (?:du feu|de l'air|de la terre|de l'eau)(?:, (?:du feu|de l'air|de la terre|de l'eau))*", "", rd)
         rd += f" ; l'énergie (« {cas} ») est dite par le noyau"
         REDITS.append((cle, rang, comb, r[0], r[3], rd))
         out.append((r[0], r[1], r[2], rd, C._resats(reste)) if reste else (r[0], r[1], r[2], rd))
@@ -265,9 +270,76 @@ def _mots_action(rings, l, k):
 EN_ATTENTE = []                     # formes non créées faute de mot d'action : (cle, rang du modèle, type, combinaison, n° d'Impact, lecture)
 
 
+# Décision du 21 novembre 2026 : oubli de B3 — ces trois faces ténébreuses sont d'Évocation (Galombar) ; leur Impact
+# ténébreux est alors du côté de l'école (plus d'Impact opposé).
+ECOLE_CORRIGEE = {("umbral-extraction", 0, "contre-sort (noyau vide)"): ("Évocation", "Galombar"),
+                  ("umbral-graft", 0, "contre-sort (noyau vide)"): ("Évocation", "Galombar"),
+                  ("shadow-siphon", 0, "contre-sort (noyau vide)"): ("Évocation", "Galombar")}
+
+# B6 : relecture de formes d'Arcane modèles (et de leurs formes hybrides créées), décision du 21 novembre 2026 ;
+# exception validée à la règle 5 : ces formes d'Arcane changent.
+_B6 = os.path.join(P4B, "B6_relecture_formes.csv")
+RELECTURE = _dd(list)
+for _l in (csv.DictReader(open(_B6, encoding="utf-8-sig"), delimiter=";") if os.path.exists(_B6) else []):
+    RELECTURE[(_l["cle"], int(_l["rang_forme_modele"]))].append(_l)
+RELU_FAITS, RELU_REFUS = [], []
+
+
+def relecture(g, k, hybrides):
+    """B6 : les lignes « ET toutes les formes hybrides » (hybrides=True, avant la création) ou « seulement » (après) ;
+    le cercle d'Impact prend mots et valeur, garde ses satellites (sauf ajout demandé), début de phrase régénéré,
+    parenthèse gardée ; un cercle d'Impact ajouté si demandé"""
+    import convert as C, corrections as K, lint as LI
+    ls = [l for l in RELECTURE.get(k, []) if ("ET toutes" in l["applique_a"]) == hybrides]
+    if not ls or ETAPE < 5: return g
+    rings = list(g["rings"])
+    for l in sorted(ls, key=lambda x: -int(x["impact"])):
+        imps = [j for j, r in enumerate(rings) if r[0] == "IMPACT"]
+        i = int(l["impact"])
+        if g["fam"] != "A" or g["fr"] != l["sort"] or g["label"] != l["forme_modele"] or i >= len(imps):
+            RELU_REFUS.append((l, f"forme « {g['fr']} [{g['label']}] » ({g['fam']}), {len(imps)} Impacts")); continue
+        ws = l["mots"].split()
+        hors = [w for w in ws if LI.MILLE_ET_UN is not None and w not in LI.MILLE_ET_UN]
+        if hors: RELU_REFUS.append((l, f"hors lexique : {hors}")); continue
+        ws = [C.word(w) for w in ws]
+        v = "plein" if l["valeur"] == "plein" else int(l["valeur"])
+        j = imps[i]; r = rings[j]
+        sats = list(r[4]) if len(r) > 4 and r[4] else []
+        if "IMPACT CLIMAT" in l["note"]:
+            sats = C._resats(sats + [("SYM", 5, "IMPACT CLIMAT", {"crit": "IMPACT"})])
+        par = K.parenthese(r[3])
+        if "ajouter « 2d8 en moyenne »" in l["note"]:      # comme les autres blessures du dépôt : les dés en tête de la parenthèse
+            par = " (2d8 en moyenne, " + par[2:] if par else " (2d8 en moyenne)"
+        with K._Accentue():
+            rd = K._tete("IMPACT", v, ws) + par + K._lecture_sats(sats, k, ws)
+            nouveau = [(r[0], v, ws, rd, sats) if sats else (r[0], v, ws, rd)]
+            if l["impact_a_ajouter"]:
+                m = re.search(r"valeur (\d+), mot (\w+) \(([^)]*)\)", l["impact_a_ajouter"])
+                if not m: RELU_REFUS.append((l, "cercle à ajouter illisible")); continue
+                w2 = [C.word(m.group(2))]
+                nouveau.append(("IMPACT", int(m.group(1)), w2, K._tete("IMPACT", int(m.group(1)), w2) + f" ({m.group(3)})"))
+        rings[j:j + 1] = nouveau
+        RELU_FAITS.append((k, i, hybrides, r[3], rd))
+    return dict(g, rings=rings) if rings != list(g["rings"]) else g
+
+
+def _poles_b6(ps, k, ecole_pole):
+    """pôles des formes hybrides créées : colonne pole_hybride de B6, et le pôle de l'école pour un Impact ajouté"""
+    ps = list(ps)
+    for l in sorted((x for x in RELECTURE.get(k, []) if "ET toutes" in x["applique_a"]), key=lambda x: -int(x["impact"])):
+        i = int(l["impact"])
+        if l["pole_hybride"]: ps[i] = l["pole_hybride"]
+        if l["impact_a_ajouter"]: ps.insert(i + 1, ecole_pole)
+    return ps
+
+
 def hybride(g, l, k, plusieurs):
     """une forme hybride créée d'après la forme modèle g (recette du prompt de la phase 4b)"""
     import convert as C, combos as KB
+    if (k[0], k[1], l["type"]) in ECOLE_CORRIGEE:
+        e_, h_ = ECOLE_CORRIGEE[(k[0], k[1], l["type"])]
+        ps_ = poles(l)
+        l = dict(l, ecole=e_, hemisphere=h_, impacts_opposes=" | ".join(str(i) for i, p in enumerate(ps_) if p != POLE_HEMI[h_]))
     comb, ecole, hemi = l["combinaison"], l["ecole"], l["hemisphere"]
     if HEMI_ECOLE.get(ecole) != hemi: _refus(l, f"hémisphère {hemi} hors de l'école {ecole}"); return None
     vide = comb == "(vide)"
@@ -282,9 +354,10 @@ def hybride(g, l, k, plusieurs):
         return None
     n_imp = sum(1 for r in rings if r[0] == "IMPACT")
     ps = poles(l)
-    if len(ps) != n_imp: _refus(l, f"{len(ps)} pôles pour {n_imp} cercles d'Impact"); return None
     opp = {i for i, p in enumerate(ps) if p != POLE_HEMI[hemi]}
     if opp != {int(x) for x in l["impacts_opposes"].split("|") if x.strip()}: _refus(l, f"Impacts opposés / pôles {ps}"); return None
+    ps = _poles_b6(ps, k, POLE_HEMI[hemi])
+    if len(ps) != n_imp: _refus(l, f"{len(ps)} pôles pour {n_imp} cercles d'Impact"); return None
     une_des_faces = any(x in g["label"].lower() for x in ("lumineu", "ténébreu"))
     if l["face"] and une_des_faces and POLE_HEMI[hemi] != {"lumineuse": "lumineux", "ténébreuse": "ténébreux"}[l["face"]]:
         _refus(l, f"face {l['face']} sous {hemi}"); return None

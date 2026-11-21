@@ -596,10 +596,10 @@ def notes_famille(cle, formes):
 
 # ---------- compléments du 21 novembre 2026 ----------
 # Quatre sorts oubliés par les fichiers (homonymes d'un autre sort) : leur forme hybride, recette habituelle, d'après leur forme
-# d'Arcane (rang d'origine 0). Averse et Isolement : l'Impact suit l'école.
+# d'Arcane (rang d'origine 0). Averse : l'Impact suit l'école ; Isolement : Impact ténébreux (correction du 21 novembre 2026).
 SUPPLEMENTS = [
     dict(cle="drench", rang=0, combinaison="Eau", ecole="Invocation", poles=["lumineux"]),
-    dict(cle="isolation", rang=0, combinaison="Brume", ecole="Illusion", poles=["lumineux"]),
+    dict(cle="isolation", rang=0, combinaison="Brume", ecole="Illusion", poles=["ténébreux"]),     # comme son homonyme isolate (PF1)
     dict(cle="boiling-blood", rang=0, combinaison="Sang", ecole="Transmutation", poles=["ténébreux"]),
     dict(cle="blood-boil", rang=0, combinaison="Sang", ecole="Nécromancie", poles=["ténébreux", "ténébreux"]),
 ]

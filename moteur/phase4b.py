@@ -134,6 +134,9 @@ TYPES = {4: {"combinaison fixe", "énergie pure"},
 HYBRIDES = {"combinaison fixe", "énergie pure", "élément choisi", "élément au choix (noyau vide)", "contre-sort (noyau vide)"}
 CREEES = []                         # (cle, rang du modèle, type, combinaison, nom de la forme)
 REDITS = []                         # (cle, rang du modèle, combinaison, critère, lecture avant, lecture après)
+# notes du modèle qui parlent du verbe ou de l'Arcane : pas reprises sur une forme hybride créée (décision du 21 novembre 2026)
+NOTES_VERBE = ("Dégât de force : la force brute de Détruire, sans médium.",
+               "Sept rayons de sept natures : aucun élément ne domine, l'Arcane les porte tous par la lumière.")
 NOTES_RETIREES = ("Arcane : aucun élément en jeu, un verbe suffit.", "Pas de forme hybride : aucune combinaison naturelle ne porte cet effet.")
 
 
@@ -368,7 +371,7 @@ def hybride(g, l, k, plusieurs):
         f_, a_, t_, e_ = KB.COMBOS[comb]
         core = SP.hyb(f=f_, a=a_, t=t_, e=e_, label=C.norm(ecole)); verb = f"{ecole} · {hemi} · {comb} ({KB.code(comb)})"
         tete = [f"Magie hybride, combinaison {comb} : l'élément en jeu."]
-    notes = tete + [n for n in g["notes"] if n not in NOTES_RETIREES]
+    notes = tete + [n for n in g["notes"] if n not in NOTES_RETIREES and n not in NOTES_VERBE]
     nom = nom_hybride(g["label"], comb if not vide else "", plusieurs)
     CREEES.append((k[0], k[1], l["type"], comb, nom))
     return dict(g, fam="H", core=core, verb=verb, rings=rings, notes=notes, r0=66, label=nom, split=None,
@@ -589,3 +592,21 @@ def notes_famille(cle, formes):
             f = dict(f, notes=[n for n in f["notes"] if n != NOTE_PAS_ARCANE]); NOTES_FAITES["pas_arcane_retiree"].append((cle, f["label"]))
         out.append(f)
     return out
+
+
+# ---------- compléments du 21 novembre 2026 ----------
+# Quatre sorts oubliés par les fichiers (homonymes d'un autre sort) : leur forme hybride, recette habituelle, d'après leur forme
+# d'Arcane (rang d'origine 0). Averse et Isolement : l'Impact suit l'école.
+SUPPLEMENTS = [
+    dict(cle="drench", rang=0, combinaison="Eau", ecole="Invocation", poles=["lumineux"]),
+    dict(cle="isolation", rang=0, combinaison="Brume", ecole="Illusion", poles=["lumineux"]),
+    dict(cle="boiling-blood", rang=0, combinaison="Sang", ecole="Transmutation", poles=["ténébreux"]),
+    dict(cle="blood-boil", rang=0, combinaison="Sang", ecole="Nécromancie", poles=["ténébreux", "ténébreux"]),
+]
+for _s in SUPPLEMENTS:
+    _h = HEMI_ECOLE[_s["ecole"]]
+    CREER[(_s["cle"], _s["rang"])].append(dict(
+        statut="à créer", type="combinaison fixe", cle=_s["cle"], rang_forme_modele=str(_s["rang"]), combinaison=_s["combinaison"],
+        ecole=_s["ecole"], hemisphere=_h, face="", art="", verbe="", note="complément du 21 novembre 2026 (sort oublié par B3)",
+        impacts_poles=" | ".join(f"{i}:{p}" for i, p in enumerate(_s["poles"])),
+        impacts_opposes=" | ".join(str(i) for i, p in enumerate(_s["poles"]) if p != POLE_HEMI[_h]), raisons=""))

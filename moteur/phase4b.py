@@ -14,7 +14,7 @@ un Impact est opposé. Chaque cercle d'Impact garde son pôle (champ poles_impac
 import os, csv, re
 import spells as SP
 
-ETAPE = int(os.environ.get("PHASE4B_ETAPE", "5"))      # étapes de la phase 4b appliquées (0 ou 1 : aucune donnée)
+ETAPE = int(os.environ.get("PHASE4B_ETAPE", "6"))      # étapes de la phase 4b appliquées (0 ou 1 : aucune donnée)
 D = os.path.dirname(os.path.abspath(__file__))
 P4B = os.path.join(D, "..", "donnees", "phase4b")
 B3 = list(csv.DictReader(open(os.path.join(P4B, "B3_formes_hybrides.csv"), encoding="utf-8-sig"), delimiter=";")) \
@@ -375,17 +375,81 @@ def hybride(g, l, k, plusieurs):
                 poles_impacts=tuple(ps) or None, regle_4b=True, element_par_defaut=False, cree_4b=(k[1], l["type"]))
 
 
+def nom_famille(modele, famille):
+    """nom d'une forme créée d'une autre famille (« Art rare », « Forme arcane »), selon l'usage du dépôt"""
+    for avant in ("Forme arcane", "Art rare"):
+        if modele == avant: return famille
+        if modele.startswith(avant + " — "): return famille + modele[len(avant):]
+    return famille + " — " + modele
+
+
+def _verbe_de(nom):
+    import convert as C
+    return next(((vk, vn) for (vk, vn), n in C.VERBS.items() if n == nom), None)
+
+
+def art_rare(g, l, k):
+    """étape 6 : une forme d'art rare d'après la forme d'Arcane modèle — Noyau du moteur (verbe d'Arcane cerné des quatre
+    éléments, mot de l'art), mêmes cercles et phrases, répartition 50/50 du moteur"""
+    import convert as C
+    v = _verbe_de(l["verbe"])
+    if g["fam"] != "A" or g["core"][0] != "verb" or v is None or (g["core"][1], bool(g["core"][2])) != v:
+        _refus(l, f"modèle « {g['verb']} » / verbe « {l['verbe']} »"); return None
+    vk, vn = v; art = l["art"]
+    notes = [f"Art rare ({art}) : verbe arcanique au cœur, quatre éléments, équilibre astral 50/50."] + [n for n in g["notes"] if n not in NOTES_RETIREES]
+    nom = nom_famille(g["label"], "Art rare")
+    CREEES.append((k[0], k[1], l["type"], art, nom))
+    return dict(g, fam="R", core=SP.chrono(vk, vn, art.upper()), r0=66, split=None, notes=notes, label=nom,
+                verb=f"{art.capitalize()} · {C.VERBS[(vk, vn)]} ({C.VERB_GROUP[vk]} {'−' if vn else '+'}) cerné des quatre éléments",
+                poles_impacts=None, regle_4b=False, element_par_defaut=False, cree_4b=(k[1], l["type"]))
+
+
+def sans_temps(f):
+    """le mot « temps » retiré des cercles d'Impact (règle du moteur _sans_mot pour la phrase)"""
+    import convert as C
+    rings = [(r[0], r[1], [w for w in r[2] if w != "TEMPS"], C._sans_mot(r[3], "TEMPS"), *r[4:]) if r[0] == "IMPACT" and "TEMPS" in r[2] else r
+             for r in f["rings"]]
+    return dict(f, rings=rings)
+
+
+def arcane_nouvelle(g, l, k):
+    """étape 6 : copie en Arcane de la forme d'art rare, qui reste ; le mot « temps » de l'Impact est retiré"""
+    import convert as C
+    c = g["core"]
+    if g["fam"] != "R" or c[0] != "chrono" or C.VERBS[(c[1], bool(c[2]))] != l["verbe"]:
+        _refus(l, f"modèle « {g['verb']} »"); return None
+    vk, vn = c[1], bool(c[2])
+    notes = ["Arcane : aucun élément en jeu, un verbe suffit." if n.startswith("Art rare (") else n for n in g["notes"]]
+    nom = nom_famille(g["label"], "Forme arcane")
+    CREEES.append((k[0], k[1], l["type"], "", nom))
+    return sans_temps(dict(g, fam="A", core=SP.verb(vk, vn), pol="down" if vn else "up", split=None, r0=34, notes=notes, label=nom,
+                           verb=f"{C.VERBS[(vk, vn)]} · {C.VERB_GROUP[vk].lower()} {'−' if vn else '+'}",
+                           poles_impacts=None, regle_4b=False, element_par_defaut=False, cree_4b=(k[1], l["type"])))
+
+
 def creer(g, k):
     """formes créées d'après la forme modèle g (rang d'origine k), pour les étapes atteintes ; à redessiner par l'appelant"""
     ls = [l for l in CREER.get(k, []) if l["type"] in types_actifs()
           # le modèle de ces lignes est la forme d'Arcane créée à l'étape 6 (Lenteur) : elles attendent l'étape 6
           and not (l["note"].startswith("modèle : la forme d'Arcane de cette édition") and ETAPE < 6)]
-    out = []
-    for l in ls:
+    out, arcane = [], None
+    for l in sorted(ls, key=lambda x: x["type"] != "forme d'Arcane nouvelle"):      # la forme d'Arcane nouvelle d'abord
         if l["type"] in HYBRIDES:
             plusieurs = sum(1 for x in ls if x["type"] == l["type"] == "élément choisi") > 1
-            nf = hybride(g, l, k, plusieurs)
+            modele = g
+            if l["note"].startswith("modèle : la forme d'Arcane de cette édition"):
+                # Lenteur : la forme d'Arcane de l'édition (créée ici, ou convertie à l'étape 2), sans le mot « temps »
+                base = arcane if arcane is not None else (g if g["fam"] == "A" else None)
+                if base is None: _refus(l, "pas de forme d'Arcane de cette édition"); continue
+                modele = sans_temps(base)
+            nf = hybride(modele, l, k, plusieurs)
             if nf is not None: out.append(nf)
+        elif l["type"] == "art rare":
+            nf = art_rare(g, l, k)
+            if nf is not None: out.append(nf)
+        elif l["type"] == "forme d'Arcane nouvelle":
+            arcane = arcane_nouvelle(g, l, k)
+            if arcane is not None: out.append(arcane)
         else:
-            _refus(l, f"type « {l['type']} » pas encore traité")
+            _refus(l, f"type « {l['type']} » non traité")
     return out

@@ -14,7 +14,7 @@ un Impact est opposé. Chaque cercle d'Impact garde son pôle (champ poles_impac
 import os, csv, re
 import spells as SP
 
-ETAPE = int(os.environ.get("PHASE4B_ETAPE", "7"))      # étapes de la phase 4b appliquées (0 ou 1 : aucune donnée)
+ETAPE = int(os.environ.get("PHASE4B_ETAPE", "8"))      # étapes de la phase 4b appliquées (0 ou 1 : aucune donnée)
 D = os.path.dirname(os.path.abspath(__file__))
 P4B = os.path.join(D, "..", "donnees", "phase4b")
 B3 = list(csv.DictReader(open(os.path.join(P4B, "B3_formes_hybrides.csv"), encoding="utf-8-sig"), delimiter=";")) \
@@ -567,4 +567,25 @@ def jumelles(nf, k):
         plusieurs = sum(1 for x in ls if x["type"] == l["type"] == "élément choisi") > 1
         h = hybride(nf, l, k, plusieurs)
         if h is not None: out.append(dict(h, cree_4b=(k[1], "jumelle d'une forme nouvelle (B4)")))
+    return out
+
+
+# ---------- étape 8 : notes de famille (décision du 21 novembre 2026) ----------
+NOTE_PAS_HYBRIDE = "Pas de forme hybride : aucune combinaison naturelle ne porte cet effet."
+NOTE_PAS_ARCANE = "Pas de forme arcane : le sort façonne la matière elle-même, que l'Arcane ne touche pas."
+NOTES_FAITES = {"pas_hybride_retiree": [], "pas_arcane_retiree": []}     # (cle, nom de la forme)
+
+
+def notes_famille(cle, formes):
+    """une note « Pas de forme hybride… » (forme d'Arcane) ou « Pas de forme arcane… » (forme hybride) ne reste que là où elle
+    est vraie : elle est retirée quand le sort a maintenant une forme de l'autre famille. Seules les notes changent."""
+    if ETAPE < 8: return formes
+    fams = {f["fam"] for f in formes}
+    out = []
+    for f in formes:
+        if f["fam"] == "A" and "H" in fams and NOTE_PAS_HYBRIDE in f["notes"]:
+            f = dict(f, notes=[n for n in f["notes"] if n != NOTE_PAS_HYBRIDE]); NOTES_FAITES["pas_hybride_retiree"].append((cle, f["label"]))
+        elif f["fam"] == "H" and "A" in fams and NOTE_PAS_ARCANE in f["notes"]:
+            f = dict(f, notes=[n for n in f["notes"] if n != NOTE_PAS_ARCANE]); NOTES_FAITES["pas_arcane_retiree"].append((cle, f["label"]))
+        out.append(f)
     return out

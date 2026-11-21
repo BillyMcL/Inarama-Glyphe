@@ -553,7 +553,7 @@ def appliquer(cle, formes):
             rings, touche = _placer(nf["rings"])
             PLACES.extend((nf["idx"], nf["label"], c) for c in touche)
             out.append(_redessine(nf, rings))
-    return out
+    return P4B.notes_famille(cle, out)        # phase 4b, étape 8 : notes de famille devenues fausses retirées
 
 
 # ---------- placement des symboles à côté d'autres satellites (règle de dessin, après toutes les corrections) ----------

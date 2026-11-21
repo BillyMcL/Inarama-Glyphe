@@ -24,7 +24,7 @@ PART = """griffe ombre aile cheveu oreille psyche memoire sang ame souffle corps
 levre œil jambe barbe articulation poing cheveux croc langue vie age"""
 FACULTE = """garde resistance force coup frappe aptitude endurance lucidite prestance adresse raison volonte"""
 LIEU = """ville village lieu plan surface terrain ethere"""
-TRAME = """sort magie"""
+TRAME = """sort magie illusion"""        # illusion : une illusion en cours que le sort vise (B8, Révélation douloureuse)
 QUALITE = """invisibilite nature petit hostile lumineux tenebreux mort vivant naturelle toutes secret invisible
 plusieurs"""
 CIBLE = {c: set(v.upper().split()) for c, v in dict(ETRE=ETRE, OBJET=OBJET, PART=PART, FACULTE=FACULTE, LIEU=LIEU, TRAME=TRAME, QUALITE=QUALITE).items()}

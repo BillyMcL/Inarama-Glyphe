@@ -1,0 +1,348 @@
+lot;cle;sort;jeu;forme;cercle;numero;action;cercle_actuel;valeur;mots;satellites_a_retirer;satellites_a_ajouter;parenthese;note
+A Pluie étouffante;dousing-rain;Pluie étouffante;PF1;Forme arcane;IMPACT;1;modifier;IMPACT 1 VULNERABILITE;garder;garder;;;chaque coup de foudre blesse de 1 de plus;
+A Pluie étouffante;dousing-rain;Pluie étouffante;PF1;Forme hybride;IMPACT;1;modifier;IMPACT 1 VULNERABILITE;garder;garder;;;chaque coup de foudre blesse de 1 de plus;
+A Ultime sacrifice;final-sacrifice;Ultime sacrifice;PF1;Forme arcane;FORME;0;ajouter après;FORME plein EXPLOSION;garder;garder;;;;"ajouter juste après le cercle Forme un cercle AMPLEUR 945 VOLUME METRES CUBES (sphère de 6 m de rayon, comme Boule de feu) ; parenthèse : 6 m à la ronde"
+A Ultime sacrifice;final-sacrifice;Ultime sacrifice;PF1;Forme hybride — Feu;FORME;0;ajouter après;FORME plein EXPLOSION;garder;garder;;;;"ajouter juste après le cercle Forme un cercle AMPLEUR 945 VOLUME METRES CUBES (sphère de 6 m de rayon, comme Boule de feu) ; parenthèse : 6 m à la ronde"
+A Ultime sacrifice;final-sacrifice;Ultime sacrifice;PF1;Forme hybride — Glace;FORME;0;ajouter après;FORME plein EXPLOSION;garder;garder;;;;"ajouter juste après le cercle Forme un cercle AMPLEUR 945 VOLUME METRES CUBES (sphère de 6 m de rayon, comme Boule de feu) ; parenthèse : 6 m à la ronde"
+A Ultime sacrifice;final-sacrifice;Ultime sacrifice;PF1;Forme hybride — Glace;IMPACT;1;modifier;IMPACT 8;garder;garder;sym:feu;;;l'explosion est de froid : pas de symbole du feu
+A Ultime sacrifice;final-sacrifice;Ultime sacrifice;PF1;Forme hybride — Air;FORME;0;ajouter après;FORME plein EXPLOSION;garder;garder;;;;"ajouter juste après le cercle Forme un cercle AMPLEUR 945 VOLUME METRES CUBES (sphère de 6 m de rayon, comme Boule de feu) ; parenthèse : 6 m à la ronde"
+A Ultime sacrifice;final-sacrifice;Ultime sacrifice;PF1;Forme hybride — Air;;0;retirer la forme;;garder;garder;;;;le texte ne connaît que le feu et le froid
+A Ultime sacrifice;final-sacrifice;Ultime sacrifice;PF1;Forme hybride — Terre;FORME;0;ajouter après;FORME plein EXPLOSION;garder;garder;;;;"ajouter juste après le cercle Forme un cercle AMPLEUR 945 VOLUME METRES CUBES (sphère de 6 m de rayon, comme Boule de feu) ; parenthèse : 6 m à la ronde"
+A Ultime sacrifice;final-sacrifice;Ultime sacrifice;PF1;Forme hybride — Terre;;0;retirer la forme;;garder;garder;;;;le texte ne connaît que le feu et le froid
+A Ultime sacrifice;final-sacrifice;Ultime sacrifice;PF1;Forme hybride — Eau;FORME;0;ajouter après;FORME plein EXPLOSION;garder;garder;;;;"ajouter juste après le cercle Forme un cercle AMPLEUR 945 VOLUME METRES CUBES (sphère de 6 m de rayon, comme Boule de feu) ; parenthèse : 6 m à la ronde"
+A Ultime sacrifice;final-sacrifice;Ultime sacrifice;PF1;Forme hybride — Eau;;0;retirer la forme;;garder;garder;;;;le texte ne connaît que le feu et le froid
+A Ultime sacrifice;final-sacrifice;Ultime sacrifice;PF2;Forme arcane — version PF2;FORME;0;ajouter après;FORME plein EXPLOSION;garder;garder;;;;"ajouter juste après le cercle Forme un cercle AMPLEUR 945 VOLUME METRES CUBES (sphère de 6 m de rayon, comme Boule de feu) ; parenthèse : 6 m à la ronde"
+A Ultime sacrifice;final-sacrifice;Ultime sacrifice;PF2;Forme arcane — version PF2;CIBLE;0;modifier;CIBLE 3 INVOQUE;2;garder;;;;sa propre créature invoquée
+A Ultime sacrifice;final-sacrifice;Ultime sacrifice;PF2;Forme hybride — version PF2 — Feu;FORME;0;ajouter après;FORME plein EXPLOSION;garder;garder;;;;"ajouter juste après le cercle Forme un cercle AMPLEUR 945 VOLUME METRES CUBES (sphère de 6 m de rayon, comme Boule de feu) ; parenthèse : 6 m à la ronde"
+A Ultime sacrifice;final-sacrifice;Ultime sacrifice;PF2;Forme hybride — version PF2 — Feu;CIBLE;0;modifier;CIBLE 3 INVOQUE;2;garder;;;;sa propre créature invoquée
+A Ultime sacrifice;final-sacrifice;Ultime sacrifice;PF2;Forme hybride — version PF2 — Feu;IMPACT;0;ajouter avant;IMPACT 21;plein;DESTRUCTION;;;l'être invoqué explose;avant l'Impact de blessure, comme en PF1
+A Ultime sacrifice;final-sacrifice;Ultime sacrifice;PF2;Forme hybride — version PF2 — Glace;FORME;0;ajouter après;FORME plein EXPLOSION;garder;garder;;;;"ajouter juste après le cercle Forme un cercle AMPLEUR 945 VOLUME METRES CUBES (sphère de 6 m de rayon, comme Boule de feu) ; parenthèse : 6 m à la ronde"
+A Ultime sacrifice;final-sacrifice;Ultime sacrifice;PF2;Forme hybride — version PF2 — Glace;CIBLE;0;modifier;CIBLE 3 INVOQUE;2;garder;;;;sa propre créature invoquée
+A Ultime sacrifice;final-sacrifice;Ultime sacrifice;PF2;Forme hybride — version PF2 — Glace;IMPACT;0;ajouter avant;IMPACT 21;plein;DESTRUCTION;;;l'être invoqué explose;avant l'Impact de blessure, comme en PF1
+A Ultime sacrifice;final-sacrifice;Ultime sacrifice;PF2;Forme hybride — version PF2 — Air;FORME;0;ajouter après;FORME plein EXPLOSION;garder;garder;;;;"ajouter juste après le cercle Forme un cercle AMPLEUR 945 VOLUME METRES CUBES (sphère de 6 m de rayon, comme Boule de feu) ; parenthèse : 6 m à la ronde"
+A Ultime sacrifice;final-sacrifice;Ultime sacrifice;PF2;Forme hybride — version PF2 — Air;;0;retirer la forme;;garder;garder;;;;le texte ne connaît que le feu et le froid
+A Ultime sacrifice;final-sacrifice;Ultime sacrifice;PF2;Forme hybride — version PF2 — Air;CIBLE;0;modifier;CIBLE 3 INVOQUE;2;garder;;;;sa propre créature invoquée
+A Ultime sacrifice;final-sacrifice;Ultime sacrifice;PF2;Forme hybride — version PF2 — Terre;FORME;0;ajouter après;FORME plein EXPLOSION;garder;garder;;;;"ajouter juste après le cercle Forme un cercle AMPLEUR 945 VOLUME METRES CUBES (sphère de 6 m de rayon, comme Boule de feu) ; parenthèse : 6 m à la ronde"
+A Ultime sacrifice;final-sacrifice;Ultime sacrifice;PF2;Forme hybride — version PF2 — Terre;;0;retirer la forme;;garder;garder;;;;le texte ne connaît que le feu et le froid
+A Ultime sacrifice;final-sacrifice;Ultime sacrifice;PF2;Forme hybride — version PF2 — Terre;CIBLE;0;modifier;CIBLE 3 INVOQUE;2;garder;;;;sa propre créature invoquée
+A Ultime sacrifice;final-sacrifice;Ultime sacrifice;PF2;Forme hybride — version PF2 — Eau;FORME;0;ajouter après;FORME plein EXPLOSION;garder;garder;;;;"ajouter juste après le cercle Forme un cercle AMPLEUR 945 VOLUME METRES CUBES (sphère de 6 m de rayon, comme Boule de feu) ; parenthèse : 6 m à la ronde"
+A Ultime sacrifice;final-sacrifice;Ultime sacrifice;PF2;Forme hybride — version PF2 — Eau;;0;retirer la forme;;garder;garder;;;;le texte ne connaît que le feu et le froid
+A Ultime sacrifice;final-sacrifice;Ultime sacrifice;PF2;Forme hybride — version PF2 — Eau;CIBLE;0;modifier;CIBLE 3 INVOQUE;2;garder;;;;sa propre créature invoquée
+A Ancre de plomb;lead-anchor;Ancre de plomb;PF1;Forme arcane;IMPACT;0;modifier;IMPACT plein FARDEAU;garder;garder;;;la cible coule et reste au fond de l'eau;
+A Ancre de plomb;lead-anchor;Ancre de plomb;PF1;Forme hybride;IMPACT;0;modifier;IMPACT plein FARDEAU;garder;garder;;;la cible coule et reste au fond de l'eau;
+A Soldats sauvages;wilderness-soldiers;Soldats sauvages;PF1;Forme arcane;IMPACT;0;ajouter après;IMPACT 6;3;ETREINTE;;;les sous-bois agrippent et serrent;
+A Soldats sauvages;wilderness-soldiers;Soldats sauvages;PF1;Forme hybride;IMPACT;0;ajouter après;IMPACT 6;3;ETREINTE;;;les sous-bois agrippent et serrent;
+A Piste éphémère;ephemeral-tracking;Piste éphémère;PF2;Forme hybride;IMPACT;0;modifier;IMPACT plein TRACE;garder;garder;"sym:air ; sym:eau";;;le Noyau Tempête dit déjà l'air et l'eau
+B Main agrippante;arcane-hand;Main magique;2024;Main agrippante — version 2024;IMPACT;1;modifier;IMPACT 17 CHOC;14;garder;;;puis broyé : 4d6 en moyenne;
+B Main agrippante;arcane-hand;Main magique;2024;Forme hybride — Main agrippante — version 2024;IMPACT;1;modifier;IMPACT 17 CHOC;14;garder;;;puis broyé : 4d6 en moyenne;
+B Orbe aqueux;aqueous-orb;Orbe aqueux;PF1;Forme arcane;FORME;0;ajouter après;FORME plein;garder;garder;;;;"ajouter juste après le cercle Forme un cercle AMPLEUR 14 VOLUME METRES CUBES ; parenthèse : sphère de 1,5 m de rayon (3 m de diamètre)"
+B Orbe aqueux;aqueous-orb;Orbe aqueux;PF1;Forme arcane;IMPACT;1;ajouter après;IMPACT 7 ENTRAVE;plein;EXTINCTION;;sym:feu;le feu touché s'éteint;
+B Orbe aqueux;aqueous-orb;Orbe aqueux;PF1;Forme hybride;FORME;0;ajouter après;FORME plein;garder;garder;;;;"ajouter juste après le cercle Forme un cercle AMPLEUR 14 VOLUME METRES CUBES ; parenthèse : sphère de 1,5 m de rayon (3 m de diamètre)"
+B Orbe aqueux;aqueous-orb;Orbe aqueux;PF1;Forme hybride;IMPACT;1;ajouter après;IMPACT 7 ENTRAVE;plein;EXTINCTION;;sym:feu;le feu touché s'éteint;
+B Orbe aqueux;aqueous-orb;Orbe aqueux;PF2;Forme arcane — version PF2;FORME;0;ajouter après;FORME plein;garder;garder;;;;"ajouter juste après le cercle Forme un cercle AMPLEUR 14 VOLUME METRES CUBES ; parenthèse : sphère de 1,5 m de rayon (3 m de diamètre)"
+B Orbe aqueux;aqueous-orb;Orbe aqueux;PF2;Forme arcane — version PF2;IMPACT;0;ajouter après;IMPACT 7 ENTRAVE;plein;EXTINCTION;;sym:feu;le feu touché s'éteint;
+B Orbe aqueux;aqueous-orb;Orbe aqueux;PF2;Forme arcane — version PF2;IMPACT;0;modifier;IMPACT 7 ENTRAVE;garder;ENTRAVE NOYADE;;;englouti, il retient son souffle ou suffoque;
+B Orbe aqueux;aqueous-orb;Orbe aqueux;PF2;Forme arcane — version PF2;CONDITION;0;modifier;CONDITION 1 PAROLE;garder;PAROLE CONCENTRATION;;;le sort est maintenu;
+B Orbe aqueux;aqueous-orb;Orbe aqueux;PF2;Forme hybride — version PF2;FORME;0;ajouter après;FORME plein;garder;garder;;;;"ajouter juste après le cercle Forme un cercle AMPLEUR 14 VOLUME METRES CUBES ; parenthèse : sphère de 1,5 m de rayon (3 m de diamètre)"
+B Orbe aqueux;aqueous-orb;Orbe aqueux;PF2;Forme hybride — version PF2;IMPACT;0;ajouter après;IMPACT 7 ENTRAVE;plein;EXTINCTION;;sym:feu;le feu touché s'éteint;
+B Orbe aqueux;aqueous-orb;Orbe aqueux;PF2;Forme hybride — version PF2;IMPACT;0;modifier;IMPACT 7 ENTRAVE;garder;ENTRAVE NOYADE;;;englouti, il retient son souffle ou suffoque;
+B Orbe aqueux;aqueous-orb;Orbe aqueux;PF2;Forme hybride — version PF2;CONDITION;0;modifier;CONDITION 1 PAROLE;garder;PAROLE CONCENTRATION;;;le sort est maintenu;
+B Orbe aqueux;aqueous-orb;Orbe aqueux;PF2;Forme arcane — version PF2 remaniée;FORME;0;modifier;FORME 4;plein;garder;;;;"primitive sphère (et non cube) ; satellite 1| inchangé"
+B Orbe aqueux;aqueous-orb;Orbe aqueux;PF2;Forme arcane — version PF2 remaniée;AMPLEUR;0;modifier;AMPLEUR 28 VOLUME METRES CUBES;14;garder;;;sphère de 1,5 m de rayon (3 m de diamètre);
+B Orbe aqueux;aqueous-orb;Orbe aqueux;PF2;Forme arcane — version PF2 remaniée;IMPACT;0;ajouter après;IMPACT 7 ENTRAVE;plein;EXTINCTION;;sym:feu;le feu touché s'éteint;
+B Orbe aqueux;aqueous-orb;Orbe aqueux;PF2;Forme arcane — version PF2 remaniée;IMPACT;0;modifier;IMPACT 7 ENTRAVE;garder;ENTRAVE NOYADE;;;englouti, il retient son souffle ou suffoque;
+B Orbe aqueux;aqueous-orb;Orbe aqueux;PF2;Forme arcane — version PF2 remaniée;CONDITION;0;modifier;CONDITION 1 PAROLE;garder;PAROLE CONCENTRATION;;;le sort est maintenu;
+B Orbe aqueux;aqueous-orb;Orbe aqueux;PF2;Forme hybride — version PF2 remaniée;FORME;0;modifier;FORME 4;plein;garder;;;;"primitive sphère (et non cube) ; satellite 1| inchangé"
+B Orbe aqueux;aqueous-orb;Orbe aqueux;PF2;Forme hybride — version PF2 remaniée;AMPLEUR;0;modifier;AMPLEUR 28 VOLUME METRES CUBES;14;garder;;;sphère de 1,5 m de rayon (3 m de diamètre);
+B Orbe aqueux;aqueous-orb;Orbe aqueux;PF2;Forme hybride — version PF2 remaniée;IMPACT;0;ajouter après;IMPACT 7 ENTRAVE;plein;EXTINCTION;;sym:feu;le feu touché s'éteint;
+B Orbe aqueux;aqueous-orb;Orbe aqueux;PF2;Forme hybride — version PF2 remaniée;IMPACT;0;modifier;IMPACT 7 ENTRAVE;garder;ENTRAVE NOYADE;;;englouti, il retient son souffle ou suffoque;
+B Orbe aqueux;aqueous-orb;Orbe aqueux;PF2;Forme hybride — version PF2 remaniée;CONDITION;0;modifier;CONDITION 1 PAROLE;garder;PAROLE CONCENTRATION;;;le sort est maintenu;
+C Eau consacrée;curse-water;Eau consacrée;3.5;Eau bénite — lumineux;IMPACT;0;modifier;IMPACT plein;garder;CHARGE;;;une eau chargée d'énergie lumineuse;
+C Eau consacrée;curse-water;Eau consacrée;3.5;Eau maudite — ténébreux;IMPACT;0;modifier;IMPACT plein;garder;CHARGE;;;une eau chargée d'énergie ténébreuse;
+C Eau consacrée;curse-water;Eau consacrée;3.5;Eau maudite — ténébreux;NOYAU;0;changer le verbe;Purifier · qualité +;garder;garder;;;;verbe Corrompre · qualité −
+D Bonus bruts;shield;Bouclier;5e;Forme hybride;IMPACT;0;modifier;IMPACT 5;3;garder;;;;bonus converti en degré (5 → 3)
+D Bonus bruts;shield;Bouclier;5e;Forme arcane;IMPACT;0;modifier;IMPACT 5;3;garder;;;;bonus converti en degré (5 → 3)
+D Bonus bruts;shield;Bouclier;3.5;Forme hybride — version 3.5;IMPACT;0;modifier;IMPACT 4;2;garder;;;;bonus converti en degré (4 → 2)
+D Bonus bruts;shield;Bouclier;3.5;Forme arcane — version 3.5;IMPACT;0;modifier;IMPACT 4;2;garder;;;;bonus converti en degré (4 → 2)
+D Bonus bruts;mage-armor;Armure de mage;3.5;Forme arcane — version 3.5;IMPACT;0;modifier;IMPACT 4;2;garder;;;;bonus converti en degré (4 → 2)
+D Bonus bruts;mage-armor;Armure de mage;3.5;Forme hybride — version 3.5;IMPACT;0;modifier;IMPACT 4;2;garder;;;;bonus converti en degré (4 → 2)
+D Bonus bruts;dispel-evil-and-good;Dissipation du mal et du bien;3.5;Contre l'hostile — version 3.5;IMPACT;0;modifier;IMPACT 4;2;garder;;;;bonus converti en degré (4 → 2)
+D Bonus bruts;dispel-evil-and-good;Dissipation du mal et du bien;3.5;Forme hybride — Contre l'hostile — version 3.5;IMPACT;0;modifier;IMPACT 4;2;garder;;;;bonus converti en degré (4 → 2)
+D Bonus bruts;dispel-evil-and-good;Dissipation du mal et du bien;3.5;Contre le lumineux — version 3.5;IMPACT;0;modifier;IMPACT 4;2;garder;;;;bonus converti en degré (4 → 2)
+D Bonus bruts;dispel-evil-and-good;Dissipation du mal et du bien;3.5;Contre le ténébreux — version 3.5;IMPACT;0;modifier;IMPACT 4;2;garder;;;;bonus converti en degré (4 → 2)
+D Bonus bruts;dispel-evil-and-good;Dissipation du mal et du bien;3.5;Forme hybride — Contre le ténébreux — version 3.5;IMPACT;0;modifier;IMPACT 4;2;garder;;;;bonus converti en degré (4 → 2)
+D Bonus bruts;holy-aura;Aura sacrée;3.5;Aura sacrée — contre l'hostile — version 3.5;IMPACT;0;modifier;IMPACT 4;2;garder;;;;bonus converti en degré (4 → 2)
+D Bonus bruts;holy-aura;Aura sacrée;3.5;Forme hybride — Aura sacrée — contre l'hostile — version 3.5;IMPACT;0;modifier;IMPACT 4;2;garder;;;;bonus converti en degré (4 → 2)
+D Bonus bruts;holy-aura;Aura sacrée;3.5;Aura impie — contre l'hostile — version 3.5;IMPACT;0;modifier;IMPACT 4;2;garder;;;;bonus converti en degré (4 → 2)
+D Bonus bruts;holy-aura;Aura sacrée;3.5;Forme hybride — Aura impie — contre l'hostile — version 3.5;IMPACT;0;modifier;IMPACT 4;2;garder;;;;bonus converti en degré (4 → 2)
+D Bonus bruts;holy-aura;Aura sacrée;3.5;Manteau du chaos — contre le lumineux — version 3.5;IMPACT;0;modifier;IMPACT 4;2;garder;;;;bonus converti en degré (4 → 2)
+D Bonus bruts;holy-aura;Aura sacrée;3.5;Forme hybride — Manteau du chaos — contre le lumineux — version 3.5;IMPACT;0;modifier;IMPACT 4;2;garder;;;;bonus converti en degré (4 → 2)
+D Bonus bruts;holy-aura;Aura sacrée;3.5;Bouclier de la loi — contre le ténébreux — version 3.5;IMPACT;0;modifier;IMPACT 4;2;garder;;;;bonus converti en degré (4 → 2)
+D Bonus bruts;holy-aura;Aura sacrée;3.5;Forme hybride — Bouclier de la loi — contre le ténébreux — version 3.5;IMPACT;0;modifier;IMPACT 4;2;garder;;;;bonus converti en degré (4 → 2)
+D Bonus bruts;mental-barrier-i;Barrière mentale;PF1;Barrière mentale I;IMPACT;0;modifier;IMPACT 4;2;garder;;;;bonus converti en degré (4 → 2)
+D Bonus bruts;mental-barrier-i;Barrière mentale;PF1;Forme hybride — Barrière mentale I;IMPACT;0;modifier;IMPACT 4;2;garder;;;;bonus converti en degré (4 → 2)
+D Bonus bruts;mental-barrier-i;Barrière mentale;PF1;Barrière mentale II;IMPACT;0;modifier;IMPACT 6;3;garder;;;;bonus converti en degré (6 → 3)
+D Bonus bruts;mental-barrier-i;Barrière mentale;PF1;Forme hybride — Barrière mentale II;IMPACT;0;modifier;IMPACT 6;3;garder;;;;bonus converti en degré (6 → 3)
+D Bonus bruts;mental-barrier-i;Barrière mentale;PF1;Barrière mentale III;IMPACT;0;modifier;IMPACT 8;4;garder;;;;bonus converti en degré (8 → 4)
+D Bonus bruts;mental-barrier-i;Barrière mentale;PF1;Forme hybride — Barrière mentale III;IMPACT;0;modifier;IMPACT 8;4;garder;;;;bonus converti en degré (8 → 4)
+D Bonus bruts;mental-barrier-i;Barrière mentale;PF1;Barrière mentale IV;IMPACT;0;modifier;IMPACT 8;4;garder;;;;bonus converti en degré (8 → 4)
+D Bonus bruts;mental-barrier-i;Barrière mentale;PF1;Forme hybride — Barrière mentale IV;IMPACT;0;modifier;IMPACT 8;4;garder;;;;bonus converti en degré (8 → 4)
+D Bonus bruts;mental-barrier-i;Barrière mentale;PF1;Barrière mentale V;IMPACT;0;modifier;IMPACT 8;4;garder;;;;bonus converti en degré (8 → 4)
+D Bonus bruts;mental-barrier-i;Barrière mentale;PF1;Forme hybride — Barrière mentale V;IMPACT;0;modifier;IMPACT 8;4;garder;;;;bonus converti en degré (8 → 4)
+D Bonus bruts;oath-of-peace;Serment de paix;PF1;Forme arcane;IMPACT;0;modifier;IMPACT 5 PAIX;3;garder;;;;bonus converti en degré (5 → 3)
+D Bonus bruts;oath-of-peace;Serment de paix;PF1;Forme hybride;IMPACT;0;modifier;IMPACT 5 PAIX;3;garder;;;;bonus converti en degré (5 → 3)
+D Bonus bruts;apsus-shining-scales;Écailles brillantes;PF1;Forme arcane;IMPACT;0;modifier;IMPACT 5 SOUFFLE;3;garder;;;;bonus converti en degré (5 → 3)
+D Bonus bruts;apsus-shining-scales;Écailles brillantes;PF1;Forme hybride;IMPACT;0;modifier;IMPACT 5 SOUFFLE;3;garder;;;;bonus converti en degré (5 → 3)
+D Bonus bruts;protection-from-spells;Protection contre les sorts;3.5;Forme arcane;IMPACT;0;modifier;IMPACT 8 CONTRE SORT;4;garder;;;;bonus converti en degré (8 → 4)
+D Bonus bruts;protection-from-spells;Protection contre les sorts;3.5;Forme hybride;IMPACT;0;modifier;IMPACT 8 CONTRE SORT;4;garder;;;;bonus converti en degré (8 → 4)
+D Bonus bruts;holy-sword;Arme sacrée;3.5;Forme arcane;IMPACT;0;modifier;IMPACT 5;3;garder;;;;bonus converti en degré (5 → 3)
+D Bonus bruts;holy-sword;Arme sacrée;3.5;Forme hybride;IMPACT;0;modifier;IMPACT 5;3;garder;;;;bonus converti en degré (5 → 3)
+D Bonus bruts;holy-sword;Arme sacrée;PF1;Forme arcane — version PF1;IMPACT;0;modifier;IMPACT 5;3;garder;;;;bonus converti en degré (5 → 3)
+D Bonus bruts;holy-sword;Arme sacrée;PF1;Forme hybride — version PF1;IMPACT;0;modifier;IMPACT 5;3;garder;;;;bonus converti en degré (5 → 3)
+D Bonus bruts;dragonvoice;Voix du dragon;PF1;Forme arcane;IMPACT;0;modifier;IMPACT 6;3;garder;;;;bonus converti en degré (6 → 3)
+D Bonus bruts;dragonvoice;Voix du dragon;PF1;Forme hybride;IMPACT;0;modifier;IMPACT 6;3;garder;;;;bonus converti en degré (6 → 3)
+D Bonus bruts;visualization-of-the-body;Visualisation du corps;PF1;Forme arcane;IMPACT;0;modifier;IMPACT 5 VISUALISATION;3;garder;;;;bonus converti en degré (5 → 3)
+D Bonus bruts;visualization-of-the-body;Visualisation du corps;PF1;Forme hybride;IMPACT;0;modifier;IMPACT 5 VISUALISATION;3;garder;;;;bonus converti en degré (5 → 3)
+D Bonus bruts;visualization-of-the-mind;Visualisation de l'esprit;PF1;Forme arcane;IMPACT;0;modifier;IMPACT 5 VISUALISATION;3;garder;;;;bonus converti en degré (5 → 3)
+D Bonus bruts;visualization-of-the-mind;Visualisation de l'esprit;PF1;Forme hybride;IMPACT;0;modifier;IMPACT 5 VISUALISATION;3;garder;;;;bonus converti en degré (5 → 3)
+D Bonus bruts;true-strike;Coup au but;3.5;Forme arcane — version 3.5;IMPACT;0;modifier;IMPACT 20 FAILLE;plein;garder;;;;bonus converti en degré (20 → plein)
+D Bonus bruts;true-strike;Coup au but;3.5;Forme hybride — version 3.5;IMPACT;0;modifier;IMPACT 20 FAILLE;plein;garder;;;;bonus converti en degré (20 → plein)
+D Bonus bruts;glibness;Éloquence;3.5;Forme arcane — version 3.5;IMPACT;0;modifier;IMPACT 30 CHARME MENSONGE;plein;garder;;;;bonus converti en degré (30 → plein)
+D Bonus bruts;glibness;Éloquence;3.5;Forme hybride — version 3.5;IMPACT;0;modifier;IMPACT 30 CHARME MENSONGE;plein;garder;;;;bonus converti en degré (30 → plein)
+D Bonus bruts;enhance-ability;Amélioration des facultés;3.5;Endurance de l'ours — version 3.5;IMPACT;0;modifier;IMPACT 4;1;garder;;;;bonus converti en degré (4 → 1)
+D Bonus bruts;enhance-ability;Amélioration des facultés;3.5;Forme hybride — Endurance de l'ours — version 3.5;IMPACT;0;modifier;IMPACT 4;1;garder;;;;bonus converti en degré (4 → 1)
+D Bonus bruts;enhance-ability;Amélioration des facultés;3.5;Force du taureau — version 3.5;IMPACT;0;modifier;IMPACT 4;1;garder;;;;bonus converti en degré (4 → 1)
+D Bonus bruts;enhance-ability;Amélioration des facultés;3.5;Forme hybride — Force du taureau — version 3.5;IMPACT;0;modifier;IMPACT 4;1;garder;;;;bonus converti en degré (4 → 1)
+D Bonus bruts;enhance-ability;Amélioration des facultés;3.5;Grâce du félin — version 3.5;IMPACT;0;modifier;IMPACT 4;1;garder;;;;bonus converti en degré (4 → 1)
+D Bonus bruts;enhance-ability;Amélioration des facultés;3.5;Forme hybride — Grâce du félin — version 3.5;IMPACT;0;modifier;IMPACT 4;1;garder;;;;bonus converti en degré (4 → 1)
+D Bonus bruts;enhance-ability;Amélioration des facultés;3.5;Splendeur de l'aigle — version 3.5;IMPACT;0;modifier;IMPACT 4;1;garder;;;;bonus converti en degré (4 → 1)
+D Bonus bruts;enhance-ability;Amélioration des facultés;3.5;Forme hybride — Splendeur de l'aigle — version 3.5;IMPACT;0;modifier;IMPACT 4;1;garder;;;;bonus converti en degré (4 → 1)
+D Bonus bruts;enhance-ability;Amélioration des facultés;3.5;Ruse du renard — version 3.5;IMPACT;0;modifier;IMPACT 4;1;garder;;;;bonus converti en degré (4 → 1)
+D Bonus bruts;enhance-ability;Amélioration des facultés;3.5;Forme hybride — Ruse du renard — version 3.5;IMPACT;0;modifier;IMPACT 4;1;garder;;;;bonus converti en degré (4 → 1)
+D Bonus bruts;enhance-ability;Amélioration des facultés;3.5;Sagesse du hibou — version 3.5;IMPACT;0;modifier;IMPACT 4;1;garder;;;;bonus converti en degré (4 → 1)
+D Bonus bruts;enhance-ability;Amélioration des facultés;3.5;Forme hybride — Sagesse du hibou — version 3.5;IMPACT;0;modifier;IMPACT 4;1;garder;;;;bonus converti en degré (4 → 1)
+D Bonus bruts;enhance-ability;Amélioration des facultés;3.5;Endurance de l'ours de groupe — version 3.5;IMPACT;0;modifier;IMPACT 4;1;garder;;;;bonus converti en degré (4 → 1)
+D Bonus bruts;enhance-ability;Amélioration des facultés;3.5;Forme hybride — Endurance de l'ours de groupe — version 3.5;IMPACT;0;modifier;IMPACT 4;1;garder;;;;bonus converti en degré (4 → 1)
+D Bonus bruts;enhance-ability;Amélioration des facultés;3.5;Force du taureau de groupe — version 3.5;IMPACT;0;modifier;IMPACT 4;1;garder;;;;bonus converti en degré (4 → 1)
+D Bonus bruts;enhance-ability;Amélioration des facultés;3.5;Forme hybride — Force du taureau de groupe — version 3.5;IMPACT;0;modifier;IMPACT 4;1;garder;;;;bonus converti en degré (4 → 1)
+D Bonus bruts;enhance-ability;Amélioration des facultés;3.5;Grâce du félin de groupe — version 3.5;IMPACT;0;modifier;IMPACT 4;1;garder;;;;bonus converti en degré (4 → 1)
+D Bonus bruts;enhance-ability;Amélioration des facultés;3.5;Forme hybride — Grâce du félin de groupe — version 3.5;IMPACT;0;modifier;IMPACT 4;1;garder;;;;bonus converti en degré (4 → 1)
+D Bonus bruts;enhance-ability;Amélioration des facultés;3.5;Splendeur de l'aigle de groupe — version 3.5;IMPACT;0;modifier;IMPACT 4;1;garder;;;;bonus converti en degré (4 → 1)
+D Bonus bruts;enhance-ability;Amélioration des facultés;3.5;Forme hybride — Splendeur de l'aigle de groupe — version 3.5;IMPACT;0;modifier;IMPACT 4;1;garder;;;;bonus converti en degré (4 → 1)
+D Bonus bruts;enhance-ability;Amélioration des facultés;3.5;Ruse du renard de groupe — version 3.5;IMPACT;0;modifier;IMPACT 4;1;garder;;;;bonus converti en degré (4 → 1)
+D Bonus bruts;enhance-ability;Amélioration des facultés;3.5;Forme hybride — Ruse du renard de groupe — version 3.5;IMPACT;0;modifier;IMPACT 4;1;garder;;;;bonus converti en degré (4 → 1)
+D Bonus bruts;enhance-ability;Amélioration des facultés;3.5;Sagesse du hibou de groupe — version 3.5;IMPACT;0;modifier;IMPACT 4;1;garder;;;;bonus converti en degré (4 → 1)
+D Bonus bruts;enhance-ability;Amélioration des facultés;3.5;Forme hybride — Sagesse du hibou de groupe — version 3.5;IMPACT;0;modifier;IMPACT 4;1;garder;;;;bonus converti en degré (4 → 1)
+D Bonus bruts;crown-of-glory;Couronne de gloire;PF1;Forme arcane;IMPACT;0;modifier;IMPACT 4;1;garder;;;;bonus converti en degré (4 → 1)
+D Bonus bruts;crown-of-glory;Couronne de gloire;PF1;Forme hybride;IMPACT;0;modifier;IMPACT 4;1;garder;;;;bonus converti en degré (4 → 1)
+D Bonus bruts;righteous-might;Force du colosse;PF1;Forme arcane — version PF1;IMPACT;0;modifier;IMPACT 4;1;garder;;;;bonus converti en degré (4 → 1)
+D Bonus bruts;righteous-might;Force du colosse;PF1;Forme hybride — version PF1;IMPACT;0;modifier;IMPACT 4;1;garder;;;;bonus converti en degré (4 → 1)
+D Bonus bruts;divine-power;Force divine;3.5;Forme arcane;IMPACT;0;modifier;IMPACT 6;2;garder;;;;bonus converti en degré (6 → 2)
+D Bonus bruts;divine-power;Force divine;3.5;Forme hybride;IMPACT;0;modifier;IMPACT 6;2;garder;;;;bonus converti en degré (6 → 2)
+D Bonus bruts;legendary-proportions;Proportions légendaires;PF1;Forme arcane;IMPACT;0;modifier;IMPACT 6;2;garder;;;;bonus converti en degré (6 → 2)
+D Bonus bruts;legendary-proportions;Proportions légendaires;PF1;Forme hybride;IMPACT;0;modifier;IMPACT 6;2;garder;;;;bonus converti en degré (6 → 2)
+D Bonus bruts;animal-growth;Croissance animale;PF1;Forme arcane — version PF1;IMPACT;0;modifier;IMPACT 8;2;garder;;;;bonus converti en degré (8 → 2)
+D Bonus bruts;animal-growth;Croissance animale;PF1;Forme hybride — version PF1;IMPACT;0;modifier;IMPACT 8;2;garder;;;;bonus converti en degré (8 → 2)
+D Bonus bruts;animal-growth;Croissance animale;3.5;Forme arcane;IMPACT;0;modifier;IMPACT 8;2;garder;;;;bonus converti en degré (8 → 2)
+D Bonus bruts;animal-growth;Croissance animale;3.5;Forme hybride;IMPACT;0;modifier;IMPACT 8;2;garder;;;;bonus converti en degré (8 → 2)
+D Bonus bruts;righteous-might;Force du colosse;3.5;Forme arcane;IMPACT;0;modifier;IMPACT 8;2;garder;;;;bonus converti en degré (8 → 2)
+D Bonus bruts;righteous-might;Force du colosse;3.5;Forme hybride;IMPACT;0;modifier;IMPACT 8;2;garder;;;;bonus converti en degré (8 → 2)
+D Bonus bruts;mighty-strength;Force colossale;PF1;Forme arcane;IMPACT;0;modifier;IMPACT 8;2;garder;;;;bonus converti en degré (8 → 2)
+D Bonus bruts;mighty-strength;Force colossale;PF1;Forme hybride;IMPACT;0;modifier;IMPACT 8;2;garder;;;;bonus converti en degré (8 → 2)
+D Bonus bruts;transformation;Transformation;3.5;Forme arcane;IMPACT;0;modifier;IMPACT 4;2;garder;;;;bonus converti en degré (4 → 2)
+D Bonus bruts;transformation;Transformation;3.5;Forme hybride;IMPACT;0;modifier;IMPACT 4;2;garder;;;;bonus converti en degré (4 → 2)
+D Force du colosse PF2;righteous-might;Force du colosse;PF2;Forme arcane — version PF2;IMPACT;0;modifier;IMPACT 8;garder;garder;;;8 ajouté aux coups de l'arme divine;montant de dégâts : la valeur reste 8
+D Force du colosse PF2;righteous-might;Force du colosse;PF2;Forme hybride — version PF2;IMPACT;0;modifier;IMPACT 8;garder;garder;;;8 ajouté aux coups de l'arme divine;montant de dégâts : la valeur reste 8
+D Force du colosse PF2;righteous-might;Force du colosse;PF2;Forme arcane — version PF2;IMPACT;2;modifier;IMPACT 3;garder;REMPART;"plein|CONDITION COUP ; |CIBLE RESISTANCE";;résistance 3 aux coups;"retirer les satellites Condition « coup » et Cible « résistance » s'ils ne servent plus ; dire dans le bilan ce qui a été retiré"
+D Force du colosse PF2;righteous-might;Force du colosse;PF2;Forme hybride — version PF2;IMPACT;2;modifier;IMPACT 3;garder;REMPART;"plein|CONDITION COUP ; |CIBLE RESISTANCE";;résistance 3 aux coups;"retirer les satellites Condition « coup » et Cible « résistance » s'ils ne servent plus ; dire dans le bilan ce qui a été retiré"
+E Garde;abyssal-vermin;Vermine astrale;PF1;Forme ténébreuse;IMPACT;1;modifier;IMPACT 3 PROTECTION;5;REMPART;;;;
+E Garde;abyssal-vermin;Vermine astrale;PF1;Forme ténébreuse;IMPACT;2;modifier;IMPACT 3 PROTECTION;5;REMPART;;;;
+E Garde;abyssal-vermin;Vermine astrale;PF1;Forme ténébreuse;IMPACT;3;modifier;IMPACT 3 PROTECTION;5;REMPART;;;;
+E Garde;abyssal-vermin;Vermine astrale;PF1;Forme hybride — Forme ténébreuse;IMPACT;1;modifier;IMPACT 3 PROTECTION;5;REMPART;;;;
+E Garde;abyssal-vermin;Vermine astrale;PF1;Forme hybride — Forme ténébreuse;IMPACT;2;modifier;IMPACT 3 PROTECTION;5;REMPART;;;;
+E Garde;abyssal-vermin;Vermine astrale;PF1;Forme hybride — Forme ténébreuse;IMPACT;3;modifier;IMPACT 3 PROTECTION;5;REMPART;;;;
+E Garde;abyssal-vermin;Vermine astrale;PF1;Forme lumineuse;IMPACT;1;modifier;IMPACT 3 PROTECTION;5;REMPART;;;;
+E Garde;abyssal-vermin;Vermine astrale;PF1;Forme lumineuse;IMPACT;2;modifier;IMPACT 3 PROTECTION;5;REMPART;;;;
+E Garde;abyssal-vermin;Vermine astrale;PF1;Forme lumineuse;IMPACT;3;modifier;IMPACT 3 PROTECTION;5;REMPART;;;;
+E Garde;abyssal-vermin;Vermine astrale;PF1;Forme hybride — Forme lumineuse;IMPACT;1;modifier;IMPACT 3 PROTECTION;5;REMPART;;;;
+E Garde;abyssal-vermin;Vermine astrale;PF1;Forme hybride — Forme lumineuse;IMPACT;2;modifier;IMPACT 3 PROTECTION;5;REMPART;;;;
+E Garde;abyssal-vermin;Vermine astrale;PF1;Forme hybride — Forme lumineuse;IMPACT;3;modifier;IMPACT 3 PROTECTION;5;REMPART;;;;
+E Garde;dousing-rain;Pluie étouffante;PF1;Forme arcane;IMPACT;2;modifier;IMPACT 3 PROTECTION;5;REMPART;;;;
+E Garde;dousing-rain;Pluie étouffante;PF1;Forme hybride;IMPACT;2;modifier;IMPACT 3 PROTECTION;5;REMPART;;;;
+E Garde;rebounding-barrier;Barrière à rebond;PF2;Forme arcane;IMPACT;0;modifier;IMPACT 5 PROTECTION;10;REMPART;;;;
+E Garde;rebounding-barrier;Barrière à rebond;PF2;Forme hybride;IMPACT;0;modifier;IMPACT 5 PROTECTION;10;REMPART;;;;
+E Garde;scintillating-safeguard;Sauvegarde scintillante;PF2;Forme arcane;IMPACT;0;modifier;IMPACT 5 PROTECTION;10;REMPART;;;;
+E Garde;scintillating-safeguard;Sauvegarde scintillante;PF2;Forme hybride — Acide sulfurique;IMPACT;0;modifier;IMPACT 5 PROTECTION;10;REMPART;;;;
+E Garde;scintillating-safeguard;Sauvegarde scintillante;PF2;Forme hybride — Glace;IMPACT;0;modifier;IMPACT 5 PROTECTION;10;REMPART;;;;
+E Garde;scintillating-safeguard;Sauvegarde scintillante;PF2;Forme hybride — Éclair;IMPACT;0;modifier;IMPACT 5 PROTECTION;10;REMPART;;;;
+E Garde;scintillating-safeguard;Sauvegarde scintillante;PF2;Forme hybride — Feu;IMPACT;0;modifier;IMPACT 5 PROTECTION;10;REMPART;;;;
+E Garde;scintillating-safeguard;Sauvegarde scintillante;PF2;Forme hybride — Orage;IMPACT;0;modifier;IMPACT 5 PROTECTION;10;REMPART;;;;
+E Garde;scintillating-safeguard;Sauvegarde scintillante;PF2;Forme hybride — Acier;IMPACT;0;modifier;IMPACT 5 PROTECTION;10;REMPART;;;;
+E Garde;fireproof;Ignifugation;PF2;Forme arcane;IMPACT;0;modifier;IMPACT 5 PROTECTION;10;REMPART;;;;
+E Garde;fireproof;Ignifugation;PF2;Forme hybride;IMPACT;0;modifier;IMPACT 5 PROTECTION;10;REMPART;;;;
+E Garde;phoenix-ward;Garde du phénix;PF2;Forme arcane;IMPACT;0;modifier;IMPACT 5 PROTECTION;10;REMPART;;;;
+E Garde;phoenix-ward;Garde du phénix;PF2;Forme hybride;IMPACT;0;modifier;IMPACT 5 PROTECTION;10;REMPART;;;;
+E Garde;ferrous-form;Forme de fer;PF2;Forme hybride;IMPACT;0;modifier;IMPACT 5 PROTECTION;10;REMPART;;;;
+E Garde;shield;Bouclier;PF2;Forme hybride — version PF2;IMPACT;1;modifier;IMPACT 3 PROTECTION;1;PROTECTION;;;1 ajouté à la défense;
+E Garde;shield;Bouclier;PF2;Forme hybride — version PF2;IMPACT;1;ajouter après;IMPACT 3 PROTECTION;5;REMPART;;;le bouclier bloque : 5 retranché au coup;
+E Garde;shield;Bouclier;PF2;Forme arcane — version PF2;IMPACT;1;modifier;IMPACT 3 PROTECTION;1;PROTECTION;;;1 ajouté à la défense;
+E Garde;shield;Bouclier;PF2;Forme arcane — version PF2;IMPACT;1;ajouter après;IMPACT 3 PROTECTION;5;REMPART;;;le bouclier bloque : 5 retranché au coup;
+E Garde;armor-of-bones;Armure d'os;PF2;Forme arcane;IMPACT;0;modifier;IMPACT 2 REMPART;3;garder;;;;
+E Garde;armor-of-bones;Armure d'os;PF2;Forme hybride;IMPACT;0;modifier;IMPACT 2 REMPART;3;garder;;;;
+E Garde;protectors-sphere;Sphère du protecteur;PF2;Forme arcane;IMPACT;0;modifier;IMPACT 2 AURA REMPART;3;garder;;;;
+E Garde;protectors-sphere;Sphère du protecteur;PF2;Forme hybride;IMPACT;0;modifier;IMPACT 2 AURA REMPART;3;garder;;;;
+E Garde;ironbeard;Barbe de fer;PF1;Forme arcane;IMPACT;0;modifier;IMPACT 1 REMPART;garder;PROTECTION;;;;
+E Garde;ironbeard;Barbe de fer;PF1;Forme hybride;IMPACT;0;modifier;IMPACT 1 REMPART;garder;PROTECTION;;;;
+E Garde;stone-shield;Bouclier de pierre;PF1;Forme arcane;IMPACT;0;modifier;IMPACT 2 REMPART;garder;PROTECTION;;;;
+E Garde;stone-shield;Bouclier de pierre;PF1;Forme hybride;IMPACT;0;modifier;IMPACT 2 REMPART;garder;PROTECTION;;;;
+E Garde;inspire-defense;Inspiration défensive;PF2;Forme arcane;IMPACT;0;modifier;IMPACT 1 REMPART;garder;PROTECTION;;;;
+E Garde;inspire-defense;Inspiration défensive;PF2;Forme hybride;IMPACT;0;modifier;IMPACT 1 REMPART;garder;PROTECTION;;;;
+E Garde;elemental-sheath;Gaine élémentaire;PF2;Feu;IMPACT;0;modifier;IMPACT 3 PROTECTION;1;garder;;;;
+E Garde;elemental-sheath;Gaine élémentaire;PF2;Forme hybride — Feu;IMPACT;0;modifier;IMPACT 3 PROTECTION;1;garder;;;;
+E Garde;elemental-sheath;Gaine élémentaire;PF2;Air;IMPACT;0;modifier;IMPACT 3 PROTECTION;1;garder;;;;
+E Garde;elemental-sheath;Gaine élémentaire;PF2;Forme hybride — Air;IMPACT;0;modifier;IMPACT 3 PROTECTION;1;garder;;;;
+E Garde;elemental-sheath;Gaine élémentaire;PF2;Terre;IMPACT;0;modifier;IMPACT 3 PROTECTION;1;garder;;;;
+E Garde;elemental-sheath;Gaine élémentaire;PF2;Forme hybride — Terre;IMPACT;0;modifier;IMPACT 3 PROTECTION;1;garder;;;;
+E Garde;elemental-sheath;Gaine élémentaire;PF2;Eau;IMPACT;0;modifier;IMPACT 3 PROTECTION;1;garder;;;;
+E Garde;elemental-sheath;Gaine élémentaire;PF2;Forme hybride — Eau;IMPACT;0;modifier;IMPACT 3 PROTECTION;1;garder;;;;
+E Garde;elemental-sheath;Gaine élémentaire;PF2;Métal;IMPACT;0;modifier;IMPACT 3 PROTECTION;1;garder;;;;
+E Garde;elemental-sheath;Gaine élémentaire;PF2;Forme hybride — Métal;IMPACT;0;modifier;IMPACT 3 PROTECTION;1;garder;;;;
+E Garde;elemental-sheath;Gaine élémentaire;PF2;Bois;IMPACT;0;modifier;IMPACT 3 PROTECTION;1;garder;;;;
+E Garde;elemental-sheath;Gaine élémentaire;PF2;Forme hybride — Bois;IMPACT;0;modifier;IMPACT 3 PROTECTION;1;garder;;;;
+E Garde;holy-sword;Arme sacrée;3.5;Forme arcane;IMPACT;2;modifier;IMPACT 2 PROTECTION;1;garder;;;;
+E Garde;holy-sword;Arme sacrée;3.5;Forme hybride;IMPACT;2;modifier;IMPACT 2 PROTECTION;1;garder;;;;
+E Garde;holy-sword;Arme sacrée;PF1;Forme arcane — version PF1;IMPACT;2;modifier;IMPACT 2 PROTECTION;1;garder;;;;
+E Garde;holy-sword;Arme sacrée;PF1;Forme hybride — version PF1;IMPACT;2;modifier;IMPACT 2 PROTECTION;1;garder;;;;
+E Garde;protection-from-energy;Protection contre l'énergie;5e;Acide;IMPACT;0;modifier;IMPACT 5 PROTECTION;garder;RESISTANCE;;;;
+E Garde;protection-from-energy;Protection contre l'énergie;5e;Forme hybride — Acide;IMPACT;0;modifier;IMPACT 5 PROTECTION;garder;RESISTANCE;;;;
+E Garde;protection-from-energy;Protection contre l'énergie;5e;Froid;IMPACT;0;modifier;IMPACT 5 PROTECTION;garder;RESISTANCE;;;;
+E Garde;protection-from-energy;Protection contre l'énergie;5e;Forme hybride — Froid;IMPACT;0;modifier;IMPACT 5 PROTECTION;garder;RESISTANCE;;;;
+E Garde;protection-from-energy;Protection contre l'énergie;5e;Feu;IMPACT;0;modifier;IMPACT 5 PROTECTION;garder;RESISTANCE;;;;
+E Garde;protection-from-energy;Protection contre l'énergie;5e;Forme hybride — Feu;IMPACT;0;modifier;IMPACT 5 PROTECTION;garder;RESISTANCE;;;;
+E Garde;protection-from-energy;Protection contre l'énergie;5e;Foudre;IMPACT;0;modifier;IMPACT 5 PROTECTION;garder;RESISTANCE;;;;
+E Garde;protection-from-energy;Protection contre l'énergie;5e;Forme hybride — Foudre;IMPACT;0;modifier;IMPACT 5 PROTECTION;garder;RESISTANCE;;;;
+E Garde;protection-from-energy;Protection contre l'énergie;5e;Tonnerre;IMPACT;0;modifier;IMPACT 5 PROTECTION;garder;RESISTANCE;;;;
+E Garde;protection-from-energy;Protection contre l'énergie;5e;Forme hybride — Tonnerre;IMPACT;0;modifier;IMPACT 5 PROTECTION;garder;RESISTANCE;;;;
+E Garde;fire-shield;Bouclier de feu;3.5;Bouclier ardent — version 3.5;IMPACT;1;modifier;IMPACT 5 PROTECTION;garder;RESISTANCE;;;;
+E Garde;fire-shield;Bouclier de feu;3.5;Bouclier glacé — version 3.5;IMPACT;1;modifier;IMPACT 5 PROTECTION;garder;RESISTANCE;;;;
+E Garde;fire-shield;Bouclier de feu;3.5;Forme arcane — version 3.5;IMPACT;1;modifier;IMPACT 5 PROTECTION;garder;RESISTANCE;;;;
+E Garde;fire-shield;Bouclier de feu;5e;Bouclier ardent;IMPACT;1;modifier;IMPACT 5 PROTECTION;garder;RESISTANCE;;;;
+E Garde;fire-shield;Bouclier de feu;5e;Bouclier glacé;IMPACT;1;modifier;IMPACT 5 PROTECTION;garder;RESISTANCE;;;;
+E Garde;fire-shield;Bouclier de feu;5e;Forme arcane;IMPACT;1;modifier;IMPACT 5 PROTECTION;garder;RESISTANCE;;;;
+E Garde;protection-from-energy;Protection contre l'énergie;3.5;Acide — version 3.5;IMPACT;0;modifier;IMPACT plein PROTECTION;60;ABSORPTION;;;absorbe 12 par niveau : 60 au niveau 5;
+E Garde;protection-from-energy;Protection contre l'énergie;3.5;Forme hybride — Acide — version 3.5;IMPACT;0;modifier;IMPACT plein PROTECTION;60;ABSORPTION;;;absorbe 12 par niveau : 60 au niveau 5;
+E Garde;protection-from-energy;Protection contre l'énergie;3.5;Froid — version 3.5;IMPACT;0;modifier;IMPACT plein PROTECTION;60;ABSORPTION;;;absorbe 12 par niveau : 60 au niveau 5;
+E Garde;protection-from-energy;Protection contre l'énergie;3.5;Forme hybride — Froid — version 3.5;IMPACT;0;modifier;IMPACT plein PROTECTION;60;ABSORPTION;;;absorbe 12 par niveau : 60 au niveau 5;
+E Garde;protection-from-energy;Protection contre l'énergie;3.5;Feu — version 3.5;IMPACT;0;modifier;IMPACT plein PROTECTION;60;ABSORPTION;;;absorbe 12 par niveau : 60 au niveau 5;
+E Garde;protection-from-energy;Protection contre l'énergie;3.5;Forme hybride — Feu — version 3.5;IMPACT;0;modifier;IMPACT plein PROTECTION;60;ABSORPTION;;;absorbe 12 par niveau : 60 au niveau 5;
+E Garde;protection-from-energy;Protection contre l'énergie;3.5;Foudre — version 3.5;IMPACT;0;modifier;IMPACT plein PROTECTION;60;ABSORPTION;;;absorbe 12 par niveau : 60 au niveau 5;
+E Garde;protection-from-energy;Protection contre l'énergie;3.5;Forme hybride — Foudre — version 3.5;IMPACT;0;modifier;IMPACT plein PROTECTION;60;ABSORPTION;;;absorbe 12 par niveau : 60 au niveau 5;
+E Garde;protection-from-energy;Protection contre l'énergie;3.5;Tonnerre — version 3.5;IMPACT;0;modifier;IMPACT plein PROTECTION;60;ABSORPTION;;;absorbe 12 par niveau : 60 au niveau 5;
+E Garde;protection-from-energy;Protection contre l'énergie;3.5;Forme hybride — Tonnerre — version 3.5;IMPACT;0;modifier;IMPACT plein PROTECTION;60;ABSORPTION;;;absorbe 12 par niveau : 60 au niveau 5;
+E Garde;adapt-self;Adaptation de soi;PF2;Chaleur ou froid extrêmes;IMPACT;0;modifier;IMPACT plein ADAPTATION PROTECTION;garder;ADAPTATION IMMUNITE;;;;
+E Garde;adapt-self;Adaptation de soi;PF2;Forme hybride — Chaleur ou froid extrêmes;IMPACT;0;modifier;IMPACT plein ADAPTATION PROTECTION;garder;ADAPTATION IMMUNITE;;;;
+E Garde;book-ward;Garde du livre;PF1;Forme arcane;IMPACT;0;modifier;IMPACT plein PROTECTION;garder;IMMUNITE;;;;
+E Garde;book-ward;Garde du livre;PF1;Forme arcane;IMPACT;1;modifier;IMPACT plein PROTECTION;garder;IMMUNITE;;;;
+E Garde;book-ward;Garde du livre;PF1;Forme hybride;IMPACT;0;modifier;IMPACT plein PROTECTION;garder;IMMUNITE;;;;
+E Garde;book-ward;Garde du livre;PF1;Forme hybride;IMPACT;1;modifier;IMPACT plein PROTECTION;garder;IMMUNITE;;;;
+E Garde;untwisting-iron-buffer;Fer sans torsion : rempart;PF2;Forme arcane;IMPACT;0;modifier;IMPACT 15 KI REMPART;garder;KI VIE;;plein|DUREE;15 points de vie d'emprunt, trois instants;vie d'emprunt écrite comme les 167 autres : mot « vie » et satellite Durée plein « d'emprunt » (copier l'écriture exacte de Simulacre de vie)
+E Garde;untwisting-iron-buffer;Fer sans torsion : rempart;PF2;Forme hybride;IMPACT;0;modifier;IMPACT 15 KI REMPART;garder;KI VIE;;plein|DUREE;15 points de vie d'emprunt, trois instants;vie d'emprunt écrite comme les 167 autres : mot « vie » et satellite Durée plein « d'emprunt » (copier l'écriture exacte de Simulacre de vie)
+E Garde;shield-of-fortification;Bouclier de fortification;PF1;Bouclier de fortification;IMPACT;0;modifier;IMPACT plein PROTECTION FAILLE;3;garder;;;;"part de chance en dixièmes (1/4 → 3 ; 1/2 → 5)"
+E Garde;shield-of-fortification;Bouclier de fortification;PF1;Forme hybride — Bouclier de fortification;IMPACT;0;modifier;IMPACT plein PROTECTION FAILLE;3;garder;;;;"part de chance en dixièmes (1/4 → 3 ; 1/2 → 5)"
+E Garde;shield-of-fortification;Bouclier de fortification;PF1;Bouclier de fortification suprême;IMPACT;0;modifier;IMPACT plein PROTECTION FAILLE;5;garder;;;;"part de chance en dixièmes (1/4 → 3 ; 1/2 → 5)"
+E Garde;shield-of-fortification;Bouclier de fortification;PF1;Forme hybride — Bouclier de fortification suprême;IMPACT;0;modifier;IMPACT plein PROTECTION FAILLE;5;garder;;;;"part de chance en dixièmes (1/4 → 3 ; 1/2 → 5)"
+E Garde;shepherd-of-souls;Berger des âmes;PF2;Forme arcane;IMPACT;1;modifier;IMPACT 30 REMPART;garder;garder;;;un coup réduit de deux fois la vie sacrifiée, jusqu'à 30;
+E Garde;shepherd-of-souls;Berger des âmes;PF2;Forme hybride;IMPACT;1;modifier;IMPACT 30 REMPART;garder;garder;;;un coup réduit de deux fois la vie sacrifiée, jusqu'à 30;
+E Garde;glass-shield;Bouclier de verre;PF2;Forme arcane;IMPACT;1;modifier;IMPACT 2 PROTECTION;1;garder;;;1 ajouté à la défense;
+E Garde;glass-shield;Bouclier de verre;PF2;Forme hybride;IMPACT;1;modifier;IMPACT 2 PROTECTION;1;garder;;;1 ajouté à la défense;
+E Garde;glass-shield;Bouclier de verre;PF2;Forme arcane;IMPACT;1;ajouter après;IMPACT 2 PROTECTION (avant la modification ci-dessus);2;REMPART;;;le bouclier de verre bloque : 2 retranché au coup;
+E Garde;glass-shield;Bouclier de verre;PF2;Forme hybride;IMPACT;1;ajouter après;IMPACT 2 PROTECTION (avant la modification ci-dessus);2;REMPART;;;le bouclier de verre bloque : 2 retranché au coup;
+E Garde;wave-shield;Bouclier de vague;PF1;Forme arcane;IMPACT;0;modifier;IMPACT 1 PROTECTION;garder;REMPART;;;;
+E Garde;wave-shield;Bouclier de vague;PF1;Forme arcane;IMPACT;1;modifier;IMPACT 1 PROTECTION;garder;REMPART;;;;
+E Garde;wave-shield;Bouclier de vague;PF1;Forme hybride;IMPACT;0;modifier;IMPACT 1 PROTECTION;garder;REMPART;;;;
+E Garde;wave-shield;Bouclier de vague;PF1;Forme hybride;IMPACT;1;modifier;IMPACT 1 PROTECTION;garder;REMPART;;;;
+E Garde;deadly-juggernaut;Colosse mortel;PF1;Forme arcane;IMPACT;1;modifier;IMPACT 1 PROTECTION;2;REMPART;;;2 retranché par ennemi abattu, jusqu'à 10;
+E Garde;deadly-juggernaut;Colosse mortel;PF1;Forme hybride;IMPACT;1;modifier;IMPACT 1 PROTECTION;2;REMPART;;;2 retranché par ennemi abattu, jusqu'à 10;
+E Garde;particulate-form;Forme particulaire;PF1;Forme arcane;IMPACT;1;modifier;IMPACT plein PROTECTION FAILLE SAIGNEMENT;garder;IMMUNITE FAILLE SAIGNEMENT;;;insensible au saignement, aux coups critiques et aux coups précis;
+E Garde;particulate-form;Forme particulaire;PF1;Forme hybride;IMPACT;1;modifier;IMPACT plein PROTECTION FAILLE SAIGNEMENT;garder;IMMUNITE FAILLE SAIGNEMENT;;;insensible au saignement, aux coups critiques et aux coups précis;
+E Garde;intellect-fortress-i;Forteresse de l'intellect;PF1;Forteresse de l'intellect II;IMPACT;1;modifier;IMPACT 5 PROTECTION;garder;RESISTANCE;;;les blessures de l'esprit réduites de moitié;
+E Garde;intellect-fortress-i;Forteresse de l'intellect;PF1;Forme hybride — Forteresse de l'intellect II;IMPACT;1;modifier;IMPACT 5 PROTECTION;garder;RESISTANCE;;;les blessures de l'esprit réduites de moitié;
+E Garde;intellect-fortress-i;Forteresse de l'intellect;PF1;Forteresse de l'intellect III;IMPACT;1;modifier;IMPACT 5 PROTECTION;garder;RESISTANCE;;;les blessures de l'esprit réduites de moitié;
+E Garde;intellect-fortress-i;Forteresse de l'intellect;PF1;Forme hybride — Forteresse de l'intellect III;IMPACT;1;modifier;IMPACT 5 PROTECTION;garder;RESISTANCE;;;les blessures de l'esprit réduites de moitié;
+E Garde;mental-barrier-i;Barrière mentale;PF1;Barrière mentale IV;IMPACT;1;modifier;IMPACT 2 PROTECTION;5;RESISTANCE;;;moitié des dégâts des poussées mentales plus fortes;
+E Garde;mental-barrier-i;Barrière mentale;PF1;Forme hybride — Barrière mentale IV;IMPACT;1;modifier;IMPACT 2 PROTECTION;5;RESISTANCE;;;moitié des dégâts des poussées mentales plus fortes;
+E Garde;mental-barrier-i;Barrière mentale;PF1;Barrière mentale V;IMPACT;1;modifier;IMPACT 2 PROTECTION;5;RESISTANCE;;;moitié des dégâts des poussées mentales plus fortes;
+E Garde;mental-barrier-i;Barrière mentale;PF1;Forme hybride — Barrière mentale V;IMPACT;1;modifier;IMPACT 2 PROTECTION;5;RESISTANCE;;;moitié des dégâts des poussées mentales plus fortes;
+E Garde;mental-barrier-i;Barrière mentale;PF1;Barrière mentale IV;IMPACT;2;modifier;IMPACT plein PROTECTION;garder;IMMUNITE;;;insensible aux poussées mentales les plus faibles;
+E Garde;mental-barrier-i;Barrière mentale;PF1;Forme hybride — Barrière mentale IV;IMPACT;2;modifier;IMPACT plein PROTECTION;garder;IMMUNITE;;;insensible aux poussées mentales les plus faibles;
+E Garde;mental-barrier-i;Barrière mentale;PF1;Barrière mentale V;IMPACT;2;modifier;IMPACT plein PROTECTION;garder;IMMUNITE;;;insensible aux poussées mentales les plus faibles;
+E Garde;mental-barrier-i;Barrière mentale;PF1;Forme hybride — Barrière mentale V;IMPACT;2;modifier;IMPACT plein PROTECTION;garder;IMMUNITE;;;insensible aux poussées mentales les plus faibles;
+E Garde;tower-of-iron-will-i;Tour de volonté de fer;PF1;Tour de volonté de fer I;IMPACT;0;modifier;IMPACT plein PROTECTION;garder;BARRIERE;;;;le satellite seuil (Interaction) existant est gardé : il porte déjà le seuil
+E Garde;tower-of-iron-will-i;Tour de volonté de fer;PF1;Forme hybride — Tour de volonté de fer I;IMPACT;0;modifier;IMPACT plein PROTECTION;garder;BARRIERE;;;;le satellite seuil (Interaction) existant est gardé : il porte déjà le seuil
+E Garde;tower-of-iron-will-i;Tour de volonté de fer;PF1;Tour de volonté de fer II;IMPACT;0;modifier;IMPACT plein PROTECTION;garder;BARRIERE;;;;le satellite seuil (Interaction) existant est gardé : il porte déjà le seuil
+E Garde;tower-of-iron-will-i;Tour de volonté de fer;PF1;Forme hybride — Tour de volonté de fer II;IMPACT;0;modifier;IMPACT plein PROTECTION;garder;BARRIERE;;;;le satellite seuil (Interaction) existant est gardé : il porte déjà le seuil
+E Garde;tower-of-iron-will-i;Tour de volonté de fer;PF1;Tour de volonté de fer III;IMPACT;0;modifier;IMPACT plein PROTECTION;garder;BARRIERE;;;;le satellite seuil (Interaction) existant est gardé : il porte déjà le seuil
+E Garde;tower-of-iron-will-i;Tour de volonté de fer;PF1;Forme hybride — Tour de volonté de fer III;IMPACT;0;modifier;IMPACT plein PROTECTION;garder;BARRIERE;;;;le satellite seuil (Interaction) existant est gardé : il porte déjà le seuil
+E Garde;tower-of-iron-will-i;Tour de volonté de fer;PF1;Tour de volonté de fer IV;IMPACT;0;modifier;IMPACT plein PROTECTION;garder;BARRIERE;;;;le satellite seuil (Interaction) existant est gardé : il porte déjà le seuil
+E Garde;tower-of-iron-will-i;Tour de volonté de fer;PF1;Forme hybride — Tour de volonté de fer IV;IMPACT;0;modifier;IMPACT plein PROTECTION;garder;BARRIERE;;;;le satellite seuil (Interaction) existant est gardé : il porte déjà le seuil
+E Garde;tower-of-iron-will-i;Tour de volonté de fer;PF1;Tour de volonté de fer V;IMPACT;0;modifier;IMPACT plein PROTECTION;garder;BARRIERE;;;;le satellite seuil (Interaction) existant est gardé : il porte déjà le seuil
+E Garde;tower-of-iron-will-i;Tour de volonté de fer;PF1;Forme hybride — Tour de volonté de fer V;IMPACT;0;modifier;IMPACT plein PROTECTION;garder;BARRIERE;;;;le satellite seuil (Interaction) existant est gardé : il porte déjà le seuil
+E Garde;prismatic-shield;Bouclier prismatique;PF2;Forme arcane;IMPACT;0;modifier;IMPACT plein REMPART RIPOSTE;garder;BARRIERE RIPOSTE;;;;
+E Garde;prismatic-shield;Bouclier prismatique;PF2;Forme hybride;IMPACT;0;modifier;IMPACT plein REMPART RIPOSTE;garder;BARRIERE RIPOSTE;;;;
+E Garde;hedging-weapons;Armes gardiennes;PF1;Forme arcane;IMPACT;0;modifier;IMPACT plein REMPART PROJECTILE;1;PROTECTION;;;une arme flottante par palier : 1 ajouté à la défense par arme (deux au niveau du sort);
+E Garde;hedging-weapons;Armes gardiennes;PF1;Forme arcane;IMPACT;0;ajouter après;IMPACT plein REMPART PROJECTILE (avant la modification ci-dessus);7;PROJECTILE;;;chaque arme peut être lancée : 2d6 de force en moyenne;
+E Garde;hedging-weapons;Armes gardiennes;PF1;Forme hybride;IMPACT;0;modifier;IMPACT plein REMPART PROJECTILE;1;PROTECTION;;;une arme flottante par palier : 1 ajouté à la défense par arme (deux au niveau du sort);
+E Garde;hedging-weapons;Armes gardiennes;PF1;Forme hybride;IMPACT;0;ajouter après;IMPACT plein REMPART PROJECTILE (avant la modification ci-dessus);7;PROJECTILE;;;chaque arme peut être lancée : 2d6 de force en moyenne;
+E Garde;rampart;Rempart;PF1;Forme arcane;IMPACT;0;modifier;IMPACT plein REMPART;garder;MUR;;;un épais rempart de terre;
+E Garde;rampart;Rempart;PF1;Forme hybride;IMPACT;0;modifier;IMPACT plein REMPART;garder;MUR;;;un épais rempart de terre;
+E Garde;mantle-of-the-melting-heart;Manteau du cœur fondant;PF2;Chair d'or;IMPACT;0;modifier;IMPACT 1 REMPART OR;plein;IMMUNITE OR;;;;
+E Garde;mantle-of-the-melting-heart;Manteau du cœur fondant;PF2;Toucher réactif;IMPACT;0;modifier;IMPACT 7 REMPART RONGEMENT;garder;RONGEMENT;;;;
+E Garde;mantle-of-the-melting-heart;Manteau du cœur fondant;PF2;Poigne lestée;IMPACT;0;modifier;IMPACT 6 REMPART CORDE;garder;CORDE;;;;
+E Garde;angelic-aspect-lesser;Aspect astral;PF1;Aspect astral mineur — lumineux;IMPACT;0;modifier;IMPACT 3 PROTECTION;5;REMPART;;;;résistance 5 à l'acide ou au froid
+E Garde;angelic-aspect-lesser;Aspect astral;PF1;Aspect astral mineur — lumineux;IMPACT;1;modifier;IMPACT 3 PROTECTION;5;REMPART;;;;résistance 5 à l'acide ou au froid
+E Garde;angelic-aspect-lesser;Aspect astral;PF1;Forme hybride — Aspect astral mineur — lumineux;IMPACT;0;modifier;IMPACT 3 PROTECTION;5;REMPART;;;;résistance 5 à l'acide ou au froid
+E Garde;angelic-aspect-lesser;Aspect astral;PF1;Forme hybride — Aspect astral mineur — lumineux;IMPACT;1;modifier;IMPACT 3 PROTECTION;5;REMPART;;;;résistance 5 à l'acide ou au froid
+E Garde;angelic-aspect-lesser;Aspect astral;PF1;Aspect astral mineur — ténébreux;IMPACT;0;modifier;IMPACT 3 PROTECTION;5;REMPART;;;;résistance 5 à l'acide ou au froid
+E Garde;angelic-aspect-lesser;Aspect astral;PF1;Aspect astral mineur — ténébreux;IMPACT;1;modifier;IMPACT 3 PROTECTION;5;REMPART;;;;résistance 5 à l'acide ou au froid
+E Garde;angelic-aspect-lesser;Aspect astral;PF1;Forme hybride — Aspect astral mineur — ténébreux;IMPACT;0;modifier;IMPACT 3 PROTECTION;5;REMPART;;;;résistance 5 à l'acide ou au froid
+E Garde;angelic-aspect-lesser;Aspect astral;PF1;Forme hybride — Aspect astral mineur — ténébreux;IMPACT;1;modifier;IMPACT 3 PROTECTION;5;REMPART;;;;résistance 5 à l'acide ou au froid
+E Garde;angelic-aspect-lesser;Aspect astral;PF1;Aspect astral — lumineux;IMPACT;0;modifier;IMPACT 4 PROTECTION;10;REMPART;;;;résistance 10 à l'acide ou au froid
+E Garde;angelic-aspect-lesser;Aspect astral;PF1;Aspect astral — lumineux;IMPACT;1;modifier;IMPACT 4 PROTECTION;10;REMPART;;;;résistance 10 à l'acide ou au froid
+E Garde;angelic-aspect-lesser;Aspect astral;PF1;Aspect astral — lumineux;IMPACT;2;modifier;IMPACT 3 PROTECTION;5;REMPART;;;;réduction de 5 contre le mal
+E Garde;angelic-aspect-lesser;Aspect astral;PF1;Forme hybride — Aspect astral — lumineux;IMPACT;0;modifier;IMPACT 4 PROTECTION;10;REMPART;;;;résistance 10 à l'acide ou au froid
+E Garde;angelic-aspect-lesser;Aspect astral;PF1;Forme hybride — Aspect astral — lumineux;IMPACT;1;modifier;IMPACT 4 PROTECTION;10;REMPART;;;;résistance 10 à l'acide ou au froid
+E Garde;angelic-aspect-lesser;Aspect astral;PF1;Forme hybride — Aspect astral — lumineux;IMPACT;2;modifier;IMPACT 3 PROTECTION;5;REMPART;;;;réduction de 5 contre le mal
+E Garde;angelic-aspect-lesser;Aspect astral;PF1;Aspect astral — ténébreux;IMPACT;0;modifier;IMPACT 4 PROTECTION;10;REMPART;;;;résistance 10 à l'acide ou au froid
+E Garde;angelic-aspect-lesser;Aspect astral;PF1;Aspect astral — ténébreux;IMPACT;1;modifier;IMPACT 4 PROTECTION;10;REMPART;;;;résistance 10 à l'acide ou au froid
+E Garde;angelic-aspect-lesser;Aspect astral;PF1;Aspect astral — ténébreux;IMPACT;2;modifier;IMPACT 3 PROTECTION;5;REMPART;;;;réduction de 5 contre le mal
+E Garde;angelic-aspect-lesser;Aspect astral;PF1;Forme hybride — Aspect astral — ténébreux;IMPACT;0;modifier;IMPACT 4 PROTECTION;10;REMPART;;;;résistance 10 à l'acide ou au froid
+E Garde;angelic-aspect-lesser;Aspect astral;PF1;Forme hybride — Aspect astral — ténébreux;IMPACT;1;modifier;IMPACT 4 PROTECTION;10;REMPART;;;;résistance 10 à l'acide ou au froid
+E Garde;angelic-aspect-lesser;Aspect astral;PF1;Forme hybride — Aspect astral — ténébreux;IMPACT;2;modifier;IMPACT 3 PROTECTION;5;REMPART;;;;réduction de 5 contre le mal
+E Garde;angelic-aspect-lesser;Aspect astral;PF1;Aspect astral suprême — lumineux;IMPACT;0;modifier;IMPACT plein PROTECTION;garder;IMMUNITE;;;;insensible à l'acide, au froid, à la pétrification
+E Garde;angelic-aspect-lesser;Aspect astral;PF1;Aspect astral suprême — lumineux;IMPACT;1;modifier;IMPACT plein PROTECTION;garder;IMMUNITE;;;;insensible à l'acide, au froid, à la pétrification
+E Garde;angelic-aspect-lesser;Aspect astral;PF1;Aspect astral suprême — lumineux;IMPACT;2;modifier;IMPACT plein PROTECTION PETRIFICATION;garder;IMMUNITE PETRIFICATION;;;;insensible à l'acide, au froid, à la pétrification
+E Garde;angelic-aspect-lesser;Aspect astral;PF1;Aspect astral suprême — lumineux;IMPACT;3;modifier;IMPACT 4 PROTECTION;10;REMPART;;;;"résistance 10 à la foudre, au feu ; réduction de 10 contre le mal"
+E Garde;angelic-aspect-lesser;Aspect astral;PF1;Aspect astral suprême — lumineux;IMPACT;4;modifier;IMPACT 4 PROTECTION;10;REMPART;;;;"résistance 10 à la foudre, au feu ; réduction de 10 contre le mal"
+E Garde;angelic-aspect-lesser;Aspect astral;PF1;Aspect astral suprême — lumineux;IMPACT;5;modifier;IMPACT 4 PROTECTION;10;REMPART;;;;"résistance 10 à la foudre, au feu ; réduction de 10 contre le mal"
+E Garde;angelic-aspect-lesser;Aspect astral;PF1;Forme hybride — Aspect astral suprême — lumineux;IMPACT;0;modifier;IMPACT plein PROTECTION;garder;IMMUNITE;;;;insensible à l'acide, au froid, à la pétrification
+E Garde;angelic-aspect-lesser;Aspect astral;PF1;Forme hybride — Aspect astral suprême — lumineux;IMPACT;1;modifier;IMPACT plein PROTECTION;garder;IMMUNITE;;;;insensible à l'acide, au froid, à la pétrification
+E Garde;angelic-aspect-lesser;Aspect astral;PF1;Forme hybride — Aspect astral suprême — lumineux;IMPACT;2;modifier;IMPACT plein PROTECTION PETRIFICATION;garder;IMMUNITE PETRIFICATION;;;;insensible à l'acide, au froid, à la pétrification
+E Garde;angelic-aspect-lesser;Aspect astral;PF1;Forme hybride — Aspect astral suprême — lumineux;IMPACT;3;modifier;IMPACT 4 PROTECTION;10;REMPART;;;;"résistance 10 à la foudre, au feu ; réduction de 10 contre le mal"
+E Garde;angelic-aspect-lesser;Aspect astral;PF1;Forme hybride — Aspect astral suprême — lumineux;IMPACT;4;modifier;IMPACT 4 PROTECTION;10;REMPART;;;;"résistance 10 à la foudre, au feu ; réduction de 10 contre le mal"
+E Garde;angelic-aspect-lesser;Aspect astral;PF1;Forme hybride — Aspect astral suprême — lumineux;IMPACT;5;modifier;IMPACT 4 PROTECTION;10;REMPART;;;;"résistance 10 à la foudre, au feu ; réduction de 10 contre le mal"
+E Garde;angelic-aspect-lesser;Aspect astral;PF1;Aspect astral suprême — ténébreux;IMPACT;0;modifier;IMPACT plein PROTECTION;garder;IMMUNITE;;;;insensible à l'acide, au froid, à la pétrification
+E Garde;angelic-aspect-lesser;Aspect astral;PF1;Aspect astral suprême — ténébreux;IMPACT;1;modifier;IMPACT plein PROTECTION;garder;IMMUNITE;;;;insensible à l'acide, au froid, à la pétrification
+E Garde;angelic-aspect-lesser;Aspect astral;PF1;Aspect astral suprême — ténébreux;IMPACT;2;modifier;IMPACT plein PROTECTION PETRIFICATION;garder;IMMUNITE PETRIFICATION;;;;insensible à l'acide, au froid, à la pétrification
+E Garde;angelic-aspect-lesser;Aspect astral;PF1;Aspect astral suprême — ténébreux;IMPACT;3;modifier;IMPACT 4 PROTECTION;10;REMPART;;;;"résistance 10 à la foudre, au feu ; réduction de 10 contre le mal"
+E Garde;angelic-aspect-lesser;Aspect astral;PF1;Aspect astral suprême — ténébreux;IMPACT;4;modifier;IMPACT 4 PROTECTION;10;REMPART;;;;"résistance 10 à la foudre, au feu ; réduction de 10 contre le mal"
+E Garde;angelic-aspect-lesser;Aspect astral;PF1;Aspect astral suprême — ténébreux;IMPACT;5;modifier;IMPACT 4 PROTECTION;10;REMPART;;;;"résistance 10 à la foudre, au feu ; réduction de 10 contre le mal"
+E Garde;angelic-aspect-lesser;Aspect astral;PF1;Forme hybride — Aspect astral suprême — ténébreux;IMPACT;0;modifier;IMPACT plein PROTECTION;garder;IMMUNITE;;;;insensible à l'acide, au froid, à la pétrification
+E Garde;angelic-aspect-lesser;Aspect astral;PF1;Forme hybride — Aspect astral suprême — ténébreux;IMPACT;1;modifier;IMPACT plein PROTECTION;garder;IMMUNITE;;;;insensible à l'acide, au froid, à la pétrification
+E Garde;angelic-aspect-lesser;Aspect astral;PF1;Forme hybride — Aspect astral suprême — ténébreux;IMPACT;2;modifier;IMPACT plein PROTECTION PETRIFICATION;garder;IMMUNITE PETRIFICATION;;;;insensible à l'acide, au froid, à la pétrification
+E Garde;angelic-aspect-lesser;Aspect astral;PF1;Forme hybride — Aspect astral suprême — ténébreux;IMPACT;3;modifier;IMPACT 4 PROTECTION;10;REMPART;;;;"résistance 10 à la foudre, au feu ; réduction de 10 contre le mal"
+E Garde;angelic-aspect-lesser;Aspect astral;PF1;Forme hybride — Aspect astral suprême — ténébreux;IMPACT;4;modifier;IMPACT 4 PROTECTION;10;REMPART;;;;"résistance 10 à la foudre, au feu ; réduction de 10 contre le mal"
+E Garde;angelic-aspect-lesser;Aspect astral;PF1;Forme hybride — Aspect astral suprême — ténébreux;IMPACT;5;modifier;IMPACT 4 PROTECTION;10;REMPART;;;;"résistance 10 à la foudre, au feu ; réduction de 10 contre le mal"
+E Garde;dragon-turtle-shell;Carapace de tortue-dragon;PF1;Forme arcane;IMPACT;0;modifier;IMPACT 1 PROTECTION;2;REMPART;;;les crocs et griffes frappent comme ceux d'un plus petit : environ 2 de moins par coup;
+E Garde;dragon-turtle-shell;Carapace de tortue-dragon;PF1;Forme hybride;IMPACT;0;modifier;IMPACT 1 PROTECTION;2;REMPART;;;les crocs et griffes frappent comme ceux d'un plus petit : environ 2 de moins par coup;
+E Garde;divine-transfer;Transfert divin;PF1;Forme arcane;IMPACT;1;modifier;IMPACT 2 PROTECTION;3;REMPART;;;3 retranché aux coups des êtres du mal (le charisme du lanceur, pris à 3);
+E Garde;divine-transfer;Transfert divin;PF1;Forme hybride;IMPACT;1;modifier;IMPACT 2 PROTECTION;3;REMPART;;;3 retranché aux coups des êtres du mal (le charisme du lanceur, pris à 3);

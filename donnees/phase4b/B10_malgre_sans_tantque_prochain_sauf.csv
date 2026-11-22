@@ -1,0 +1,123 @@
+﻿lot;cle;sort;jeu;forme;cercle;numero;action;cercle_actuel;valeur;mots;satellites_a_retirer;satellites_a_ajouter;pole_hybride;note
+malgré;darkvision;Vision dans le noir;5e;Forme arcane;IMPACT;0;modifier;plein VISION OBSCURITE;garder;VISION MALGRE OBSCURITE;;;inchangé;voit malgré l'état, jusqu'au degré du seuil
+malgré;darkvision;Vision dans le noir;2024;Forme arcane — version 2024;IMPACT;0;modifier;plein VISION OBSCURITE;garder;VISION MALGRE OBSCURITE;;;inchangé;voit malgré l'état, jusqu'au degré du seuil
+malgré;darkvision;Vision dans le noir;3.5;Forme arcane — version 3.5;IMPACT;0;modifier;plein VISION OBSCURITE;garder;VISION MALGRE OBSCURITE;;;inchangé;voit malgré l'état, jusqu'au degré du seuil
+malgré;darkvision;Vision dans le noir;PF1;Vision dans le noir partagée — version PF1;IMPACT;0;modifier;plein VISION OBSCURITE;garder;VISION MALGRE OBSCURITE;;;inchangé;voit malgré l'état, jusqu'au degré du seuil
+malgré;darkvision;Vision dans le noir;PF1;Vision dans le noir suprême — version PF1;IMPACT;0;modifier;plein VISION OBSCURITE;garder;VISION MALGRE OBSCURITE;;;inchangé;voit malgré l'état, jusqu'au degré du seuil
+malgré;darkvision;Vision dans le noir;PF2;Forme arcane — version PF2;IMPACT;0;modifier;plein VISION OBSCURITE;garder;VISION MALGRE OBSCURITE;;;inchangé;voit malgré l'état, jusqu'au degré du seuil
+malgré;blessing-of-the-mole;Bénédiction de la taupe;PF1;Forme arcane;IMPACT;1;modifier;plein VISION OBSCURITE;garder;VISION MALGRE OBSCURITE;;;inchangé;voit malgré l'état, jusqu'au degré du seuil
+malgré;armor-of-darkness;Armure astrale;PF1;Forme ténébreuse;IMPACT;2;modifier;plein VISION OBSCURITE;garder;VISION MALGRE OBSCURITE;;;inchangé;voit malgré l'état, jusqu'au degré du seuil
+malgré;armor-of-darkness;Armure astrale;PF1;Forme lumineuse;IMPACT;2;modifier;plein VISION OBSCURITE;garder;VISION MALGRE OBSCURITE;;;inchangé;voit malgré l'état, jusqu'au degré du seuil
+malgré;unusual-anatomy;Anatomie insolite;PF2;Forme arcane;IMPACT;2;modifier;plein VISION OBSCURITE;garder;VISION MALGRE OBSCURITE;;;inchangé;voit malgré l'état, jusqu'au degré du seuil
+malgré;angelic-aspect-lesser;Aspect astral;PF1;Aspect astral mineur — lumineux;IMPACT;2;modifier;plein VISION OBSCURITE;garder;VISION MALGRE OBSCURITE;;;inchangé;voit malgré l'état, jusqu'au degré du seuil
+malgré;angelic-aspect-lesser;Aspect astral;PF1;Aspect astral mineur — ténébreux;IMPACT;2;modifier;plein VISION OBSCURITE;garder;VISION MALGRE OBSCURITE;;;inchangé;voit malgré l'état, jusqu'au degré du seuil
+malgré;angelic-aspect-lesser;Aspect astral;PF1;Aspect astral — lumineux;IMPACT;3;modifier;plein VISION OBSCURITE;garder;VISION MALGRE OBSCURITE;;;inchangé;voit malgré l'état, jusqu'au degré du seuil
+malgré;angelic-aspect-lesser;Aspect astral;PF1;Aspect astral — ténébreux;IMPACT;3;modifier;plein VISION OBSCURITE;garder;VISION MALGRE OBSCURITE;;;inchangé;voit malgré l'état, jusqu'au degré du seuil
+malgré;angelic-aspect-lesser;Aspect astral;PF1;Aspect astral suprême — lumineux;IMPACT;7;modifier;plein VISION OBSCURITE;garder;VISION MALGRE OBSCURITE;;;inchangé;voit malgré l'état, jusqu'au degré du seuil
+malgré;angelic-aspect-lesser;Aspect astral;PF1;Aspect astral suprême — ténébreux;IMPACT;7;modifier;plein VISION OBSCURITE;garder;VISION MALGRE OBSCURITE;;;inchangé;voit malgré l'état, jusqu'au degré du seuil
+malgré;eyes-of-the-void;Yeux du vide;PF1;Forme arcane;IMPACT;0;modifier;plein VISION OBSCURITE;garder;VISION MALGRE OBSCURITE;;;inchangé;voit malgré l'état, jusqu'au degré du seuil
+malgré;brightest-night;Nuit claire;PF1;Forme arcane;IMPACT;0;modifier;plein VISION PENOMBRE;garder;VISION MALGRE PENOMBRE;;;inchangé;voit malgré l'état, jusqu'au degré du seuil
+malgré;enhance-senses;Sens aiguisés;PF2;Forme arcane;IMPACT;0;modifier;plein VISION PENOMBRE;garder;VISION MALGRE PENOMBRE;;;inchangé;voit malgré l'état, jusqu'au degré du seuil
+malgré;animal-feature;Trait animal;PF2;Yeux de chat;IMPACT;1;modifier;plein VISION PENOMBRE;garder;VISION MALGRE PENOMBRE;;;inchangé;voit malgré l'état, jusqu'au degré du seuil
+malgré;see-invisibility;Détection de l'invisibilité;5e;Forme arcane;IMPACT;0;modifier;plein VISION INVISIBILITE IMMATERIEL;garder;VISION MALGRE INVISIBILITE IMMATERIEL;;;inchangé;voit malgré l'état, jusqu'au degré du seuil
+malgré;see-invisibility;Détection de l'invisibilité;3.5;Forme arcane — version 3.5;IMPACT;0;modifier;plein VISION INVISIBILITE IMMATERIEL;garder;VISION MALGRE INVISIBILITE IMMATERIEL;;;inchangé;voit malgré l'état, jusqu'au degré du seuil
+malgré;see-invisibility;Détection de l'invisibilité;PF1;Coup d'œil sur le caché — version PF1;IMPACT;0;modifier;plein VISION INVISIBILITE IMMATERIEL;garder;VISION MALGRE INVISIBILITE IMMATERIEL;;;inchangé;voit malgré l'état, jusqu'au degré du seuil
+malgré;see-invisibility;Détection de l'invisibilité;PF2;Forme arcane — version PF2;IMPACT;0;modifier;plein VISION INVISIBILITE;garder;VISION MALGRE INVISIBILITE;;;inchangé;voit malgré l'état, jusqu'au degré du seuil
+malgré;litany-of-sight;Litanie de la vue;PF1;Forme arcane;IMPACT;0;modifier;plein VISION INVISIBILITE;garder;VISION MALGRE INVISIBILITE;;;inchangé;voit malgré l'état, jusqu'au degré du seuil
+malgré;pierce-disguise;Déguisement percé;PF1;Forme arcane;IMPACT;0;modifier;plein VISION APPARENCE FORME;garder;VISION MALGRE APPARENCE FORME;;;inchangé;voit malgré l'état, jusqu'au degré du seuil
+malgré;reveal-mirage;Mirage révélé;PF1;Forme arcane;IMPACT;0;modifier;plein VISION APPARENCE TERRAIN;garder;VISION MALGRE APPARENCE TERRAIN;;;inchangé;voit malgré l'état, jusqu'au degré du seuil
+malgré;reveal-true-shape;Révélation de la forme véritable;PF1;Forme arcane;IMPACT;0;modifier;plein VISION APPARENCE FORME;garder;VISION MALGRE APPARENCE FORME;;;inchangé;voit malgré l'état, jusqu'au degré du seuil
+malgré;greater-invisibility;Invisibilité supérieure;5e;Forme arcane;IMPACT;0;modifier;plein INVISIBILITE;garder;INVISIBILITE MALGRE ATTAQUE;;;inchangé;l'invisibilité tient même quand on attaque
+malgré;greater-invisibility;Invisibilité supérieure;3.5;Forme arcane — version 3.5 (Invisibility, Greater);IMPACT;0;modifier;plein INVISIBILITE;garder;INVISIBILITE MALGRE ATTAQUE;;;inchangé;l'invisibilité tient même quand on attaque
+malgré;wild-instinct;Instinct sauvage;PF1;Forme arcane;IMPACT;0;modifier;5 PERCEPTION;garder;PERCEPTION MALGRE SOMMEIL;;;inchangé;vigilant même endormi
+malgré;invisibility-bubble;Bulle d'invisibilité;PF1;Forme arcane — Bulle d'invisibilité;IMPACT;0;modifier;9 INVISIBILITE;garder;INVISIBILITE MALGRE EAU;;;inchangé;invisible même sous l'eau
+malgré;invisibility-bubble;Bulle d'invisibilité;PF1;Forme arcane — Bulle d'invisibilité géante;IMPACT;0;modifier;9 INVISIBILITE;garder;INVISIBILITE MALGRE EAU;;;inchangé;invisible même sous l'eau
+malgré;invisibility-bubble;Bulle d'invisibilité;PF1;Forme arcane — Bulles d'invisibilité;IMPACT;0;modifier;9 INVISIBILITE;garder;INVISIBILITE MALGRE EAU;;;inchangé;invisible même sous l'eau
+malgré;house-of-imaginary-walls;Maison aux murs imaginaires;PF2;Forme arcane;IMPACT;0;modifier;7 ILLUSION;garder;ILLUSION MALGRE INTANGIBLE;;;inchangé;le mur arrête même les êtres sans corps
+sans;hideous-laughter;Fou rire;PF2;Forme arcane — version PF2;IMPACT;0;modifier;3 LENTEUR RIRE;garder;LENTEUR RIRE SANS RIPOSTE;;;inchangé;ne peut plus riposter
+sans;crushing-despair;Désespoir foudroyant;PF2;Forme arcane — version PF2;IMPACT;0;modifier;3 LENTEUR DESESPOIR;garder;LENTEUR DESESPOIR SANS RIPOSTE;;;inchangé;ne peut plus riposter
+sans;hearts-desire;Désir du cœur;PF2;Forme arcane;IMPACT;0;modifier;4 HEBETUDE DESIR FANTASME;garder;HEBETUDE DESIR FANTASME SANS RIPOSTE;;;inchangé;ne peut plus riposter
+sans;overwhelming-memory;Souvenir envahissant;PF2;Joyeux;IMPACT;0;modifier;plein SOUVENIR STUPEUR RIRE;garder;SOUVENIR STUPEUR RIRE SANS RIPOSTE;;;inchangé;elle rit sans pouvoir riposter
+sans;roaring-applause;Tonnerre d'applaudissements;PF2;Forme arcane;IMPACT;0;modifier;3 LENTEUR GLOIRE;garder;LENTEUR GLOIRE SANS RIPOSTE;;;inchangé;incapable de riposter
+sans;unfolding-wind-blitz;Vent déployé : éclair;PF2;Forme arcane;IMPACT;0;modifier;plein VOL;garder;VOL SANS RIPOSTE;;;inchangé;je vole sans qu'on puisse riposter
+sans;mark-of-buoyancy;Marque d'apesanteur;PF1;Forme arcane;IMPACT;0;modifier;plein POIDS;garder;SANS POIDS;;;inchangé;un objet sans poids
+sans;decrepit-disguise;Déguisement décrépit;PF1;Forme arcane;IMPACT;0;modifier;2 APPARENCE VALEUR;garder;APPARENCE SANS VALEUR;;;inchangé;l'objet semble sans valeur
+sans;village-veil;Voile du village;PF1;Forme arcane;IMPACT;0;modifier;plein VALEUR;garder;SANS VALEUR;;;inchangé;le lieu paraît sans intérêt
+sans;marching-chant;Chant de marche;PF1;Forme arcane;IMPACT;0;modifier;plein MARCHE;garder;MARCHE SANS FATIGUE;;;inchangé;marcher vite sans fatigue
+sans;song-of-marching;Chant de marche;PF2;Forme arcane;IMPACT;0;modifier;plein MARCHE ALLURE;garder;MARCHE ALLURE SANS FATIGUE;;;inchangé;marcher vite sans fatigue
+sans;keep-watch;Veille;PF1;Forme arcane;IMPACT;0;modifier;plein VEILLE REPOS;garder;VEILLE SANS FATIGUE;;;inchangé;veiller toute la nuit sans fatigue
+sans;earth-glide;Glissement de terre;PF1;Forme arcane;IMPACT;0;modifier;plein TRAVERSEE;garder;TRAVERSEE SANS TRACE;;;inchangé;traverse la pierre sans laisser de trace
+sans;heroes-feast;Festin des héros;PF2;Rituel manqué — version PF2;IMPACT;0;modifier;4 NAUSEE;garder;NAUSEE SANS REMEDE;;;inchangé;douze heures sans remède
+sans;winters-breath;Souffle de l'hiver;PF2;Rituel manqué;IMPACT;0;modifier;3 NAUSEE;garder;NAUSEE SANS REMEDE;;;inchangé;douze heures sans remède
+contre;resist-starvation;Résistance à la faim;PF1;Forme arcane;IMPACT;0;modifier;plein FAIM;garder;CONTRE FAIM;;;inchangé;tenir sans manger : une garde contre la faim
+malgré;bed-of-iron;Lit de fer;PF1;Forme arcane;IMPACT;0;modifier;plein REPOS;garder;REPOS MALGRE ARMURE;;;inchangé;dormir en armure sans peine
+sans;rune-trace;Trace de rune;PF1;Forme arcane;IMPACT;0;modifier;6 LECTURE;garder;LECTURE SANS DECLENCHEUR;;;inchangé;une rune lue sans la déclencher
+sans;enlarge-reduce;Agrandissement/rapetissement;PF2;Rapetisser — Rapetissement — version PF2;IMPACT;0;modifier;2 STATURE MINUSCULE;garder;STATURE MINUSCULE SANS ALLONGE;;;inchangé;réduite à une taille minuscule, sans allonge
+tant que;blessing-of-the-watch;Bénédiction du guet;PF1;Forme arcane;IMPACT;0;modifier;1 CHANCE;garder;garder;plein|CONDITION CITE;plein|CONDITION TANTQUE CITE;inchangé;l'effet tient tant que dure cet état
+tant que;blurred-movement;Mouvement flou;PF1;Forme arcane;IMPACT;0;modifier;2 DISSIMULATION;garder;garder;plein|CONDITION MOUVEMENT;plein|CONDITION TANTQUE MOUVEMENT;inchangé;l'effet tient tant que dure cet état
+tant que;fear-the-sun;Crainte astrale;PF1;Forme lumineuse;IMPACT;2;modifier;3 EBLOUISSEMENT;garder;garder;plein|CONDITION LUMIERE;plein|CONDITION TANTQUE LUMIERE;inchangé;ébloui tant qu'il reste dans la lumière
+tant que;fear-the-sun;Crainte astrale;PF1;Forme ténébreuse;IMPACT;2;modifier;3 EBLOUISSEMENT;garder;garder;plein|CONDITION LUMIERE;plein|CONDITION TANTQUE LUMIERE;inchangé;ébloui tant qu'il reste dans la lumière
+tant que;suns-disdain;Dédain astral;PF1;Forme lumineuse;IMPACT;1;modifier;3 EBLOUISSEMENT;garder;garder;plein|CONDITION LUMIERE;plein|CONDITION TANTQUE LUMIERE;inchangé;ébloui tant qu'il reste dans la lumière
+tant que;suns-disdain;Dédain astral;PF1;Forme ténébreuse;IMPACT;1;modifier;3 EBLOUISSEMENT;garder;garder;plein|CONDITION LUMIERE;plein|CONDITION TANTQUE LUMIERE;inchangé;ébloui tant qu'il reste dans la lumière
+tant que;suns-disdain;Dédain astral;PF1;Dédain astral de groupe — forme lumineuse;IMPACT;1;modifier;3 EBLOUISSEMENT;garder;garder;plein|CONDITION LUMIERE;plein|CONDITION TANTQUE LUMIERE;inchangé;ébloui tant qu'il reste dans la lumière
+tant que;suns-disdain;Dédain astral;PF1;Dédain astral de groupe — forme ténébreuse;IMPACT;1;modifier;3 EBLOUISSEMENT;garder;garder;plein|CONDITION LUMIERE;plein|CONDITION TANTQUE LUMIERE;inchangé;ébloui tant qu'il reste dans la lumière
+tant que;sunstalker;Traqueur astral;PF1;Forme arcane — Forme lumineuse;IMPACT;0;modifier;9 INVISIBILITE;garder;garder;;plein|CONDITION TANTQUE LUMIERE;inchangé;invisible tant qu'il reste en pleine lumière
+tant que;sunstalker;Traqueur astral;PF1;Forme arcane — Forme ténébreuse;IMPACT;0;modifier;9 INVISIBILITE;garder;garder;;plein|CONDITION TANTQUE OBSCURITE;inchangé;invisible tant qu'il reste en pleine obscurité
+tant que;rend-body-i;Corps déchiré;PF1;Corps déchiré III;IMPACT;0;modifier;4 NAUSEE;garder;garder;;plein|CONDITION TANTQUE SAIGNEMENT;inchangé;nauséeuse tant qu'elle saigne
+tant que;touch-of-bloodletting;Toucher de saignée;PF1;Forme arcane;IMPACT;2;modifier;6 EPUISEMENT;garder;garder;;plein|CONDITION TANTQUE SAIGNEMENT;inchangé;vidée de ses forces tant qu'elle saigne
+tant que;symbol-of-exsanguination;Symbole d'exsanguination;PF1;Forme arcane;IMPACT;1;modifier;4 NAUSEE;garder;garder;;plein|CONDITION TANTQUE SAIGNEMENT;inchangé;tant que le sang coule
+tant que;phantom-pain;Douleur fantôme;PF2;Forme arcane;IMPACT;2;modifier;2;garder;garder;;plein|CONDITION TANTQUE NAUSEE;inchangé;tant que dure la nausée
+tant que;worms-repast;Festin des vers;PF2;Forme arcane;IMPACT;2;modifier;1 SURPRISE;garder;garder;;plein|CONDITION TANTQUE RONGEMENT;inchangé;tant que les vers la rongent
+tant que;murderous-vine;Liane meurtrière;PF2;Forme arcane;IMPACT;1;modifier;7 ECRASEMENT;garder;garder;;plein|CONDITION TANTQUE ETREINTE;inchangé;tant qu'elle la tient
+tant que;mind-games;Joute d'esprits;PF2;Forme arcane;IMPACT;0;modifier;8 ETOURDISSEMENT DUEL;garder;garder;;plein|CONDITION TANTQUE DUEL;inchangé;tant que je tiens le duel
+tant que;warding-aggression;Garde agressive;PF2;Forme arcane;IMPACT;0;modifier;2;garder;garder;;plein|CONDITION TANTQUE FRAPPE;inchangé;tant que je le frappe
+tant que;evil-eye;Mauvais œil;PF2;Effroi;IMPACT;0;modifier;2 PEUR;garder;garder;;plein|CONDITION TANTQUE VU;inchangé;tant que je la vois
+tant que;evil-eye;Mauvais œil;PF2;Nausée;IMPACT;0;modifier;2 NAUSEE;garder;garder;;plein|CONDITION TANTQUE VU;inchangé;tant que je la vois
+tant que;possession;Possession d'un corps;PF1;Possession à vue;IMPACT;0;modifier;plein DOMINATION VUE;garder;garder;;plein|CONDITION TANTQUE VU;inchangé;tant qu'elle reste en vue
+tant que;word-of-truth;Parole de vérité;PF2;Forme arcane;IMPACT;0;modifier;plein VERITE SIGNE;garder;garder;;plein|CONDITION TANTQUE VERITE;inchangé;tant que je dis ce que je crois vrai
+tant que;fey-disappearance;Disparition féerique;PF2;Forme arcane;IMPACT;0;modifier;9 INVISIBILITE AISANCE;garder;garder;;plein|CONDITION TANTQUE SANS ATTAQUE;inchangé;tant que je n'attaque pas
+tant que;ransack-the-night;Pillage de la nuit;PF2;Forme ténébreuse;IMPACT;0;modifier;plein DISSIMULATION;garder;garder;;plein|CONDITION TANTQUE SANS ATTAQUE;inchangé;tant qu'ils ne les attaquent pas
+tant que;ransack-the-night;Pillage de la nuit;PF2;Forme lumineuse;IMPACT;0;modifier;plein DISSIMULATION;garder;garder;;plein|CONDITION TANTQUE SANS ATTAQUE;inchangé;tant qu'ils ne les attaquent pas
+tant que;qualm;Scrupule;PF1;Forme arcane;IMPACT;0;modifier;plein DOUTE;garder;garder;;plein|CONDITION TANTQUE SANS FRAPPE;inchangé;tant qu'elle n'a pas frappé
+tant que;badgers-ferocity;Férocité du blaireau;PF1;Forme arcane;DUREE;0;modifier;plein;garder;TANTQUE CONCENTRATION;;;inchangé;tant que tu te concentres
+tant que;id-insinuation-i;Insinuation;PF1;Échelon I;DUREE;0;modifier;6 SECONDES;garder;SECONDES TANTQUE CONCENTRATION;;;inchangé;tant que tu te concentres
+tant que;id-insinuation-i;Insinuation;PF1;Échelon II;DUREE;0;modifier;6 SECONDES;garder;SECONDES TANTQUE CONCENTRATION;;;inchangé;tant que tu te concentres
+tant que;id-insinuation-i;Insinuation;PF1;Échelon III;DUREE;0;modifier;6 SECONDES;garder;SECONDES TANTQUE CONCENTRATION;;;inchangé;tant que tu te concentres
+tant que;id-insinuation-i;Insinuation;PF1;Échelon IV;DUREE;0;modifier;6 SECONDES;garder;SECONDES TANTQUE CONCENTRATION;;;inchangé;tant que tu te concentres
+tant que;compelling-rant;Diatribe;PF1;Forme arcane;DUREE;0;modifier;1 MINUTES SECONDES;garder;MINUTES SECONDES TANTQUE PAROLE;;;inchangé;on croit tout tant que tu parles
+tant que;fungal-hyphae;Hyphes fongiques;PF2;Forme arcane;DUREE;0;modifier;1 MINUTES;garder;MINUTES TANTQUE SANS MOUVEMENT;;;inchangé;tant que je ne bouge pas
+tant que;grave-impressions;Impressions de la tombe;PF2;Forme arcane;DUREE;0;modifier;1 MINUTES MINUTES;garder;MINUTES MINUTES TANTQUE SANS DEPLACEMENT;;;inchangé;tant qu'on ne déplace pas le cadavre
+prochain;weapon-surge;Arme exaltée;PF2;Forme arcane;IMPACT;0;modifier;1 SURCROIT;garder;garder;;plein|CONDITION PROCHAIN COUP;inchangé;son prochain coup
+prochain;strand-of-the-tangled-knot;Fil du nœud emmêlé;PF1;Forme arcane;IMPACT;0;modifier;10 ECART;garder;garder;;plein|CONDITION PROCHAIN COUP;inchangé;le prochain coup
+prochain;vigor;Vigueur;PF1;Forme arcane;IMPACT;0;modifier;1;garder;garder;;plein|CONDITION PROCHAIN COUP;inchangé;au prochain coup
+prochain;precious-gleam;Éclat précieux;PF2;Forme arcane;IMPACT;0;modifier;4 PRECISION;garder;garder;;plein|CONDITION PROCHAIN COUP;inchangé;à son prochain coup
+prochain;ki-cutting-sight;Regard qui tranche le ki;PF2;Forme arcane;IMPACT;0;modifier;22 KI FAILLE;garder;garder;;plein|CONDITION PROCHAIN COUP;inchangé;mon prochain coup
+prochain;organsight;Vision des organes;PF2;Forme arcane;IMPACT;0;modifier;14 ORGANE FAILLE;garder;garder;;plein|CONDITION PROCHAIN COUP;inchangé;au prochain coup
+prochain;vision-of-weakness;Vision de la faiblesse;PF2;Forme arcane;IMPACT;0;modifier;1 PRECISION FAILLE;garder;garder;;plein|CONDITION PROCHAIN COUP;inchangé;à mon prochain coup
+prochain;mirrors-misfortune;Miroir de malchance;PF2;Forme arcane;IMPACT;0;modifier;2 MALCHANCE DOUBLE;garder;garder;;2|CONDITION PROCHAIN COUP;inchangé;à ses deux prochains coups
+prochain;true-strike;Coup au but;5e;Forme arcane;IMPACT;0;modifier;plein FAILLE;garder;garder;;plein|CONDITION PROCHAIN ATTAQUE;inchangé;à la prochaine attaque
+prochain;true-strike;Coup au but;3.5;Forme arcane — version 3.5;IMPACT;0;modifier;20 FAILLE;garder;garder;;plein|CONDITION PROCHAIN ATTAQUE;inchangé;à la prochaine attaque
+prochain;true-strike;Coup au but;PF2;Forme arcane — version PF2;IMPACT;0;modifier;plein FAILLE;garder;garder;;plein|CONDITION PROCHAIN ATTAQUE;inchangé;à la prochaine attaque
+prochain;shaken-confidence;Assurance ébranlée;PF2;Forme arcane;IMPACT;0;modifier;2 MALCHANCE DOUTE;garder;garder;;plein|CONDITION PROCHAIN EPREUVE;inchangé;à sa prochaine entreprise
+prochain;bungle;Maladresse;PF1;Forme arcane;IMPACT;0;modifier;plein MALADRESSE;garder;garder;;plein|CONDITION PROCHAIN EPREUVE;inchangé;à sa prochaine entreprise
+prochain;physical-boost;Regain physique;PF2;Forme arcane;IMPACT;0;modifier;1 ARDEUR;garder;garder;;plein|CONDITION PROCHAIN EPREUVE;inchangé;à son prochain effort du corps ou à sa prochaine esquive
+prochain;anticipate-peril;Danger pressenti;PF2;Forme arcane — version PF2;IMPACT;0;modifier;1 VIGILANCE DANGER;garder;garder;;plein|CONDITION PROCHAIN COMBAT;inchangé;à sa prochaine entrée en lice
+prochain;cinder-gaze;Regard des braises;PF2;Grand danger;IMPACT;0;modifier;1 PRESAGE ARDEUR;garder;garder;;plein|CONDITION PROCHAIN COMBAT;inchangé;à ma prochaine entrée en lice
+prochain;cinder-gaze;Regard des braises;PF2;Vie nouvelle;IMPACT;0;modifier;5 VIE PRESAGE;garder;garder;;plein|CONDITION PROCHAIN BLESSURE;inchangé;à ma prochaine blessure
+prochain;fractions-of-heal-and-harm;Part des soins et des maux;PF1;Forme arcane;IMPACT;0;modifier;plein VIE BLESSURE;garder;garder;;plein|CONDITION PROCHAIN SORT;inchangé;ton prochain sort blessant
+prochain;deathwine;Vin de mort;PF1;Forme arcane;IMPACT;0;modifier;1 PUISSANCE NECROMANCIE;garder;garder;;plein|CONDITION PROCHAIN SORT;inchangé;le prochain sort de nécromancie
+prochain;cursed-treasure;Trésor maudit;PF1;Forme arcane;IMPACT;0;modifier;plein MALEDICTION;garder;garder;;plein|CONDITION PROCHAIN TOUCHER;inchangé;le prochain qui touche
+sauf;selective-invisibility;Invisibilité choisie;PF1;Forme arcane;IMPACT;0;modifier;9 INVISIBILITE CHOIX;garder;INVISIBILITE SAUF CHOIX;;;inchangé;invisible sauf pour un seul, choisi
+sauf;captivating-adoration;Adoration captivante;PF2;Forme arcane;IMPACT;0;modifier;5 FASCINATION CHARME;garder;FASCINATION CHARME SAUF CHOIX;;;inchangé;fascinés, sauf ceux que j'en dispense
+sauf;arcane-lock;Verrou magique;5e;Forme arcane;IMPACT;0;modifier;5 VERROU SECRET;garder;VERROU SAUF SECRET;;;inchangé;infranchissable, sauf au mot de passe
+sauf;arcane-lock;Verrou magique;3.5;Forme arcane — version 3.5;IMPACT;0;modifier;5 VERROU;garder;garder;;1|CIBLE SAUF;inchangé;fermé à tous sauf au lanceur
+sauf;arcane-lock;Verrou magique;PF2;Forme arcane — version PF2;IMPACT;0;modifier;3 VERROU;garder;garder;;1|CIBLE SAUF;inchangé;fermé à tous sauf au lanceur
+sauf;blacklight;Lumière noire;PF1;Forme arcane;IMPACT;0;modifier;9 OBSCURITE TENEBRES BARRIERE;garder;garder;;1|CIBLE SAUF;inchangé;nul regard ne la perce, sauf le mien
+sauf;invisibility-sphere;Sphère d'invisibilité;PF2;Forme arcane;IMPACT;0;modifier;9 INVISIBILITE;garder;garder;;2|CIBLE SAUF;inchangé;invisibles, sauf les uns aux autres
+contre;bestow-curse;Malédiction;5e;Maladresse;IMPACT;0;modifier;2 MALADRESSE MALEDICTION;garder;garder;;1|CIBLE CONTRE;inchangé;maladroite face au lanceur seulement
+contre;bestow-curse;Malédiction;3.5;Maladresse — version 3.5;IMPACT;0;modifier;2 MALADRESSE MALEDICTION;garder;garder;;1|CIBLE CONTRE;inchangé;maladroite face au lanceur seulement
+contre;bestow-curse;Malédiction;PF1;Maladresse — version PF1;IMPACT;0;modifier;2 MALADRESSE MALEDICTION;garder;garder;;1|CIBLE CONTRE;inchangé;maladroite face au lanceur seulement
+contre;celestial-brand;Marque de justice;PF2;Forme lumineuse;IMPACT;0;modifier;1 MARQUE JUSTICE;garder;MARQUE JUSTICE FAILLE;;;inchangé;1 ajouté aux coups contre elle
+contre;celestial-brand;Marque de justice;PF2;Forme ténébreuse;IMPACT;0;modifier;1 MARQUE JUSTICE;garder;MARQUE JUSTICE FAILLE;;;inchangé;1 ajouté aux coups contre elle
+contre;albatross-curse;Malédiction de l'albatros;PF2;Forme arcane;IMPACT;0;modifier;1 MALEDICTION;garder;MALEDICTION FAILLE;;;inchangé;1 ajouté aux coups contre elle
+contre;unblinking-flame-emblem;Flamme sans cillement : emblème;PF2;Forme arcane;IMPACT;0;modifier;1 MARQUE;garder;MARQUE FAILLE;;;inchangé;1 ajouté aux coups contre elle

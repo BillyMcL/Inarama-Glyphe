@@ -17,6 +17,7 @@ TYPES = [("symbole du feu", rf"{AV}de le feu{AP}", "du feu"),
 
 # d) une phrase de Bénédiction de chance et de résolution (avant les paires : « la courage » y devient « la peur »)
 PHRASES = [("mieux armée contre la courage", "mieux armée contre la peur"),
+           ("sous l'emprise de la courage", "sous l'emprise de la peur"),       # Ravaler sa peur : même cas
            # Restauration supérieure (décision du 22 novembre 2026)
            ("un vie · durable perdu rendu", "la vie durablement perdue, rendue"),
            # Main agrippante (5e, 2024) : le broyage est dit par le cercle ajouté (B11)

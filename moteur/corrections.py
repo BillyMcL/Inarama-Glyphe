@@ -550,6 +550,7 @@ def appliquer(cle, formes):
             g2 = P4B.b8_jumelle(g, k); change |= g2 is not g; g = g2      # B8 : jumelle hybride antérieure retenue
             g2 = P4B.b9_jumelle(g, k); change |= g2 is not g; g = g2      # B9 : jumelle hybride antérieure retenue
             g2 = P4B.b10_jumelle(g, k); change |= g2 is not g; g = g2     # B10 : de même
+            g2 = P4B.b11_jumelle(g, k); change |= g2 is not g; g = g2     # B11 : de même
         g2 = P4B.relecture(g, k, True); change |= g2 is not g; g = g2       # B6 : modèle et formes hybrides créées
         b4 = P4B.b4(k)                        # étape 7 : formes nouvelles (B4)
         remplace = [b for b in b4 if b["action"] == "remplacer la forme modèle"]
@@ -567,17 +568,20 @@ def appliquer(cle, formes):
             gh = P4B.b8(gh, k)                                     # B8 : de même (jumelles hybrides et art rare créé)
             gh = P4B.b9(gh, k)                                     # B9 : de même
             gh = P4B.b10(gh, k)                                    # B10 : de même
+            gh = P4B.b11(gh, k)                                    # B11 : de même
             nouvelles = P4B.creer(gh, k)      # phase 4b : formes créées d'après ce modèle, placées juste après lui
             for b in b4:                      # « ajouter » : la forme nouvelle (et ses jumelles) après le modèle
                 nf = P4B.nouvelle(g, b, k)
                 if nf is not None: nf = P4B.b9(nf, k)          # B9 : une forme nouvelle d'Arcane (Volonté raffermie)
                 if nf is not None: nf = P4B.b10(nf, k)         # B10 : de même
+                if nf is not None: nf = P4B.b11(nf, k)         # B11 : de même
                 if nf is not None: nouvelles += [nf] + (P4B.jumelles(nf, k) if nf["fam"] == "A" else [])
         g2 = P4B.relecture(g, k, False); change |= g2 is not g; g = g2      # B6 : forme d'Arcane modèle seulement
         g2 = P4B.b7(g, k); change |= g2 is not g; g = g2                    # B7 : la forme d'Arcane
         g2 = P4B.b8(g, k); change |= g2 is not g; g = g2                    # B8 : la forme d'Arcane
         g2 = P4B.b9(g, k); change |= g2 is not g; g = g2                    # B9 : la forme d'Arcane
         g2 = P4B.b10(g, k); change |= g2 is not g; g = g2                   # B10 : la forme d'Arcane
+        g2 = P4B.b11(g, k); change |= g2 is not g; g = g2                   # B11 : la forme d'Arcane
         if not retirer:
             if change:
                 rings, touche = _placer(g["rings"])
@@ -589,7 +593,9 @@ def appliquer(cle, formes):
             rings, touche = _placer(nf["rings"])
             PLACES.extend((nf["idx"], nf["label"], c) for c in touche)
             out.append(_redessine(nf, rings))
-    return P4B.notes_famille(cle, out)        # phase 4b, étape 8 : notes de famille devenues fausses retirées
+    out = P4B.notes_famille(cle, out)         # phase 4b, étape 8 : notes de famille devenues fausses retirées
+    import fautes as FT                       # fautes des phrases de lecture (dernier lot du chantier d'écriture) : en dernier,
+    return [FT.corriger_forme(f) for f in out]          # Elden Ring compris ; seules les phrases changent
 
 
 # ---------- placement des symboles à côté d'autres satellites (règle de dessin, après toutes les corrections) ----------

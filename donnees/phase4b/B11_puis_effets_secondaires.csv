@@ -1,0 +1,36 @@
+﻿lot;cle;sort;jeu;forme;cercle;numero;action;cercle_actuel;valeur;mots;satellites_a_retirer;satellites_a_ajouter;symboles;pole_hybride;note
+puis;spider-sting;Dard de l'araignée;PF2;Forme arcane;IMPACT;0;modifier;2 DARD VENIN;garder;DARD;;;;inchangé;la piqûre
+puis;spider-sting;Dard de l'araignée;PF2;Forme arcane;IMPACT;0;ajouter après;2 DARD VENIN;plein;POISON;;;;ténébreux;puis le venin
+puis;wyvern-sting;Dard de la vouivre;PF2;Forme arcane;IMPACT;0;modifier;8 DARD VENIN;garder;DARD;;;;inchangé;la piqûre
+puis;wyvern-sting;Dard de la vouivre;PF2;Forme arcane;IMPACT;0;ajouter après;8 DARD VENIN;plein;POISON;;;;ténébreux;puis le venin
+puis;purple-worm-sting;Dard du ver pourpre;PF2;Forme arcane;IMPACT;0;modifier;11 DARD VENIN;garder;DARD;;;;inchangé;la piqûre
+puis;purple-worm-sting;Dard du ver pourpre;PF2;Forme arcane;IMPACT;0;ajouter après;11 DARD VENIN;plein;POISON;;;;ténébreux;puis le venin
+puis;swarming-wasp-stings;Nuée de dards;PF2;Forme arcane;IMPACT;0;modifier;4 DARD VENIN;garder;DARD;;;;inchangé;la piqûre
+puis;swarming-wasp-stings;Nuée de dards;PF2;Forme arcane;IMPACT;0;ajouter après;4 DARD VENIN;plein;POISON;;;;ténébreux;puis le venin
+puis;arcane-hand;Main magique;5e;Main agrippante;IMPACT;0;modifier;10 ETREINTE;7;ENTRAVE ETREINTE;;;;inchangé;l'adversaire agrippé
+puis;arcane-hand;Main magique;2024;Main agrippante — version 2024;IMPACT;0;modifier;17 ETREINTE;7;ENTRAVE ETREINTE;;;;inchangé;l'adversaire agrippé
+puis;arcane-hand;Main magique;3.5;Main agrippante — version 3.5;IMPACT;0;modifier;plein ETREINTE;7;ENTRAVE ETREINTE;;;;inchangé;l'adversaire agrippé
+puis;arcane-hand;Main magique;5e;Main agrippante;IMPACT;0;ajouter après;10 ETREINTE;10;CHOC;;;;ténébreux;puis broyé (2d6 + 3)
+puis;arcane-hand;Main magique;2024;Main agrippante — version 2024;IMPACT;0;ajouter après;17 ETREINTE;17;CHOC;;;;ténébreux;puis broyé (le montant de la forme actuelle)
+puis;goblin-pox;Vérole gobeline;PF2;Forme arcane;IMPACT;0;ajouter après;1 NAUSEE MALADIE ERUPTION;3;LENTEUR;;;;ténébreux;puis lenteur
+puis;dazzling-flash;Éclair éblouissant;PF2;Forme arcane;IMPACT;0;ajouter après;plein AVEUGLEMENT;3;EBLOUISSEMENT;;;;ténébreux;puis éblouis
+puis;protection-from-poison;Protection contre le poison;5e;Forme arcane;IMPACT;0;ajouter après;plein DISSIPATION;5;CONTRE POISON;;;;lumineux;puis la résistance au poison
+puis;zenith-star;Étoile au zénith;PF2;Forme arcane;IMPACT;0;échanger avec le cercle d'Impact suivant;plein BALISE;garder;garder;;;;inchangé;l'étoile éblouit d'abord, puis monte et marque la cible
+puis;youre-mine;Tu es à moi;PF2;Forme arcane;IMPACT;0;ajouter avant;plein DOMINATION EMOTION;8;ETOURDISSEMENT;;;;ténébreux;étourdie d'abord, un instant
+effet secondaire;sunbeam;Rayon astral;3.5;Forme arcane — Forme lumineuse — version 3.5;IMPACT;0;ajouter après;14;45;;;plein|CONDITION MORTVIVANT;le symbole de face de la forme;selon la face;les morts-vivants prennent 1d6 par niveau (13d6 au niveau le plus bas)
+effet secondaire;sunbeam;Rayon astral;3.5;Forme arcane — Forme ténébreuse — version 3.5;IMPACT;0;ajouter après;14;45;;;plein|CONDITION MORTVIVANT;le symbole de face de la forme;selon la face;les morts-vivants prennent 1d6 par niveau (13d6 au niveau le plus bas)
+effet secondaire;divine-transfer;Transfert divin;PF1;Forme arcane;IMPACT;0;ajouter après;plein VIE PARTAGE;2;PROTECTION;;plein|CONDITION CONTRE HOSTILE;;lumineux;une réduction des coups hostiles égale au charisme du lanceur
+effet secondaire;zealous-conviction;Conviction zélée;PF2;Forme arcane;IMPACT;1;ajouter après;12 VIE;2;;;|CIBLE PSYCHE RESISTANCE;;lumineux;2 ajouté contre ce qui vise l'esprit
+effet secondaire;frenzied-revelry;Réjouissances frénétiques;PF2;Forme arcane;IMPACT;0;modifier;1 FRENESIE;garder;garder;;|CIBLE PSYCHE RESISTANCE;;inchangé;1 ajouté contre ce qui vise l'esprit
+effet secondaire;abyssal-vermin;Vermine astrale;PF1;Forme ténébreuse;IMPACT;0;ajouter après;plein CHATIMENT;3;PROTECTION;;;;lumineux;5 retranché aux coups
+effet secondaire;abyssal-vermin;Vermine astrale;PF1;Forme lumineuse;IMPACT;0;ajouter après;plein CHATIMENT;3;PROTECTION;;;;lumineux;5 retranché aux coups
+effet secondaire;abyssal-vermin;Vermine astrale;PF1;Forme ténébreuse;IMPACT;0;ajouter après (après le cercle ajouté juste avant);plein CHATIMENT;3;PROTECTION;;;les symboles de la combinaison Glace;lumineux;résistance 5 au froid
+effet secondaire;abyssal-vermin;Vermine astrale;PF1;Forme lumineuse;IMPACT;0;ajouter après (après le cercle ajouté juste avant);plein CHATIMENT;3;PROTECTION;;;les symboles de la combinaison Glace;lumineux;résistance 5 au froid
+effet secondaire;abyssal-vermin;Vermine astrale;PF1;Forme ténébreuse;IMPACT;0;ajouter après (après les deux cercles ajoutés);plein CHATIMENT;3;PROTECTION;;;le symbole du feu;lumineux;résistance 5 au feu
+effet secondaire;abyssal-vermin;Vermine astrale;PF1;Forme lumineuse;IMPACT;0;ajouter après (après les deux cercles ajoutés);plein CHATIMENT;3;PROTECTION;;;le symbole du feu;lumineux;résistance 5 au feu
+effet secondaire;savor-the-sting;Savourer la douleur;PF2;Forme arcane;IMPACT;0;ajouter après;2 DOULEUR EXTASE;1;PRECISION;;plein|CONDITION TANTQUE DOULEUR;;lumineux;tant qu'elle souffre, 1 ajouté à mes coups contre elle
+effet secondaire;blood-vendetta;Vendetta de sang;PF2;Forme arcane;IMPACT;0;ajouter après;7 MALEDICTION SAIGNEMENT;1;VULNERABILITE PERCE TRANCHANT;;plein|CONDITION TANTQUE SAIGNEMENT;;ténébreux;tant qu'elle saigne, pointes et tranchants la blessent davantage
+effet secondaire;burst-of-adrenaline;Sursaut d'adrénaline;PF1;Forme arcane;IMPACT;0;modifier;8 FATIGUE;2;;;plein|CONDITION PROCHAIN EPREUVE;;inchangé;+8 à une caractéristique pour un essai (+4, degré 2)
+effet secondaire;burst-of-adrenaline;Sursaut d'adrénaline;PF1;Forme arcane;COMPOSANTE;;ajouter un cercle Composante;;4;CONTREPARTIE FATIGUE;;;;inchangé;puis le lanceur est fatigué ou hébété un instant : le prix du sort
+effet secondaire;burst-of-insight;Éclair de lucidité;PF1;Forme arcane;IMPACT;0;modifier;8 HEBETUDE;2;;;plein|CONDITION PROCHAIN EPREUVE;;inchangé;+8 à une caractéristique pour un essai (+4, degré 2)
+effet secondaire;burst-of-insight;Éclair de lucidité;PF1;Forme arcane;COMPOSANTE;;ajouter un cercle Composante;;4;CONTREPARTIE HEBETUDE;;;;inchangé;puis le lanceur est fatigué ou hébété un instant : le prix du sort

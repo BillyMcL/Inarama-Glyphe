@@ -594,6 +594,8 @@ def appliquer(cle, formes):
             PLACES.extend((nf["idx"], nf["label"], c) for c in touche)
             out.append(_redessine(nf, rings))
     out = P4B.notes_famille(cle, out)         # phase 4b, étape 8 : notes de famille devenues fausses retirées
+    import nombres as NB                      # satellites longs (chantier « nombres ») : arrondis au produit le plus proche,
+    out = [NB.arrondir(f, est_elden_ring(f)) for f in out]          # en fin de chaîne, Elden Ring excepté
     import fautes as FT                       # fautes des phrases de lecture (dernier lot du chantier d'écriture) : en dernier,
     return [FT.corriger_forme(f) for f in out]          # Elden Ring compris ; seules les phrases changent
 

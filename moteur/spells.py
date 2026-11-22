@@ -67,7 +67,7 @@ def val(n, pol):
     if n in PRIM: return [form(n, pol)], False, True
     if n == 6: return [form(3, pol, 0), form(3, pol, 1)], False, False
     if n == 8: return [form(4, pol, 0), form(4, pol, 1)], False, False
-    f = best_factors(n)
+    f = getattr(n, "facteurs", None) or best_factors(n)      # un nombre qui porte ses formes (nombres.Produit) les garde
     if f:
         spec, seen = [], {}
         for p in f:

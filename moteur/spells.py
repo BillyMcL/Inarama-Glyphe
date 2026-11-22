@@ -64,6 +64,12 @@ def val(n, pol):
     if isinstance(n, tuple) and n[0] == "angle": return val_angle(n[1], pol), False, True   # courbure ou ouverture d'une Forme
     if n is None: return [], False, False                  # vide : un emplacement sans forme (le sort qu'on y inscrira)
     if n == "plein": return [("full", 0, 0)], False, False
+    t_ = getattr(n, "termes", None)                       # un nombre écrit en addition qui porte ses formes (nombres.Somme)
+    if t_:
+        spec, seen = [], {}
+        for p in t_:
+            spec.append(form(p, pol, seen.get(p, 0))); seen[p] = seen.get(p, 0) + 1
+        return spec, False, (t_.count(9) <= 1)
     if n in PRIM: return [form(n, pol)], False, True
     if n == 6: return [form(3, pol, 0), form(3, pol, 1)], False, False
     if n == 8: return [form(4, pol, 0), form(4, pol, 1)], False, False

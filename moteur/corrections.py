@@ -151,7 +151,7 @@ def _accents():
     import re, glob, collections, convert as C
     vu = collections.defaultdict(collections.Counter)
     for p in glob.glob(os.path.join(D, "*.py")):
-        if os.path.basename(p) in ("corrections.py",): continue
+        if os.path.basename(p) in ("corrections.py", "combinees.py"): continue     # combinees.py (B12) : ses identifiants ne comptent pas
         for t in re.findall(r"[a-zàâäçéèêëîïôöùûüœ]+(?:-[a-zàâäçéèêëîïôöùûüœ]+)*", open(p, encoding="utf-8").read()):
             vu[C.norm(t)][t] += 1           # toutes les orthographes, sans accent comprises (« entrave » contre « entravé »)
     out = {}
@@ -597,7 +597,9 @@ def appliquer(cle, formes):
     import nombres as NB                      # satellites longs (chantier « nombres ») : arrondis au produit le plus proche,
     out = [NB.arrondir(f, est_elden_ring(f)) for f in out]          # en fin de chaîne, Elden Ring excepté
     import fautes as FT                       # fautes des phrases de lecture (dernier lot du chantier d'écriture) : en dernier,
-    return [FT.corriger_forme(f) for f in out]          # Elden Ring compris ; seules les phrases changent
+    out = [FT.corriger_forme(f) for f in out]           # Elden Ring compris ; seules les phrases changent
+    import combinees as CB                    # formes combinées (B12) : six sorts, formes construites tout à la fin
+    return CB.appliquer(cle, out) if cle in CB.sorts_b12() else out
 
 
 # ---------- placement des symboles à côté d'autres satellites (règle de dessin, après toutes les corrections) ----------

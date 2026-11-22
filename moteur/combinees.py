@@ -1,6 +1,5 @@
-"""Formes combinées (B12) : le dessin à plusieurs Noyaux. ESSAI (22 novembre 2026) : aucune construction du site n'appelle
-ce module ; il ne change le dessin d'aucun glyphe existant. Il se lance seul :
-    python moteur/combinees.py <dossier de sortie>        → page d'essai (index.html, style.css) et pages d'image
+"""Formes combinées (B12) : le dessin à plusieurs Noyaux et la construction des formes de B12. Appelé en fin de chaîne par
+corrections.appliquer pour les six sorts de B12 ; il ne change le dessin d'aucun autre glyphe.
 
 Une forme combinée : plusieurs Noyaux hybrides (un par combinaison), lancés en même temps. École, hémisphère et pôle sont
 communs. Les cercles gardent l'ordre habituel (1 École … 12 Cosmétique) ; chacun est soit commun (autour du centre du
@@ -10,7 +9,7 @@ l'extérieur. Lecture : d'abord les Noyaux (simultanés), puis les cercles commu
 import os, sys, json, math, re, html
 D = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, D)
-import convert as C, spells as SP, gen_glyphs as GG, combos as KB, corrections as K, fautes as FT, formes_mots as FM
+import convert as C, spells as SP, gen_glyphs as GG, combos as KB, corrections as K, fautes as FT, formes_mots as FM, nombres as NB
 import phase4b as P
 
 B12 = os.path.join(D, "..", "donnees", "phase4b", "B12_formes_combinees.json")
@@ -20,7 +19,8 @@ RANG = {"ECOLE": 1, "CIBLE": 2, "FORME": 3, "AMPLEUR": 4, "DUREE": 5, "LOCALISAT
 # ---------- choix de dessin de l'essai (à juger sur l'essai) ----------
 R_NOYAU = 50        # rayon du Noyau hybride sans encart d'école : ses quatre sous-cercles ont la taille de ceux d'aujourd'hui (66 − 16)
 MARGE = 4           # écart entre deux Noyaux voisins (cercles propres et satellites compris) : ils se touchent presque
-ANGLES = {1: [90], 2: [180, 0], 3: [90, 210, 330], 4: [135, 225, 315, 45]}     # 2 : ouest puis est ; 4 : en carré, sur les diagonales
+ANGLES = {1: [90], 2: [180, 0], 3: [90, 330, 210], 4: [135, 45, 315, 225]}     # 2 : ouest puis est ; 4 : en carré, sur les diagonales,
+                                                                                # le premier au nord-ouest, puis dans le sens des aiguilles d'une montre
 
 FAITS = []          # ce que l'essai a dû interpréter : (sort, forme, cercle, ce qui a été fait)
 
@@ -39,7 +39,7 @@ def _sat(txt, par):
     return P._sat_b7(txt)
 
 
-def cercle(c, niveau, ref, ou):
+def cercle(c, niveau, ref, ou, combinee=True):
     """un cercle de B12 → (critère, valeur, mots, lecture, satellites), lecture écrite comme le moteur"""
     crit, v, par = c["cercle"], c["valeur"], c["parenthese"]
     ws = [C.word(w) for w in c["mots"]]
@@ -80,7 +80,7 @@ def cercle(c, niveau, ref, ou):
                 nf = len(SP.val(v, "up")[0])
                 tete += f" pour s'écrire en {nf} formes"
                 FAITS.append((*ou, crit, f"« {m.group(0)} » complété par la formule du moteur : « pour s'écrire en {nf} formes »"))
-        elif crit == "IMPACT" and not ws:      # forme combinée : pas de verbe, l'énergie est dite par le Noyau
+        elif crit == "IMPACT" and not ws and combinee:      # magie hybride : pas de verbe, l'énergie est dite par le Noyau
             tete, par_ = ("plein" if v == "plein" else f"intensité {v}"), (f" ({par})" if par else "")
         elif crit == "LOCALISATION":
             tete, par_ = (f"{v} m" if ws == ["METRES"] else f"{v} km" if ws == ["KILOMETRES"] else K._tete(crit, v, ws)), (f" ({par})" if par else "")
@@ -141,7 +141,7 @@ def forme(s, f, niveau, ref):
     g_com = des(communs)
     g_noy = [(comb, SP.hyb(*KB.COMBOS[comb]), des(rs)) for comb, rs in noyaux]
     part = ([c for c in split[0] if c in undet], [c for c in split[1] if c in undet])
-    lab_ecole = C.word(C.norm(ecole)); C.word("ECOLE")
+    lab_ecole = C.word(C.norm(ecole))
     dec = dessin(lab_ecole, g_com, g_noy, True, f"{s['sort']} — {f['nom']}")
     epu = dessin(lab_ecole, g_com, g_noy, False, f"{s['sort']} — {f['nom']}")
     svg = (SP.compose(dec, split, always=True), SP.compose(epu, part, always=False))
@@ -154,7 +154,7 @@ def forme(s, f, niveau, ref):
         rows += [(str(RANG[r[0]]), SP.NAMES[r[0]][1], f"Noyau {comb}", r[3]) for r in rs]
     rows.append(("1", "École", "commun (relie les Noyaux)", ecole))
     rows += [(str(RANG[r[0]]), SP.NAMES[r[0]][1], "commun", r[3]) for r in communs]
-    return dict(sort=s["sort"], cle=s["cle"], jeu=s["jeu"], label=f["nom"], verb=verb, svg=svg, bande=svg_b, rows=rows, split=split,
+    return dict(sort=s["sort"], cle=s["cle"], jeu=s["jeu"], label=f["nom"], verb=verb, svg=svg, bande=svg_b, rows=rows, split=split, part=part,
                 niveau=niveau, communs=communs, noyaux=noyaux)
 
 
@@ -332,7 +332,7 @@ def _cercles(rings, geo, declared, disques):
         parts.append(f'<circle r="{GG.f(rout)}" class="paper-f"/>')
         parts.append(GG.value(rin, ring["spec"]))
         words = ring["label"].replace("·", " ").split()
-        text = " ".join(words if declared else words[1:])
+        text = " ".join(words if declared or ring.get("seul") else words[1:])
         if rout > rin: parts.append(f'<circle r="{GG.f(rin)}" class="ink-s"/><circle r="{GG.f(rout)}" class="ink-s"/>')
         else: parts.append(f'<circle r="{GG.f(rin)}" class="ink-s"/>')
         if text:
@@ -407,12 +407,12 @@ def dessin(lab_ecole, g_com, g_noy, declared, nom=""):
     Dr = max(max(l[0][2] for _, l in piles) / (math.sin(math.pi / n) if n > 1 else 1), 1)
     # annotations de l'École : au milieu des intervalles entre les Noyaux
     A_ = ANGLES[n]
-    gaps = sorted((A_[k] + ((A_[(k + 1) % n] - A_[k]) % 360) / 2) % 360 for k in range(n)) if n > 1 else [270]
+    gaps = sorted((A_[k] + (((A_[(k + 1) % n] - A_[k] + 180) % 360) - 180) / 2) % 360 for k in range(n)) if n > 1 else [270]
     def tient(Dr, pl):
-        """l'annotation déclarée de l'École (la plus longue : même rayon pour les deux versions) tient entière et visible
+        """l'annotation de l'École (le nom de l'école, le même dans les deux versions) tient entière et visible
         dans chaque intervalle, à sa taille habituelle"""
         dq = [d for p in pl for d in p[4]]
-        td_ = _largeur(Dr, f"ECOLE {lab_ecole}")
+        td_ = _largeur(Dr, lab_ecole)
         return not any(_cache(g - td_ / 2 + td_ * k / 20, r, dq, 1) for g in gaps for k in range(21) for r in (Dr, Dr + GG.BAND))
     # le plus petit rayon où (a) deux Noyaux voisins ne se touchent pas et (b) l'annotation de l'École tient
     while touche(placer(Dr)): Dr += 0.5
@@ -422,9 +422,9 @@ def dessin(lab_ecole, g_com, g_noy, declared, nom=""):
         DESSIN.append((nom, "ECOLE", f"Noyaux écartés pour l'annotation de l'École : rayon {D_contact:.1f} → {Dr:.1f}"))
     pl = placer(Dr)
     disques = [d for p in pl for d in p[4]]
-    ecole = dict(label=f"ECOLE {lab_ecole}", spec=[], sats=[], centres=gaps)
+    ecole = dict(label=lab_ecole, spec=[], sats=[], centres=gaps, seul=True)     # le nom de l'école, et rien d'autre
     geo_c = [(Dr, Dr + GG.BAND)]
-    t_ec = f"ECOLE {lab_ecole}" if declared else lab_ecole
+    t_ec = lab_ecole
     td = _largeur(Dr, t_ec)
     for g in gaps:
         if any(_cache(g + s * td / 2, r, disques, 1) for s in (-1, 1) for r in (Dr, Dr + GG.BAND)):
@@ -450,7 +450,21 @@ ECART_MED = 12      # écart minimal entre deux médaillons voisins
 BANDE_FAITS = []    # (forme, ce qui a été fait ou se lit mal)
 
 
+_CID = [0]          # compteur propre des découpes des bandes combinées : celui du moteur (band_glyph._cid) ne bouge pas,
+                    # sans quoi toutes les bandes construites ensuite changeraient de numéro
+
+
 def bande(nom, lab_ecole, g_noy, communs, split, part, pole, declared):
+    import band_glyph as BG
+    garde = BG._cid[0]; BG._cid[0] = _CID[0]
+    try:
+        svg = _bande(nom, lab_ecole, g_noy, communs, split, part, pole, declared)
+    finally:
+        _CID[0] = BG._cid[0]; BG._cid[0] = garde
+    return re.sub(r"bandclip(\d+)", lambda m: "bandclipc" + m.group(1), svg)     # préfixe propre : aucun identifiant commun avec une autre bande
+
+
+def _bande(nom, lab_ecole, g_noy, communs, split, part, pole, declared):
     """Bande d'une forme combinée : rangée du haut, les Noyaux en médaillons (glyphe rond du moteur : matière, cercles
     propres, satellites à leur place habituelle, le sud vers le bas, c'est-à-dire vers l'extérieur de la bande),
     côte à côte dans l'ordre de B12, centrés à intervalles égaux ; dessous, l'encart de l'École (comme l'encart d'école
@@ -473,6 +487,7 @@ def bande(nom, lab_ecole, g_noy, communs, split, part, pole, declared):
     yc = PAD_RANG + max(-m[3] for m in meds)
     Hr = yc + max(m[4] for m in meds) + PAD_RANG
     parts = []
+    parts.append(BG.hline(yc, 0, Lb))              # le cercle d'École déroulé : il relie les médaillons par leurs centres
     for k, (inner, x0, x1, y0, y1) in enumerate(meds):
         cx = Lb * (k + 0.5) / n
         parts.append(f'<g transform="translate({GG.f(cx)},{GG.f(yc)})">{inner}</g>')
@@ -480,7 +495,7 @@ def bande(nom, lab_ecole, g_noy, communs, split, part, pole, declared):
         lib = min(Lb / n - (m[2] - m[1]) for m in meds)
         BANDE_FAITS.append((nom, f"rangée des médaillons : hauteur {Hr:.0f}, écart le plus petit entre deux médaillons {lib:.0f}"))
     # l'encart de l'École, sous la rangée
-    t_ec = f"ECOLE {lab_ecole}" if declared else lab_ecole
+    t_ec = lab_ecole                              # le nom de l'école seul
     parts.append(BG.hline(Hr, 0, Lb))
     parts.append(BG.annot(t_ec, Hr, Hr + GG.BAND, [], Lb))
     parts.append(BG.hline(Hr + GG.BAND, 0, Lb))
@@ -500,103 +515,145 @@ def bande(nom, lab_ecole, g_noy, communs, split, part, pole, declared):
     return BG.compose(main, left, right)
 
 
-# ---------- l'essai ----------
-ESSAI = [("entropic-wheel", "Forme combinée Feu et Glace"), ("redistribute-potential", "Forme combinée Glace et Feu"),
-         ("elemental-assessor", "Forme combinée Acide sulfurique, Glace, Éclair et Feu"),
-         ("summon-draconic-legion", "Cône Glace, ligne Acide sulfurique"),
-         ("torrent-of-elemental-rage", "Forme combinée Feu, Glace, Tempête et Acier"),
-         ("elemental-confluence", "Forme combinée Foudre et Terre")]
+# ---------- construction : B12 entre dans la bibliothèque (appelé en fin de chaîne par corrections.appliquer) ----------
+B12_FAITS = []      # (cle, forme, ce qui a été fait)
+_B12 = [None]
 
 
-def _main_forms(cle):
-    from fiches import FICHES
-    return K.appliquer(cle, C.build_forms(cle, FICHES[cle]))
+def _donnees():
+    if _B12[0] is None:
+        _B12[0] = {s["cle"]: s for s in json.load(open(B12, encoding="utf-8"))["sorts"]}
+    return _B12[0]
 
 
-def table(rows, ou=True):
-    th = "<th>Rang</th><th>Critère</th>" + ("<th>Où</th>" if ou else "") + "<th>Lecture</th>"
-    tr = "".join(f"<tr><td class='num'>{a}</td><td>{b}</td>" + (f"<td>{html.escape(c)}</td>" if ou else "") + f"<td>{html.escape(d)}</td></tr>"
-                 for a, b, c, d in rows)
-    return f"<table><thead><tr>{th}</tr></thead><tbody>{tr}</tbody></table>"
+def sorts_b12():
+    return set(_donnees())
 
 
-def pol_html(split):
-    lum = ", ".join(SP.NAMES[c][1].lower() if c in SP.NAMES else "noyaux" for c in split[0]) or "aucun cercle"
-    ten = ", ".join(SP.NAMES[c][1].lower() if c in SP.NAMES else "noyaux" for c in split[1]) or "aucun cercle"
-    return f'<p class="pol"><span>Lumineux :</span> {lum}<br><span>Ténébreux :</span> {ten}</p>'
+def _redessiner(g, rings):
+    """une forme ordinaire (Arcane ou hybride à un Noyau) redessinée par le moteur, comme une forme créée par la phase 4b"""
+    rings, _ = K._placer(rings)
+    f = K._redessine(g, rings)
+    f = NB.arrondir(f, False)
+    return FT.corriger_forme(f)
 
 
-def _styles():
-    """CSS, HEAD et FOOT du site, lus dans site.py sans l'exécuter (l'importer lancerait la construction du site)"""
-    import ast, types
-    t = ast.parse(open(os.path.join(D, "site.py"), encoding="utf-8").read())
-    ns = {}
-    for n in t.body:
-        if isinstance(n, ast.Assign) and len(n.targets) == 1 and getattr(n.targets[0], "id", None) in ("CSS", "HEAD", "FOOT"):
-            ns[n.targets[0].id] = ast.literal_eval(n.value)
-    return types.SimpleNamespace(**ns)
+def _cercles_b12(cs, niveau, ref, ou, combinee):
+    return [cercle(c, niveau, ref, ou, combinee) for c in cs]
 
 
-def essai(out):
-    ST = _styles()
-    os.makedirs(out, exist_ok=True)
-    data = {s["cle"]: s for s in json.load(open(B12, encoding="utf-8"))["sorts"]}
-    res = []
-    for cle, nom in ESSAI:
-        s = data[cle]
-        mf = _main_forms(cle)
-        arc = next(x for x in mf if x["fam"] == "A")
-        f = next(x for x in s["formes_combinees"] if x["nom"] == nom)
-        res.append(forme(s, f, arc["level"], arc["rings"]))
-    fb = next(x for x in _main_forms("fireball") if x["fam"] == "H")
-    open(os.path.join(out, "style.css"), "w", encoding="utf-8").write(ST.CSS + """
-.essai figure.grand svg { max-height:none; }
-.essai .note { font-size:.92rem; color:var(--muted); max-width:90ch; }
-""")
-    arts = []
-    for i, r in enumerate(res, 1):
-        arts.append(f"""<article class="forme" id="g{i}"><header class="fh"><div class="eyebrow">{i}. {html.escape(r['sort'])} · {r['jeu']} · niveau {r['niveau']}</div>
-<h2>{html.escape(r['label'])}</h2><p class="lede">{html.escape(r['verb'])}</p></header>
-<section class="sec"><h3>Glyphe circulaire</h3><div class="pair one"><figure class="grand">{r['svg'][0]}<figcaption>Déclarée · tous les cercles classés</figcaption></figure>
-<figure class="grand">{r['svg'][1]}<figcaption>Non déclarée · seuls les cercles à polarité illisible</figcaption></figure></div>{pol_html(r['split'])}</section>
-<section class="sec"><h3>Glyphe en bande</h3><div class="pair one"><figure>{r['bande'][0]}<figcaption>Déclarée · tous les cercles classés</figcaption></figure>
-<figure>{r['bande'][1]}<figcaption>Non déclarée · seuls les cercles à polarité illisible</figcaption></figure></div></section>
-<section class="sec"><h3>Lecture</h3>{table(r['rows'])}</section></article>""")
-    fbrows = [(a, b, "", c) for a, b, c in [("1", "Noyau", fb["verb"])] + fb["rows"]]
-    arts.append(f"""<article class="forme" id="gc"><header class="fh"><div class="eyebrow">Pour comparaison · telle qu'elle est sur main</div>
-<h2>{html.escape(fb['fr'])} (5e) — {html.escape(fb['label'])}</h2><p class="lede">{html.escape(fb['verb'])}</p></header>
-<section class="sec"><h3>Glyphe circulaire</h3><div class="pair one"><figure class="grand">{fb['svg'][0]}<figcaption>Déclarée · tous les cercles classés</figcaption></figure>
-<figure class="grand">{fb['svg'][1]}<figcaption>Non déclarée · seuls les cercles à polarité illisible</figcaption></figure></div>{pol_html(fb['split'])}</section>
-<section class="sec"><h3>Glyphe en bande</h3><div class="pair one"><figure>{C.band_svg(fb, True)}<figcaption>Déclarée · tous les cercles classés</figcaption></figure>
-<figure>{C.band_svg(fb, False)}<figcaption>Non déclarée · seuls les cercles à polarité illisible</figcaption></figure></div></section>
-<section class="sec"><h3>Lecture</h3>{table(fbrows, ou=False).replace("<td></td>", "")}</section></article>""")
-    sommaire = "".join(f'<a class="chip" href="#g{i}">{i}. {html.escape(r["sort"])}</a>' for i, r in enumerate(res, 1)) + '<a class="chip" href="#gc">Boule de feu (main)</a>'
-    page = ST.HEAD.format(title="Essai · formes combinées", root="") + f"""
-<header><div class="eyebrow">Essai · chantier « combinees » · rien n'entre dans la bibliothèque</div><h1>Formes combinées : essai de dessin</h1>
-<p class="lede">Troisième essai. Plusieurs Noyaux hybrides, un par combinaison, lancés en même temps. Le cercle d'École, premier cercle commun, passe
-par le centre des Noyaux et les relie ; tous les autres cercles communs, de la Cible à la Cosmétique, sont à l'extérieur ; chaque Noyau
-porte ses propres cercles autour de lui, droit ; un satellite qui se poserait au sud se pose vers l'extérieur du glyphe. Les cercles communs suivent le cercle d'École
-à l'écart habituel et passent sous les Noyaux ; leurs annotations se placent dans les portions visibles. Lecture : d'abord les Noyaux, puis les cercles communs, du centre vers l'extérieur.
-Essai de la bande (sous chaque glyphe rond) : les Noyaux en médaillons côte à côte, dans l'ordre de B12, l'encart de l'École dessous, puis les cercles communs déroulés.</p>
-<div class="chips">{sommaire}</div></header>
-<div class="essai">""" + "".join(arts) + "</div>" + ST.FOOT
-    open(os.path.join(out, "index.html"), "w", encoding="utf-8").write(page)
-    # une page par glyphe, pour les images
-    for i, r in enumerate(res, 1):
-        open(os.path.join(out, f"_image_{i}.html"), "w", encoding="utf-8").write(
-            '<!doctype html><html data-theme="light"><head><meta charset="utf-8"><link rel="stylesheet" href="style.css"><style>html,body{margin:0;background:var(--paper)}'
-            'svg{width:100vw;height:100vh;display:block}</style></head><body>' + r["svg"][0] + "</body></html>")
-        open(os.path.join(out, f"_image_{i}_bande.html"), "w", encoding="utf-8").write(
-            '<!doctype html><html data-theme="light"><head><meta charset="utf-8"><link rel="stylesheet" href="style.css"><style>html,body{margin:0;background:var(--paper)}'
-            'svg{width:100vw;height:100vh;display:block}</style></head><body>' + r["bande"][0] + "</body></html>")
-    return res, fb
+def _impact_symboles(r, els, k):
+    """un cercle d'Impact gardé dont les symboles d'éléments sont remplacés : sa phrase garde son début et sa parenthèse,
+    seule la lecture des satellites est réécrite"""
+    autres = [s for s in (r[4] if len(r) > 4 and r[4] else []) if not (C.est_symbole(s[1]) and s[1][1] in ("feu", "air", "terre", "eau"))]
+    sats = C._resats(autres + [("SYM", ("sym", e), "") for e in els])
+    with K._Accentue():
+        rd = r[3].split(" ; satellite")[0] + K._lecture_sats(sats, k, list(r[2]))
+    return (r[0], r[1], r[2], FT.corriger(rd, False), sats)
 
 
-if __name__ == "__main__":
-    res, fb = essai(sys.argv[1])
-    json.dump(dict(formes=[dict(r, svg=list(r["svg"]), bande=list(r["bande"])) for r in res], faits=FAITS, dessin=DESSIN, bande_faits=BANDE_FAITS, boule_de_feu=dict(svg=list(fb["svg"]))),
-              open(os.path.join(sys.argv[1], "_essai.json"), "w", encoding="utf-8"), ensure_ascii=False, default=repr)
-    for r in res: print(r["sort"], "|", r["label"], "|", len(r["svg"][0]), len(r["svg"][1]))
-    for x in FAITS: print("  fait :", x)
-    for x in DESSIN: print("  dessin :", x)
-    for x in BANDE_FAITS: print("  bande :", x)
+def _sans_satellite_forme(r):
+    """une Cosmétique dont le satellite de Forme est retiré : la phrase perd « ; satellite Forme : … »"""
+    sats = [s for s in (r[4] if len(r) > 4 and r[4] else []) if not (len(s) > 3 and s[3] and s[3].get("crit") == "FORME")]
+    rd = re.sub(r" ; satellite Forme : [^;]*$", "", r[3])
+    return (r[0], r[1], r[2], rd, C._resats(sats)) if sats else (r[0], r[1], r[2], rd)
+
+
+def _arcane_modifiee(cle, arc, s, niveau, ref):
+    """les corrections d'Arcane de B12 (champ arcane.consigne), sort par sort ; le reste de la forme ne change pas"""
+    rings = list(arc["rings"])
+    comb = s["formes_combinees"][0]
+    imps = [i for i, r in enumerate(rings) if r[0] == "IMPACT"]
+    k = (cle, "arcane")
+    if cle == "redistribute-potential":
+        # après chacun des deux Impacts 10, son état ; mêmes parenthèses que la forme combinée
+        par = {n["combinaison"]: {tuple(c["mots"]): c for c in n["cercles"]} for n in comb["noyaux"]}
+        etats = [(dict(par["Glace"][("MALADRESSE",)], satellites=["sym:air", "sym:terre", "sym:eau", "sym:eau"])),
+                 (dict(par["Feu"][("FAIBLESSE",)], satellites=["sym:feu"]))]
+        dix = [i for i in imps if rings[i][1] == 10]
+        if len(dix) != 2: raise ValueError(f"{cle} : {len(dix)} Impacts 10")
+        for i, c in reversed(list(zip(dix, etats))):
+            rings.insert(i + 1, cercle(c, niveau, ref, (s["sort"], arc["label"]), False))
+        B12_FAITS.append((cle, arc["label"], "Impact 1 « maladresse » (symboles de la Glace) après l'Impact du froid, Impact 1 « faiblesse » (symbole du feu) après l'Impact du feu"))
+    elif cle == "elemental-assessor":
+        el = [i for i in imps if [x[1][1] for x in rings[i][4] if C.est_symbole(x[1])] == ["feu", "feu", "air", "air"]]
+        if len(el) != 1: raise ValueError(f"{cle} : Impact d'électricité introuvable")
+        rings[el[0]] = _impact_symboles(rings[el[0]], ["feu", "feu", "feu", "air"], k)
+        forme = next(c for c in comb["communs"] if c["cercle"] == "FORME")
+        at = next(i for i, r in enumerate(rings) if RANG[r[0]] > RANG["FORME"])
+        rings.insert(at, cercle(forme, niveau, ref, (s["sort"], arc["label"]), False))
+        co = [i for i, r in enumerate(rings) if r[0] == "COSMETIQUE"]
+        rings[co[0]] = _sans_satellite_forme(rings[co[0]])
+        B12_FAITS.append((cle, arc["label"], "symboles de l'Impact d'électricité : feu feu feu air ; cercle Forme hélice ajouté (celui de la forme combinée) ; Cosmétique sans son satellite Forme"))
+    elif cle == "torrent-of-elemental-rage":
+        so = [i for i in imps if [x[1][1] for x in rings[i][4] if C.est_symbole(x[1])] == ["feu", "feu", "air", "eau"]]
+        if len(so) != 1: raise ValueError(f"{cle} : Impact du son introuvable")
+        rings[so[0]] = _impact_symboles(rings[so[0]], ["air", "air", "eau", "eau"], k)
+        formes = [c for c in comb["communs"] if c["cercle"] == "FORME"]
+        cond = next(c for c in comb["communs"] if c["cercle"] == "CONDITION")
+        out = []
+        for r in rings:
+            if r[0] == "FORME": out += [cercle(c, niveau, ref, (s["sort"], arc["label"]), False) for c in formes]
+            elif r[0] == "AMPLEUR": continue
+            elif r[0] == "CONDITION": out.append(cercle(cond, niveau, ref, (s["sort"], arc["label"]), False))
+            elif r[0] == "COSMETIQUE": out.append(_sans_satellite_forme(r))
+            else: out.append(r)
+        rings = out
+        B12_FAITS.append((cle, arc["label"], "symboles de l'Impact du son : air air eau eau ; Forme ligne + Ampleur 9 m → Forme cylindre (satellite Ampleur 9) puis hélice « ajout » ; Condition « parole · concentration » ; Cosmétique sans son satellite Forme"))
+    else:
+        raise ValueError(f"consigne d'Arcane non prévue : {cle}")
+    return _redessiner(arc, rings)
+
+
+def _note(noyaux):
+    return (f"Magie hybride, forme combinée : {len(noyaux)} Noyaux lancés en même temps, combinaisons "
+            + ", ".join(n["combinaison"] for n in noyaux[:-1]) + f" et {noyaux[-1]['combinaison']}.")
+
+
+def appliquer(cle, formes):
+    """les formes d'un sort de B12 : formes combinées, forme hybride ordinaire, formes d'Arcane remplacées ou corrigées"""
+    s = _donnees().get(cle)
+    if s is None: return formes
+    arcs = [f for f in formes if f["fam"] == "A"]
+    if not arcs or len(arcs) != len(formes): raise ValueError(f"{cle} : formes de main inattendues ({[f['label'] for f in formes]})")
+    arc = arcs[0]; niveau = arc["level"]; ref = arc["rings"]
+    noms = {f["nom"] for f in s["arcane"].get("formes", [])}
+    out = []
+    # 1. les formes combinées
+    for fc in s["formes_combinees"]:
+        r = forme(s, fc, niveau, ref)
+        label = fc["nom"] if fc["nom"] not in noms else f"Forme combinée — {fc['nom']}"
+        if label != fc["nom"]: B12_FAITS.append((cle, label, f"renommée : « {fc['nom']} » est aussi le nom d'une forme d'Arcane du sort"))
+        rings = [x for _, rs in r["noyaux"] for x in rs] + r["communs"]          # tous les cercles, dans l'ordre de lecture
+        rows = [(a, b if c in ("commun",) else "École" if b == "École" else f"{b} — {c}", d) for a, b, c, d in r["rows"]]
+        comb = dict(ecole=s["noyau_commun"]["ecole"], hemisphere=s["noyau_commun"]["hemisphere"], pole=s["noyau_commun"]["pole"],
+                    noyaux=[dict(combinaison=c, cercles=rs) for c, rs in r["noyaux"]], communs=r["communs"], bande=r["bande"])
+        out.append(dict(arc, fam="H", label=label, verb=r["verb"], core=("combinee", tuple(c for c, _ in r["noyaux"])), rings=rings,
+                        svg=r["svg"], rows=rows, split=r["split"], bsplit=r["part"], notes=[_note(fc["noyaux"])], poles_impacts=None,
+                        regle_4b=False, element_par_defaut=False, cree_4b=(0, "forme combinée (B12)"), combinee=comb))
+    # 2. la forme hybride ordinaire (légion : cône et ligne de feu)
+    h = s.get("forme_hybride_simple")
+    if h:
+        nc = h["noyau"]
+        rings = _cercles_b12(h["cercles"], niveau, ref, (s["sort"], h["nom"]), True)
+        f_, a_, t_, e_ = KB.COMBOS[nc["combinaison"]]
+        n_imp = sum(1 for x in rings if x[0] == "IMPACT")
+        g = dict(arc, fam="H", label=h["nom"], core=SP.hyb(f=f_, a=a_, t=t_, e=e_, label=C.norm(nc["ecole"])), r0=66, split=None,
+                 verb=f"{nc['ecole']} · {nc['hemisphere']} · {nc['combinaison']} ({KB.code(nc['combinaison'])})",
+                 notes=[f"Magie hybride, combinaison {nc['combinaison']} : l'élément en jeu."], poles_impacts=tuple([nc["pole"]] * n_imp),
+                 regle_4b=True, element_par_defaut=False, cree_4b=(0, "forme hybride (B12)"))
+        out.append(_redessiner(g, rings))
+    # 3. les formes d'Arcane
+    a = s["arcane"]
+    if a["action"] == "inchangée":
+        out += arcs
+    elif a["action"] == "remplacer":
+        for fa in a["formes"]:
+            rings = _cercles_b12(fa["cercles"], niveau, ref, (s["sort"], fa["nom"]), False)
+            out.append(_redessiner(dict(arc, label=fa["nom"], cree_4b=(0, "forme d'Arcane (B12)")), rings))
+        B12_FAITS.append((cle, "Arcane", f"{len(arcs)} forme(s) retirée(s) ({', '.join(f['label'] for f in arcs)}), {len(a['formes'])} formes par paire"))
+    elif a["action"] == "modifier":
+        out.append(_arcane_modifiee(cle, arc, s, niveau, ref))
+    else:
+        raise ValueError(f"{cle} : action d'Arcane « {a['action']} »")
+    return P.notes_famille(cle, out)

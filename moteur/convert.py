@@ -1313,6 +1313,10 @@ def energies_et_cibles(rings, fam=None, comb=None):
     return out
 
 def glyph_key(f):
+    if f.get("combinee"):                     # forme combinée (B12) : ses Noyaux, leurs cercles, les cercles communs, la répartition
+        cb = f["combinee"]
+        cle = lambda rs: [(r[0], r[1], tuple(r[2]), repr(r[4:5])) for r in rs]
+        return ("combinee", cb["ecole"], repr([(n["combinaison"], cle(n["cercles"])) for n in cb["noyaux"]]), repr(cle(cb["communs"])), repr(f["split"]))
     return (repr(f["core"]), repr([(r[0], r[1], tuple(r[2]), repr(r[4:5])) for r in f["rings"]]), repr(f["split"]))         + ((repr(f["poles_impacts"]),) if f.get("poles_impacts") else ())
 
 def build_forms(idx, fiche):
@@ -1448,6 +1452,8 @@ def words_of(sp, declared=True):
     def add(w):
         if w and w not in out: out.append(w)
     c = sp["core"]
+    if sp.get("combinee"):                    # forme combinée : le cercle d'École (son nom), puis les cercles des Noyaux et les communs
+        add(norm(sp["combinee"]["ecole"]))
     if c[0] == "hyb" and c[2]: add(c[2])
     if c[0] == "chrono": add(c[4])
     for crit, v, words, *rest in sp["rings"]:
@@ -1536,6 +1542,7 @@ def band_rings(sp):
         out.append(dict(label=" ".join([crit] + list(words) + (["FOIS"] if mult else [])), spec=spec, sats=sats))
     return out
 def band_svg(sp, declared):
+    if sp.get("combinee"): return sp["combinee"]["bande"][0 if declared else 1]     # forme combinée : bande dessinée par combinees.py
     split = sp["split"] if declared else sp["bsplit"]
     main = BG.band(sp["core"], band_rings(sp), declared)
     left = BG.astral_band("ten", split[1]) if split and (split[1] or declared) else None

@@ -1146,6 +1146,13 @@ _B11 = os.path.join(P4B, "B11_puis_effets_secondaires.csv")
 B11 = _dd(list)
 for _l in (csv.DictReader(open(_B11, encoding="utf-8-sig"), delimiter=";") if os.path.exists(_B11) else []):
     B11[(_l["cle"], _l["forme"])].append(_l)
+# Sursaut d'adrénaline et Éclair de lucidité : l'Impact chiffré se lit comme un bonus, la Cible dit ce qu'il touche
+# (« aptitude », comme Arme magique ; Éclair de lucidité garde « psyché ») — décision du 22 novembre 2026, après B11
+for _c, _m in (("burst-of-adrenaline", "APTITUDE"), ("burst-of-insight", "PSYCHE APTITUDE")):
+    if B11.get((_c, "Forme arcane")):
+        B11[(_c, "Forme arcane")].append(dict(lot="effet secondaire", cle=_c, forme="Forme arcane", cercle="CIBLE", numero="0",
+                                              action="modifier", valeur="garder", mots=_m, satellites_a_retirer="",
+                                              satellites_a_ajouter="", symboles="", pole_hybride="inchangé", note=""))
 JUMELLES_B11 = {("sunbeam", 6): "Forme arcane — Forme lumineuse — version 3.5", ("sunbeam", 7): "Forme arcane — Forme ténébreuse — version 3.5",
                 ("protection-from-poison", 0): "Forme arcane"}      # même Impact ; l'hybride ne porte pas les symboles (REDIT)
 B11_FAITS, B11_REFUS = [], []

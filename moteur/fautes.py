@@ -16,7 +16,12 @@ TYPES = [("symbole du feu", rf"{AV}de le feu{AP}", "du feu"),
          ("pièces d'or", rf"{AV}de or{AP}", "d'or")]
 
 # d) une phrase de Bénédiction de chance et de résolution (avant les paires : « la courage » y devient « la peur »)
-PHRASES = [("mieux armée contre la courage", "mieux armée contre la peur")]
+PHRASES = [("mieux armée contre la courage", "mieux armée contre la peur"),
+           # Restauration supérieure (décision du 22 novembre 2026)
+           ("un vie · durable perdu rendu", "la vie durablement perdue, rendue"),
+           # Main agrippante (5e, 2024) : le broyage est dit par le cercle ajouté (B11)
+           ("(l'adversaire agrippé, puis broyé (2d6 + 3))", "(l'adversaire agrippé)"),
+           ("(l'adversaire agrippé, puis broyé (4d6 + 3))", "(l'adversaire agrippé)")]
 
 # c) articles du mauvais genre laissés devant un mot qu'une règle a remplacé
 PAIRES = [("une abri", "un abri"), ("une ancrage", "un ancrage"), ("un ans", "un an"), ("un jours", "un jour"),
@@ -32,7 +37,11 @@ PAIRES = [("une abri", "un abri"), ("une ancrage", "un ancrage"), ("un ans", "un
           ("au précision", "à la précision"), ("une rempart", "un rempart"), ("le riposte", "la riposte"),
           ("une signal", "un signal"), ("ta sort", "ton sort"), ("la temps", "le temps"), ("le terre", "la terre"),
           ("le tête", "la tête"), ("une trou", "un trou"), ("une écrit", "un écrit"), ("sa essence", "son essence"),
-          ("sous tous les direction", "sous toutes les directions")]
+          ("sous tous les direction", "sous toutes les directions"),
+          # fautes trouvées en plus, validées le 22 novembre 2026
+          ("un arme", "une arme"), ("un animation", "une animation"), ("le carte", "la carte"),
+          ("un discrétion", "une discrétion"), ("un injonction", "une injonction"), ("un prison", "une prison"),
+          ("le hauteur", "la hauteur"), ("sert de arme", "sert d'arme"), ("de eau", "d'eau")]
 
 # b) élision : « la »/« le » devant une voyelle (aucun h muet relevé : haut, halo, hantise sont aspirés) ;
 #    « l' » devant une consonne, selon le genre du mot
@@ -65,6 +74,8 @@ def corriger(t, compter=True):
     t2 = re.sub(AV + r"([Ll])'(" + "|".join(L_CONS) + ")" + AP,
                 lambda m: _maj(L_CONS[m.group(2)], m.group(1)) + " " + m.group(2), t)
     if t2 != t: fam["« l' » devant une consonne"] = 1; t = t2
+    t2 = re.sub(AV + r"([Dd])'(?=[bcdfgjklmnpqrstvwxzç])", lambda m: m.group(1) + "e ", t)       # « d'plan » → « de plan »
+    if t2 != t: fam["« d' » devant une consonne"] = 1; t = t2
     if compter and t != avant:
         for k in fam: COMPTE[k] = COMPTE.get(k, 0) + 1
     return t

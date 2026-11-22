@@ -1097,8 +1097,10 @@ for _l in (csv.DictReader(open(_B10, encoding="utf-8-sig"), delimiter=";") if os
 JUMELLES_B10 = {("greater-invisibility", 1): "Forme arcane", ("greater-invisibility", 3): "Forme arcane — version 3.5 (Invisibility, Greater)",
                 ("decrepit-disguise", 1): "Forme arcane", ("village-veil", 1): "Forme arcane", ("blurred-movement", 1): "Forme arcane",
                 ("selective-invisibility", 1): "Forme arcane",
-                ("sunstalker", 2): "Forme arcane — Forme lumineuse", ("sunstalker", 3): "Forme arcane — Forme ténébreuse"}
-# (Bulle d'invisibilité : les trois formes hybrides écrivent l'eau en satellite de Condition, non en symbole : douteuses, non appliquées)
+                ("sunstalker", 2): "Forme arcane — Forme lumineuse", ("sunstalker", 3): "Forme arcane — Forme ténébreuse",
+                ("invisibility-bubble", 3): "Forme arcane — Bulle d'invisibilité",          # l'eau : symbole sur l'Arcane, satellite
+                ("invisibility-bubble", 4): "Forme arcane — Bulle d'invisibilité géante",   # de Condition « eau » gardé tel quel sur
+                ("invisibility-bubble", 5): "Forme arcane — Bulles d'invisibilité"}         # l'hybride (décision du 22 novembre 2026)
 B10_FAITS, B10_REFUS = [], []
 
 

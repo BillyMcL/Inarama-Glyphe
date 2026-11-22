@@ -30,9 +30,9 @@ malgré;reveal-true-shape;Révélation de la forme véritable;PF1;Forme arcane;I
 malgré;greater-invisibility;Invisibilité supérieure;5e;Forme arcane;IMPACT;0;modifier;plein INVISIBILITE;garder;INVISIBILITE MALGRE ATTAQUE;;;inchangé;l'invisibilité tient même quand on attaque
 malgré;greater-invisibility;Invisibilité supérieure;3.5;Forme arcane — version 3.5 (Invisibility, Greater);IMPACT;0;modifier;plein INVISIBILITE;garder;INVISIBILITE MALGRE ATTAQUE;;;inchangé;l'invisibilité tient même quand on attaque
 malgré;wild-instinct;Instinct sauvage;PF1;Forme arcane;IMPACT;0;modifier;5 PERCEPTION;garder;PERCEPTION MALGRE SOMMEIL;;;inchangé;vigilant même endormi
-malgré;invisibility-bubble;Bulle d'invisibilité;PF1;Forme arcane — Bulle d'invisibilité;IMPACT;0;modifier;9 INVISIBILITE;garder;INVISIBILITE MALGRE EAU;;;inchangé;invisible même sous l'eau
-malgré;invisibility-bubble;Bulle d'invisibilité;PF1;Forme arcane — Bulle d'invisibilité géante;IMPACT;0;modifier;9 INVISIBILITE;garder;INVISIBILITE MALGRE EAU;;;inchangé;invisible même sous l'eau
-malgré;invisibility-bubble;Bulle d'invisibilité;PF1;Forme arcane — Bulles d'invisibilité;IMPACT;0;modifier;9 INVISIBILITE;garder;INVISIBILITE MALGRE EAU;;;inchangé;invisible même sous l'eau
+malgré;invisibility-bubble;Bulle d'invisibilité;PF1;Forme arcane — Bulle d'invisibilité;IMPACT;0;modifier;9 INVISIBILITE;garder;INVISIBILITE MALGRE;;;inchangé;invisible même sous l'eau
+malgré;invisibility-bubble;Bulle d'invisibilité;PF1;Forme arcane — Bulle d'invisibilité géante;IMPACT;0;modifier;9 INVISIBILITE;garder;INVISIBILITE MALGRE;;;inchangé;invisible même sous l'eau
+malgré;invisibility-bubble;Bulle d'invisibilité;PF1;Forme arcane — Bulles d'invisibilité;IMPACT;0;modifier;9 INVISIBILITE;garder;INVISIBILITE MALGRE;;;inchangé;invisible même sous l'eau
 malgré;house-of-imaginary-walls;Maison aux murs imaginaires;PF2;Forme arcane;IMPACT;0;modifier;7 ILLUSION;garder;ILLUSION MALGRE INTANGIBLE;;;inchangé;le mur arrête même les êtres sans corps
 sans;hideous-laughter;Fou rire;PF2;Forme arcane — version PF2;IMPACT;0;modifier;3 LENTEUR RIRE;garder;LENTEUR RIRE SANS RIPOSTE;;;inchangé;ne peut plus riposter
 sans;crushing-despair;Désespoir foudroyant;PF2;Forme arcane — version PF2;IMPACT;0;modifier;3 LENTEUR DESESPOIR;garder;LENTEUR DESESPOIR SANS RIPOSTE;;;inchangé;ne peut plus riposter

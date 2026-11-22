@@ -145,6 +145,8 @@ def forme(s, f, niveau, ref):
     dec = dessin(lab_ecole, g_com, g_noy, True, f"{s['sort']} — {f['nom']}")
     epu = dessin(lab_ecole, g_com, g_noy, False, f"{s['sort']} — {f['nom']}")
     svg = (SP.compose(dec, split, always=True), SP.compose(epu, part, always=False))
+    nom_f = f"{s['sort']} — {f['nom']}"
+    svg_b = (bande(nom_f, lab_ecole, g_noy, communs, split, part, pole, True), bande(nom_f, lab_ecole, g_noy, communs, split, part, pole, False))
     verb = f"{ecole} · {hemi} · " + " + ".join(f"{comb} ({KB.code(comb)})" for comb, _ in noyaux)
     # lecture : d'abord les Noyaux (simultanés ; chacun ses cercles dans l'ordre), puis les cercles communs, du centre vers l'extérieur
     rows = []
@@ -152,7 +154,7 @@ def forme(s, f, niveau, ref):
         rows += [(str(RANG[r[0]]), SP.NAMES[r[0]][1], f"Noyau {comb}", r[3]) for r in rs]
     rows.append(("1", "École", "commun (relie les Noyaux)", ecole))
     rows += [(str(RANG[r[0]]), SP.NAMES[r[0]][1], "commun", r[3]) for r in communs]
-    return dict(sort=s["sort"], cle=s["cle"], jeu=s["jeu"], label=f["nom"], verb=verb, svg=svg, rows=rows, split=split,
+    return dict(sort=s["sort"], cle=s["cle"], jeu=s["jeu"], label=f["nom"], verb=verb, svg=svg, bande=svg_b, rows=rows, split=split,
                 niveau=niveau, communs=communs, noyaux=noyaux)
 
 
@@ -442,6 +444,62 @@ def dessin(lab_ecole, g_com, g_noy, declared, nom=""):
     return f'<svg viewBox="{GG.f(-R)} {GG.f(-R)} {GG.f(2*R)} {GG.f(2*R)}" role="img" xmlns="http://www.w3.org/2000/svg">{"".join(parts)}</svg>'
 
 
+# ---------- le glyphe en bande (essai) ----------
+PAD_RANG = 10       # marge au-dessus et au-dessous des médaillons, dans la rangée du haut
+ECART_MED = 12      # écart minimal entre deux médaillons voisins
+BANDE_FAITS = []    # (forme, ce qui a été fait ou se lit mal)
+
+
+def bande(nom, lab_ecole, g_noy, communs, split, part, pole, declared):
+    """Bande d'une forme combinée : rangée du haut, les Noyaux en médaillons (glyphe rond du moteur : matière, cercles
+    propres, satellites à leur place habituelle, le sud vers le bas, c'est-à-dire vers l'extérieur de la bande),
+    côte à côte dans l'ordre de B12, centrés à intervalles égaux ; dessous, l'encart de l'École (comme l'encart d'école
+    sous la voie des éléments d'une bande hybride) ; puis les cercles communs déroulés par le moteur (band_glyph.band)."""
+    import band_glyph as BG
+    n = len(g_noy)
+    meds = []
+    for comb, core, rings in g_noy:
+        rings = GG.resolve_ns(rings, R_NOYAU)
+        GG.R0 = R_NOYAU
+        geo = GG.ring_geo(rings, R_NOYAU, None, _has_text(declared))
+        inner = re.sub(r'^<svg[^>]*>', '', GG._glyph(core, rings, r0=R_NOYAU, declared=declared))[:-6]
+        corps = geo[-1][1] if geo else R_NOYAU
+        dq = [(0.0, 0.0, corps)] + [_sat_disque((rin + rout) / 2, d, sp, x) for ring, (rin, rout) in zip(rings, geo) for d, sp, *x in ring.get("sats", [])]
+        meds.append((inner, min(x - r for x, y, r in dq), max(x + r for x, y, r in dq), min(y - r for x, y, r in dq), max(y + r for x, y, r in dq)))
+    # longueur : la longueur habituelle (960), allongée seulement si les médaillons n'y tiennent pas
+    pas = max(m[2] - m[1] for m in meds) + ECART_MED
+    Lb = max(BG.L, math.ceil(n * pas))
+    if declared and Lb > BG.L: BANDE_FAITS.append((nom, f"bande allongée de {BG.L} à {Lb} pour que les médaillons tiennent côte à côte"))
+    yc = PAD_RANG + max(-m[3] for m in meds)
+    Hr = yc + max(m[4] for m in meds) + PAD_RANG
+    parts = []
+    for k, (inner, x0, x1, y0, y1) in enumerate(meds):
+        cx = Lb * (k + 0.5) / n
+        parts.append(f'<g transform="translate({GG.f(cx)},{GG.f(yc)})">{inner}</g>')
+    if declared:
+        lib = min(Lb / n - (m[2] - m[1]) for m in meds)
+        BANDE_FAITS.append((nom, f"rangée des médaillons : hauteur {Hr:.0f}, écart le plus petit entre deux médaillons {lib:.0f}"))
+    # l'encart de l'École, sous la rangée
+    t_ec = f"ECOLE {lab_ecole}" if declared else lab_ecole
+    parts.append(BG.hline(Hr, 0, Lb))
+    parts.append(BG.annot(t_ec, Hr, Hr + GG.BAND, [], Lb))
+    parts.append(BG.hline(Hr + GG.BAND, 0, Lb))
+    top = Hr + GG.BAND
+    # les cercles communs, déroulés par le moteur, avec la polarité de la forme
+    sp = dict(split=split, poles_impacts=[pole] * sum(1 for r in communs if r[0] == "IMPACT"), core=("hyb", (None,) * 4, None), rings=communs)
+    rings_b = C.band_rings(sp)
+    inner_c, _, Hc, _ = BG.band(("aucun",), rings_b, declared, length=Lb)
+    BG._cid[0] += 1; cid = f"bandclip{BG._cid[0]}"          # l'encart de l'École est coupé aux bouts, comme toute bande
+    enc = "".join(parts[-3:])
+    body = ("".join(parts[:-3]) + f'<defs><clipPath id="{cid}"><rect x="0" y="{GG.f(Hr - 30)}" width="{Lb}" height="{GG.f(GG.BAND + 60)}"/></clipPath></defs>'
+            f'<g clip-path="url(#{cid})">{enc}</g>' + f'<g transform="translate(0,{GG.f(top)})">{inner_c}</g>')
+    main = (body, Lb, top + Hc, yc)
+    sp_ = split if declared else part
+    left = BG.astral_band("ten", sp_[1]) if (sp_[1] or declared) else None
+    right = BG.astral_band("lum", sp_[0]) if (sp_[0] or declared) else None
+    return BG.compose(main, left, right)
+
+
 # ---------- l'essai ----------
 ESSAI = [("entropic-wheel", "Forme combinée Feu et Glace"), ("redistribute-potential", "Forme combinée Glace et Feu"),
          ("elemental-assessor", "Forme combinée Acide sulfurique, Glace, Éclair et Feu"),
@@ -501,12 +559,16 @@ def essai(out):
 <h2>{html.escape(r['label'])}</h2><p class="lede">{html.escape(r['verb'])}</p></header>
 <section class="sec"><h3>Glyphe circulaire</h3><div class="pair one"><figure class="grand">{r['svg'][0]}<figcaption>Déclarée · tous les cercles classés</figcaption></figure>
 <figure class="grand">{r['svg'][1]}<figcaption>Non déclarée · seuls les cercles à polarité illisible</figcaption></figure></div>{pol_html(r['split'])}</section>
+<section class="sec"><h3>Glyphe en bande</h3><div class="pair one"><figure>{r['bande'][0]}<figcaption>Déclarée · tous les cercles classés</figcaption></figure>
+<figure>{r['bande'][1]}<figcaption>Non déclarée · seuls les cercles à polarité illisible</figcaption></figure></div></section>
 <section class="sec"><h3>Lecture</h3>{table(r['rows'])}</section></article>""")
     fbrows = [(a, b, "", c) for a, b, c in [("1", "Noyau", fb["verb"])] + fb["rows"]]
     arts.append(f"""<article class="forme" id="gc"><header class="fh"><div class="eyebrow">Pour comparaison · telle qu'elle est sur main</div>
 <h2>{html.escape(fb['fr'])} (5e) — {html.escape(fb['label'])}</h2><p class="lede">{html.escape(fb['verb'])}</p></header>
 <section class="sec"><h3>Glyphe circulaire</h3><div class="pair one"><figure class="grand">{fb['svg'][0]}<figcaption>Déclarée · tous les cercles classés</figcaption></figure>
 <figure class="grand">{fb['svg'][1]}<figcaption>Non déclarée · seuls les cercles à polarité illisible</figcaption></figure></div>{pol_html(fb['split'])}</section>
+<section class="sec"><h3>Glyphe en bande</h3><div class="pair one"><figure>{C.band_svg(fb, True)}<figcaption>Déclarée · tous les cercles classés</figcaption></figure>
+<figure>{C.band_svg(fb, False)}<figcaption>Non déclarée · seuls les cercles à polarité illisible</figcaption></figure></div></section>
 <section class="sec"><h3>Lecture</h3>{table(fbrows, ou=False).replace("<td></td>", "")}</section></article>""")
     sommaire = "".join(f'<a class="chip" href="#g{i}">{i}. {html.escape(r["sort"])}</a>' for i, r in enumerate(res, 1)) + '<a class="chip" href="#gc">Boule de feu (main)</a>'
     page = ST.HEAD.format(title="Essai · formes combinées", root="") + f"""
@@ -514,7 +576,8 @@ def essai(out):
 <p class="lede">Troisième essai. Plusieurs Noyaux hybrides, un par combinaison, lancés en même temps. Le cercle d'École, premier cercle commun, passe
 par le centre des Noyaux et les relie ; tous les autres cercles communs, de la Cible à la Cosmétique, sont à l'extérieur ; chaque Noyau
 porte ses propres cercles autour de lui, droit ; un satellite qui se poserait au sud se pose vers l'extérieur du glyphe. Les cercles communs suivent le cercle d'École
-à l'écart habituel et passent sous les Noyaux ; leurs annotations se placent dans les portions visibles. Lecture : d'abord les Noyaux, puis les cercles communs, du centre vers l'extérieur.</p>
+à l'écart habituel et passent sous les Noyaux ; leurs annotations se placent dans les portions visibles. Lecture : d'abord les Noyaux, puis les cercles communs, du centre vers l'extérieur.
+Essai de la bande (sous chaque glyphe rond) : les Noyaux en médaillons côte à côte, dans l'ordre de B12, l'encart de l'École dessous, puis les cercles communs déroulés.</p>
 <div class="chips">{sommaire}</div></header>
 <div class="essai">""" + "".join(arts) + "</div>" + ST.FOOT
     open(os.path.join(out, "index.html"), "w", encoding="utf-8").write(page)
@@ -523,13 +586,17 @@ porte ses propres cercles autour de lui, droit ; un satellite qui se poserait au
         open(os.path.join(out, f"_image_{i}.html"), "w", encoding="utf-8").write(
             '<!doctype html><html data-theme="light"><head><meta charset="utf-8"><link rel="stylesheet" href="style.css"><style>html,body{margin:0;background:var(--paper)}'
             'svg{width:100vw;height:100vh;display:block}</style></head><body>' + r["svg"][0] + "</body></html>")
+        open(os.path.join(out, f"_image_{i}_bande.html"), "w", encoding="utf-8").write(
+            '<!doctype html><html data-theme="light"><head><meta charset="utf-8"><link rel="stylesheet" href="style.css"><style>html,body{margin:0;background:var(--paper)}'
+            'svg{width:100vw;height:100vh;display:block}</style></head><body>' + r["bande"][0] + "</body></html>")
     return res, fb
 
 
 if __name__ == "__main__":
     res, fb = essai(sys.argv[1])
-    json.dump(dict(formes=[dict(r, svg=list(r["svg"])) for r in res], faits=FAITS, dessin=DESSIN, boule_de_feu=dict(svg=list(fb["svg"]))),
+    json.dump(dict(formes=[dict(r, svg=list(r["svg"]), bande=list(r["bande"])) for r in res], faits=FAITS, dessin=DESSIN, bande_faits=BANDE_FAITS, boule_de_feu=dict(svg=list(fb["svg"]))),
               open(os.path.join(sys.argv[1], "_essai.json"), "w", encoding="utf-8"), ensure_ascii=False, default=repr)
     for r in res: print(r["sort"], "|", r["label"], "|", len(r["svg"][0]), len(r["svg"][1]))
     for x in FAITS: print("  fait :", x)
     for x in DESSIN: print("  dessin :", x)
+    for x in BANDE_FAITS: print("  bande :", x)

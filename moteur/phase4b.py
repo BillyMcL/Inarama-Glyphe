@@ -14,7 +14,7 @@ un Impact est opposé. Chaque cercle d'Impact garde son pôle (champ poles_impac
 import os, csv, re
 import spells as SP
 
-ETAPE = int(os.environ.get("PHASE4B_ETAPE", "11"))     # 9 : B7 (Impacts pleins d'Arcane)      # étapes de la phase 4b appliquées (0 ou 1 : aucune donnée)
+ETAPE = int(os.environ.get("PHASE4B_ETAPE", "12"))     # 9 : B7 (Impacts pleins d'Arcane)      # étapes de la phase 4b appliquées (0 ou 1 : aucune donnée)
 D = os.path.dirname(os.path.abspath(__file__))
 P4B = os.path.join(D, "..", "donnees", "phase4b")
 B3 = list(csv.DictReader(open(os.path.join(P4B, "B3_formes_hybrides.csv"), encoding="utf-8-sig"), delimiter=";")) \
@@ -367,6 +367,7 @@ def hybride(g, l, k, plusieurs):
     ps = poles_b7(ps, k, POLE_HEMI[hemi], face_)      # B7 : cercles ajoutés, retirés, pôles donnés
     ps = poles_b8(ps, k, g["label"], POLE_HEMI[hemi], face_)      # B8 : cercles ajoutés, pôles donnés
     ps = poles_b9(ps, k, g["label"], POLE_HEMI[hemi], face_)      # B9 : de même
+    ps = poles_b10(ps, k, g["label"], POLE_HEMI[hemi], face_)     # B10 : de même
     if len(ps) != n_imp: _refus(l, f"{len(ps)} pôles pour {n_imp} cercles d'Impact"); return None
     une_des_faces = any(x in g["label"].lower() for x in ("lumineu", "ténébreu"))
     if l["face"] and une_des_faces and POLE_HEMI[hemi] != {"lumineuse": "lumineux", "ténébreuse": "ténébreux"}[l["face"]]:
@@ -1083,3 +1084,51 @@ def b9_jumelle(g, kh):
         nps.append(p if p else ecole)
     B9_FAITS.append((kh[0], kh[1], g["label"] + " (jumelle antérieure)"))
     return dict(g, rings=rings, poles_impacts=tuple(nps) or None)
+
+
+# ---------- B10 : « malgré », « sans », « tant que », « prochain », « sauf » et fin de « contre » (second lot du chantier ----------
+# d'écriture, décision du 22 novembre 2026). Même écriture et même application que B9 (dont il reprend les fonctions), après B9 :
+# forme d'Arcane, jumelles hybrides (créées en 4b ou par B4 ; antérieures : JUMELLES_B10), art rare créé d'après elle. Les
+# cercles de Durée ont le numero 0 et reçoivent la liste complète de leurs mots.
+_B10 = os.path.join(P4B, "B10_malgre_sans_tantque_prochain_sauf.csv")
+B10 = _dd(list)
+for _l in (csv.DictReader(open(_B10, encoding="utf-8-sig"), delimiter=";") if os.path.exists(_B10) else []):
+    B10[(_l["cle"], _l["forme"])].append(_l)
+JUMELLES_B10 = {("greater-invisibility", 1): "Forme arcane", ("greater-invisibility", 3): "Forme arcane — version 3.5 (Invisibility, Greater)",
+                ("decrepit-disguise", 1): "Forme arcane", ("village-veil", 1): "Forme arcane", ("blurred-movement", 1): "Forme arcane",
+                ("selective-invisibility", 1): "Forme arcane",
+                ("sunstalker", 2): "Forme arcane — Forme lumineuse", ("sunstalker", 3): "Forme arcane — Forme ténébreuse",
+                ("invisibility-bubble", 3): "Forme arcane — Bulle d'invisibilité",          # l'eau : symbole sur l'Arcane, satellite
+                ("invisibility-bubble", 4): "Forme arcane — Bulle d'invisibilité géante",   # de Condition « eau » gardé tel quel sur
+                ("invisibility-bubble", 5): "Forme arcane — Bulles d'invisibilité"}         # l'hybride (décision du 22 novembre 2026)
+B10_FAITS, B10_REFUS = [], []
+
+
+def b10(g, k):
+    rows = B10.get((k[0], g["label"])) if ETAPE >= 12 else None
+    if not rows: return g
+    if g["fam"] != "A": B10_REFUS.append((k, f"famille {g['fam']}")); return g
+    try:
+        rings, _ = b9_cercles(g, rows, k)
+    except Exception as e:
+        B10_REFUS.append((k, str(e))); return g
+    B10_FAITS.append((k[0], k[1], g["label"]))
+    return dict(g, rings=rings)
+
+
+def poles_b10(ps, k, label, ecole, face):
+    global B9
+    if ETAPE < 12 or not B10.get((k[0], label)): return ps
+    sauve, B9 = B9, B10
+    try: return poles_b9(ps, k, label, ecole, face)
+    finally: B9 = sauve
+
+
+def b10_jumelle(g, kh):
+    global B9, JUMELLES_B9, B9_FAITS, B9_REFUS
+    lab = JUMELLES_B10.get(kh)
+    if not lab or ETAPE < 12 or not B10.get((kh[0], lab)): return g
+    sauve = (B9, JUMELLES_B9, B9_FAITS, B9_REFUS)
+    B9, JUMELLES_B9, B9_FAITS, B9_REFUS = B10, JUMELLES_B10, B10_FAITS, B10_REFUS
+    try: return b9_jumelle(g, kh)
+    finally: B9, JUMELLES_B9, B9_FAITS, B9_REFUS = sauve

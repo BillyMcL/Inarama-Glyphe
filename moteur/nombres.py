@@ -200,7 +200,34 @@ def arrondir(f, er=False):
                 av = ecriture(s[1]); n, rd = _repet(s[1], rd, f, r[0], True)
                 REPET_FAITS.append((f.get("idx"), f["label"], r[0], True, int(s[1]), int(n), av, ecriture(n)))
                 sats[j] = (s[0], n, *s[2:]); chg = True
+        n, rd2 = _vraie(v, rd)
+        if n is not None:
+            VRAIES_FAITS.append((f.get("idx"), f["label"], r[0], int(v), int(n), ecriture(v), ecriture(n))); v, rd, chg = n, rd2, True
         rings.append((r[0], v, r[2], rd, sats, *r[5:]) if len(r) > 4 else (r[0], v, r[2], rd))
     if not chg: return f
     svg, rows = SP.build(f["core"], f["pol"], rings, f["r0"], f["split"], officiants=f["officiants"], impacts=f.get("poles_impacts"))
     return dict(f, rings=rings, svg=svg, rows=rows, bsplit=SP.PART[0])
+
+
+# ---------- vraies valeurs : les arrondis faits avec la limite de 4 formes (chantier « vraies_valeurs », 22 novembre 2026) ----------
+# Ces nombres étaient déjà conformes, mais arrondis avec la limite de 4 formes : on repart de la vraie valeur (« arrondi de X
+# à Y ») et on prend le produit conforme le plus proche (5 formes au plus, deux fois la même au plus ; égalité vers le bas).
+# Elden Ring compris, pour ce chantier seulement. (Les satellites « vie · répartir » 124 : corrections.GRANDS, 124 → 126.)
+VRAIES = {(3969, 4189): 4050, (1764, 1853): 1890, (3969, 4168): 4050, (1575, 1527): 1512, (1764, 1812): 1800, (810, 800): 800,
+          (1215, 1201): 1200, (2025, 2008): 2016}
+ECRITURES.update({4050: [9, 9, 5, 5, 2], 1890: [9, 7, 5, 3, 2], 1512: [9, 7, 4, 3, 2], 1800: [9, 5, 5, 4, 2], 800: [5, 5, 4, 4, 2],
+                  1200: [5, 5, 4, 4, 3], 2016: [9, 7, 4, 4, 2]})
+for (_e, _v), _n in VRAIES.items():
+    assert regle(_v) == _n and conformes(_n) == ECRITURES[_n], (_e, _v, _n)
+VRAIES_FAITS = []       # (cle, libellé, cercle, écrit, nouveau, écriture avant, écriture après)
+
+
+def _vraie(v, rd):
+    """(nouvelle valeur, nouvelle phrase) d'un cercle arrondi avec la limite de 4 formes, ou (None, rd)"""
+    if not isinstance(v, int) or isinstance(v, bool): return None, rd
+    m = re.search(rf"arrondi de (\d+) à {int(v)} pour s'écrire en \d+ formes", rd)
+    if not m or (int(v), int(m.group(1))) not in VRAIES: return None, rd
+    vraie = int(m.group(1)); n0 = VRAIES[(int(v), vraie)]
+    if n0 == vraie: rd = re.sub(rf" ; arrondi de {vraie} à {int(v)} pour s'écrire en \d+ formes", "", rd)     # écriture exacte
+    else: rd = rd[:m.start()] + f"arrondi de {vraie} à {n0} pour s'écrire en {len(ECRITURES[n0])} formes" + rd[m.end():]
+    return _porte(n0), rd

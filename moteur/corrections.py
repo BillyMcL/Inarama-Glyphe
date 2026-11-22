@@ -122,7 +122,7 @@ def _transcrire(c):
 GRANDS = {("AMPLEUR KILOMETRES", 1400): 1400,          # 7 × 5 × 5 × 4 × 2
           ("VIE REPARTIR", 68): 70,                    # 7 × 5 × 2
           ("VIE REPARTIR", 117): 120,                  # 5 × 4 × 3 × 2
-          ("VIE REPARTIR", 124): 120}                  # 5 × 4 × 3 × 2
+          ("VIE REPARTIR", 124): 126}                  # 9 × 7 × 2 (le produit conforme le plus proche : chantier « vraies_valeurs », 22 novembre 2026)
 ARRONDIS = {}     # (cle, rang) → [(annotation, valeur du fichier, valeur écrite)] : pour la phrase de lecture (étape 3)
 
 

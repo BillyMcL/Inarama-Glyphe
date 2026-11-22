@@ -403,12 +403,23 @@ def dessin(lab_ecole, g_com, g_noy, declared, nom=""):
                         if math.hypot(x1 - x2, y1 - y2) < r1 + r2 + MARGE: return True
         return False
     Dr = max(max(l[0][2] for _, l in piles) / (math.sin(math.pi / n) if n > 1 else 1), 1)
-    while touche(placer(Dr)): Dr += 0.5
-    pl = placer(Dr)
-    disques = [d for p in pl for d in p[4]]
     # annotations de l'École : au milieu des intervalles entre les Noyaux
     A_ = ANGLES[n]
     gaps = sorted((A_[k] + ((A_[(k + 1) % n] - A_[k]) % 360) / 2) % 360 for k in range(n)) if n > 1 else [270]
+    def tient(Dr, pl):
+        """l'annotation déclarée de l'École (la plus longue : même rayon pour les deux versions) tient entière et visible
+        dans chaque intervalle, à sa taille habituelle"""
+        dq = [d for p in pl for d in p[4]]
+        td_ = _largeur(Dr, f"ECOLE {lab_ecole}")
+        return not any(_cache(g - td_ / 2 + td_ * k / 20, r, dq, 1) for g in gaps for k in range(21) for r in (Dr, Dr + GG.BAND))
+    # le plus petit rayon où (a) deux Noyaux voisins ne se touchent pas et (b) l'annotation de l'École tient
+    while touche(placer(Dr)): Dr += 0.5
+    D_contact = Dr
+    while not tient(Dr, placer(Dr)): Dr += 0.5
+    if declared and Dr > D_contact:
+        DESSIN.append((nom, "ECOLE", f"Noyaux écartés pour l'annotation de l'École : rayon {D_contact:.1f} → {Dr:.1f}"))
+    pl = placer(Dr)
+    disques = [d for p in pl for d in p[4]]
     ecole = dict(label=f"ECOLE {lab_ecole}", spec=[], sats=[], centres=gaps)
     geo_c = [(Dr, Dr + GG.BAND)]
     t_ec = f"ECOLE {lab_ecole}" if declared else lab_ecole

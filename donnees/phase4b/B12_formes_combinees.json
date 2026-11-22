@@ -1,11 +1,15 @@
 {
  "_lisez_moi": [
-  "B12 — formes combinées, validées par l'utilisateur le 22 novembre 2026.",
-  "Une forme combinée = plusieurs Noyaux hybrides (un par combinaison élémentaire), lancés en même temps. École, hémisphère et pôle sont communs ('noyau_commun').",
-  "'communs' : les cercles écrits une seule fois, autour du centre du glyphe ; 'noyaux[].cercles' : les cercles propres à chaque Noyau, autour de lui.",
-  "Ordre habituel de 1 (École) à 12 (Cosmétique) ; le cercle d'école est le premier cercle commun ; la Durée commune passe par le centre des Noyaux.",
-  "Satellites : 'valeur|TEXTE' comme dans B7 à B11 ; 'sym:feu' = symbole d'énergie (Arcane seulement). 'primitive' = la forme du moteur (FM.PRIM).",
+  "B12 — formes combinées, validées par l'utilisateur le 22 novembre 2026 (version 2, après le premier essai de dessin).",
+  "Une forme combinée = plusieurs Noyaux hybrides (un par combinaison élémentaire), lancés en même temps. École, hémisphère et pôle sont communs ('noyau_commun') ; chaque Noyau ne porte que sa combinaison.",
+  "RÈGLE DE DESSIN : le premier cercle commun, le cercle d'ÉCOLE, est celui qui RELIE les Noyaux : il passe par leurs centres. Les Noyaux y sont répartis de façon symétrique et uniforme (2 face à face, 4 en carré). Il n'y a plus de petit disque au centre.",
+  "Tous les autres cercles communs ('communs'), de la Cible à la Cosmétique, sont à l'extérieur, dans l'ordre habituel 2 à 12. La Durée est un cercle commun ordinaire ; un sort instantané n'en a pas (Chaleur redistribuée).",
+  "'noyaux[].cercles' : les cercles propres à chaque Noyau, autour de lui, dans l'ordre habituel.",
+  "RÈGLE DE LECTURE : dans une forme combinée, on lit d'abord les effets des Noyaux (simultanés), puis les effets communs, du centre vers l'extérieur.",
+  "Satellites : 'valeur|TEXTE' comme dans B7 à B11. Sur un cercle Forme, 'N|' sans texte = proportion de la primitive, dans l'ordre de FM.PRIM (cône : '2|', '1|' = hauteur 2, rayon 1). 'forme:helice', 'forme:prisme' = satellite de Forme de cette primitive, comme le moteur l'écrit ailleurs. 'sym:feu' = symbole d'énergie (Arcane seulement). Un satellite '9|AMPLEUR LONGUEUR METRES' sur un cercle Forme = l'Ampleur devenue satellite sud de la forme composée (règle du tourbillon de convert.py).",
+  "'primitive' = la forme du moteur (FM.PRIM). Proportions de l'hélice et du cylindre : celles de FM.PRIM.",
   "'parenthese' : ce que dit le texte, pour la parenthèse de la phrase de lecture ; le début de la phrase est régénéré par le moteur.",
+  "Les souffles de la légion draconique n'ont pas de mot (« souffle » est un mot de forme du moteur) : la Forme dit cône ou ligne, le Noyau dit l'énergie.",
   "Égide contre les énergies reste en Arcane, inchangée."
  ],
  "sorts": [
@@ -493,7 +497,7 @@
           "TRANCHANT"
          ],
          "satellites": [
-          "5|FORME"
+          "forme:prisme"
          ],
          "parenthese": "2d6 en moyenne ; des éclats de métal"
         }
@@ -866,7 +870,7 @@
           "FUSION"
          ],
          "satellites": [
-          "5|FORME"
+          "forme:prisme"
          ],
          "parenthese": "2d6 en moyenne d'éclats tranchants à ceux qui s'y trouvent"
         }
@@ -1344,7 +1348,7 @@
           "FUSION"
          ],
          "satellites": [
-          "5|FORME"
+          "forme:prisme"
          ],
          "parenthese": "2d6 en moyenne d'éclats tranchants à ceux qui s'y trouvent"
         }
@@ -1704,7 +1708,7 @@
           "FUSION"
          ],
          "satellites": [
-          "5|FORME"
+          "forme:prisme"
          ],
          "parenthese": "2d6 en moyenne d'éclats tranchants à ceux qui s'y trouvent"
         }
@@ -2048,7 +2052,7 @@
           "FUSION"
          ],
          "satellites": [
-          "5|FORME"
+          "forme:prisme"
          ],
          "parenthese": "2d6 en moyenne d'éclats tranchants à ceux qui s'y trouvent"
         }
@@ -2169,7 +2173,7 @@
           "FUSION"
          ],
          "satellites": [
-          "5|FORME"
+          "forme:prisme"
          ],
          "parenthese": "2d6 en moyenne d'éclats tranchants à ceux qui s'y trouvent"
         }
@@ -2644,7 +2648,7 @@
          "FUSION"
         ],
         "satellites": [
-         "5|FORME",
+         "forme:prisme",
          "sym:feu",
          "sym:air",
          "sym:terre",
@@ -3101,7 +3105,7 @@
          "FUSION"
         ],
         "satellites": [
-         "5|FORME",
+         "forme:prisme",
          "sym:feu",
          "sym:air",
          "sym:terre",
@@ -3442,7 +3446,7 @@
          "FUSION"
         ],
         "satellites": [
-         "5|FORME",
+         "forme:prisme",
          "sym:feu",
          "sym:air",
          "sym:terre",
@@ -3770,7 +3774,7 @@
          "FUSION"
         ],
         "satellites": [
-         "5|FORME",
+         "forme:prisme",
          "sym:feu",
          "sym:air",
          "sym:terre",
@@ -3885,7 +3889,7 @@
          "FUSION"
         ],
         "satellites": [
-         "5|FORME",
+         "forme:prisme",
          "sym:feu",
          "sym:air",
          "sym:terre",
@@ -4109,9 +4113,9 @@
         "GRIFFE"
        ],
        "satellites": [
-        "1|FORME"
+        "forme:helice"
        ],
-       "parenthese": "à son départ : 9d8 en moyenne à tous les ennemis proches ; satellite Forme : hélice"
+       "parenthese": "à son départ : 9d8 en moyenne à tous les ennemis proches"
       },
       {
        "cercle": "INTERACTION",
@@ -4158,9 +4162,7 @@
         {
          "cercle": "IMPACT",
          "valeur": 45,
-         "mots": [
-          "SOUFFLE"
-         ],
+         "mots": [],
          "satellites": [],
          "parenthese": "à sa venue : le souffle en cône, 10d8 en moyenne"
         }
@@ -4192,9 +4194,7 @@
         {
          "cercle": "IMPACT",
          "valeur": 45,
-         "mots": [
-          "SOUFFLE"
-         ],
+         "mots": [],
          "satellites": [],
          "parenthese": "à sa venue : le souffle en ligne, 10d8 en moyenne"
         }
@@ -4266,9 +4266,9 @@
         "GRIFFE"
        ],
        "satellites": [
-        "1|FORME"
+        "forme:helice"
        ],
-       "parenthese": "à son départ : 9d8 en moyenne à tous les ennemis proches ; satellite Forme : hélice"
+       "parenthese": "à son départ : 9d8 en moyenne à tous les ennemis proches"
       },
       {
        "cercle": "INTERACTION",
@@ -4315,9 +4315,7 @@
         {
          "cercle": "IMPACT",
          "valeur": 45,
-         "mots": [
-          "SOUFFLE"
-         ],
+         "mots": [],
          "satellites": [],
          "parenthese": "à sa venue : le souffle en cône, 10d8 en moyenne"
         }
@@ -4349,9 +4347,7 @@
         {
          "cercle": "IMPACT",
          "valeur": 45,
-         "mots": [
-          "SOUFFLE"
-         ],
+         "mots": [],
          "satellites": [],
          "parenthese": "à sa venue : le souffle en ligne, 10d8 en moyenne"
         }
@@ -4423,9 +4419,9 @@
         "GRIFFE"
        ],
        "satellites": [
-        "1|FORME"
+        "forme:helice"
        ],
-       "parenthese": "à son départ : 9d8 en moyenne à tous les ennemis proches ; satellite Forme : hélice"
+       "parenthese": "à son départ : 9d8 en moyenne à tous les ennemis proches"
       },
       {
        "cercle": "INTERACTION",
@@ -4472,9 +4468,7 @@
         {
          "cercle": "IMPACT",
          "valeur": 45,
-         "mots": [
-          "SOUFFLE"
-         ],
+         "mots": [],
          "satellites": [],
          "parenthese": "à sa venue : le souffle en cône, 10d8 en moyenne"
         }
@@ -4506,9 +4500,7 @@
         {
          "cercle": "IMPACT",
          "valeur": 45,
-         "mots": [
-          "SOUFFLE"
-         ],
+         "mots": [],
          "satellites": [],
          "parenthese": "à sa venue : le souffle en ligne, 10d8 en moyenne"
         }
@@ -4580,9 +4572,9 @@
         "GRIFFE"
        ],
        "satellites": [
-        "1|FORME"
+        "forme:helice"
        ],
-       "parenthese": "à son départ : 9d8 en moyenne à tous les ennemis proches ; satellite Forme : hélice"
+       "parenthese": "à son départ : 9d8 en moyenne à tous les ennemis proches"
       },
       {
        "cercle": "INTERACTION",
@@ -4629,9 +4621,7 @@
         {
          "cercle": "IMPACT",
          "valeur": 45,
-         "mots": [
-          "SOUFFLE"
-         ],
+         "mots": [],
          "satellites": [],
          "parenthese": "à sa venue : le souffle en cône, 10d8 en moyenne"
         }
@@ -4663,9 +4653,7 @@
         {
          "cercle": "IMPACT",
          "valeur": 45,
-         "mots": [
-          "SOUFFLE"
-         ],
+         "mots": [],
          "satellites": [],
          "parenthese": "à sa venue : le souffle en ligne, 10d8 en moyenne"
         }
@@ -4737,9 +4725,9 @@
         "GRIFFE"
        ],
        "satellites": [
-        "1|FORME"
+        "forme:helice"
        ],
-       "parenthese": "à son départ : 9d8 en moyenne à tous les ennemis proches ; satellite Forme : hélice"
+       "parenthese": "à son départ : 9d8 en moyenne à tous les ennemis proches"
       },
       {
        "cercle": "INTERACTION",
@@ -4786,9 +4774,7 @@
         {
          "cercle": "IMPACT",
          "valeur": 45,
-         "mots": [
-          "SOUFFLE"
-         ],
+         "mots": [],
          "satellites": [],
          "parenthese": "à sa venue : le souffle en cône, 10d8 en moyenne"
         }
@@ -4820,9 +4806,7 @@
         {
          "cercle": "IMPACT",
          "valeur": 45,
-         "mots": [
-          "SOUFFLE"
-         ],
+         "mots": [],
          "satellites": [],
          "parenthese": "à sa venue : le souffle en ligne, 10d8 en moyenne"
         }
@@ -4894,9 +4878,9 @@
         "GRIFFE"
        ],
        "satellites": [
-        "1|FORME"
+        "forme:helice"
        ],
-       "parenthese": "à son départ : 9d8 en moyenne à tous les ennemis proches ; satellite Forme : hélice"
+       "parenthese": "à son départ : 9d8 en moyenne à tous les ennemis proches"
       },
       {
        "cercle": "INTERACTION",
@@ -4943,9 +4927,7 @@
         {
          "cercle": "IMPACT",
          "valeur": 45,
-         "mots": [
-          "SOUFFLE"
-         ],
+         "mots": [],
          "satellites": [],
          "parenthese": "à sa venue : le souffle en cône, 10d8 en moyenne"
         }
@@ -4977,9 +4959,7 @@
         {
          "cercle": "IMPACT",
          "valeur": 45,
-         "mots": [
-          "SOUFFLE"
-         ],
+         "mots": [],
          "satellites": [],
          "parenthese": "à sa venue : le souffle en ligne, 10d8 en moyenne"
         }
@@ -5051,9 +5031,9 @@
         "GRIFFE"
        ],
        "satellites": [
-        "1|FORME"
+        "forme:helice"
        ],
-       "parenthese": "à son départ : 9d8 en moyenne à tous les ennemis proches ; satellite Forme : hélice"
+       "parenthese": "à son départ : 9d8 en moyenne à tous les ennemis proches"
       },
       {
        "cercle": "INTERACTION",
@@ -5100,9 +5080,7 @@
         {
          "cercle": "IMPACT",
          "valeur": 45,
-         "mots": [
-          "SOUFFLE"
-         ],
+         "mots": [],
          "satellites": [],
          "parenthese": "à sa venue : le souffle en cône, 10d8 en moyenne"
         }
@@ -5134,9 +5112,7 @@
         {
          "cercle": "IMPACT",
          "valeur": 45,
-         "mots": [
-          "SOUFFLE"
-         ],
+         "mots": [],
          "satellites": [],
          "parenthese": "à sa venue : le souffle en ligne, 10d8 en moyenne"
         }
@@ -5253,18 +5229,14 @@
      {
       "cercle": "IMPACT",
       "valeur": 45,
-      "mots": [
-       "SOUFFLE"
-      ],
+      "mots": [],
       "satellites": [],
       "parenthese": "à sa venue : le souffle en cône, 10d8 en moyenne"
      },
      {
       "cercle": "IMPACT",
       "valeur": 45,
-      "mots": [
-       "SOUFFLE"
-      ],
+      "mots": [],
       "satellites": [],
       "parenthese": "à sa venue : le souffle en ligne, 10d8 en moyenne"
      },
@@ -5275,9 +5247,9 @@
        "GRIFFE"
       ],
       "satellites": [
-       "1|FORME"
+       "forme:helice"
       ],
-      "parenthese": "à son départ : 9d8 en moyenne à tous les ennemis proches ; satellite Forme : hélice"
+      "parenthese": "à son départ : 9d8 en moyenne à tous les ennemis proches"
      },
      {
       "cercle": "INTERACTION",
@@ -5402,9 +5374,7 @@
        {
         "cercle": "IMPACT",
         "valeur": 45,
-        "mots": [
-         "SOUFFLE"
-        ],
+        "mots": [],
         "satellites": [
          "sym:air",
          "sym:terre",
@@ -5416,9 +5386,7 @@
        {
         "cercle": "IMPACT",
         "valeur": 45,
-        "mots": [
-         "SOUFFLE"
-        ],
+        "mots": [],
         "satellites": [
          "sym:feu",
          "sym:air",
@@ -5434,9 +5402,9 @@
          "GRIFFE"
         ],
         "satellites": [
-         "1|FORME"
+         "forme:helice"
         ],
-        "parenthese": "à son départ : 9d8 en moyenne à tous les ennemis proches ; satellite Forme : hélice"
+        "parenthese": "à son départ : 9d8 en moyenne à tous les ennemis proches"
        },
        {
         "cercle": "INTERACTION",
@@ -5557,9 +5525,7 @@
        {
         "cercle": "IMPACT",
         "valeur": 45,
-        "mots": [
-         "SOUFFLE"
-        ],
+        "mots": [],
         "satellites": [
          "sym:air",
          "sym:terre",
@@ -5571,9 +5537,7 @@
        {
         "cercle": "IMPACT",
         "valeur": 45,
-        "mots": [
-         "SOUFFLE"
-        ],
+        "mots": [],
         "satellites": [
          "sym:feu",
          "sym:feu",
@@ -5589,9 +5553,9 @@
          "GRIFFE"
         ],
         "satellites": [
-         "1|FORME"
+         "forme:helice"
         ],
-        "parenthese": "à son départ : 9d8 en moyenne à tous les ennemis proches ; satellite Forme : hélice"
+        "parenthese": "à son départ : 9d8 en moyenne à tous les ennemis proches"
        },
        {
         "cercle": "INTERACTION",
@@ -5712,9 +5676,7 @@
        {
         "cercle": "IMPACT",
         "valeur": 45,
-        "mots": [
-         "SOUFFLE"
-        ],
+        "mots": [],
         "satellites": [
          "sym:feu"
         ],
@@ -5723,9 +5685,7 @@
        {
         "cercle": "IMPACT",
         "valeur": 45,
-        "mots": [
-         "SOUFFLE"
-        ],
+        "mots": [],
         "satellites": [
          "sym:feu",
          "sym:air",
@@ -5741,9 +5701,9 @@
          "GRIFFE"
         ],
         "satellites": [
-         "1|FORME"
+         "forme:helice"
         ],
-        "parenthese": "à son départ : 9d8 en moyenne à tous les ennemis proches ; satellite Forme : hélice"
+        "parenthese": "à son départ : 9d8 en moyenne à tous les ennemis proches"
        },
        {
         "cercle": "INTERACTION",
@@ -5864,9 +5824,7 @@
        {
         "cercle": "IMPACT",
         "valeur": 45,
-        "mots": [
-         "SOUFFLE"
-        ],
+        "mots": [],
         "satellites": [
          "sym:feu"
         ],
@@ -5875,9 +5833,7 @@
        {
         "cercle": "IMPACT",
         "valeur": 45,
-        "mots": [
-         "SOUFFLE"
-        ],
+        "mots": [],
         "satellites": [
          "sym:feu",
          "sym:feu",
@@ -5893,9 +5849,9 @@
          "GRIFFE"
         ],
         "satellites": [
-         "1|FORME"
+         "forme:helice"
         ],
-        "parenthese": "à son départ : 9d8 en moyenne à tous les ennemis proches ; satellite Forme : hélice"
+        "parenthese": "à son départ : 9d8 en moyenne à tous les ennemis proches"
        },
        {
         "cercle": "INTERACTION",
@@ -6016,9 +5972,7 @@
        {
         "cercle": "IMPACT",
         "valeur": 45,
-        "mots": [
-         "SOUFFLE"
-        ],
+        "mots": [],
         "satellites": [
          "sym:feu",
          "sym:air",
@@ -6030,9 +5984,7 @@
        {
         "cercle": "IMPACT",
         "valeur": 45,
-        "mots": [
-         "SOUFFLE"
-        ],
+        "mots": [],
         "satellites": [
          "sym:feu",
          "sym:air",
@@ -6048,9 +6000,9 @@
          "GRIFFE"
         ],
         "satellites": [
-         "1|FORME"
+         "forme:helice"
         ],
-        "parenthese": "à son départ : 9d8 en moyenne à tous les ennemis proches ; satellite Forme : hélice"
+        "parenthese": "à son départ : 9d8 en moyenne à tous les ennemis proches"
        },
        {
         "cercle": "INTERACTION",
@@ -6171,9 +6123,7 @@
        {
         "cercle": "IMPACT",
         "valeur": 45,
-        "mots": [
-         "SOUFFLE"
-        ],
+        "mots": [],
         "satellites": [
          "sym:feu",
          "sym:air",
@@ -6185,9 +6135,7 @@
        {
         "cercle": "IMPACT",
         "valeur": 45,
-        "mots": [
-         "SOUFFLE"
-        ],
+        "mots": [],
         "satellites": [
          "sym:feu",
          "sym:feu",
@@ -6203,9 +6151,9 @@
          "GRIFFE"
         ],
         "satellites": [
-         "1|FORME"
+         "forme:helice"
         ],
-        "parenthese": "à son départ : 9d8 en moyenne à tous les ennemis proches ; satellite Forme : hélice"
+        "parenthese": "à son départ : 9d8 en moyenne à tous les ennemis proches"
        },
        {
         "cercle": "INTERACTION",
@@ -6326,9 +6274,7 @@
        {
         "cercle": "IMPACT",
         "valeur": 45,
-        "mots": [
-         "SOUFFLE"
-        ],
+        "mots": [],
         "satellites": [
          "sym:air",
          "sym:terre",
@@ -6340,9 +6286,7 @@
        {
         "cercle": "IMPACT",
         "valeur": 45,
-        "mots": [
-         "SOUFFLE"
-        ],
+        "mots": [],
         "satellites": [
          "sym:feu"
         ],
@@ -6355,9 +6299,9 @@
          "GRIFFE"
         ],
         "satellites": [
-         "1|FORME"
+         "forme:helice"
         ],
-        "parenthese": "à son départ : 9d8 en moyenne à tous les ennemis proches ; satellite Forme : hélice"
+        "parenthese": "à son départ : 9d8 en moyenne à tous les ennemis proches"
        },
        {
         "cercle": "INTERACTION",
@@ -6478,9 +6422,7 @@
        {
         "cercle": "IMPACT",
         "valeur": 45,
-        "mots": [
-         "SOUFFLE"
-        ],
+        "mots": [],
         "satellites": [
          "sym:feu"
         ],
@@ -6489,9 +6431,7 @@
        {
         "cercle": "IMPACT",
         "valeur": 45,
-        "mots": [
-         "SOUFFLE"
-        ],
+        "mots": [],
         "satellites": [
          "sym:feu"
         ],
@@ -6504,9 +6444,9 @@
          "GRIFFE"
         ],
         "satellites": [
-         "1|FORME"
+         "forme:helice"
         ],
-        "parenthese": "à son départ : 9d8 en moyenne à tous les ennemis proches ; satellite Forme : hélice"
+        "parenthese": "à son départ : 9d8 en moyenne à tous les ennemis proches"
        },
        {
         "cercle": "INTERACTION",

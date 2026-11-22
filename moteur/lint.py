@@ -20,6 +20,7 @@ def lint(spells):
                     for w in mots:
                         if w not in MILLE_ET_UN: out.append(("lexique", sp["fr"], fm["label"], f"« {w.lower()} » n'est pas l'un des mille et un mots"))
             if "grimoire" in " ".join(fm.get("notes") or []).lower() and fm["notes"][0].startswith("Version du grimoire"): continue
+            if fm.get("combinee"): out += combinee(sp, fm)        # forme combinée (B12) : ses règles propres, puis les règles communes
             verbe = fm["verb"].split(" ·")[0]
             def err(regle, detail=""): out.append((regle, sp["fr"], fm["label"], detail))
             R = collections.defaultdict(list)
@@ -49,6 +50,29 @@ def lint(spells):
             for r in R["COSMETIQUE"]:
                 if "ETEINT" in r[2] and verbe == "Purifier": err("règle 2", "« sens éteint » sur un sort qui guérit")
                 if r[1] == "plein" and "SENS" not in r[2]: err("cosmétique", "ancien format")
+    return out
+
+RANGS = ["CIBLE", "FORME", "AMPLEUR", "DUREE", "LOCALISATION", "CONDITION", "IMPACT", "QUANTITE", "COMPOSANTE", "INTERACTION", "COSMETIQUE"]
+def combinee(sp, fm):
+    """forme combinée (B12, 22 novembre 2026) : au moins deux Noyaux, chacun d'une combinaison connue ; le nom de l'école (annotation
+    du cercle d'École) est l'un des mille et un mots ; dans chaque Noyau et dans les cercles communs, l'ordre habituel des cercles ;
+    la Durée est toujours commune ; tous les cercles (Noyaux et communs) sont ceux que contrôlent les règles communes."""
+    import combos as KB, convert as C
+    out = []
+    def err(detail): out.append(("combinée", sp["fr"], fm["label"], detail))
+    cb = fm["combinee"]
+    if len(cb["noyaux"]) < 2: err(f"{len(cb['noyaux'])} Noyau(x)")
+    for n in cb["noyaux"]:
+        if n["combinaison"] not in KB.COMBOS: err(f"combinaison inconnue « {n['combinaison']} »")
+        if any(r[0] == "DUREE" for r in n["cercles"]): err(f"Durée propre au Noyau {n['combinaison']}")
+    for nom, rs in [(f"Noyau {n['combinaison']}", n["cercles"]) for n in cb["noyaux"]] + [("cercles communs", cb["communs"])]:
+        rg = [RANGS.index(r[0]) for r in rs]
+        if rg != sorted(rg): err(f"{nom} : cercles hors de l'ordre habituel")
+    if MILLE_ET_UN is not None:
+        for w in (C.norm(cb["ecole"]),):
+            if w not in MILLE_ET_UN: err(f"« {w.lower()} » (cercle d'École) n'est pas l'un des mille et un mots")
+    tous = [r for n in cb["noyaux"] for r in n["cercles"]] + list(cb["communs"])
+    if [tuple(map(repr, r[:3])) for r in tous] != [tuple(map(repr, r[:3])) for r in fm["rings"]]: err("cercles de la forme et des Noyaux différents")
     return out
 
 def rapport(errs):

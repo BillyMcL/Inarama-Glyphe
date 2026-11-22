@@ -1,0 +1,6473 @@
+{
+ "_lisez_moi": [
+  "B12 — formes combinées, validées par l'utilisateur le 22 novembre 2026 (version 2, après le premier essai de dessin).",
+  "Une forme combinée = plusieurs Noyaux hybrides (un par combinaison élémentaire), lancés en même temps. École, hémisphère et pôle sont communs ('noyau_commun') ; chaque Noyau ne porte que sa combinaison.",
+  "RÈGLE DE DESSIN : le premier cercle commun, le cercle d'ÉCOLE, est celui qui RELIE les Noyaux : il passe par leurs centres. Les Noyaux y sont répartis de façon symétrique et uniforme (2 face à face, 4 en carré). Il n'y a plus de petit disque au centre.",
+  "Tous les autres cercles communs ('communs'), de la Cible à la Cosmétique, sont à l'extérieur, dans l'ordre habituel 2 à 12. La Durée est un cercle commun ordinaire ; un sort instantané n'en a pas (Chaleur redistribuée).",
+  "'noyaux[].cercles' : les cercles propres à chaque Noyau, autour de lui, dans l'ordre habituel.",
+  "RÈGLE DE LECTURE : dans une forme combinée, on lit d'abord les effets des Noyaux (simultanés), puis les effets communs, du centre vers l'extérieur.",
+  "Satellites : 'valeur|TEXTE' comme dans B7 à B11. Sur un cercle Forme, 'N|' sans texte = proportion de la primitive, dans l'ordre de FM.PRIM (cône : '2|', '1|' = hauteur 2, rayon 1). 'forme:helice', 'forme:prisme' = satellite de Forme de cette primitive, comme le moteur l'écrit ailleurs. 'sym:feu' = symbole d'énergie (Arcane seulement). Un satellite '9|AMPLEUR LONGUEUR METRES' sur un cercle Forme = l'Ampleur devenue satellite sud de la forme composée (règle du tourbillon de convert.py).",
+  "'primitive' = la forme du moteur (FM.PRIM). Proportions de l'hélice et du cylindre : celles de FM.PRIM.",
+  "'parenthese' : ce que dit le texte, pour la parenthèse de la phrase de lecture ; le début de la phrase est régénéré par le moteur.",
+  "Les souffles de la légion draconique n'ont pas de mot (« souffle » est un mot de forme du moteur) : la Forme dit cône ou ligne, le Noyau dit l'énergie.",
+  "Égide contre les énergies reste en Arcane, inchangée."
+ ],
+ "sorts": [
+  {
+   "cle": "entropic-wheel",
+   "jeu": "PF2",
+   "sort": "Roue d'entropie",
+   "noyau_commun": {
+    "ecole": "Évocation",
+    "hemisphere": "Galombar",
+    "pole": "ténébreux"
+   },
+   "formes_combinees": [
+    {
+     "nom": "Forme combinée Feu et Glace",
+     "communs": [
+      {
+       "cercle": "CIBLE",
+       "valeur": 1,
+       "mots": [
+        "APTITUDE"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "DUREE",
+       "valeur": 1,
+       "mots": [
+        "MINUTES"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "CONDITION",
+       "valeur": 1,
+       "mots": [
+        "PAROLE"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "INTERACTION",
+       "valeur": 1,
+       "mots": [],
+       "satellites": [],
+       "parenthese": ""
+      }
+     ],
+     "noyaux": [
+      {
+       "combinaison": "Feu",
+       "cercles": [
+        {
+         "cercle": "IMPACT",
+         "valeur": 1,
+         "mots": [
+          "INVERSION"
+         ],
+         "satellites": [],
+         "parenthese": "mes sorts de froid brûlent en plus, de 1 par grain amassé"
+        }
+       ]
+      },
+      {
+       "combinaison": "Glace",
+       "cercles": [
+        {
+         "cercle": "IMPACT",
+         "valeur": 1,
+         "mots": [
+          "INVERSION"
+         ],
+         "satellites": [],
+         "parenthese": "mes sorts de feu glacent en plus, de 1 par grain amassé"
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "arcane": {
+    "action": "inchangée"
+   }
+  },
+  {
+   "cle": "redistribute-potential",
+   "jeu": "PF2",
+   "sort": "Chaleur redistribuée",
+   "noyau_commun": {
+    "ecole": "Évocation",
+    "hemisphere": "Galombar",
+    "pole": "ténébreux"
+   },
+   "formes_combinees": [
+    {
+     "nom": "Forme combinée Glace et Feu",
+     "communs": [
+      {
+       "cercle": "CIBLE",
+       "valeur": "plein",
+       "mots": [],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "LOCALISATION",
+       "valeur": 18,
+       "mots": [
+        "METRES"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "CONDITION",
+       "valeur": 1,
+       "mots": [
+        "PAROLE"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "INTERACTION",
+       "valeur": 1,
+       "mots": [],
+       "satellites": [],
+       "parenthese": ""
+      }
+     ],
+     "noyaux": [
+      {
+       "combinaison": "Glace",
+       "cercles": [
+        {
+         "cercle": "FORME",
+         "valeur": 4,
+         "mots": [],
+         "satellites": [
+          "1|"
+         ],
+         "parenthese": "cube",
+         "primitive": "cube"
+        },
+        {
+         "cercle": "AMPLEUR",
+         "valeur": 4,
+         "mots": [
+          "VOLUME",
+          "METRES",
+          "CUBES"
+         ],
+         "satellites": [],
+         "parenthese": "4 m³ ; une des deux cases"
+        },
+        {
+         "cercle": "IMPACT",
+         "valeur": 10,
+         "mots": [],
+         "satellites": [],
+         "parenthese": "4d4 en moyenne : la case où la chaleur est volée, le froid mord"
+        },
+        {
+         "cercle": "IMPACT",
+         "valeur": 1,
+         "mots": [
+          "MALADRESSE"
+         ],
+         "satellites": [],
+         "parenthese": "qui rate son jet est engourdi, maladroit jusqu'au tour suivant"
+        }
+       ]
+      },
+      {
+       "combinaison": "Feu",
+       "cercles": [
+        {
+         "cercle": "FORME",
+         "valeur": 4,
+         "mots": [],
+         "satellites": [
+          "1|"
+         ],
+         "parenthese": "cube",
+         "primitive": "cube"
+        },
+        {
+         "cercle": "AMPLEUR",
+         "valeur": 4,
+         "mots": [
+          "VOLUME",
+          "METRES",
+          "CUBES"
+         ],
+         "satellites": [],
+         "parenthese": "4 m³ ; une des deux cases"
+        },
+        {
+         "cercle": "IMPACT",
+         "valeur": 10,
+         "mots": [],
+         "satellites": [],
+         "parenthese": "4d4 en moyenne : la case où la chaleur est concentrée, le feu brûle"
+        },
+        {
+         "cercle": "IMPACT",
+         "valeur": 1,
+         "mots": [
+          "FAIBLESSE"
+         ],
+         "satellites": [],
+         "parenthese": "qui rate son jet est accablé de chaleur, affaibli jusqu'au tour suivant"
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "arcane": {
+    "action": "modifier",
+    "consigne": "ajouter après chacun des deux Impacts 10 son état : Impact 1 MALADRESSE après l'Impact du froid (symboles air terre eau eau), Impact 1 FAIBLESSE après l'Impact du feu ; mêmes parenthèses que ci-dessus. Le reste ne change pas (la Quantité 2 reste en Arcane : un seul Noyau y dit les deux zones)."
+   }
+  },
+  {
+   "cle": "elemental-assessor",
+   "jeu": "PF1",
+   "sort": "Jauge élémentaire",
+   "noyau_commun": {
+    "ecole": "Évocation",
+    "hemisphere": "Galombar",
+    "pole": "ténébreux"
+   },
+   "formes_combinees": [
+    {
+     "nom": "Forme combinée Acide sulfurique, Glace, Éclair et Feu",
+     "communs": [
+      {
+       "cercle": "CIBLE",
+       "valeur": 3,
+       "mots": [],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "FORME",
+       "valeur": 1,
+       "mots": [],
+       "satellites": [],
+       "parenthese": "hélice : le rayon de couleurs en spirale",
+       "primitive": "helice"
+      },
+      {
+       "cercle": "DUREE",
+       "valeur": 6,
+       "mots": [
+        "SECONDES"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "LOCALISATION",
+       "valeur": 15,
+       "mots": [
+        "METRES"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "CONDITION",
+       "valeur": 1,
+       "mots": [
+        "PAROLE"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "IMPACT",
+       "valeur": 14,
+       "mots": [],
+       "satellites": [
+        "1|DUREE CHAQUE INSTANTS"
+       ],
+       "parenthese": "l'énergie qui l'a le plus blessée persiste, 4d6 en moyenne à chaque instant"
+      },
+      {
+       "cercle": "INTERACTION",
+       "valeur": 7,
+       "mots": [],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "COSMETIQUE",
+       "valeur": 1,
+       "mots": [
+        "COULEUR"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      }
+     ],
+     "noyaux": [
+      {
+       "combinaison": "Acide sulfurique",
+       "cercles": [
+        {
+         "cercle": "IMPACT",
+         "valeur": 7,
+         "mots": [],
+         "satellites": [],
+         "parenthese": "2d6 en moyenne"
+        }
+       ]
+      },
+      {
+       "combinaison": "Glace",
+       "cercles": [
+        {
+         "cercle": "IMPACT",
+         "valeur": 7,
+         "mots": [],
+         "satellites": [],
+         "parenthese": "2d6 en moyenne"
+        }
+       ]
+      },
+      {
+       "combinaison": "Éclair",
+       "cercles": [
+        {
+         "cercle": "IMPACT",
+         "valeur": 7,
+         "mots": [],
+         "satellites": [],
+         "parenthese": "2d6 en moyenne"
+        }
+       ]
+      },
+      {
+       "combinaison": "Feu",
+       "cercles": [
+        {
+         "cercle": "IMPACT",
+         "valeur": 7,
+         "mots": [],
+         "satellites": [],
+         "parenthese": "2d6 en moyenne"
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "arcane": {
+    "action": "modifier",
+    "consigne": "(1) symboles de l'Impact d'électricité : feu feu feu air (Éclair) au lieu de feu feu air air ; (2) ajouter un cercle Forme hélice (le rayon en spirale) ; (3) Cosmétique : retirer le satellite Forme ligne. Le reste ne change pas."
+   }
+  },
+  {
+   "cle": "torrent-of-elemental-rage",
+   "jeu": "PF1",
+   "sort": "Torrent de rage élémentaire",
+   "noyau_commun": {
+    "ecole": "Évocation",
+    "hemisphere": "Galombar",
+    "pole": "ténébreux"
+   },
+   "formes_combinees": [
+    {
+     "nom": "Forme combinée Feu, Glace, Tempête et Acier",
+     "communs": [
+      {
+       "cercle": "CIBLE",
+       "valeur": "plein",
+       "mots": [],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "FORME",
+       "valeur": 9,
+       "mots": [],
+       "satellites": [
+        "9|AMPLEUR LONGUEUR METRES"
+       ],
+       "parenthese": "cylindre ; satellite Ampleur : 9 m de long (le tourbillon couché)",
+       "primitive": "cylindre"
+      },
+      {
+       "cercle": "FORME",
+       "valeur": 1,
+       "mots": [
+        "AJOUT"
+       ],
+       "satellites": [],
+       "parenthese": "hélice ajoutée à la forme précédente : le tourbillon",
+       "primitive": "helice"
+      },
+      {
+       "cercle": "DUREE",
+       "valeur": 18,
+       "mots": [
+        "SECONDES"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "CONDITION",
+       "valeur": 1,
+       "mots": [
+        "PAROLE",
+        "CONCENTRATION"
+       ],
+       "satellites": [],
+       "parenthese": "le torrent tient tant que l'arcaniste s'y concentre"
+      },
+      {
+       "cercle": "INTERACTION",
+       "valeur": 7,
+       "mots": [],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "COSMETIQUE",
+       "valeur": 2,
+       "mots": [
+        "HURLEMENT"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      }
+     ],
+     "noyaux": [
+      {
+       "combinaison": "Feu",
+       "cercles": [
+        {
+         "cercle": "IMPACT",
+         "valeur": 7,
+         "mots": [],
+         "satellites": [],
+         "parenthese": "2d6 en moyenne"
+        }
+       ]
+      },
+      {
+       "combinaison": "Glace",
+       "cercles": [
+        {
+         "cercle": "IMPACT",
+         "valeur": 7,
+         "mots": [],
+         "satellites": [],
+         "parenthese": "2d6 en moyenne"
+        }
+       ]
+      },
+      {
+       "combinaison": "Tempête",
+       "cercles": [
+        {
+         "cercle": "IMPACT",
+         "valeur": 7,
+         "mots": [],
+         "satellites": [],
+         "parenthese": "2d6 en moyenne"
+        }
+       ]
+      },
+      {
+       "combinaison": "Acier",
+       "cercles": [
+        {
+         "cercle": "IMPACT",
+         "valeur": 7,
+         "mots": [
+          "TRANCHANT"
+         ],
+         "satellites": [
+          "forme:prisme"
+         ],
+         "parenthese": "2d6 en moyenne ; des éclats de métal"
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "arcane": {
+    "action": "modifier",
+    "consigne": "(1) symboles de l'Impact du son : air air eau eau (Tempête) au lieu de feu feu air eau ; (2) Forme ligne + Ampleur 9 m → Forme cylindre avec satellite Ampleur 9 « longueur · mètres » puis Forme hélice « ajout » (cercle Ampleur retiré) ; (3) Condition « parole · concentration » ; (4) Cosmétique : retirer le satellite Forme hélice. Durée 18 s inchangée."
+   }
+  },
+  {
+   "cle": "elemental-confluence",
+   "jeu": "PF2",
+   "sort": "Confluence élémentaire",
+   "noyau_commun": {
+    "ecole": "Invocation",
+    "hemisphere": "Hodolin",
+    "pole": "lumineux"
+   },
+   "formes_combinees": [
+    {
+     "nom": "Forme combinée Foudre et Terre",
+     "communs": [
+      {
+       "cercle": "CIBLE",
+       "valeur": 9,
+       "mots": [
+        "ELEMENTAIRE"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "FORME",
+       "valeur": "plein",
+       "mots": [],
+       "satellites": [
+        "1|"
+       ],
+       "parenthese": "sphère",
+       "primitive": "sphere"
+      },
+      {
+       "cercle": "AMPLEUR",
+       "valeur": 120,
+       "mots": [
+        "VOLUME",
+        "METRES",
+        "CUBES"
+       ],
+       "satellites": [],
+       "parenthese": "119 m³ ; taille d'origine : sphère de 3 m de rayon ; arrondi de 119 à 120"
+      },
+      {
+       "cercle": "DUREE",
+       "valeur": 1,
+       "mots": [
+        "MINUTES"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "LOCALISATION",
+       "valeur": 18,
+       "mots": [
+        "METRES"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "CONDITION",
+       "valeur": 1,
+       "mots": [
+        "PAROLE",
+        "CONCENTRATION"
+       ],
+       "satellites": [],
+       "parenthese": "le sort est maintenu : il tient tant que l'arcaniste se concentre"
+      },
+      {
+       "cercle": "IMPACT",
+       "valeur": 6,
+       "mots": [
+        "PUISSANCE"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "IMPACT",
+       "valeur": "plein",
+       "mots": [
+        "DOMINATION"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "INTERACTION",
+       "valeur": 7,
+       "mots": [],
+       "satellites": [],
+       "parenthese": ""
+      }
+     ],
+     "noyaux": [
+      {
+       "combinaison": "Foudre",
+       "cercles": [
+        {
+         "cercle": "IMPACT",
+         "valeur": 10,
+         "mots": [
+          "FUSION"
+         ],
+         "satellites": [],
+         "parenthese": "4d4 en moyenne de foudre à 6 m autour"
+        }
+       ]
+      },
+      {
+       "combinaison": "Terre",
+       "cercles": [
+        {
+         "cercle": "IMPACT",
+         "valeur": 10,
+         "mots": [
+          "FUSION",
+          "REMPART"
+         ],
+         "satellites": [],
+         "parenthese": "la confluence durcit : 10 retranché aux coups"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "nom": "Forme combinée Foudre et Feu",
+     "communs": [
+      {
+       "cercle": "CIBLE",
+       "valeur": 9,
+       "mots": [
+        "ELEMENTAIRE"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "FORME",
+       "valeur": "plein",
+       "mots": [],
+       "satellites": [
+        "1|"
+       ],
+       "parenthese": "sphère",
+       "primitive": "sphere"
+      },
+      {
+       "cercle": "AMPLEUR",
+       "valeur": 120,
+       "mots": [
+        "VOLUME",
+        "METRES",
+        "CUBES"
+       ],
+       "satellites": [],
+       "parenthese": "119 m³ ; taille d'origine : sphère de 3 m de rayon ; arrondi de 119 à 120"
+      },
+      {
+       "cercle": "DUREE",
+       "valeur": 1,
+       "mots": [
+        "MINUTES"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "LOCALISATION",
+       "valeur": 18,
+       "mots": [
+        "METRES"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "CONDITION",
+       "valeur": 1,
+       "mots": [
+        "PAROLE",
+        "CONCENTRATION"
+       ],
+       "satellites": [],
+       "parenthese": "le sort est maintenu : il tient tant que l'arcaniste se concentre"
+      },
+      {
+       "cercle": "IMPACT",
+       "valeur": 6,
+       "mots": [
+        "PUISSANCE"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "IMPACT",
+       "valeur": "plein",
+       "mots": [
+        "DOMINATION"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "INTERACTION",
+       "valeur": 7,
+       "mots": [],
+       "satellites": [],
+       "parenthese": ""
+      }
+     ],
+     "noyaux": [
+      {
+       "combinaison": "Foudre",
+       "cercles": [
+        {
+         "cercle": "IMPACT",
+         "valeur": 10,
+         "mots": [
+          "FUSION"
+         ],
+         "satellites": [],
+         "parenthese": "4d4 en moyenne de foudre à 6 m autour"
+        }
+       ]
+      },
+      {
+       "combinaison": "Feu",
+       "cercles": [
+        {
+         "cercle": "IMPACT",
+         "valeur": 4,
+         "mots": [
+          "FUSION"
+         ],
+         "satellites": [],
+         "parenthese": "1d6 en moyenne de feu persistant à ceux qui s'y trouvent"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "nom": "Forme combinée Foudre et Acier",
+     "communs": [
+      {
+       "cercle": "CIBLE",
+       "valeur": 9,
+       "mots": [
+        "ELEMENTAIRE"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "FORME",
+       "valeur": "plein",
+       "mots": [],
+       "satellites": [
+        "1|"
+       ],
+       "parenthese": "sphère",
+       "primitive": "sphere"
+      },
+      {
+       "cercle": "AMPLEUR",
+       "valeur": 120,
+       "mots": [
+        "VOLUME",
+        "METRES",
+        "CUBES"
+       ],
+       "satellites": [],
+       "parenthese": "119 m³ ; taille d'origine : sphère de 3 m de rayon ; arrondi de 119 à 120"
+      },
+      {
+       "cercle": "DUREE",
+       "valeur": 1,
+       "mots": [
+        "MINUTES"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "LOCALISATION",
+       "valeur": 18,
+       "mots": [
+        "METRES"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "CONDITION",
+       "valeur": 1,
+       "mots": [
+        "PAROLE",
+        "CONCENTRATION"
+       ],
+       "satellites": [],
+       "parenthese": "le sort est maintenu : il tient tant que l'arcaniste se concentre"
+      },
+      {
+       "cercle": "IMPACT",
+       "valeur": 6,
+       "mots": [
+        "PUISSANCE"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "IMPACT",
+       "valeur": "plein",
+       "mots": [
+        "DOMINATION"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "INTERACTION",
+       "valeur": 7,
+       "mots": [],
+       "satellites": [],
+       "parenthese": ""
+      }
+     ],
+     "noyaux": [
+      {
+       "combinaison": "Foudre",
+       "cercles": [
+        {
+         "cercle": "IMPACT",
+         "valeur": 10,
+         "mots": [
+          "FUSION"
+         ],
+         "satellites": [],
+         "parenthese": "4d4 en moyenne de foudre à 6 m autour"
+        }
+       ]
+      },
+      {
+       "combinaison": "Acier",
+       "cercles": [
+        {
+         "cercle": "IMPACT",
+         "valeur": 7,
+         "mots": [
+          "FUSION"
+         ],
+         "satellites": [
+          "forme:prisme"
+         ],
+         "parenthese": "2d6 en moyenne d'éclats tranchants à ceux qui s'y trouvent"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "nom": "Forme combinée Foudre et Eau",
+     "communs": [
+      {
+       "cercle": "CIBLE",
+       "valeur": 9,
+       "mots": [
+        "ELEMENTAIRE"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "FORME",
+       "valeur": "plein",
+       "mots": [],
+       "satellites": [
+        "1|"
+       ],
+       "parenthese": "sphère",
+       "primitive": "sphere"
+      },
+      {
+       "cercle": "AMPLEUR",
+       "valeur": 120,
+       "mots": [
+        "VOLUME",
+        "METRES",
+        "CUBES"
+       ],
+       "satellites": [],
+       "parenthese": "119 m³ ; taille d'origine : sphère de 3 m de rayon ; arrondi de 119 à 120"
+      },
+      {
+       "cercle": "DUREE",
+       "valeur": 1,
+       "mots": [
+        "MINUTES"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "LOCALISATION",
+       "valeur": 18,
+       "mots": [
+        "METRES"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "CONDITION",
+       "valeur": 1,
+       "mots": [
+        "PAROLE",
+        "CONCENTRATION"
+       ],
+       "satellites": [],
+       "parenthese": "le sort est maintenu : il tient tant que l'arcaniste se concentre"
+      },
+      {
+       "cercle": "IMPACT",
+       "valeur": 6,
+       "mots": [
+        "PUISSANCE"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "IMPACT",
+       "valeur": "plein",
+       "mots": [
+        "DOMINATION"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "INTERACTION",
+       "valeur": 7,
+       "mots": [],
+       "satellites": [],
+       "parenthese": ""
+      }
+     ],
+     "noyaux": [
+      {
+       "combinaison": "Foudre",
+       "cercles": [
+        {
+         "cercle": "IMPACT",
+         "valeur": 10,
+         "mots": [
+          "FUSION"
+         ],
+         "satellites": [],
+         "parenthese": "4d4 en moyenne de foudre à 6 m autour"
+        }
+       ]
+      },
+      {
+       "combinaison": "Eau",
+       "cercles": [
+        {
+         "cercle": "IMPACT",
+         "valeur": 14,
+         "mots": [
+          "FUSION",
+          "LANCER"
+         ],
+         "satellites": [],
+         "parenthese": "4d6 en moyenne : un jet d'eau jusqu'à 18 m"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "nom": "Forme combinée Foudre et Bois",
+     "communs": [
+      {
+       "cercle": "CIBLE",
+       "valeur": 9,
+       "mots": [
+        "ELEMENTAIRE"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "FORME",
+       "valeur": "plein",
+       "mots": [],
+       "satellites": [
+        "1|"
+       ],
+       "parenthese": "sphère",
+       "primitive": "sphere"
+      },
+      {
+       "cercle": "AMPLEUR",
+       "valeur": 120,
+       "mots": [
+        "VOLUME",
+        "METRES",
+        "CUBES"
+       ],
+       "satellites": [],
+       "parenthese": "119 m³ ; taille d'origine : sphère de 3 m de rayon ; arrondi de 119 à 120"
+      },
+      {
+       "cercle": "DUREE",
+       "valeur": 1,
+       "mots": [
+        "MINUTES"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "LOCALISATION",
+       "valeur": 18,
+       "mots": [
+        "METRES"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "CONDITION",
+       "valeur": 1,
+       "mots": [
+        "PAROLE",
+        "CONCENTRATION"
+       ],
+       "satellites": [],
+       "parenthese": "le sort est maintenu : il tient tant que l'arcaniste se concentre"
+      },
+      {
+       "cercle": "IMPACT",
+       "valeur": 6,
+       "mots": [
+        "PUISSANCE"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "IMPACT",
+       "valeur": "plein",
+       "mots": [
+        "DOMINATION"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "INTERACTION",
+       "valeur": 7,
+       "mots": [],
+       "satellites": [],
+       "parenthese": ""
+      }
+     ],
+     "noyaux": [
+      {
+       "combinaison": "Foudre",
+       "cercles": [
+        {
+         "cercle": "IMPACT",
+         "valeur": 10,
+         "mots": [
+          "FUSION"
+         ],
+         "satellites": [],
+         "parenthese": "4d4 en moyenne de foudre à 6 m autour"
+        }
+       ]
+      },
+      {
+       "combinaison": "Bois",
+       "cercles": [
+        {
+         "cercle": "IMPACT",
+         "valeur": "plein",
+         "mots": [
+          "FUSION",
+          "ENTRAVE"
+         ],
+         "satellites": [],
+         "parenthese": "racines et souches encombrent le sol"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "nom": "Forme combinée Terre et Feu",
+     "communs": [
+      {
+       "cercle": "CIBLE",
+       "valeur": 9,
+       "mots": [
+        "ELEMENTAIRE"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "FORME",
+       "valeur": "plein",
+       "mots": [],
+       "satellites": [
+        "1|"
+       ],
+       "parenthese": "sphère",
+       "primitive": "sphere"
+      },
+      {
+       "cercle": "AMPLEUR",
+       "valeur": 120,
+       "mots": [
+        "VOLUME",
+        "METRES",
+        "CUBES"
+       ],
+       "satellites": [],
+       "parenthese": "119 m³ ; taille d'origine : sphère de 3 m de rayon ; arrondi de 119 à 120"
+      },
+      {
+       "cercle": "DUREE",
+       "valeur": 1,
+       "mots": [
+        "MINUTES"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "LOCALISATION",
+       "valeur": 18,
+       "mots": [
+        "METRES"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "CONDITION",
+       "valeur": 1,
+       "mots": [
+        "PAROLE",
+        "CONCENTRATION"
+       ],
+       "satellites": [],
+       "parenthese": "le sort est maintenu : il tient tant que l'arcaniste se concentre"
+      },
+      {
+       "cercle": "IMPACT",
+       "valeur": 6,
+       "mots": [
+        "PUISSANCE"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "IMPACT",
+       "valeur": "plein",
+       "mots": [
+        "DOMINATION"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "INTERACTION",
+       "valeur": 7,
+       "mots": [],
+       "satellites": [],
+       "parenthese": ""
+      }
+     ],
+     "noyaux": [
+      {
+       "combinaison": "Terre",
+       "cercles": [
+        {
+         "cercle": "IMPACT",
+         "valeur": 10,
+         "mots": [
+          "FUSION",
+          "REMPART"
+         ],
+         "satellites": [],
+         "parenthese": "la confluence durcit : 10 retranché aux coups"
+        }
+       ]
+      },
+      {
+       "combinaison": "Feu",
+       "cercles": [
+        {
+         "cercle": "IMPACT",
+         "valeur": 4,
+         "mots": [
+          "FUSION"
+         ],
+         "satellites": [],
+         "parenthese": "1d6 en moyenne de feu persistant à ceux qui s'y trouvent"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "nom": "Forme combinée Terre et Acier",
+     "communs": [
+      {
+       "cercle": "CIBLE",
+       "valeur": 9,
+       "mots": [
+        "ELEMENTAIRE"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "FORME",
+       "valeur": "plein",
+       "mots": [],
+       "satellites": [
+        "1|"
+       ],
+       "parenthese": "sphère",
+       "primitive": "sphere"
+      },
+      {
+       "cercle": "AMPLEUR",
+       "valeur": 120,
+       "mots": [
+        "VOLUME",
+        "METRES",
+        "CUBES"
+       ],
+       "satellites": [],
+       "parenthese": "119 m³ ; taille d'origine : sphère de 3 m de rayon ; arrondi de 119 à 120"
+      },
+      {
+       "cercle": "DUREE",
+       "valeur": 1,
+       "mots": [
+        "MINUTES"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "LOCALISATION",
+       "valeur": 18,
+       "mots": [
+        "METRES"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "CONDITION",
+       "valeur": 1,
+       "mots": [
+        "PAROLE",
+        "CONCENTRATION"
+       ],
+       "satellites": [],
+       "parenthese": "le sort est maintenu : il tient tant que l'arcaniste se concentre"
+      },
+      {
+       "cercle": "IMPACT",
+       "valeur": 6,
+       "mots": [
+        "PUISSANCE"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "IMPACT",
+       "valeur": "plein",
+       "mots": [
+        "DOMINATION"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "INTERACTION",
+       "valeur": 7,
+       "mots": [],
+       "satellites": [],
+       "parenthese": ""
+      }
+     ],
+     "noyaux": [
+      {
+       "combinaison": "Terre",
+       "cercles": [
+        {
+         "cercle": "IMPACT",
+         "valeur": 10,
+         "mots": [
+          "FUSION",
+          "REMPART"
+         ],
+         "satellites": [],
+         "parenthese": "la confluence durcit : 10 retranché aux coups"
+        }
+       ]
+      },
+      {
+       "combinaison": "Acier",
+       "cercles": [
+        {
+         "cercle": "IMPACT",
+         "valeur": 7,
+         "mots": [
+          "FUSION"
+         ],
+         "satellites": [
+          "forme:prisme"
+         ],
+         "parenthese": "2d6 en moyenne d'éclats tranchants à ceux qui s'y trouvent"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "nom": "Forme combinée Terre et Eau",
+     "communs": [
+      {
+       "cercle": "CIBLE",
+       "valeur": 9,
+       "mots": [
+        "ELEMENTAIRE"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "FORME",
+       "valeur": "plein",
+       "mots": [],
+       "satellites": [
+        "1|"
+       ],
+       "parenthese": "sphère",
+       "primitive": "sphere"
+      },
+      {
+       "cercle": "AMPLEUR",
+       "valeur": 120,
+       "mots": [
+        "VOLUME",
+        "METRES",
+        "CUBES"
+       ],
+       "satellites": [],
+       "parenthese": "119 m³ ; taille d'origine : sphère de 3 m de rayon ; arrondi de 119 à 120"
+      },
+      {
+       "cercle": "DUREE",
+       "valeur": 1,
+       "mots": [
+        "MINUTES"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "LOCALISATION",
+       "valeur": 18,
+       "mots": [
+        "METRES"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "CONDITION",
+       "valeur": 1,
+       "mots": [
+        "PAROLE",
+        "CONCENTRATION"
+       ],
+       "satellites": [],
+       "parenthese": "le sort est maintenu : il tient tant que l'arcaniste se concentre"
+      },
+      {
+       "cercle": "IMPACT",
+       "valeur": 6,
+       "mots": [
+        "PUISSANCE"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "IMPACT",
+       "valeur": "plein",
+       "mots": [
+        "DOMINATION"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "INTERACTION",
+       "valeur": 7,
+       "mots": [],
+       "satellites": [],
+       "parenthese": ""
+      }
+     ],
+     "noyaux": [
+      {
+       "combinaison": "Terre",
+       "cercles": [
+        {
+         "cercle": "IMPACT",
+         "valeur": 10,
+         "mots": [
+          "FUSION",
+          "REMPART"
+         ],
+         "satellites": [],
+         "parenthese": "la confluence durcit : 10 retranché aux coups"
+        }
+       ]
+      },
+      {
+       "combinaison": "Eau",
+       "cercles": [
+        {
+         "cercle": "IMPACT",
+         "valeur": 14,
+         "mots": [
+          "FUSION",
+          "LANCER"
+         ],
+         "satellites": [],
+         "parenthese": "4d6 en moyenne : un jet d'eau jusqu'à 18 m"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "nom": "Forme combinée Terre et Bois",
+     "communs": [
+      {
+       "cercle": "CIBLE",
+       "valeur": 9,
+       "mots": [
+        "ELEMENTAIRE"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "FORME",
+       "valeur": "plein",
+       "mots": [],
+       "satellites": [
+        "1|"
+       ],
+       "parenthese": "sphère",
+       "primitive": "sphere"
+      },
+      {
+       "cercle": "AMPLEUR",
+       "valeur": 120,
+       "mots": [
+        "VOLUME",
+        "METRES",
+        "CUBES"
+       ],
+       "satellites": [],
+       "parenthese": "119 m³ ; taille d'origine : sphère de 3 m de rayon ; arrondi de 119 à 120"
+      },
+      {
+       "cercle": "DUREE",
+       "valeur": 1,
+       "mots": [
+        "MINUTES"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "LOCALISATION",
+       "valeur": 18,
+       "mots": [
+        "METRES"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "CONDITION",
+       "valeur": 1,
+       "mots": [
+        "PAROLE",
+        "CONCENTRATION"
+       ],
+       "satellites": [],
+       "parenthese": "le sort est maintenu : il tient tant que l'arcaniste se concentre"
+      },
+      {
+       "cercle": "IMPACT",
+       "valeur": 6,
+       "mots": [
+        "PUISSANCE"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "IMPACT",
+       "valeur": "plein",
+       "mots": [
+        "DOMINATION"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "INTERACTION",
+       "valeur": 7,
+       "mots": [],
+       "satellites": [],
+       "parenthese": ""
+      }
+     ],
+     "noyaux": [
+      {
+       "combinaison": "Terre",
+       "cercles": [
+        {
+         "cercle": "IMPACT",
+         "valeur": 10,
+         "mots": [
+          "FUSION",
+          "REMPART"
+         ],
+         "satellites": [],
+         "parenthese": "la confluence durcit : 10 retranché aux coups"
+        }
+       ]
+      },
+      {
+       "combinaison": "Bois",
+       "cercles": [
+        {
+         "cercle": "IMPACT",
+         "valeur": "plein",
+         "mots": [
+          "FUSION",
+          "ENTRAVE"
+         ],
+         "satellites": [],
+         "parenthese": "racines et souches encombrent le sol"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "nom": "Forme combinée Feu et Acier",
+     "communs": [
+      {
+       "cercle": "CIBLE",
+       "valeur": 9,
+       "mots": [
+        "ELEMENTAIRE"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "FORME",
+       "valeur": "plein",
+       "mots": [],
+       "satellites": [
+        "1|"
+       ],
+       "parenthese": "sphère",
+       "primitive": "sphere"
+      },
+      {
+       "cercle": "AMPLEUR",
+       "valeur": 120,
+       "mots": [
+        "VOLUME",
+        "METRES",
+        "CUBES"
+       ],
+       "satellites": [],
+       "parenthese": "119 m³ ; taille d'origine : sphère de 3 m de rayon ; arrondi de 119 à 120"
+      },
+      {
+       "cercle": "DUREE",
+       "valeur": 1,
+       "mots": [
+        "MINUTES"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "LOCALISATION",
+       "valeur": 18,
+       "mots": [
+        "METRES"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "CONDITION",
+       "valeur": 1,
+       "mots": [
+        "PAROLE",
+        "CONCENTRATION"
+       ],
+       "satellites": [],
+       "parenthese": "le sort est maintenu : il tient tant que l'arcaniste se concentre"
+      },
+      {
+       "cercle": "IMPACT",
+       "valeur": 6,
+       "mots": [
+        "PUISSANCE"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "IMPACT",
+       "valeur": "plein",
+       "mots": [
+        "DOMINATION"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "INTERACTION",
+       "valeur": 7,
+       "mots": [],
+       "satellites": [],
+       "parenthese": ""
+      }
+     ],
+     "noyaux": [
+      {
+       "combinaison": "Feu",
+       "cercles": [
+        {
+         "cercle": "IMPACT",
+         "valeur": 4,
+         "mots": [
+          "FUSION"
+         ],
+         "satellites": [],
+         "parenthese": "1d6 en moyenne de feu persistant à ceux qui s'y trouvent"
+        }
+       ]
+      },
+      {
+       "combinaison": "Acier",
+       "cercles": [
+        {
+         "cercle": "IMPACT",
+         "valeur": 7,
+         "mots": [
+          "FUSION"
+         ],
+         "satellites": [
+          "forme:prisme"
+         ],
+         "parenthese": "2d6 en moyenne d'éclats tranchants à ceux qui s'y trouvent"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "nom": "Forme combinée Feu et Eau",
+     "communs": [
+      {
+       "cercle": "CIBLE",
+       "valeur": 9,
+       "mots": [
+        "ELEMENTAIRE"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "FORME",
+       "valeur": "plein",
+       "mots": [],
+       "satellites": [
+        "1|"
+       ],
+       "parenthese": "sphère",
+       "primitive": "sphere"
+      },
+      {
+       "cercle": "AMPLEUR",
+       "valeur": 120,
+       "mots": [
+        "VOLUME",
+        "METRES",
+        "CUBES"
+       ],
+       "satellites": [],
+       "parenthese": "119 m³ ; taille d'origine : sphère de 3 m de rayon ; arrondi de 119 à 120"
+      },
+      {
+       "cercle": "DUREE",
+       "valeur": 1,
+       "mots": [
+        "MINUTES"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "LOCALISATION",
+       "valeur": 18,
+       "mots": [
+        "METRES"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "CONDITION",
+       "valeur": 1,
+       "mots": [
+        "PAROLE",
+        "CONCENTRATION"
+       ],
+       "satellites": [],
+       "parenthese": "le sort est maintenu : il tient tant que l'arcaniste se concentre"
+      },
+      {
+       "cercle": "IMPACT",
+       "valeur": 6,
+       "mots": [
+        "PUISSANCE"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "IMPACT",
+       "valeur": "plein",
+       "mots": [
+        "DOMINATION"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "INTERACTION",
+       "valeur": 7,
+       "mots": [],
+       "satellites": [],
+       "parenthese": ""
+      }
+     ],
+     "noyaux": [
+      {
+       "combinaison": "Feu",
+       "cercles": [
+        {
+         "cercle": "IMPACT",
+         "valeur": 4,
+         "mots": [
+          "FUSION"
+         ],
+         "satellites": [],
+         "parenthese": "1d6 en moyenne de feu persistant à ceux qui s'y trouvent"
+        }
+       ]
+      },
+      {
+       "combinaison": "Eau",
+       "cercles": [
+        {
+         "cercle": "IMPACT",
+         "valeur": 14,
+         "mots": [
+          "FUSION",
+          "LANCER"
+         ],
+         "satellites": [],
+         "parenthese": "4d6 en moyenne : un jet d'eau jusqu'à 18 m"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "nom": "Forme combinée Feu et Bois",
+     "communs": [
+      {
+       "cercle": "CIBLE",
+       "valeur": 9,
+       "mots": [
+        "ELEMENTAIRE"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "FORME",
+       "valeur": "plein",
+       "mots": [],
+       "satellites": [
+        "1|"
+       ],
+       "parenthese": "sphère",
+       "primitive": "sphere"
+      },
+      {
+       "cercle": "AMPLEUR",
+       "valeur": 120,
+       "mots": [
+        "VOLUME",
+        "METRES",
+        "CUBES"
+       ],
+       "satellites": [],
+       "parenthese": "119 m³ ; taille d'origine : sphère de 3 m de rayon ; arrondi de 119 à 120"
+      },
+      {
+       "cercle": "DUREE",
+       "valeur": 1,
+       "mots": [
+        "MINUTES"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "LOCALISATION",
+       "valeur": 18,
+       "mots": [
+        "METRES"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "CONDITION",
+       "valeur": 1,
+       "mots": [
+        "PAROLE",
+        "CONCENTRATION"
+       ],
+       "satellites": [],
+       "parenthese": "le sort est maintenu : il tient tant que l'arcaniste se concentre"
+      },
+      {
+       "cercle": "IMPACT",
+       "valeur": 6,
+       "mots": [
+        "PUISSANCE"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "IMPACT",
+       "valeur": "plein",
+       "mots": [
+        "DOMINATION"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "INTERACTION",
+       "valeur": 7,
+       "mots": [],
+       "satellites": [],
+       "parenthese": ""
+      }
+     ],
+     "noyaux": [
+      {
+       "combinaison": "Feu",
+       "cercles": [
+        {
+         "cercle": "IMPACT",
+         "valeur": 4,
+         "mots": [
+          "FUSION"
+         ],
+         "satellites": [],
+         "parenthese": "1d6 en moyenne de feu persistant à ceux qui s'y trouvent"
+        }
+       ]
+      },
+      {
+       "combinaison": "Bois",
+       "cercles": [
+        {
+         "cercle": "IMPACT",
+         "valeur": "plein",
+         "mots": [
+          "FUSION",
+          "ENTRAVE"
+         ],
+         "satellites": [],
+         "parenthese": "racines et souches encombrent le sol"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "nom": "Forme combinée Acier et Eau",
+     "communs": [
+      {
+       "cercle": "CIBLE",
+       "valeur": 9,
+       "mots": [
+        "ELEMENTAIRE"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "FORME",
+       "valeur": "plein",
+       "mots": [],
+       "satellites": [
+        "1|"
+       ],
+       "parenthese": "sphère",
+       "primitive": "sphere"
+      },
+      {
+       "cercle": "AMPLEUR",
+       "valeur": 120,
+       "mots": [
+        "VOLUME",
+        "METRES",
+        "CUBES"
+       ],
+       "satellites": [],
+       "parenthese": "119 m³ ; taille d'origine : sphère de 3 m de rayon ; arrondi de 119 à 120"
+      },
+      {
+       "cercle": "DUREE",
+       "valeur": 1,
+       "mots": [
+        "MINUTES"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "LOCALISATION",
+       "valeur": 18,
+       "mots": [
+        "METRES"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "CONDITION",
+       "valeur": 1,
+       "mots": [
+        "PAROLE",
+        "CONCENTRATION"
+       ],
+       "satellites": [],
+       "parenthese": "le sort est maintenu : il tient tant que l'arcaniste se concentre"
+      },
+      {
+       "cercle": "IMPACT",
+       "valeur": 6,
+       "mots": [
+        "PUISSANCE"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "IMPACT",
+       "valeur": "plein",
+       "mots": [
+        "DOMINATION"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "INTERACTION",
+       "valeur": 7,
+       "mots": [],
+       "satellites": [],
+       "parenthese": ""
+      }
+     ],
+     "noyaux": [
+      {
+       "combinaison": "Acier",
+       "cercles": [
+        {
+         "cercle": "IMPACT",
+         "valeur": 7,
+         "mots": [
+          "FUSION"
+         ],
+         "satellites": [
+          "forme:prisme"
+         ],
+         "parenthese": "2d6 en moyenne d'éclats tranchants à ceux qui s'y trouvent"
+        }
+       ]
+      },
+      {
+       "combinaison": "Eau",
+       "cercles": [
+        {
+         "cercle": "IMPACT",
+         "valeur": 14,
+         "mots": [
+          "FUSION",
+          "LANCER"
+         ],
+         "satellites": [],
+         "parenthese": "4d6 en moyenne : un jet d'eau jusqu'à 18 m"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "nom": "Forme combinée Acier et Bois",
+     "communs": [
+      {
+       "cercle": "CIBLE",
+       "valeur": 9,
+       "mots": [
+        "ELEMENTAIRE"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "FORME",
+       "valeur": "plein",
+       "mots": [],
+       "satellites": [
+        "1|"
+       ],
+       "parenthese": "sphère",
+       "primitive": "sphere"
+      },
+      {
+       "cercle": "AMPLEUR",
+       "valeur": 120,
+       "mots": [
+        "VOLUME",
+        "METRES",
+        "CUBES"
+       ],
+       "satellites": [],
+       "parenthese": "119 m³ ; taille d'origine : sphère de 3 m de rayon ; arrondi de 119 à 120"
+      },
+      {
+       "cercle": "DUREE",
+       "valeur": 1,
+       "mots": [
+        "MINUTES"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "LOCALISATION",
+       "valeur": 18,
+       "mots": [
+        "METRES"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "CONDITION",
+       "valeur": 1,
+       "mots": [
+        "PAROLE",
+        "CONCENTRATION"
+       ],
+       "satellites": [],
+       "parenthese": "le sort est maintenu : il tient tant que l'arcaniste se concentre"
+      },
+      {
+       "cercle": "IMPACT",
+       "valeur": 6,
+       "mots": [
+        "PUISSANCE"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "IMPACT",
+       "valeur": "plein",
+       "mots": [
+        "DOMINATION"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "INTERACTION",
+       "valeur": 7,
+       "mots": [],
+       "satellites": [],
+       "parenthese": ""
+      }
+     ],
+     "noyaux": [
+      {
+       "combinaison": "Acier",
+       "cercles": [
+        {
+         "cercle": "IMPACT",
+         "valeur": 7,
+         "mots": [
+          "FUSION"
+         ],
+         "satellites": [
+          "forme:prisme"
+         ],
+         "parenthese": "2d6 en moyenne d'éclats tranchants à ceux qui s'y trouvent"
+        }
+       ]
+      },
+      {
+       "combinaison": "Bois",
+       "cercles": [
+        {
+         "cercle": "IMPACT",
+         "valeur": "plein",
+         "mots": [
+          "FUSION",
+          "ENTRAVE"
+         ],
+         "satellites": [],
+         "parenthese": "racines et souches encombrent le sol"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "nom": "Forme combinée Eau et Bois",
+     "communs": [
+      {
+       "cercle": "CIBLE",
+       "valeur": 9,
+       "mots": [
+        "ELEMENTAIRE"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "FORME",
+       "valeur": "plein",
+       "mots": [],
+       "satellites": [
+        "1|"
+       ],
+       "parenthese": "sphère",
+       "primitive": "sphere"
+      },
+      {
+       "cercle": "AMPLEUR",
+       "valeur": 120,
+       "mots": [
+        "VOLUME",
+        "METRES",
+        "CUBES"
+       ],
+       "satellites": [],
+       "parenthese": "119 m³ ; taille d'origine : sphère de 3 m de rayon ; arrondi de 119 à 120"
+      },
+      {
+       "cercle": "DUREE",
+       "valeur": 1,
+       "mots": [
+        "MINUTES"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "LOCALISATION",
+       "valeur": 18,
+       "mots": [
+        "METRES"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "CONDITION",
+       "valeur": 1,
+       "mots": [
+        "PAROLE",
+        "CONCENTRATION"
+       ],
+       "satellites": [],
+       "parenthese": "le sort est maintenu : il tient tant que l'arcaniste se concentre"
+      },
+      {
+       "cercle": "IMPACT",
+       "valeur": 6,
+       "mots": [
+        "PUISSANCE"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "IMPACT",
+       "valeur": "plein",
+       "mots": [
+        "DOMINATION"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "INTERACTION",
+       "valeur": 7,
+       "mots": [],
+       "satellites": [],
+       "parenthese": ""
+      }
+     ],
+     "noyaux": [
+      {
+       "combinaison": "Eau",
+       "cercles": [
+        {
+         "cercle": "IMPACT",
+         "valeur": 14,
+         "mots": [
+          "FUSION",
+          "LANCER"
+         ],
+         "satellites": [],
+         "parenthese": "4d6 en moyenne : un jet d'eau jusqu'à 18 m"
+        }
+       ]
+      },
+      {
+       "combinaison": "Bois",
+       "cercles": [
+        {
+         "cercle": "IMPACT",
+         "valeur": "plein",
+         "mots": [
+          "FUSION",
+          "ENTRAVE"
+         ],
+         "satellites": [],
+         "parenthese": "racines et souches encombrent le sol"
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "arcane": {
+    "action": "remplacer",
+    "consigne": "les 6 formes d'Arcane actuelles (Air, Terre, Feu, Métal, Eau, Bois) sont retirées et remplacées par les 15 formes ci-dessous (Noyau d'Arcane inchangé : Invoquer · trame +)",
+    "formes": [
+     {
+      "nom": "Élémentaires air et terre",
+      "cercles": [
+       {
+        "cercle": "CIBLE",
+        "valeur": 9,
+        "mots": [
+         "ELEMENTAIRE"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "FORME",
+        "valeur": "plein",
+        "mots": [],
+        "satellites": [
+         "1|"
+        ],
+        "parenthese": "sphère",
+        "primitive": "sphere"
+       },
+       {
+        "cercle": "AMPLEUR",
+        "valeur": 120,
+        "mots": [
+         "VOLUME",
+         "METRES",
+         "CUBES"
+        ],
+        "satellites": [],
+        "parenthese": "119 m³ ; taille d'origine : sphère de 3 m de rayon ; arrondi de 119 à 120"
+       },
+       {
+        "cercle": "DUREE",
+        "valeur": 1,
+        "mots": [
+         "MINUTES"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "LOCALISATION",
+        "valeur": 18,
+        "mots": [
+         "METRES"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "CONDITION",
+        "valeur": 1,
+        "mots": [
+         "PAROLE",
+         "CONCENTRATION"
+        ],
+        "satellites": [],
+        "parenthese": "le sort est maintenu : il tient tant que l'arcaniste se concentre"
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 6,
+        "mots": [
+         "PUISSANCE"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": "plein",
+        "mots": [
+         "DOMINATION"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 10,
+        "mots": [
+         "FUSION"
+        ],
+        "satellites": [
+         "sym:feu",
+         "sym:feu",
+         "sym:air",
+         "sym:air"
+        ],
+        "parenthese": "4d4 en moyenne de foudre à 6 m autour"
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 10,
+        "mots": [
+         "FUSION",
+         "REMPART"
+        ],
+        "satellites": [
+         "sym:terre"
+        ],
+        "parenthese": "la confluence durcit : 10 retranché aux coups"
+       },
+       {
+        "cercle": "INTERACTION",
+        "valeur": 7,
+        "mots": [],
+        "satellites": [],
+        "parenthese": ""
+       }
+      ]
+     },
+     {
+      "nom": "Élémentaires air et feu",
+      "cercles": [
+       {
+        "cercle": "CIBLE",
+        "valeur": 9,
+        "mots": [
+         "ELEMENTAIRE"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "FORME",
+        "valeur": "plein",
+        "mots": [],
+        "satellites": [
+         "1|"
+        ],
+        "parenthese": "sphère",
+        "primitive": "sphere"
+       },
+       {
+        "cercle": "AMPLEUR",
+        "valeur": 120,
+        "mots": [
+         "VOLUME",
+         "METRES",
+         "CUBES"
+        ],
+        "satellites": [],
+        "parenthese": "119 m³ ; taille d'origine : sphère de 3 m de rayon ; arrondi de 119 à 120"
+       },
+       {
+        "cercle": "DUREE",
+        "valeur": 1,
+        "mots": [
+         "MINUTES"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "LOCALISATION",
+        "valeur": 18,
+        "mots": [
+         "METRES"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "CONDITION",
+        "valeur": 1,
+        "mots": [
+         "PAROLE",
+         "CONCENTRATION"
+        ],
+        "satellites": [],
+        "parenthese": "le sort est maintenu : il tient tant que l'arcaniste se concentre"
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 6,
+        "mots": [
+         "PUISSANCE"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": "plein",
+        "mots": [
+         "DOMINATION"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 10,
+        "mots": [
+         "FUSION"
+        ],
+        "satellites": [
+         "sym:feu",
+         "sym:feu",
+         "sym:air",
+         "sym:air"
+        ],
+        "parenthese": "4d4 en moyenne de foudre à 6 m autour"
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 4,
+        "mots": [
+         "FUSION"
+        ],
+        "satellites": [
+         "sym:feu"
+        ],
+        "parenthese": "1d6 en moyenne de feu persistant à ceux qui s'y trouvent"
+       },
+       {
+        "cercle": "INTERACTION",
+        "valeur": 7,
+        "mots": [],
+        "satellites": [],
+        "parenthese": ""
+       }
+      ]
+     },
+     {
+      "nom": "Élémentaires air et métal",
+      "cercles": [
+       {
+        "cercle": "CIBLE",
+        "valeur": 9,
+        "mots": [
+         "ELEMENTAIRE"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "FORME",
+        "valeur": "plein",
+        "mots": [],
+        "satellites": [
+         "1|"
+        ],
+        "parenthese": "sphère",
+        "primitive": "sphere"
+       },
+       {
+        "cercle": "AMPLEUR",
+        "valeur": 120,
+        "mots": [
+         "VOLUME",
+         "METRES",
+         "CUBES"
+        ],
+        "satellites": [],
+        "parenthese": "119 m³ ; taille d'origine : sphère de 3 m de rayon ; arrondi de 119 à 120"
+       },
+       {
+        "cercle": "DUREE",
+        "valeur": 1,
+        "mots": [
+         "MINUTES"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "LOCALISATION",
+        "valeur": 18,
+        "mots": [
+         "METRES"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "CONDITION",
+        "valeur": 1,
+        "mots": [
+         "PAROLE",
+         "CONCENTRATION"
+        ],
+        "satellites": [],
+        "parenthese": "le sort est maintenu : il tient tant que l'arcaniste se concentre"
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 6,
+        "mots": [
+         "PUISSANCE"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": "plein",
+        "mots": [
+         "DOMINATION"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 10,
+        "mots": [
+         "FUSION"
+        ],
+        "satellites": [
+         "sym:feu",
+         "sym:feu",
+         "sym:air",
+         "sym:air"
+        ],
+        "parenthese": "4d4 en moyenne de foudre à 6 m autour"
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 7,
+        "mots": [
+         "FUSION"
+        ],
+        "satellites": [
+         "forme:prisme",
+         "sym:feu",
+         "sym:air",
+         "sym:terre",
+         "sym:terre"
+        ],
+        "parenthese": "2d6 en moyenne d'éclats tranchants à ceux qui s'y trouvent"
+       },
+       {
+        "cercle": "INTERACTION",
+        "valeur": 7,
+        "mots": [],
+        "satellites": [],
+        "parenthese": ""
+       }
+      ]
+     },
+     {
+      "nom": "Élémentaires air et eau",
+      "cercles": [
+       {
+        "cercle": "CIBLE",
+        "valeur": 9,
+        "mots": [
+         "ELEMENTAIRE"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "FORME",
+        "valeur": "plein",
+        "mots": [],
+        "satellites": [
+         "1|"
+        ],
+        "parenthese": "sphère",
+        "primitive": "sphere"
+       },
+       {
+        "cercle": "AMPLEUR",
+        "valeur": 120,
+        "mots": [
+         "VOLUME",
+         "METRES",
+         "CUBES"
+        ],
+        "satellites": [],
+        "parenthese": "119 m³ ; taille d'origine : sphère de 3 m de rayon ; arrondi de 119 à 120"
+       },
+       {
+        "cercle": "DUREE",
+        "valeur": 1,
+        "mots": [
+         "MINUTES"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "LOCALISATION",
+        "valeur": 18,
+        "mots": [
+         "METRES"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "CONDITION",
+        "valeur": 1,
+        "mots": [
+         "PAROLE",
+         "CONCENTRATION"
+        ],
+        "satellites": [],
+        "parenthese": "le sort est maintenu : il tient tant que l'arcaniste se concentre"
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 6,
+        "mots": [
+         "PUISSANCE"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": "plein",
+        "mots": [
+         "DOMINATION"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 10,
+        "mots": [
+         "FUSION"
+        ],
+        "satellites": [
+         "sym:feu",
+         "sym:feu",
+         "sym:air",
+         "sym:air"
+        ],
+        "parenthese": "4d4 en moyenne de foudre à 6 m autour"
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 14,
+        "mots": [
+         "FUSION",
+         "LANCER"
+        ],
+        "satellites": [
+         "sym:eau"
+        ],
+        "parenthese": "4d6 en moyenne : un jet d'eau jusqu'à 18 m"
+       },
+       {
+        "cercle": "INTERACTION",
+        "valeur": 7,
+        "mots": [],
+        "satellites": [],
+        "parenthese": ""
+       }
+      ]
+     },
+     {
+      "nom": "Élémentaires air et bois",
+      "cercles": [
+       {
+        "cercle": "CIBLE",
+        "valeur": 9,
+        "mots": [
+         "ELEMENTAIRE"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "FORME",
+        "valeur": "plein",
+        "mots": [],
+        "satellites": [
+         "1|"
+        ],
+        "parenthese": "sphère",
+        "primitive": "sphere"
+       },
+       {
+        "cercle": "AMPLEUR",
+        "valeur": 120,
+        "mots": [
+         "VOLUME",
+         "METRES",
+         "CUBES"
+        ],
+        "satellites": [],
+        "parenthese": "119 m³ ; taille d'origine : sphère de 3 m de rayon ; arrondi de 119 à 120"
+       },
+       {
+        "cercle": "DUREE",
+        "valeur": 1,
+        "mots": [
+         "MINUTES"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "LOCALISATION",
+        "valeur": 18,
+        "mots": [
+         "METRES"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "CONDITION",
+        "valeur": 1,
+        "mots": [
+         "PAROLE",
+         "CONCENTRATION"
+        ],
+        "satellites": [],
+        "parenthese": "le sort est maintenu : il tient tant que l'arcaniste se concentre"
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 6,
+        "mots": [
+         "PUISSANCE"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": "plein",
+        "mots": [
+         "DOMINATION"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 10,
+        "mots": [
+         "FUSION"
+        ],
+        "satellites": [
+         "sym:feu",
+         "sym:feu",
+         "sym:air",
+         "sym:air"
+        ],
+        "parenthese": "4d4 en moyenne de foudre à 6 m autour"
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": "plein",
+        "mots": [
+         "FUSION",
+         "ENTRAVE"
+        ],
+        "satellites": [
+         "sym:air",
+         "sym:terre",
+         "sym:terre",
+         "sym:eau"
+        ],
+        "parenthese": "racines et souches encombrent le sol"
+       },
+       {
+        "cercle": "INTERACTION",
+        "valeur": 7,
+        "mots": [],
+        "satellites": [],
+        "parenthese": ""
+       }
+      ]
+     },
+     {
+      "nom": "Élémentaires terre et feu",
+      "cercles": [
+       {
+        "cercle": "CIBLE",
+        "valeur": 9,
+        "mots": [
+         "ELEMENTAIRE"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "FORME",
+        "valeur": "plein",
+        "mots": [],
+        "satellites": [
+         "1|"
+        ],
+        "parenthese": "sphère",
+        "primitive": "sphere"
+       },
+       {
+        "cercle": "AMPLEUR",
+        "valeur": 120,
+        "mots": [
+         "VOLUME",
+         "METRES",
+         "CUBES"
+        ],
+        "satellites": [],
+        "parenthese": "119 m³ ; taille d'origine : sphère de 3 m de rayon ; arrondi de 119 à 120"
+       },
+       {
+        "cercle": "DUREE",
+        "valeur": 1,
+        "mots": [
+         "MINUTES"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "LOCALISATION",
+        "valeur": 18,
+        "mots": [
+         "METRES"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "CONDITION",
+        "valeur": 1,
+        "mots": [
+         "PAROLE",
+         "CONCENTRATION"
+        ],
+        "satellites": [],
+        "parenthese": "le sort est maintenu : il tient tant que l'arcaniste se concentre"
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 6,
+        "mots": [
+         "PUISSANCE"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": "plein",
+        "mots": [
+         "DOMINATION"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 10,
+        "mots": [
+         "FUSION",
+         "REMPART"
+        ],
+        "satellites": [
+         "sym:terre"
+        ],
+        "parenthese": "la confluence durcit : 10 retranché aux coups"
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 4,
+        "mots": [
+         "FUSION"
+        ],
+        "satellites": [
+         "sym:feu"
+        ],
+        "parenthese": "1d6 en moyenne de feu persistant à ceux qui s'y trouvent"
+       },
+       {
+        "cercle": "INTERACTION",
+        "valeur": 7,
+        "mots": [],
+        "satellites": [],
+        "parenthese": ""
+       }
+      ]
+     },
+     {
+      "nom": "Élémentaires terre et métal",
+      "cercles": [
+       {
+        "cercle": "CIBLE",
+        "valeur": 9,
+        "mots": [
+         "ELEMENTAIRE"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "FORME",
+        "valeur": "plein",
+        "mots": [],
+        "satellites": [
+         "1|"
+        ],
+        "parenthese": "sphère",
+        "primitive": "sphere"
+       },
+       {
+        "cercle": "AMPLEUR",
+        "valeur": 120,
+        "mots": [
+         "VOLUME",
+         "METRES",
+         "CUBES"
+        ],
+        "satellites": [],
+        "parenthese": "119 m³ ; taille d'origine : sphère de 3 m de rayon ; arrondi de 119 à 120"
+       },
+       {
+        "cercle": "DUREE",
+        "valeur": 1,
+        "mots": [
+         "MINUTES"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "LOCALISATION",
+        "valeur": 18,
+        "mots": [
+         "METRES"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "CONDITION",
+        "valeur": 1,
+        "mots": [
+         "PAROLE",
+         "CONCENTRATION"
+        ],
+        "satellites": [],
+        "parenthese": "le sort est maintenu : il tient tant que l'arcaniste se concentre"
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 6,
+        "mots": [
+         "PUISSANCE"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": "plein",
+        "mots": [
+         "DOMINATION"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 10,
+        "mots": [
+         "FUSION",
+         "REMPART"
+        ],
+        "satellites": [
+         "sym:terre"
+        ],
+        "parenthese": "la confluence durcit : 10 retranché aux coups"
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 7,
+        "mots": [
+         "FUSION"
+        ],
+        "satellites": [
+         "forme:prisme",
+         "sym:feu",
+         "sym:air",
+         "sym:terre",
+         "sym:terre"
+        ],
+        "parenthese": "2d6 en moyenne d'éclats tranchants à ceux qui s'y trouvent"
+       },
+       {
+        "cercle": "INTERACTION",
+        "valeur": 7,
+        "mots": [],
+        "satellites": [],
+        "parenthese": ""
+       }
+      ]
+     },
+     {
+      "nom": "Élémentaires terre et eau",
+      "cercles": [
+       {
+        "cercle": "CIBLE",
+        "valeur": 9,
+        "mots": [
+         "ELEMENTAIRE"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "FORME",
+        "valeur": "plein",
+        "mots": [],
+        "satellites": [
+         "1|"
+        ],
+        "parenthese": "sphère",
+        "primitive": "sphere"
+       },
+       {
+        "cercle": "AMPLEUR",
+        "valeur": 120,
+        "mots": [
+         "VOLUME",
+         "METRES",
+         "CUBES"
+        ],
+        "satellites": [],
+        "parenthese": "119 m³ ; taille d'origine : sphère de 3 m de rayon ; arrondi de 119 à 120"
+       },
+       {
+        "cercle": "DUREE",
+        "valeur": 1,
+        "mots": [
+         "MINUTES"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "LOCALISATION",
+        "valeur": 18,
+        "mots": [
+         "METRES"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "CONDITION",
+        "valeur": 1,
+        "mots": [
+         "PAROLE",
+         "CONCENTRATION"
+        ],
+        "satellites": [],
+        "parenthese": "le sort est maintenu : il tient tant que l'arcaniste se concentre"
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 6,
+        "mots": [
+         "PUISSANCE"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": "plein",
+        "mots": [
+         "DOMINATION"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 10,
+        "mots": [
+         "FUSION",
+         "REMPART"
+        ],
+        "satellites": [
+         "sym:terre"
+        ],
+        "parenthese": "la confluence durcit : 10 retranché aux coups"
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 14,
+        "mots": [
+         "FUSION",
+         "LANCER"
+        ],
+        "satellites": [
+         "sym:eau"
+        ],
+        "parenthese": "4d6 en moyenne : un jet d'eau jusqu'à 18 m"
+       },
+       {
+        "cercle": "INTERACTION",
+        "valeur": 7,
+        "mots": [],
+        "satellites": [],
+        "parenthese": ""
+       }
+      ]
+     },
+     {
+      "nom": "Élémentaires terre et bois",
+      "cercles": [
+       {
+        "cercle": "CIBLE",
+        "valeur": 9,
+        "mots": [
+         "ELEMENTAIRE"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "FORME",
+        "valeur": "plein",
+        "mots": [],
+        "satellites": [
+         "1|"
+        ],
+        "parenthese": "sphère",
+        "primitive": "sphere"
+       },
+       {
+        "cercle": "AMPLEUR",
+        "valeur": 120,
+        "mots": [
+         "VOLUME",
+         "METRES",
+         "CUBES"
+        ],
+        "satellites": [],
+        "parenthese": "119 m³ ; taille d'origine : sphère de 3 m de rayon ; arrondi de 119 à 120"
+       },
+       {
+        "cercle": "DUREE",
+        "valeur": 1,
+        "mots": [
+         "MINUTES"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "LOCALISATION",
+        "valeur": 18,
+        "mots": [
+         "METRES"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "CONDITION",
+        "valeur": 1,
+        "mots": [
+         "PAROLE",
+         "CONCENTRATION"
+        ],
+        "satellites": [],
+        "parenthese": "le sort est maintenu : il tient tant que l'arcaniste se concentre"
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 6,
+        "mots": [
+         "PUISSANCE"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": "plein",
+        "mots": [
+         "DOMINATION"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 10,
+        "mots": [
+         "FUSION",
+         "REMPART"
+        ],
+        "satellites": [
+         "sym:terre"
+        ],
+        "parenthese": "la confluence durcit : 10 retranché aux coups"
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": "plein",
+        "mots": [
+         "FUSION",
+         "ENTRAVE"
+        ],
+        "satellites": [
+         "sym:air",
+         "sym:terre",
+         "sym:terre",
+         "sym:eau"
+        ],
+        "parenthese": "racines et souches encombrent le sol"
+       },
+       {
+        "cercle": "INTERACTION",
+        "valeur": 7,
+        "mots": [],
+        "satellites": [],
+        "parenthese": ""
+       }
+      ]
+     },
+     {
+      "nom": "Élémentaires feu et métal",
+      "cercles": [
+       {
+        "cercle": "CIBLE",
+        "valeur": 9,
+        "mots": [
+         "ELEMENTAIRE"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "FORME",
+        "valeur": "plein",
+        "mots": [],
+        "satellites": [
+         "1|"
+        ],
+        "parenthese": "sphère",
+        "primitive": "sphere"
+       },
+       {
+        "cercle": "AMPLEUR",
+        "valeur": 120,
+        "mots": [
+         "VOLUME",
+         "METRES",
+         "CUBES"
+        ],
+        "satellites": [],
+        "parenthese": "119 m³ ; taille d'origine : sphère de 3 m de rayon ; arrondi de 119 à 120"
+       },
+       {
+        "cercle": "DUREE",
+        "valeur": 1,
+        "mots": [
+         "MINUTES"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "LOCALISATION",
+        "valeur": 18,
+        "mots": [
+         "METRES"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "CONDITION",
+        "valeur": 1,
+        "mots": [
+         "PAROLE",
+         "CONCENTRATION"
+        ],
+        "satellites": [],
+        "parenthese": "le sort est maintenu : il tient tant que l'arcaniste se concentre"
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 6,
+        "mots": [
+         "PUISSANCE"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": "plein",
+        "mots": [
+         "DOMINATION"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 4,
+        "mots": [
+         "FUSION"
+        ],
+        "satellites": [
+         "sym:feu"
+        ],
+        "parenthese": "1d6 en moyenne de feu persistant à ceux qui s'y trouvent"
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 7,
+        "mots": [
+         "FUSION"
+        ],
+        "satellites": [
+         "forme:prisme",
+         "sym:feu",
+         "sym:air",
+         "sym:terre",
+         "sym:terre"
+        ],
+        "parenthese": "2d6 en moyenne d'éclats tranchants à ceux qui s'y trouvent"
+       },
+       {
+        "cercle": "INTERACTION",
+        "valeur": 7,
+        "mots": [],
+        "satellites": [],
+        "parenthese": ""
+       }
+      ]
+     },
+     {
+      "nom": "Élémentaires feu et eau",
+      "cercles": [
+       {
+        "cercle": "CIBLE",
+        "valeur": 9,
+        "mots": [
+         "ELEMENTAIRE"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "FORME",
+        "valeur": "plein",
+        "mots": [],
+        "satellites": [
+         "1|"
+        ],
+        "parenthese": "sphère",
+        "primitive": "sphere"
+       },
+       {
+        "cercle": "AMPLEUR",
+        "valeur": 120,
+        "mots": [
+         "VOLUME",
+         "METRES",
+         "CUBES"
+        ],
+        "satellites": [],
+        "parenthese": "119 m³ ; taille d'origine : sphère de 3 m de rayon ; arrondi de 119 à 120"
+       },
+       {
+        "cercle": "DUREE",
+        "valeur": 1,
+        "mots": [
+         "MINUTES"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "LOCALISATION",
+        "valeur": 18,
+        "mots": [
+         "METRES"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "CONDITION",
+        "valeur": 1,
+        "mots": [
+         "PAROLE",
+         "CONCENTRATION"
+        ],
+        "satellites": [],
+        "parenthese": "le sort est maintenu : il tient tant que l'arcaniste se concentre"
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 6,
+        "mots": [
+         "PUISSANCE"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": "plein",
+        "mots": [
+         "DOMINATION"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 4,
+        "mots": [
+         "FUSION"
+        ],
+        "satellites": [
+         "sym:feu"
+        ],
+        "parenthese": "1d6 en moyenne de feu persistant à ceux qui s'y trouvent"
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 14,
+        "mots": [
+         "FUSION",
+         "LANCER"
+        ],
+        "satellites": [
+         "sym:eau"
+        ],
+        "parenthese": "4d6 en moyenne : un jet d'eau jusqu'à 18 m"
+       },
+       {
+        "cercle": "INTERACTION",
+        "valeur": 7,
+        "mots": [],
+        "satellites": [],
+        "parenthese": ""
+       }
+      ]
+     },
+     {
+      "nom": "Élémentaires feu et bois",
+      "cercles": [
+       {
+        "cercle": "CIBLE",
+        "valeur": 9,
+        "mots": [
+         "ELEMENTAIRE"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "FORME",
+        "valeur": "plein",
+        "mots": [],
+        "satellites": [
+         "1|"
+        ],
+        "parenthese": "sphère",
+        "primitive": "sphere"
+       },
+       {
+        "cercle": "AMPLEUR",
+        "valeur": 120,
+        "mots": [
+         "VOLUME",
+         "METRES",
+         "CUBES"
+        ],
+        "satellites": [],
+        "parenthese": "119 m³ ; taille d'origine : sphère de 3 m de rayon ; arrondi de 119 à 120"
+       },
+       {
+        "cercle": "DUREE",
+        "valeur": 1,
+        "mots": [
+         "MINUTES"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "LOCALISATION",
+        "valeur": 18,
+        "mots": [
+         "METRES"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "CONDITION",
+        "valeur": 1,
+        "mots": [
+         "PAROLE",
+         "CONCENTRATION"
+        ],
+        "satellites": [],
+        "parenthese": "le sort est maintenu : il tient tant que l'arcaniste se concentre"
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 6,
+        "mots": [
+         "PUISSANCE"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": "plein",
+        "mots": [
+         "DOMINATION"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 4,
+        "mots": [
+         "FUSION"
+        ],
+        "satellites": [
+         "sym:feu"
+        ],
+        "parenthese": "1d6 en moyenne de feu persistant à ceux qui s'y trouvent"
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": "plein",
+        "mots": [
+         "FUSION",
+         "ENTRAVE"
+        ],
+        "satellites": [
+         "sym:air",
+         "sym:terre",
+         "sym:terre",
+         "sym:eau"
+        ],
+        "parenthese": "racines et souches encombrent le sol"
+       },
+       {
+        "cercle": "INTERACTION",
+        "valeur": 7,
+        "mots": [],
+        "satellites": [],
+        "parenthese": ""
+       }
+      ]
+     },
+     {
+      "nom": "Élémentaires métal et eau",
+      "cercles": [
+       {
+        "cercle": "CIBLE",
+        "valeur": 9,
+        "mots": [
+         "ELEMENTAIRE"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "FORME",
+        "valeur": "plein",
+        "mots": [],
+        "satellites": [
+         "1|"
+        ],
+        "parenthese": "sphère",
+        "primitive": "sphere"
+       },
+       {
+        "cercle": "AMPLEUR",
+        "valeur": 120,
+        "mots": [
+         "VOLUME",
+         "METRES",
+         "CUBES"
+        ],
+        "satellites": [],
+        "parenthese": "119 m³ ; taille d'origine : sphère de 3 m de rayon ; arrondi de 119 à 120"
+       },
+       {
+        "cercle": "DUREE",
+        "valeur": 1,
+        "mots": [
+         "MINUTES"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "LOCALISATION",
+        "valeur": 18,
+        "mots": [
+         "METRES"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "CONDITION",
+        "valeur": 1,
+        "mots": [
+         "PAROLE",
+         "CONCENTRATION"
+        ],
+        "satellites": [],
+        "parenthese": "le sort est maintenu : il tient tant que l'arcaniste se concentre"
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 6,
+        "mots": [
+         "PUISSANCE"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": "plein",
+        "mots": [
+         "DOMINATION"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 7,
+        "mots": [
+         "FUSION"
+        ],
+        "satellites": [
+         "forme:prisme",
+         "sym:feu",
+         "sym:air",
+         "sym:terre",
+         "sym:terre"
+        ],
+        "parenthese": "2d6 en moyenne d'éclats tranchants à ceux qui s'y trouvent"
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 14,
+        "mots": [
+         "FUSION",
+         "LANCER"
+        ],
+        "satellites": [
+         "sym:eau"
+        ],
+        "parenthese": "4d6 en moyenne : un jet d'eau jusqu'à 18 m"
+       },
+       {
+        "cercle": "INTERACTION",
+        "valeur": 7,
+        "mots": [],
+        "satellites": [],
+        "parenthese": ""
+       }
+      ]
+     },
+     {
+      "nom": "Élémentaires métal et bois",
+      "cercles": [
+       {
+        "cercle": "CIBLE",
+        "valeur": 9,
+        "mots": [
+         "ELEMENTAIRE"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "FORME",
+        "valeur": "plein",
+        "mots": [],
+        "satellites": [
+         "1|"
+        ],
+        "parenthese": "sphère",
+        "primitive": "sphere"
+       },
+       {
+        "cercle": "AMPLEUR",
+        "valeur": 120,
+        "mots": [
+         "VOLUME",
+         "METRES",
+         "CUBES"
+        ],
+        "satellites": [],
+        "parenthese": "119 m³ ; taille d'origine : sphère de 3 m de rayon ; arrondi de 119 à 120"
+       },
+       {
+        "cercle": "DUREE",
+        "valeur": 1,
+        "mots": [
+         "MINUTES"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "LOCALISATION",
+        "valeur": 18,
+        "mots": [
+         "METRES"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "CONDITION",
+        "valeur": 1,
+        "mots": [
+         "PAROLE",
+         "CONCENTRATION"
+        ],
+        "satellites": [],
+        "parenthese": "le sort est maintenu : il tient tant que l'arcaniste se concentre"
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 6,
+        "mots": [
+         "PUISSANCE"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": "plein",
+        "mots": [
+         "DOMINATION"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 7,
+        "mots": [
+         "FUSION"
+        ],
+        "satellites": [
+         "forme:prisme",
+         "sym:feu",
+         "sym:air",
+         "sym:terre",
+         "sym:terre"
+        ],
+        "parenthese": "2d6 en moyenne d'éclats tranchants à ceux qui s'y trouvent"
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": "plein",
+        "mots": [
+         "FUSION",
+         "ENTRAVE"
+        ],
+        "satellites": [
+         "sym:air",
+         "sym:terre",
+         "sym:terre",
+         "sym:eau"
+        ],
+        "parenthese": "racines et souches encombrent le sol"
+       },
+       {
+        "cercle": "INTERACTION",
+        "valeur": 7,
+        "mots": [],
+        "satellites": [],
+        "parenthese": ""
+       }
+      ]
+     },
+     {
+      "nom": "Élémentaires eau et bois",
+      "cercles": [
+       {
+        "cercle": "CIBLE",
+        "valeur": 9,
+        "mots": [
+         "ELEMENTAIRE"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "FORME",
+        "valeur": "plein",
+        "mots": [],
+        "satellites": [
+         "1|"
+        ],
+        "parenthese": "sphère",
+        "primitive": "sphere"
+       },
+       {
+        "cercle": "AMPLEUR",
+        "valeur": 120,
+        "mots": [
+         "VOLUME",
+         "METRES",
+         "CUBES"
+        ],
+        "satellites": [],
+        "parenthese": "119 m³ ; taille d'origine : sphère de 3 m de rayon ; arrondi de 119 à 120"
+       },
+       {
+        "cercle": "DUREE",
+        "valeur": 1,
+        "mots": [
+         "MINUTES"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "LOCALISATION",
+        "valeur": 18,
+        "mots": [
+         "METRES"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "CONDITION",
+        "valeur": 1,
+        "mots": [
+         "PAROLE",
+         "CONCENTRATION"
+        ],
+        "satellites": [],
+        "parenthese": "le sort est maintenu : il tient tant que l'arcaniste se concentre"
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 6,
+        "mots": [
+         "PUISSANCE"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": "plein",
+        "mots": [
+         "DOMINATION"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 14,
+        "mots": [
+         "FUSION",
+         "LANCER"
+        ],
+        "satellites": [
+         "sym:eau"
+        ],
+        "parenthese": "4d6 en moyenne : un jet d'eau jusqu'à 18 m"
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": "plein",
+        "mots": [
+         "FUSION",
+         "ENTRAVE"
+        ],
+        "satellites": [
+         "sym:air",
+         "sym:terre",
+         "sym:terre",
+         "sym:eau"
+        ],
+        "parenthese": "racines et souches encombrent le sol"
+       },
+       {
+        "cercle": "INTERACTION",
+        "valeur": 7,
+        "mots": [],
+        "satellites": [],
+        "parenthese": ""
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "cle": "summon-draconic-legion",
+   "jeu": "PF2",
+   "sort": "Convocation d'une légion draconique",
+   "noyau_commun": {
+    "ecole": "Invocation",
+    "hemisphere": "Hodolin",
+    "pole": "lumineux"
+   },
+   "formes_combinees": [
+    {
+     "nom": "Cône Glace, ligne Acide sulfurique",
+     "communs": [
+      {
+       "cercle": "CIBLE",
+       "valeur": 9,
+       "mots": [
+        "DRAGON"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "DUREE",
+       "valeur": 6,
+       "mots": [
+        "SECONDES"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "LOCALISATION",
+       "valeur": 30,
+       "mots": [
+        "METRES"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "CONDITION",
+       "valeur": 1,
+       "mots": [
+        "PAROLE"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "IMPACT",
+       "valeur": 9,
+       "mots": [
+        "PUISSANCE"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "IMPACT",
+       "valeur": 8,
+       "mots": [
+        "INJONCTION"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "IMPACT",
+       "valeur": 40,
+       "mots": [
+        "GRIFFE"
+       ],
+       "satellites": [
+        "forme:helice"
+       ],
+       "parenthese": "à son départ : 9d8 en moyenne à tous les ennemis proches"
+      },
+      {
+       "cercle": "INTERACTION",
+       "valeur": 10,
+       "mots": [],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "COSMETIQUE",
+       "valeur": 2,
+       "mots": [
+        "DRAGON"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      }
+     ],
+     "noyaux": [
+      {
+       "combinaison": "Glace",
+       "cercles": [
+        {
+         "cercle": "FORME",
+         "valeur": 3,
+         "mots": [],
+         "satellites": [
+          "2|",
+          "1|"
+         ],
+         "parenthese": "cône",
+         "primitive": "cone"
+        },
+        {
+         "cercle": "AMPLEUR",
+         "valeur": 18,
+         "mots": [
+          "LONGUEUR",
+          "METRES"
+         ],
+         "satellites": [],
+         "parenthese": "18 m de long"
+        },
+        {
+         "cercle": "IMPACT",
+         "valeur": 45,
+         "mots": [],
+         "satellites": [],
+         "parenthese": "à sa venue : le souffle en cône, 10d8 en moyenne"
+        }
+       ]
+      },
+      {
+       "combinaison": "Acide sulfurique",
+       "cercles": [
+        {
+         "cercle": "FORME",
+         "valeur": 1,
+         "mots": [],
+         "satellites": [
+          "1|"
+         ],
+         "parenthese": "ligne",
+         "primitive": "ligne"
+        },
+        {
+         "cercle": "AMPLEUR",
+         "valeur": 36,
+         "mots": [
+          "LONGUEUR",
+          "METRES"
+         ],
+         "satellites": [],
+         "parenthese": "36 m de long"
+        },
+        {
+         "cercle": "IMPACT",
+         "valeur": 45,
+         "mots": [],
+         "satellites": [],
+         "parenthese": "à sa venue : le souffle en ligne, 10d8 en moyenne"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "nom": "Cône Glace, ligne Éclair",
+     "communs": [
+      {
+       "cercle": "CIBLE",
+       "valeur": 9,
+       "mots": [
+        "DRAGON"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "DUREE",
+       "valeur": 6,
+       "mots": [
+        "SECONDES"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "LOCALISATION",
+       "valeur": 30,
+       "mots": [
+        "METRES"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "CONDITION",
+       "valeur": 1,
+       "mots": [
+        "PAROLE"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "IMPACT",
+       "valeur": 9,
+       "mots": [
+        "PUISSANCE"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "IMPACT",
+       "valeur": 8,
+       "mots": [
+        "INJONCTION"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "IMPACT",
+       "valeur": 40,
+       "mots": [
+        "GRIFFE"
+       ],
+       "satellites": [
+        "forme:helice"
+       ],
+       "parenthese": "à son départ : 9d8 en moyenne à tous les ennemis proches"
+      },
+      {
+       "cercle": "INTERACTION",
+       "valeur": 10,
+       "mots": [],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "COSMETIQUE",
+       "valeur": 2,
+       "mots": [
+        "DRAGON"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      }
+     ],
+     "noyaux": [
+      {
+       "combinaison": "Glace",
+       "cercles": [
+        {
+         "cercle": "FORME",
+         "valeur": 3,
+         "mots": [],
+         "satellites": [
+          "2|",
+          "1|"
+         ],
+         "parenthese": "cône",
+         "primitive": "cone"
+        },
+        {
+         "cercle": "AMPLEUR",
+         "valeur": 18,
+         "mots": [
+          "LONGUEUR",
+          "METRES"
+         ],
+         "satellites": [],
+         "parenthese": "18 m de long"
+        },
+        {
+         "cercle": "IMPACT",
+         "valeur": 45,
+         "mots": [],
+         "satellites": [],
+         "parenthese": "à sa venue : le souffle en cône, 10d8 en moyenne"
+        }
+       ]
+      },
+      {
+       "combinaison": "Éclair",
+       "cercles": [
+        {
+         "cercle": "FORME",
+         "valeur": 1,
+         "mots": [],
+         "satellites": [
+          "1|"
+         ],
+         "parenthese": "ligne",
+         "primitive": "ligne"
+        },
+        {
+         "cercle": "AMPLEUR",
+         "valeur": 36,
+         "mots": [
+          "LONGUEUR",
+          "METRES"
+         ],
+         "satellites": [],
+         "parenthese": "36 m de long"
+        },
+        {
+         "cercle": "IMPACT",
+         "valeur": 45,
+         "mots": [],
+         "satellites": [],
+         "parenthese": "à sa venue : le souffle en ligne, 10d8 en moyenne"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "nom": "Cône Feu, ligne Acide sulfurique",
+     "communs": [
+      {
+       "cercle": "CIBLE",
+       "valeur": 9,
+       "mots": [
+        "DRAGON"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "DUREE",
+       "valeur": 6,
+       "mots": [
+        "SECONDES"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "LOCALISATION",
+       "valeur": 30,
+       "mots": [
+        "METRES"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "CONDITION",
+       "valeur": 1,
+       "mots": [
+        "PAROLE"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "IMPACT",
+       "valeur": 9,
+       "mots": [
+        "PUISSANCE"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "IMPACT",
+       "valeur": 8,
+       "mots": [
+        "INJONCTION"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "IMPACT",
+       "valeur": 40,
+       "mots": [
+        "GRIFFE"
+       ],
+       "satellites": [
+        "forme:helice"
+       ],
+       "parenthese": "à son départ : 9d8 en moyenne à tous les ennemis proches"
+      },
+      {
+       "cercle": "INTERACTION",
+       "valeur": 10,
+       "mots": [],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "COSMETIQUE",
+       "valeur": 2,
+       "mots": [
+        "DRAGON"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      }
+     ],
+     "noyaux": [
+      {
+       "combinaison": "Feu",
+       "cercles": [
+        {
+         "cercle": "FORME",
+         "valeur": 3,
+         "mots": [],
+         "satellites": [
+          "2|",
+          "1|"
+         ],
+         "parenthese": "cône",
+         "primitive": "cone"
+        },
+        {
+         "cercle": "AMPLEUR",
+         "valeur": 18,
+         "mots": [
+          "LONGUEUR",
+          "METRES"
+         ],
+         "satellites": [],
+         "parenthese": "18 m de long"
+        },
+        {
+         "cercle": "IMPACT",
+         "valeur": 45,
+         "mots": [],
+         "satellites": [],
+         "parenthese": "à sa venue : le souffle en cône, 10d8 en moyenne"
+        }
+       ]
+      },
+      {
+       "combinaison": "Acide sulfurique",
+       "cercles": [
+        {
+         "cercle": "FORME",
+         "valeur": 1,
+         "mots": [],
+         "satellites": [
+          "1|"
+         ],
+         "parenthese": "ligne",
+         "primitive": "ligne"
+        },
+        {
+         "cercle": "AMPLEUR",
+         "valeur": 36,
+         "mots": [
+          "LONGUEUR",
+          "METRES"
+         ],
+         "satellites": [],
+         "parenthese": "36 m de long"
+        },
+        {
+         "cercle": "IMPACT",
+         "valeur": 45,
+         "mots": [],
+         "satellites": [],
+         "parenthese": "à sa venue : le souffle en ligne, 10d8 en moyenne"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "nom": "Cône Feu, ligne Éclair",
+     "communs": [
+      {
+       "cercle": "CIBLE",
+       "valeur": 9,
+       "mots": [
+        "DRAGON"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "DUREE",
+       "valeur": 6,
+       "mots": [
+        "SECONDES"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "LOCALISATION",
+       "valeur": 30,
+       "mots": [
+        "METRES"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "CONDITION",
+       "valeur": 1,
+       "mots": [
+        "PAROLE"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "IMPACT",
+       "valeur": 9,
+       "mots": [
+        "PUISSANCE"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "IMPACT",
+       "valeur": 8,
+       "mots": [
+        "INJONCTION"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "IMPACT",
+       "valeur": 40,
+       "mots": [
+        "GRIFFE"
+       ],
+       "satellites": [
+        "forme:helice"
+       ],
+       "parenthese": "à son départ : 9d8 en moyenne à tous les ennemis proches"
+      },
+      {
+       "cercle": "INTERACTION",
+       "valeur": 10,
+       "mots": [],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "COSMETIQUE",
+       "valeur": 2,
+       "mots": [
+        "DRAGON"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      }
+     ],
+     "noyaux": [
+      {
+       "combinaison": "Feu",
+       "cercles": [
+        {
+         "cercle": "FORME",
+         "valeur": 3,
+         "mots": [],
+         "satellites": [
+          "2|",
+          "1|"
+         ],
+         "parenthese": "cône",
+         "primitive": "cone"
+        },
+        {
+         "cercle": "AMPLEUR",
+         "valeur": 18,
+         "mots": [
+          "LONGUEUR",
+          "METRES"
+         ],
+         "satellites": [],
+         "parenthese": "18 m de long"
+        },
+        {
+         "cercle": "IMPACT",
+         "valeur": 45,
+         "mots": [],
+         "satellites": [],
+         "parenthese": "à sa venue : le souffle en cône, 10d8 en moyenne"
+        }
+       ]
+      },
+      {
+       "combinaison": "Éclair",
+       "cercles": [
+        {
+         "cercle": "FORME",
+         "valeur": 1,
+         "mots": [],
+         "satellites": [
+          "1|"
+         ],
+         "parenthese": "ligne",
+         "primitive": "ligne"
+        },
+        {
+         "cercle": "AMPLEUR",
+         "valeur": 36,
+         "mots": [
+          "LONGUEUR",
+          "METRES"
+         ],
+         "satellites": [],
+         "parenthese": "36 m de long"
+        },
+        {
+         "cercle": "IMPACT",
+         "valeur": 45,
+         "mots": [],
+         "satellites": [],
+         "parenthese": "à sa venue : le souffle en ligne, 10d8 en moyenne"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "nom": "Cône Ammoniac, ligne Acide sulfurique",
+     "communs": [
+      {
+       "cercle": "CIBLE",
+       "valeur": 9,
+       "mots": [
+        "DRAGON"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "DUREE",
+       "valeur": 6,
+       "mots": [
+        "SECONDES"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "LOCALISATION",
+       "valeur": 30,
+       "mots": [
+        "METRES"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "CONDITION",
+       "valeur": 1,
+       "mots": [
+        "PAROLE"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "IMPACT",
+       "valeur": 9,
+       "mots": [
+        "PUISSANCE"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "IMPACT",
+       "valeur": 8,
+       "mots": [
+        "INJONCTION"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "IMPACT",
+       "valeur": 40,
+       "mots": [
+        "GRIFFE"
+       ],
+       "satellites": [
+        "forme:helice"
+       ],
+       "parenthese": "à son départ : 9d8 en moyenne à tous les ennemis proches"
+      },
+      {
+       "cercle": "INTERACTION",
+       "valeur": 10,
+       "mots": [],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "COSMETIQUE",
+       "valeur": 2,
+       "mots": [
+        "DRAGON"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      }
+     ],
+     "noyaux": [
+      {
+       "combinaison": "Ammoniac",
+       "cercles": [
+        {
+         "cercle": "FORME",
+         "valeur": 3,
+         "mots": [],
+         "satellites": [
+          "2|",
+          "1|"
+         ],
+         "parenthese": "cône",
+         "primitive": "cone"
+        },
+        {
+         "cercle": "AMPLEUR",
+         "valeur": 18,
+         "mots": [
+          "LONGUEUR",
+          "METRES"
+         ],
+         "satellites": [],
+         "parenthese": "18 m de long"
+        },
+        {
+         "cercle": "IMPACT",
+         "valeur": 45,
+         "mots": [],
+         "satellites": [],
+         "parenthese": "à sa venue : le souffle en cône, 10d8 en moyenne"
+        }
+       ]
+      },
+      {
+       "combinaison": "Acide sulfurique",
+       "cercles": [
+        {
+         "cercle": "FORME",
+         "valeur": 1,
+         "mots": [],
+         "satellites": [
+          "1|"
+         ],
+         "parenthese": "ligne",
+         "primitive": "ligne"
+        },
+        {
+         "cercle": "AMPLEUR",
+         "valeur": 36,
+         "mots": [
+          "LONGUEUR",
+          "METRES"
+         ],
+         "satellites": [],
+         "parenthese": "36 m de long"
+        },
+        {
+         "cercle": "IMPACT",
+         "valeur": 45,
+         "mots": [],
+         "satellites": [],
+         "parenthese": "à sa venue : le souffle en ligne, 10d8 en moyenne"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "nom": "Cône Ammoniac, ligne Éclair",
+     "communs": [
+      {
+       "cercle": "CIBLE",
+       "valeur": 9,
+       "mots": [
+        "DRAGON"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "DUREE",
+       "valeur": 6,
+       "mots": [
+        "SECONDES"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "LOCALISATION",
+       "valeur": 30,
+       "mots": [
+        "METRES"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "CONDITION",
+       "valeur": 1,
+       "mots": [
+        "PAROLE"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "IMPACT",
+       "valeur": 9,
+       "mots": [
+        "PUISSANCE"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "IMPACT",
+       "valeur": 8,
+       "mots": [
+        "INJONCTION"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "IMPACT",
+       "valeur": 40,
+       "mots": [
+        "GRIFFE"
+       ],
+       "satellites": [
+        "forme:helice"
+       ],
+       "parenthese": "à son départ : 9d8 en moyenne à tous les ennemis proches"
+      },
+      {
+       "cercle": "INTERACTION",
+       "valeur": 10,
+       "mots": [],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "COSMETIQUE",
+       "valeur": 2,
+       "mots": [
+        "DRAGON"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      }
+     ],
+     "noyaux": [
+      {
+       "combinaison": "Ammoniac",
+       "cercles": [
+        {
+         "cercle": "FORME",
+         "valeur": 3,
+         "mots": [],
+         "satellites": [
+          "2|",
+          "1|"
+         ],
+         "parenthese": "cône",
+         "primitive": "cone"
+        },
+        {
+         "cercle": "AMPLEUR",
+         "valeur": 18,
+         "mots": [
+          "LONGUEUR",
+          "METRES"
+         ],
+         "satellites": [],
+         "parenthese": "18 m de long"
+        },
+        {
+         "cercle": "IMPACT",
+         "valeur": 45,
+         "mots": [],
+         "satellites": [],
+         "parenthese": "à sa venue : le souffle en cône, 10d8 en moyenne"
+        }
+       ]
+      },
+      {
+       "combinaison": "Éclair",
+       "cercles": [
+        {
+         "cercle": "FORME",
+         "valeur": 1,
+         "mots": [],
+         "satellites": [
+          "1|"
+         ],
+         "parenthese": "ligne",
+         "primitive": "ligne"
+        },
+        {
+         "cercle": "AMPLEUR",
+         "valeur": 36,
+         "mots": [
+          "LONGUEUR",
+          "METRES"
+         ],
+         "satellites": [],
+         "parenthese": "36 m de long"
+        },
+        {
+         "cercle": "IMPACT",
+         "valeur": 45,
+         "mots": [],
+         "satellites": [],
+         "parenthese": "à sa venue : le souffle en ligne, 10d8 en moyenne"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "nom": "Cône Glace, ligne Feu",
+     "communs": [
+      {
+       "cercle": "CIBLE",
+       "valeur": 9,
+       "mots": [
+        "DRAGON"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "DUREE",
+       "valeur": 6,
+       "mots": [
+        "SECONDES"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "LOCALISATION",
+       "valeur": 30,
+       "mots": [
+        "METRES"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "CONDITION",
+       "valeur": 1,
+       "mots": [
+        "PAROLE"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "IMPACT",
+       "valeur": 9,
+       "mots": [
+        "PUISSANCE"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "IMPACT",
+       "valeur": 8,
+       "mots": [
+        "INJONCTION"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "IMPACT",
+       "valeur": 40,
+       "mots": [
+        "GRIFFE"
+       ],
+       "satellites": [
+        "forme:helice"
+       ],
+       "parenthese": "à son départ : 9d8 en moyenne à tous les ennemis proches"
+      },
+      {
+       "cercle": "INTERACTION",
+       "valeur": 10,
+       "mots": [],
+       "satellites": [],
+       "parenthese": ""
+      },
+      {
+       "cercle": "COSMETIQUE",
+       "valeur": 2,
+       "mots": [
+        "DRAGON"
+       ],
+       "satellites": [],
+       "parenthese": ""
+      }
+     ],
+     "noyaux": [
+      {
+       "combinaison": "Glace",
+       "cercles": [
+        {
+         "cercle": "FORME",
+         "valeur": 3,
+         "mots": [],
+         "satellites": [
+          "2|",
+          "1|"
+         ],
+         "parenthese": "cône",
+         "primitive": "cone"
+        },
+        {
+         "cercle": "AMPLEUR",
+         "valeur": 18,
+         "mots": [
+          "LONGUEUR",
+          "METRES"
+         ],
+         "satellites": [],
+         "parenthese": "18 m de long"
+        },
+        {
+         "cercle": "IMPACT",
+         "valeur": 45,
+         "mots": [],
+         "satellites": [],
+         "parenthese": "à sa venue : le souffle en cône, 10d8 en moyenne"
+        }
+       ]
+      },
+      {
+       "combinaison": "Feu",
+       "cercles": [
+        {
+         "cercle": "FORME",
+         "valeur": 1,
+         "mots": [],
+         "satellites": [
+          "1|"
+         ],
+         "parenthese": "ligne",
+         "primitive": "ligne"
+        },
+        {
+         "cercle": "AMPLEUR",
+         "valeur": 36,
+         "mots": [
+          "LONGUEUR",
+          "METRES"
+         ],
+         "satellites": [],
+         "parenthese": "36 m de long"
+        },
+        {
+         "cercle": "IMPACT",
+         "valeur": 45,
+         "mots": [],
+         "satellites": [],
+         "parenthese": "à sa venue : le souffle en ligne, 10d8 en moyenne"
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "forme_hybride_simple": {
+    "nom": "Cône et ligne de feu",
+    "noyau": {
+     "ecole": "Invocation",
+     "hemisphere": "Hodolin",
+     "pole": "lumineux",
+     "combinaison": "Feu"
+    },
+    "remarque": "forme hybride ORDINAIRE à un seul Noyau, pas une forme combinée",
+    "cercles": [
+     {
+      "cercle": "CIBLE",
+      "valeur": 9,
+      "mots": [
+       "DRAGON"
+      ],
+      "satellites": [],
+      "parenthese": ""
+     },
+     {
+      "cercle": "FORME",
+      "valeur": 3,
+      "mots": [],
+      "satellites": [
+       "2|",
+       "1|"
+      ],
+      "parenthese": "cône",
+      "primitive": "cone"
+     },
+     {
+      "cercle": "AMPLEUR",
+      "valeur": 18,
+      "mots": [
+       "LONGUEUR",
+       "METRES"
+      ],
+      "satellites": [],
+      "parenthese": "18 m de long"
+     },
+     {
+      "cercle": "FORME",
+      "valeur": 1,
+      "mots": [],
+      "satellites": [
+       "1|"
+      ],
+      "parenthese": "ligne",
+      "primitive": "ligne"
+     },
+     {
+      "cercle": "AMPLEUR",
+      "valeur": 36,
+      "mots": [
+       "LONGUEUR",
+       "METRES"
+      ],
+      "satellites": [],
+      "parenthese": "36 m de long"
+     },
+     {
+      "cercle": "DUREE",
+      "valeur": 6,
+      "mots": [
+       "SECONDES"
+      ],
+      "satellites": [],
+      "parenthese": ""
+     },
+     {
+      "cercle": "LOCALISATION",
+      "valeur": 30,
+      "mots": [
+       "METRES"
+      ],
+      "satellites": [],
+      "parenthese": ""
+     },
+     {
+      "cercle": "CONDITION",
+      "valeur": 1,
+      "mots": [
+       "PAROLE"
+      ],
+      "satellites": [],
+      "parenthese": ""
+     },
+     {
+      "cercle": "IMPACT",
+      "valeur": 9,
+      "mots": [
+       "PUISSANCE"
+      ],
+      "satellites": [],
+      "parenthese": ""
+     },
+     {
+      "cercle": "IMPACT",
+      "valeur": 8,
+      "mots": [
+       "INJONCTION"
+      ],
+      "satellites": [],
+      "parenthese": ""
+     },
+     {
+      "cercle": "IMPACT",
+      "valeur": 45,
+      "mots": [],
+      "satellites": [],
+      "parenthese": "à sa venue : le souffle en cône, 10d8 en moyenne"
+     },
+     {
+      "cercle": "IMPACT",
+      "valeur": 45,
+      "mots": [],
+      "satellites": [],
+      "parenthese": "à sa venue : le souffle en ligne, 10d8 en moyenne"
+     },
+     {
+      "cercle": "IMPACT",
+      "valeur": 40,
+      "mots": [
+       "GRIFFE"
+      ],
+      "satellites": [
+       "forme:helice"
+      ],
+      "parenthese": "à son départ : 9d8 en moyenne à tous les ennemis proches"
+     },
+     {
+      "cercle": "INTERACTION",
+      "valeur": 10,
+      "mots": [],
+      "satellites": [],
+      "parenthese": ""
+     },
+     {
+      "cercle": "COSMETIQUE",
+      "valeur": 2,
+      "mots": [
+       "DRAGON"
+      ],
+      "satellites": [],
+      "parenthese": ""
+     }
+    ]
+   },
+   "arcane": {
+    "action": "remplacer",
+    "consigne": "la forme d'Arcane actuelle est retirée et remplacée par les 8 formes ci-dessous (Noyau d'Arcane inchangé : Invoquer · trame + ; la Quantité 2 disparaît)",
+    "formes": [
+     {
+      "nom": "Cône Glace, ligne Acide sulfurique",
+      "cercles": [
+       {
+        "cercle": "CIBLE",
+        "valeur": 9,
+        "mots": [
+         "DRAGON"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "FORME",
+        "valeur": 3,
+        "mots": [],
+        "satellites": [
+         "2|",
+         "1|"
+        ],
+        "parenthese": "cône",
+        "primitive": "cone"
+       },
+       {
+        "cercle": "AMPLEUR",
+        "valeur": 18,
+        "mots": [
+         "LONGUEUR",
+         "METRES"
+        ],
+        "satellites": [],
+        "parenthese": "18 m de long"
+       },
+       {
+        "cercle": "FORME",
+        "valeur": 1,
+        "mots": [],
+        "satellites": [
+         "1|"
+        ],
+        "parenthese": "ligne",
+        "primitive": "ligne"
+       },
+       {
+        "cercle": "AMPLEUR",
+        "valeur": 36,
+        "mots": [
+         "LONGUEUR",
+         "METRES"
+        ],
+        "satellites": [],
+        "parenthese": "36 m de long"
+       },
+       {
+        "cercle": "DUREE",
+        "valeur": 6,
+        "mots": [
+         "SECONDES"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "LOCALISATION",
+        "valeur": 30,
+        "mots": [
+         "METRES"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "CONDITION",
+        "valeur": 1,
+        "mots": [
+         "PAROLE"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 9,
+        "mots": [
+         "PUISSANCE"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 8,
+        "mots": [
+         "INJONCTION"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 45,
+        "mots": [],
+        "satellites": [
+         "sym:air",
+         "sym:terre",
+         "sym:eau",
+         "sym:eau"
+        ],
+        "parenthese": "à sa venue : le souffle en cône, 10d8 en moyenne"
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 45,
+        "mots": [],
+        "satellites": [
+         "sym:feu",
+         "sym:air",
+         "sym:eau",
+         "sym:eau"
+        ],
+        "parenthese": "à sa venue : le souffle en ligne, 10d8 en moyenne"
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 40,
+        "mots": [
+         "GRIFFE"
+        ],
+        "satellites": [
+         "forme:helice"
+        ],
+        "parenthese": "à son départ : 9d8 en moyenne à tous les ennemis proches"
+       },
+       {
+        "cercle": "INTERACTION",
+        "valeur": 10,
+        "mots": [],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "COSMETIQUE",
+        "valeur": 2,
+        "mots": [
+         "DRAGON"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       }
+      ]
+     },
+     {
+      "nom": "Cône Glace, ligne Éclair",
+      "cercles": [
+       {
+        "cercle": "CIBLE",
+        "valeur": 9,
+        "mots": [
+         "DRAGON"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "FORME",
+        "valeur": 3,
+        "mots": [],
+        "satellites": [
+         "2|",
+         "1|"
+        ],
+        "parenthese": "cône",
+        "primitive": "cone"
+       },
+       {
+        "cercle": "AMPLEUR",
+        "valeur": 18,
+        "mots": [
+         "LONGUEUR",
+         "METRES"
+        ],
+        "satellites": [],
+        "parenthese": "18 m de long"
+       },
+       {
+        "cercle": "FORME",
+        "valeur": 1,
+        "mots": [],
+        "satellites": [
+         "1|"
+        ],
+        "parenthese": "ligne",
+        "primitive": "ligne"
+       },
+       {
+        "cercle": "AMPLEUR",
+        "valeur": 36,
+        "mots": [
+         "LONGUEUR",
+         "METRES"
+        ],
+        "satellites": [],
+        "parenthese": "36 m de long"
+       },
+       {
+        "cercle": "DUREE",
+        "valeur": 6,
+        "mots": [
+         "SECONDES"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "LOCALISATION",
+        "valeur": 30,
+        "mots": [
+         "METRES"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "CONDITION",
+        "valeur": 1,
+        "mots": [
+         "PAROLE"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 9,
+        "mots": [
+         "PUISSANCE"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 8,
+        "mots": [
+         "INJONCTION"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 45,
+        "mots": [],
+        "satellites": [
+         "sym:air",
+         "sym:terre",
+         "sym:eau",
+         "sym:eau"
+        ],
+        "parenthese": "à sa venue : le souffle en cône, 10d8 en moyenne"
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 45,
+        "mots": [],
+        "satellites": [
+         "sym:feu",
+         "sym:feu",
+         "sym:feu",
+         "sym:air"
+        ],
+        "parenthese": "à sa venue : le souffle en ligne, 10d8 en moyenne"
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 40,
+        "mots": [
+         "GRIFFE"
+        ],
+        "satellites": [
+         "forme:helice"
+        ],
+        "parenthese": "à son départ : 9d8 en moyenne à tous les ennemis proches"
+       },
+       {
+        "cercle": "INTERACTION",
+        "valeur": 10,
+        "mots": [],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "COSMETIQUE",
+        "valeur": 2,
+        "mots": [
+         "DRAGON"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       }
+      ]
+     },
+     {
+      "nom": "Cône Feu, ligne Acide sulfurique",
+      "cercles": [
+       {
+        "cercle": "CIBLE",
+        "valeur": 9,
+        "mots": [
+         "DRAGON"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "FORME",
+        "valeur": 3,
+        "mots": [],
+        "satellites": [
+         "2|",
+         "1|"
+        ],
+        "parenthese": "cône",
+        "primitive": "cone"
+       },
+       {
+        "cercle": "AMPLEUR",
+        "valeur": 18,
+        "mots": [
+         "LONGUEUR",
+         "METRES"
+        ],
+        "satellites": [],
+        "parenthese": "18 m de long"
+       },
+       {
+        "cercle": "FORME",
+        "valeur": 1,
+        "mots": [],
+        "satellites": [
+         "1|"
+        ],
+        "parenthese": "ligne",
+        "primitive": "ligne"
+       },
+       {
+        "cercle": "AMPLEUR",
+        "valeur": 36,
+        "mots": [
+         "LONGUEUR",
+         "METRES"
+        ],
+        "satellites": [],
+        "parenthese": "36 m de long"
+       },
+       {
+        "cercle": "DUREE",
+        "valeur": 6,
+        "mots": [
+         "SECONDES"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "LOCALISATION",
+        "valeur": 30,
+        "mots": [
+         "METRES"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "CONDITION",
+        "valeur": 1,
+        "mots": [
+         "PAROLE"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 9,
+        "mots": [
+         "PUISSANCE"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 8,
+        "mots": [
+         "INJONCTION"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 45,
+        "mots": [],
+        "satellites": [
+         "sym:feu"
+        ],
+        "parenthese": "à sa venue : le souffle en cône, 10d8 en moyenne"
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 45,
+        "mots": [],
+        "satellites": [
+         "sym:feu",
+         "sym:air",
+         "sym:eau",
+         "sym:eau"
+        ],
+        "parenthese": "à sa venue : le souffle en ligne, 10d8 en moyenne"
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 40,
+        "mots": [
+         "GRIFFE"
+        ],
+        "satellites": [
+         "forme:helice"
+        ],
+        "parenthese": "à son départ : 9d8 en moyenne à tous les ennemis proches"
+       },
+       {
+        "cercle": "INTERACTION",
+        "valeur": 10,
+        "mots": [],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "COSMETIQUE",
+        "valeur": 2,
+        "mots": [
+         "DRAGON"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       }
+      ]
+     },
+     {
+      "nom": "Cône Feu, ligne Éclair",
+      "cercles": [
+       {
+        "cercle": "CIBLE",
+        "valeur": 9,
+        "mots": [
+         "DRAGON"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "FORME",
+        "valeur": 3,
+        "mots": [],
+        "satellites": [
+         "2|",
+         "1|"
+        ],
+        "parenthese": "cône",
+        "primitive": "cone"
+       },
+       {
+        "cercle": "AMPLEUR",
+        "valeur": 18,
+        "mots": [
+         "LONGUEUR",
+         "METRES"
+        ],
+        "satellites": [],
+        "parenthese": "18 m de long"
+       },
+       {
+        "cercle": "FORME",
+        "valeur": 1,
+        "mots": [],
+        "satellites": [
+         "1|"
+        ],
+        "parenthese": "ligne",
+        "primitive": "ligne"
+       },
+       {
+        "cercle": "AMPLEUR",
+        "valeur": 36,
+        "mots": [
+         "LONGUEUR",
+         "METRES"
+        ],
+        "satellites": [],
+        "parenthese": "36 m de long"
+       },
+       {
+        "cercle": "DUREE",
+        "valeur": 6,
+        "mots": [
+         "SECONDES"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "LOCALISATION",
+        "valeur": 30,
+        "mots": [
+         "METRES"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "CONDITION",
+        "valeur": 1,
+        "mots": [
+         "PAROLE"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 9,
+        "mots": [
+         "PUISSANCE"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 8,
+        "mots": [
+         "INJONCTION"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 45,
+        "mots": [],
+        "satellites": [
+         "sym:feu"
+        ],
+        "parenthese": "à sa venue : le souffle en cône, 10d8 en moyenne"
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 45,
+        "mots": [],
+        "satellites": [
+         "sym:feu",
+         "sym:feu",
+         "sym:feu",
+         "sym:air"
+        ],
+        "parenthese": "à sa venue : le souffle en ligne, 10d8 en moyenne"
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 40,
+        "mots": [
+         "GRIFFE"
+        ],
+        "satellites": [
+         "forme:helice"
+        ],
+        "parenthese": "à son départ : 9d8 en moyenne à tous les ennemis proches"
+       },
+       {
+        "cercle": "INTERACTION",
+        "valeur": 10,
+        "mots": [],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "COSMETIQUE",
+        "valeur": 2,
+        "mots": [
+         "DRAGON"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       }
+      ]
+     },
+     {
+      "nom": "Cône Ammoniac, ligne Acide sulfurique",
+      "cercles": [
+       {
+        "cercle": "CIBLE",
+        "valeur": 9,
+        "mots": [
+         "DRAGON"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "FORME",
+        "valeur": 3,
+        "mots": [],
+        "satellites": [
+         "2|",
+         "1|"
+        ],
+        "parenthese": "cône",
+        "primitive": "cone"
+       },
+       {
+        "cercle": "AMPLEUR",
+        "valeur": 18,
+        "mots": [
+         "LONGUEUR",
+         "METRES"
+        ],
+        "satellites": [],
+        "parenthese": "18 m de long"
+       },
+       {
+        "cercle": "FORME",
+        "valeur": 1,
+        "mots": [],
+        "satellites": [
+         "1|"
+        ],
+        "parenthese": "ligne",
+        "primitive": "ligne"
+       },
+       {
+        "cercle": "AMPLEUR",
+        "valeur": 36,
+        "mots": [
+         "LONGUEUR",
+         "METRES"
+        ],
+        "satellites": [],
+        "parenthese": "36 m de long"
+       },
+       {
+        "cercle": "DUREE",
+        "valeur": 6,
+        "mots": [
+         "SECONDES"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "LOCALISATION",
+        "valeur": 30,
+        "mots": [
+         "METRES"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "CONDITION",
+        "valeur": 1,
+        "mots": [
+         "PAROLE"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 9,
+        "mots": [
+         "PUISSANCE"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 8,
+        "mots": [
+         "INJONCTION"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 45,
+        "mots": [],
+        "satellites": [
+         "sym:feu",
+         "sym:air",
+         "sym:air",
+         "sym:eau"
+        ],
+        "parenthese": "à sa venue : le souffle en cône, 10d8 en moyenne"
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 45,
+        "mots": [],
+        "satellites": [
+         "sym:feu",
+         "sym:air",
+         "sym:eau",
+         "sym:eau"
+        ],
+        "parenthese": "à sa venue : le souffle en ligne, 10d8 en moyenne"
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 40,
+        "mots": [
+         "GRIFFE"
+        ],
+        "satellites": [
+         "forme:helice"
+        ],
+        "parenthese": "à son départ : 9d8 en moyenne à tous les ennemis proches"
+       },
+       {
+        "cercle": "INTERACTION",
+        "valeur": 10,
+        "mots": [],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "COSMETIQUE",
+        "valeur": 2,
+        "mots": [
+         "DRAGON"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       }
+      ]
+     },
+     {
+      "nom": "Cône Ammoniac, ligne Éclair",
+      "cercles": [
+       {
+        "cercle": "CIBLE",
+        "valeur": 9,
+        "mots": [
+         "DRAGON"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "FORME",
+        "valeur": 3,
+        "mots": [],
+        "satellites": [
+         "2|",
+         "1|"
+        ],
+        "parenthese": "cône",
+        "primitive": "cone"
+       },
+       {
+        "cercle": "AMPLEUR",
+        "valeur": 18,
+        "mots": [
+         "LONGUEUR",
+         "METRES"
+        ],
+        "satellites": [],
+        "parenthese": "18 m de long"
+       },
+       {
+        "cercle": "FORME",
+        "valeur": 1,
+        "mots": [],
+        "satellites": [
+         "1|"
+        ],
+        "parenthese": "ligne",
+        "primitive": "ligne"
+       },
+       {
+        "cercle": "AMPLEUR",
+        "valeur": 36,
+        "mots": [
+         "LONGUEUR",
+         "METRES"
+        ],
+        "satellites": [],
+        "parenthese": "36 m de long"
+       },
+       {
+        "cercle": "DUREE",
+        "valeur": 6,
+        "mots": [
+         "SECONDES"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "LOCALISATION",
+        "valeur": 30,
+        "mots": [
+         "METRES"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "CONDITION",
+        "valeur": 1,
+        "mots": [
+         "PAROLE"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 9,
+        "mots": [
+         "PUISSANCE"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 8,
+        "mots": [
+         "INJONCTION"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 45,
+        "mots": [],
+        "satellites": [
+         "sym:feu",
+         "sym:air",
+         "sym:air",
+         "sym:eau"
+        ],
+        "parenthese": "à sa venue : le souffle en cône, 10d8 en moyenne"
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 45,
+        "mots": [],
+        "satellites": [
+         "sym:feu",
+         "sym:feu",
+         "sym:feu",
+         "sym:air"
+        ],
+        "parenthese": "à sa venue : le souffle en ligne, 10d8 en moyenne"
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 40,
+        "mots": [
+         "GRIFFE"
+        ],
+        "satellites": [
+         "forme:helice"
+        ],
+        "parenthese": "à son départ : 9d8 en moyenne à tous les ennemis proches"
+       },
+       {
+        "cercle": "INTERACTION",
+        "valeur": 10,
+        "mots": [],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "COSMETIQUE",
+        "valeur": 2,
+        "mots": [
+         "DRAGON"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       }
+      ]
+     },
+     {
+      "nom": "Cône Glace, ligne Feu",
+      "cercles": [
+       {
+        "cercle": "CIBLE",
+        "valeur": 9,
+        "mots": [
+         "DRAGON"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "FORME",
+        "valeur": 3,
+        "mots": [],
+        "satellites": [
+         "2|",
+         "1|"
+        ],
+        "parenthese": "cône",
+        "primitive": "cone"
+       },
+       {
+        "cercle": "AMPLEUR",
+        "valeur": 18,
+        "mots": [
+         "LONGUEUR",
+         "METRES"
+        ],
+        "satellites": [],
+        "parenthese": "18 m de long"
+       },
+       {
+        "cercle": "FORME",
+        "valeur": 1,
+        "mots": [],
+        "satellites": [
+         "1|"
+        ],
+        "parenthese": "ligne",
+        "primitive": "ligne"
+       },
+       {
+        "cercle": "AMPLEUR",
+        "valeur": 36,
+        "mots": [
+         "LONGUEUR",
+         "METRES"
+        ],
+        "satellites": [],
+        "parenthese": "36 m de long"
+       },
+       {
+        "cercle": "DUREE",
+        "valeur": 6,
+        "mots": [
+         "SECONDES"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "LOCALISATION",
+        "valeur": 30,
+        "mots": [
+         "METRES"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "CONDITION",
+        "valeur": 1,
+        "mots": [
+         "PAROLE"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 9,
+        "mots": [
+         "PUISSANCE"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 8,
+        "mots": [
+         "INJONCTION"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 45,
+        "mots": [],
+        "satellites": [
+         "sym:air",
+         "sym:terre",
+         "sym:eau",
+         "sym:eau"
+        ],
+        "parenthese": "à sa venue : le souffle en cône, 10d8 en moyenne"
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 45,
+        "mots": [],
+        "satellites": [
+         "sym:feu"
+        ],
+        "parenthese": "à sa venue : le souffle en ligne, 10d8 en moyenne"
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 40,
+        "mots": [
+         "GRIFFE"
+        ],
+        "satellites": [
+         "forme:helice"
+        ],
+        "parenthese": "à son départ : 9d8 en moyenne à tous les ennemis proches"
+       },
+       {
+        "cercle": "INTERACTION",
+        "valeur": 10,
+        "mots": [],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "COSMETIQUE",
+        "valeur": 2,
+        "mots": [
+         "DRAGON"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       }
+      ]
+     },
+     {
+      "nom": "Cône Feu, ligne Feu",
+      "cercles": [
+       {
+        "cercle": "CIBLE",
+        "valeur": 9,
+        "mots": [
+         "DRAGON"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "FORME",
+        "valeur": 3,
+        "mots": [],
+        "satellites": [
+         "2|",
+         "1|"
+        ],
+        "parenthese": "cône",
+        "primitive": "cone"
+       },
+       {
+        "cercle": "AMPLEUR",
+        "valeur": 18,
+        "mots": [
+         "LONGUEUR",
+         "METRES"
+        ],
+        "satellites": [],
+        "parenthese": "18 m de long"
+       },
+       {
+        "cercle": "FORME",
+        "valeur": 1,
+        "mots": [],
+        "satellites": [
+         "1|"
+        ],
+        "parenthese": "ligne",
+        "primitive": "ligne"
+       },
+       {
+        "cercle": "AMPLEUR",
+        "valeur": 36,
+        "mots": [
+         "LONGUEUR",
+         "METRES"
+        ],
+        "satellites": [],
+        "parenthese": "36 m de long"
+       },
+       {
+        "cercle": "DUREE",
+        "valeur": 6,
+        "mots": [
+         "SECONDES"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "LOCALISATION",
+        "valeur": 30,
+        "mots": [
+         "METRES"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "CONDITION",
+        "valeur": 1,
+        "mots": [
+         "PAROLE"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 9,
+        "mots": [
+         "PUISSANCE"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 8,
+        "mots": [
+         "INJONCTION"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 45,
+        "mots": [],
+        "satellites": [
+         "sym:feu"
+        ],
+        "parenthese": "à sa venue : le souffle en cône, 10d8 en moyenne"
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 45,
+        "mots": [],
+        "satellites": [
+         "sym:feu"
+        ],
+        "parenthese": "à sa venue : le souffle en ligne, 10d8 en moyenne"
+       },
+       {
+        "cercle": "IMPACT",
+        "valeur": 40,
+        "mots": [
+         "GRIFFE"
+        ],
+        "satellites": [
+         "forme:helice"
+        ],
+        "parenthese": "à son départ : 9d8 en moyenne à tous les ennemis proches"
+       },
+       {
+        "cercle": "INTERACTION",
+        "valeur": 10,
+        "mots": [],
+        "satellites": [],
+        "parenthese": ""
+       },
+       {
+        "cercle": "COSMETIQUE",
+        "valeur": 2,
+        "mots": [
+         "DRAGON"
+        ],
+        "satellites": [],
+        "parenthese": ""
+       }
+      ]
+     }
+    ]
+   }
+  }
+ ]
+}

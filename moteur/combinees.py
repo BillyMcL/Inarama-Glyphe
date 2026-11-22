@@ -4,7 +4,7 @@ ce module ; il ne change le dessin d'aucun glyphe existant. Il se lance seul :
 
 Une forme combinée : plusieurs Noyaux hybrides (un par combinaison), lancés en même temps. École, hémisphère et pôle sont
 communs. Les cercles gardent l'ordre habituel (1 École … 12 Cosmétique) ; chacun est soit commun (autour du centre du
-glyphe), soit propre à un Noyau (autour de ce Noyau). Second essai : le cercle d'École, premier cercle commun, relie les
+glyphe), soit propre à un Noyau (autour de ce Noyau). Le cercle d'École, premier cercle commun, relie les
 Noyaux (il passe par leurs centres, répartis également) ; tous les autres cercles communs (Cible … Cosmétique) sont à
 l'extérieur. Lecture : d'abord les Noyaux (simultanés), puis les cercles communs, du centre vers l'extérieur."""
 import os, sys, json, math, re, html
@@ -19,7 +19,7 @@ RANG = {"ECOLE": 1, "CIBLE": 2, "FORME": 3, "AMPLEUR": 4, "DUREE": 5, "LOCALISAT
 
 # ---------- choix de dessin de l'essai (à juger sur l'essai) ----------
 R_NOYAU = 50        # rayon du Noyau hybride sans encart d'école : ses quatre sous-cercles ont la taille de ceux d'aujourd'hui (66 − 16)
-MARGE = 14          # écart minimal entre deux Noyaux voisins (cercles propres et satellites compris)
+MARGE = 4           # écart entre deux Noyaux voisins (cercles propres et satellites compris) : ils se touchent presque
 ANGLES = {1: [90], 2: [180, 0], 3: [90, 210, 330], 4: [135, 225, 315, 45]}     # 2 : ouest puis est ; 4 : en carré, sur les diagonales
 
 FAITS = []          # ce que l'essai a dû interpréter : (sort, forme, cercle, ce qui a été fait)
@@ -142,8 +142,8 @@ def forme(s, f, niveau, ref):
     g_noy = [(comb, SP.hyb(*KB.COMBOS[comb]), des(rs)) for comb, rs in noyaux]
     part = ([c for c in split[0] if c in undet], [c for c in split[1] if c in undet])
     lab_ecole = C.word(C.norm(ecole)); C.word("ECOLE")
-    dec = dessin(lab_ecole, g_com, g_noy, True)
-    epu = dessin(lab_ecole, g_com, g_noy, False)
+    dec = dessin(lab_ecole, g_com, g_noy, True, f"{s['sort']} — {f['nom']}")
+    epu = dessin(lab_ecole, g_com, g_noy, False, f"{s['sort']} — {f['nom']}")
     svg = (SP.compose(dec, split, always=True), SP.compose(epu, part, always=False))
     verb = f"{ecole} · {hemi} · " + " + ".join(f"{comb} ({KB.code(comb)})" for comb, _ in noyaux)
     # lecture : d'abord les Noyaux (simultanés ; chacun ses cercles dans l'ordre), puis les cercles communs, du centre vers l'extérieur
@@ -167,39 +167,177 @@ def _rayon_max(rings, geo):
     return R
 
 
-def _poser(rings, geo, centres, Rn):
-    """satellites « NS » / « SYM » d'un cercle commun : même règle que le moteur (un : nord ou sud ; deux : nord-sud ou
-    ouest-est ; trois et plus, également depuis le nord) ; on garde la disposition qui ne touche pas les Noyaux (à défaut,
-    celle qui les touche le moins)."""
+# ---------- le dessin (troisième essai) ----------
+DESSIN = []         # ce que le dessin relève : (forme, version, ce qui se lit mal ou a été déplacé)
+_FORME = [""]       # nom de la forme en cours (pour les relevés)
+
+
+def _ang(x, y):
+    return math.degrees(math.atan2(-y, x)) % 360
+
+
+def _dist_ang(a, b):
+    return abs((a - b + 180) % 360 - 180)
+
+
+def _couverture(r, disques):
+    """portions du cercle de rayon r cachées par des disques (cx, cy, R) : liste d'intervalles (centre, demi-largeur) en degrés"""
+    out = []
+    for cx, cy, R in disques:
+        d = math.hypot(cx, cy)
+        if d == 0 or abs(r - d) >= R: continue
+        c = (r * r + d * d - R * R) / (2 * r * d)
+        out.append((_ang(cx, cy), math.degrees(math.acos(max(-1, min(1, c))))))
+    return out
+
+
+def _cache(a, r, disques, marge=0.0):
+    """l'angle a du cercle de rayon r est-il caché (à « marge » degrés près) ?"""
+    return any(_dist_ang(a, c) <= h + marge for c, h in _couverture(r, disques))
+
+
+def _part_cachee(r, disques, pas=0.5):
+    n = int(360 / pas)
+    return sum(1 for k in range(n) if _cache(k * pas, r, disques)) / n
+
+
+def _unites(text):
+    words = [GG.LEX[w] for w in text.replace("·", " ").split()]
+    units = []
+    for k, w in enumerate(words):
+        if k: units.append(None)
+        units += w
+    return units
+
+
+def _label(rin, rout, text, centres, ak=None):
+    """annotation écrite aux centres donnés (même tracé que gen_glyphs.label_alde, emplacements imposés)"""
+    ak = ak or GG.AK
+    units = _unites(text)
+    if not units: return ""
+    rb = rin + 0.8 + 14 * ak
+    step = math.degrees(GG.ALW * ak * 1.18 / rb)
+    out = ""
+    for cm in centres:
+        center = -cm
+        for i, u in enumerate(units):
+            if u is None: continue
+            phi = center - (len(units) - 1) / 2 * step + i * step
+            x, y = rb * math.cos(math.radians(phi)), rb * math.sin(math.radians(phi))
+            out += (f'<g transform="translate({GG.f(x)},{GG.f(y)}) rotate({GG.f(phi + 90)}) scale({ak}) translate({-GG.ALW/2 + 4},0) {GG.ITAL}" class="alde">'
+                    f'{GG.a1_syll("ink", u[0], u[1])}</g>')
+    return out
+
+
+def _largeur(rin, text, ak=None):
+    ak = ak or GG.AK
+    rb = rin + 0.8 + 14 * ak
+    return math.degrees(GG.ALW * ak * 1.18 / rb) * len(_unites(text))
+
+
+def _places(rin, rout, text, sats_ang, disques, nom):
+    """emplacements de l'annotation d'un cercle commun : d'abord ceux du moteur (8, 6, 4 ou 2 copies, en évitant les
+    satellites) s'ils sont tous visibles ; sinon une copie au milieu de chaque portion visible assez large ; sinon, la
+    plus large portion visible, et c'est relevé."""
+    td = _largeur(rin, text)
+    if td == 0: return []
+    def libre(c):           # la copie entière est visible (aux deux parois) et ne touche pas un satellite
+        for k in range(21):
+            a = c - td / 2 + td * k / 20
+            if _cache(a, rin, disques, 1) or _cache(a, rout, disques, 1): return False
+            if any(_dist_ang(a, s) < w + 1 for s, w in sats_ang): return False
+        return True
+    cands = []
+    if not sats_ang: cands.append([k * 45 for k in range(8)])
+    else:
+        opp = {(s + 180) % 360 for s, _ in sats_ang}
+        six = [k * 45 for k in range(8) if all(_dist_ang(k * 45, s) > 1 for s, _ in sats_ang) and k * 45 not in opp]
+        if len(six) == 6: cands.append(six)
+    cands += [[45, 135, 225, 315], [0, 90, 180, 270], [90, 270], [0, 180]]
+    for cs in cands:
+        if all(libre(c) for c in cs) and (len(cs) < 2 or td <= 360 / len(cs) * 0.82): return cs
+    # portions visibles : on parcourt le cercle par pas d'un degré
+    vis = [not (_cache(a, rin, disques, 1) or _cache(a, rout, disques, 1) or any(_dist_ang(a, s) < w + 1 for s, w in sats_ang)) for a in range(360)]
+    if all(vis): return [90, 270]
+    k0 = vis.index(False)
+    portions, cur = [], []
+    for k in range(360):
+        a = (k0 + k) % 360
+        if vis[a]: cur.append(a)
+        elif cur: portions.append(cur); cur = []
+    if cur: portions.append(cur)
+    ok = [p for p in portions if len(p) >= td + 2]
+    if ok:
+        return [(p[0] + (len(p) - 1) / 2) % 360 for p in ok][:8]
+    if portions:
+        p = max(portions, key=len)
+        DESSIN.append((_FORME[0], nom, f"annotation « {text.lower()} » : aucune portion visible assez large ({len(p)}° pour {td:.0f}°) ; écrite au milieu de la plus large, en partie cachée"))
+        return [(p[0] + (len(p) - 1) / 2) % 360]
+    DESSIN.append((_FORME[0], nom, f"annotation « {text.lower()} » : cercle entièrement caché ; annotation au nord, cachée"))
+    return [90]
+
+
+def _sat_disque(mid, d, sp, x):
+    cx, cy = GG.pt(mid, d); lab, o = GG.sat_parts(x)
+    return cx, cy, GG.sat_radius(sp, o) + (GG.SBAND if lab else 0) + GG.kid_reach(o)
+
+
+def _poser(rings, geo, disques, declared):
+    """satellites d'un cercle commun : la disposition du moteur (un : nord ou sud ; deux : nord-sud ou ouest-est ; trois et
+    plus, également depuis le nord ; ou les angles fixés par une règle) ; si elle touche un Noyau, tout le groupe tourne
+    le long du cercle, du plus petit angle qui le rend visible (symétrie gardée). Sinon, l'angle qui touche le moins."""
     out = []
     for ring, (rin, rout) in zip(rings, geo):
         src = list(ring.get("sats", []))
         mid = (rin + rout) / 2
-        def gene(d, sp, x):
-            cx, cy = GG.pt(mid, d); lab, o = GG.sat_parts(x)
-            rs = GG.sat_radius(sp, o) + (GG.SBAND if lab else 0) + GG.kid_reach(o)
-            return sum(max(0, Rn + rs + 3 - math.hypot(cx - nx, cy - ny)) for nx, ny in centres)
+        if not src: out.append(ring); continue
+        def gene(angles):
+            t = 0
+            for d, s_ in zip(angles, src):
+                cx, cy, rs = _sat_disque(mid, d, s_[1], s_[2:])
+                t += sum(max(0, R + rs + 3 - math.hypot(cx - nx, cy - ny)) for nx, ny, R in disques)
+            return t
         sym = [j for j, s_ in enumerate(src) if s_[0] in ("SYM", "NS")]
+        n = len(sym)
+        bases = []
         if sym:
-            n = len(sym)
             cands = [[90], [270]] if n == 1 else [[90, 270], [180, 0]] if n == 2 else [[(90 + k * 360 / n) % 360 for k in range(n)]]
-            best = min(cands, key=lambda c: sum(gene(d, src[j][1], src[j][2:]) for d, j in zip(c, sym)))
-            for d, j in zip(best, sym): src[j] = (d, *src[j][1:])
-        out.append(dict(ring, sats=src))
+            for c in cands:
+                a = [s_[0] for s_ in src]
+                for d, j in zip(c, sym): a[j] = d
+                bases.append(a)
+        else:
+            bases.append([s_[0] for s_ in src])
+        best = None
+        for dl in sorted(range(-180, 181, 2), key=abs):
+            for b in bases:
+                a = [(x + dl) % 360 for x in b]
+                g = gene(a)
+                if best is None or (g, abs(dl)) < (best[0], abs(best[1])): best = (g, dl, a)
+            if best[0] == 0: break
+        g, dl, a = best
+        nom = ring["label"].split()[0]
+        if dl and declared: DESSIN.append((_FORME[0], nom, f"satellites tournés de {dl:+d}° le long du cercle pour rester visibles"))
+        if g > 0 and declared: DESSIN.append((_FORME[0], nom, "satellite : aucune place sans toucher un Noyau ; posé là où il touche le moins (dessiné par-dessus)"))
+        out.append(dict(ring, sats=[(d, *s_[1:]) for d, s_ in zip(a, src)]))
     return out
 
 
-def _cercles(rings, geo, declared, evite=()):
-    """cercles concentriques autour du centre (comme gen_glyphs._glyph) : du plus extérieur au plus intérieur"""
+def _cercles(rings, geo, declared, disques):
+    """cercles concentriques autour du centre, du plus extérieur au plus intérieur ; annotations dans les portions visibles"""
     parts = []
     for ring, (rin, rout) in reversed(list(zip(rings, geo))):
         parts.append(f'<circle r="{GG.f(rout)}" class="paper-f"/>')
         parts.append(GG.value(rin, ring["spec"]))
         words = ring["label"].replace("·", " ").split()
-        text = " ".join(words if declared or ring.get("garde") else words[1:])
+        text = " ".join(words if declared else words[1:])
         if rout > rin: parts.append(f'<circle r="{GG.f(rin)}" class="ink-s"/><circle r="{GG.f(rout)}" class="ink-s"/>')
         else: parts.append(f'<circle r="{GG.f(rin)}" class="ink-s"/>')
-        parts.append(GG.label_alde(rin, rout, text, [s[0] for s in ring.get("sats", [])] + list(ring.get("evite", ()))))
+        if text:
+            mid = (rin + rout) / 2
+            sats_ang = [(s[0], math.degrees(math.asin(min(1, _sat_disque(mid, s[0], s[1], s[2:])[2] / mid)))) for s in ring.get("sats", [])]
+            centres = ring.get("centres") or _places(rin, rout, text, sats_ang, disques, words[0] if declared else ring["label"].split()[0])
+            parts.append(_label(rin, rout, text, centres))
     return parts
 
 
@@ -216,38 +354,80 @@ def _sats(rings, geo):
 def _has_text(declared):
     def h(ring):
         w = ring["label"].replace("·", " ").split()
-        return len(w if declared or ring.get("garde") else w[1:]) > 0
+        return len(w if declared else w[1:]) > 0
     return h
 
 
-def dessin(lab_ecole, g_com, g_noy, declared):
+def _sud_vers_l_exterieur(rings, a):
+    """Noyau non tourné (nord en haut) : un satellite de cercle propre que le moteur pose au sud (270°) se pose du côté
+    qui regarde vers l'extérieur du glyphe (angle a du Noyau sur le cercle d'École) ; les autres gardent leur place."""
+    return [dict(ring, sats=[((a if s_[0] == 270 else s_[0]), *s_[1:]) for s_ in ring.get("sats", [])]) for ring in rings]
+
+
+def _tourne(x, y, th):
+    t = math.radians(th)
+    return x * math.cos(t) - y * math.sin(t), x * math.sin(t) + y * math.cos(t)
+
+
+def dessin(lab_ecole, g_com, g_noy, declared, nom=""):
     """le glyphe combiné, sans ses satellites astraux"""
+    _FORME[0] = nom
     n = len(g_noy)
-    # 1. les piles des Noyaux : chacune dessinée par le moteur, comme un glyphe hybride sans encart d'école
+    # 1. les piles des Noyaux, dessinées par le moteur, droites (nord en haut) ; satellites du sud vers l'extérieur
     piles = []
-    for comb, core, rings in g_noy:
-        rings = GG.resolve_ns(rings, R_NOYAU)
+    for (comb, core, rings), a in zip(g_noy, ANGLES[n]):
+        rings = _sud_vers_l_exterieur(GG.resolve_ns(rings, R_NOYAU), a)
         GG.R0 = R_NOYAU
         geo = GG.ring_geo(rings, R_NOYAU, None, _has_text(declared))
         svg = GG._glyph(core, rings, r0=R_NOYAU, declared=declared)
         inner = re.sub(r'^<svg[^>]*>', '', svg)[:-6]
-        piles.append((inner, max(R_NOYAU, _rayon_max(rings, geo))))
-    Rn = max(r for _, r in piles)
-    # 2. le cercle d'École : il passe par le centre des Noyaux, répartis également ; sans valeur
-    #    (déclarée : « école · évocation » ; non déclarée : « évocation », comme les autres cercles)
-    s_ = math.sin(math.pi / n) if n > 1 else 1
-    Dr = (Rn + MARGE / 2) / s_
-    centres = [GG.pt(Dr, a) for a in ANGLES[n]]
-    ecole = dict(label=f"ECOLE {lab_ecole}", spec=[], sats=[], evite=ANGLES[n])
+        corps = geo[-1][1] if geo else R_NOYAU
+        locaux = [(0.0, 0.0, corps)]
+        for ring, (rin, rout) in zip(rings, geo):
+            for d, sp, *x in ring.get("sats", []):
+                locaux.append(_sat_disque((rin + rout) / 2, d, sp, x))
+        piles.append((inner, locaux))
+    # 2. le cercle d'École : le plus petit rayon où deux Noyaux voisins (corps et satellites) ne se touchent pas
+    def placer(Dr):
+        out = []
+        for (inner, locaux), a in zip(piles, ANGLES[n]):
+            th = 0                              # Noyau droit, jamais tourné
+            cx, cy = GG.pt(Dr, a)
+            out.append((inner, th, cx, cy, [(cx + _tourne(x, y, th)[0], cy + _tourne(x, y, th)[1], r) for x, y, r in locaux]))
+        return out
+    def touche(pl):
+        for i in range(len(pl)):
+            for j in range(i + 1, len(pl)):
+                for x1, y1, r1 in pl[i][4]:
+                    for x2, y2, r2 in pl[j][4]:
+                        if math.hypot(x1 - x2, y1 - y2) < r1 + r2 + MARGE: return True
+        return False
+    Dr = max(max(l[0][2] for _, l in piles) / (math.sin(math.pi / n) if n > 1 else 1), 1)
+    while touche(placer(Dr)): Dr += 0.5
+    pl = placer(Dr)
+    disques = [d for p in pl for d in p[4]]
+    # annotations de l'École : au milieu des intervalles entre les Noyaux
+    A_ = ANGLES[n]
+    gaps = sorted((A_[k] + ((A_[(k + 1) % n] - A_[k]) % 360) / 2) % 360 for k in range(n)) if n > 1 else [270]
+    ecole = dict(label=f"ECOLE {lab_ecole}", spec=[], sats=[], centres=gaps)
     geo_c = [(Dr, Dr + GG.BAND)]
-    # 3. tous les autres cercles communs, à l'extérieur, au-delà des Noyaux, dans l'ordre habituel
-    geo_e = GG.ring_geo(g_com, Dr + Rn, GG.GAP, _has_text(declared)) if g_com else []
-    exterieurs = _poser(g_com, geo_e, centres, Rn)
-    parts = _cercles(exterieurs, geo_e, declared) + _cercles([ecole], geo_c, declared)
-    for (inner, _), (cx, cy) in zip(piles, centres):
+    t_ec = f"ECOLE {lab_ecole}" if declared else lab_ecole
+    td = _largeur(Dr, t_ec)
+    for g in gaps:
+        if any(_cache(g + s * td / 2, r, disques, 1) for s in (-1, 1) for r in (Dr, Dr + GG.BAND)):
+            DESSIN.append((nom, "ECOLE", f"annotation « {t_ec.lower()} » ({td:.0f}°) en partie cachée par les Noyaux à {g:.0f}°"))
+    # 3. les autres cercles communs, juste après l'École, à l'écart habituel ; ils passent sous les Noyaux
+    geo_e = GG.ring_geo(g_com, Dr + GG.BAND, None, _has_text(declared)) if g_com else []
+    communs = _poser(g_com, geo_e, disques, declared)
+    if declared:
+        for ring, (rin, rout) in zip(communs, geo_e):
+            p = max(_part_cachee(rin, disques), _part_cachee(rout, disques))
+            if p > 0: DESSIN.append((nom, ring["label"].split()[0], f"cercle caché sous les Noyaux sur {100 * p:.0f} % de son tour"))
+    parts = _cercles(communs, geo_e, declared, disques) + _cercles([ecole], geo_c, declared, disques)
+    for inner, th, cx, cy, _ in pl:
         parts.append(f'<g transform="translate({GG.f(cx)},{GG.f(cy)})">{inner}</g>')
-    parts += _sats(exterieurs, geo_e)
-    R = max([Dr + Rn, _rayon_max(exterieurs, geo_e) if g_com else 0]) + 24
+    parts += _sats(communs, geo_e)          # par-dessus : un satellite qui n'a pas trouvé de place libre reste visible
+    R = max([math.hypot(x, y) + r for x, y, r in disques] + ([_rayon_max(communs, geo_e)] if g_com else [])) + 24
     return f'<svg viewBox="{GG.f(-R)} {GG.f(-R)} {GG.f(2*R)} {GG.f(2*R)}" role="img" xmlns="http://www.w3.org/2000/svg">{"".join(parts)}</svg>'
 
 
@@ -320,9 +500,10 @@ def essai(out):
     sommaire = "".join(f'<a class="chip" href="#g{i}">{i}. {html.escape(r["sort"])}</a>' for i, r in enumerate(res, 1)) + '<a class="chip" href="#gc">Boule de feu (main)</a>'
     page = ST.HEAD.format(title="Essai · formes combinées", root="") + f"""
 <header><div class="eyebrow">Essai · chantier « combinees » · rien n'entre dans la bibliothèque</div><h1>Formes combinées : essai de dessin</h1>
-<p class="lede">Second essai. Plusieurs Noyaux hybrides, un par combinaison, lancés en même temps. Le cercle d'École, premier cercle commun, passe
+<p class="lede">Troisième essai. Plusieurs Noyaux hybrides, un par combinaison, lancés en même temps. Le cercle d'École, premier cercle commun, passe
 par le centre des Noyaux et les relie ; tous les autres cercles communs, de la Cible à la Cosmétique, sont à l'extérieur ; chaque Noyau
-porte ses propres cercles autour de lui. Lecture : d'abord les Noyaux, puis les cercles communs, du centre vers l'extérieur.</p>
+porte ses propres cercles autour de lui, droit ; un satellite qui se poserait au sud se pose vers l'extérieur du glyphe. Les cercles communs suivent le cercle d'École
+à l'écart habituel et passent sous les Noyaux ; leurs annotations se placent dans les portions visibles. Lecture : d'abord les Noyaux, puis les cercles communs, du centre vers l'extérieur.</p>
 <div class="chips">{sommaire}</div></header>
 <div class="essai">""" + "".join(arts) + "</div>" + ST.FOOT
     open(os.path.join(out, "index.html"), "w", encoding="utf-8").write(page)
@@ -336,7 +517,8 @@ porte ses propres cercles autour de lui. Lecture : d'abord les Noyaux, puis les 
 
 if __name__ == "__main__":
     res, fb = essai(sys.argv[1])
-    json.dump(dict(formes=[dict(r, svg=list(r["svg"])) for r in res], faits=FAITS, boule_de_feu=dict(svg=list(fb["svg"]))),
+    json.dump(dict(formes=[dict(r, svg=list(r["svg"])) for r in res], faits=FAITS, dessin=DESSIN, boule_de_feu=dict(svg=list(fb["svg"]))),
               open(os.path.join(sys.argv[1], "_essai.json"), "w", encoding="utf-8"), ensure_ascii=False, default=repr)
     for r in res: print(r["sort"], "|", r["label"], "|", len(r["svg"][0]), len(r["svg"][1]))
     for x in FAITS: print("  fait :", x)
+    for x in DESSIN: print("  dessin :", x)

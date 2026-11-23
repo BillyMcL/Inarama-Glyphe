@@ -151,7 +151,7 @@ def _accents():
     import re, glob, collections, convert as C
     vu = collections.defaultdict(collections.Counter)
     for p in glob.glob(os.path.join(D, "*.py")):
-        if os.path.basename(p) in ("corrections.py", "combinees.py", "constats.py"): continue     # combinees.py (B12), constats.py (B13) : leurs identifiants ne comptent pas
+        if os.path.basename(p) in ("corrections.py", "combinees.py", "constats.py", "concentration.py"): continue     # combinees.py (B12), constats.py (B13), concentration.py : leurs identifiants ne comptent pas
         for t in re.findall(r"[a-zàâäçéèêëîïôöùûüœ]+(?:-[a-zàâäçéèêëîïôöùûüœ]+)*", open(p, encoding="utf-8").read()):
             vu[C.norm(t)][t] += 1           # toutes les orthographes, sans accent comprises (« entrave » contre « entravé »)
     out = {}
@@ -601,7 +601,9 @@ def appliquer(cle, formes):
     import combinees as CB                    # formes combinées (B12) : six sorts, formes construites tout à la fin
     out = CB.appliquer(cle, out) if cle in CB.sorts_b12() else out
     import constats as B13                    # B13 : les constats, forme par forme, tout à la fin
-    return B13.appliquer(cle, out)
+    out = B13.appliquer(cle, out)
+    import concentration as CC                # la concentration écrite sur les glyphes (D&D 5, 3.5, PF1), tout à la fin
+    return CC.appliquer(cle, out)
 
 
 # ---------- placement des symboles à côté d'autres satellites (règle de dessin, après toutes les corrections) ----------

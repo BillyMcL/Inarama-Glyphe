@@ -5,7 +5,7 @@ Ce module n'est appelé par aucune construction du site : il sert à la mesure (
 
     cout(forme) -> dict(cout, palier, detail, effets, sans_trace, defaut)
 
-- cout : le total, nombre décimal ; palier : le total arrondi (demi vers le haut) et borné de 0 à 9 ;
+- cout : le total, nombre décimal ; palier : le total arrondi (demi vers le haut) et borné de 0 à 10 (2.6) ;
 - detail : chaque étape du calcul, avec la règle appliquée (« 2.1 état », « 2.4 zone »… : numéros du document) ;
 - sans_trace : les relations dont une règle a besoin et dont le glyphe ne dit rien (lacunes d'écriture, partie 4.2) ;
 - defaut : les mots des cercles d'Impact tombés au prix par défaut (3,0).
@@ -30,7 +30,13 @@ DEFAUT = 3.0
 
 import lexique as LX
 DEGRES = LX.DEGRES                      # mots de degré (A7) : un Impact chiffré dont le premier mot en est un dit un degré
+PROFONDE = {"AME", "CORPS", "ESPRIT", "SORT"}          # cible profonde (2.4, document du 23 novembre)
+OUVRE = {"MORT", "SORT", "ARTEFACT"}                   # condition qui ouvre (2.4)
 ETRES = LX.CIBLE["ETRE"] | {"MORTVIVANT", "VIVANT", "MORT", "HOSTILE"}   # sortes d'êtres (LECTURE : lexique.py, catégorie ETRE)
+PALIER_MAX = 10                                        # 2.6 : le palier 10 (la Quintessence) est atteignable
+# Variante D : dégâts officiels de D&D 5 (Guide du maître, partie 8 du document), une action, instantané, jet pour moitié
+DEGATS = {"une": [5.5, 11, 16.5, 27.5, 33, 38.5, 55, 60.5, 66, 82.5], "plusieurs": [3.5, 7, 10.5, 21, 24.5, 28, 38.5, 42, 45.5, 49]}
+VERBES_NUISIBLES = LX.VERBES_NUISIBLES
 OBJETS = LX.CIBLE["OBJET"]
 UNITES = {"SECONDES": 1, "MINUTES": 60, "HEURES": 3600, "JOURS": 86400, "ANS": 31536000}
 MANIERE = {"CONTRE", "MALGRE", "SANS", "SAUF", "TANTQUE", "PROCHAIN"}
@@ -56,6 +62,16 @@ def prix_montant(v, facteur=1.0):
     return max(1.0, -2.8 + 1.25 * math.log2(max(v * facteur, 1)))
 
 
+def palier_degats(m, colonne):
+    """variante D : le palier d'un montant lu dans le tableau officiel, en interpolant entre les lignes ; sous le tour de magie,
+    la première pente prolongée (plancher 0) ; au-delà du niveau 9, la dernière pente prolongée, jusqu'au palier 10"""
+    t = DEGATS[colonne]
+    if m <= t[0]: return max(0.0, (m - t[0]) / (t[1] - t[0]))
+    for i in range(9):
+        if m <= t[i + 1]: return i + (m - t[i]) / (t[i + 1] - t[i])
+    return min(float(PALIER_MAX), 9 + (m - t[9]) / (t[9] - t[8]))
+
+
 def _echelle_mot(w, ws):
     e = MOT_ECHELLE.get(w)
     if e == "facultés" and set(ws) & SAVOIRFAIRE: e = "savoirfaire"
@@ -63,7 +79,7 @@ def _echelle_mot(w, ws):
 
 
 # ---------------------------------------------------------------- 2.1 le prix d'un cercle d'Impact
-def prix_impact(r, facteur=1.0):
+def prix_impact(r, facteur=1.0, degats=None):
     """(prix, sorte, règle, mots au défaut, lacunes) d'un cercle d'Impact"""
     v, ws = r[1], [w for w in r[2] if w != "IMPARABLE"]
     st = _sats(r)
@@ -112,8 +128,12 @@ def prix_impact(r, facteur=1.0):
         p = float(min(9, max(x[1] for x in seuil_x))) if seuil_x and all(_num(x[1]) for x in seuil_x) else 9.0
         cands.append((p, "souhait", "2.1 souhait : palier du sort reproduit + 1"))
     if _num(v) and (not ws or ws[0] in MONTANT or ws[0] not in DEGRES) and not cands:       # un état ou un outil l'emporte
-        p = prix_montant(v, facteur)
-        cands.append((p, "blessure", f"2.1 montant {v}" + (f" × {facteur:g}" if facteur != 1 else "") + " : −2,8 + 1,25 × log2, plancher 1"))
+        if degats:
+            p = palier_degats(v * facteur, degats)
+            cands.append((p, "blessure", f"variante D : montant {v} lu dans le tableau officiel de D&D 5, colonne « {'une cible' if degats == 'une' else 'plusieurs cibles'} »"))
+        else:
+            p = prix_montant(v, facteur)
+            cands.append((p, "blessure", f"2.1 montant {v}" + (f" × {facteur:g}" if facteur != 1 else "") + " : −2,8 + 1,25 × log2, plancher 1"))
     if cands:
         p, k, rg = max(cands, key=lambda c: c[0])
         return p, k, rg, [], []
@@ -190,23 +210,45 @@ def relations(f):
         elif "CONSOMME" in c[2] or mon: R["sans_trace"].append("prix d'une Composante sans valeur")
     cond = [r for r in rings if r[0] == "CONDITION"]
     cw = [w for r in cond for w in r[2]]
-    R["etres_condition"] = [w for w in cw if w in ETRES]
-    R["exigence"] = [w for w in cw if w not in COND_NEUTRES and w not in ETRES and w not in MANIERE]
+    R["etres_condition"] = [w for w in cw if w in ETRES and w not in OUVRE]     # « mort » en Condition : la condition qui ouvre
+    R["profonde"] = sorted(set(R["cible_mots"]) & PROFONDE)
+    R["ouvre"] = sorted(set(cw) & OUVRE)
+    R["concentration"] = "CONCENTRATION" in cw
+    R["exigence"] = [w for w in cw if w not in COND_NEUTRES and w not in ETRES and w not in MANIERE and w not in OUVRE]
     R["prochain"] = "PROCHAIN" in cw or any("PROCHAIN" in _txt(s).split() for r in rings for s in _sats(r))
     R["seuil_vie"] = [s[1] for r in cond for s in _sats(r) if _txt(s).startswith("IMPACT VIE") and _num(s[1])]
     return R
 
 
 # ---------------------------------------------------------------- le calcul
-def cout(f, facteur_montant=1.0, force_tous_ajouts=True):
+def genre(r, sorte, verbe):
+    """le genre d'un effet, pour la mesure : blessure, soin, état, être appelé, outil ou déplacement, garde, autre"""
+    ws = set(r[2])
+    if sorte == "être": return "être appelé"
+    if sorte == "outil": return "outil ou déplacement"
+    if sorte in ("état", "seuil", "forme prise"):
+        return "garde" if any(MOT_ECHELLE.get(w) == "garde" for w in ws) else "état"
+    if sorte == "blessure":
+        if ws & {"REMPART", "ABSORPTION", "RIPOSTE"}: return "garde"
+        if "VIE" in ws and verbe.split(" · ")[0] not in VERBES_NUISIBLES: return "soin"
+        return "blessure"
+    return "autre"
+
+
+def cout(f, facteur_montant=1.0, force_tous_ajouts=True, degats_officiels=False, rabais_concentration=0.0, concentration=None):
     """coût d'une forme (dict du moteur) ; force_tous_ajouts : chaque ajout × force de l'effet (document, 2.4) ;
-    False : seulement les cibles et la zone (calcul du 20 novembre), pour comparaison"""
+    False : seulement les cibles et la zone (calcul du 20 novembre), pour comparaison.
+    degats_officiels : variante D (montants lus dans le tableau de D&D 5) ; rabais_concentration : variante C (la
+    concentration lue sur la Condition ; concentration=True/False ne sert qu'à une simulation de la mesure, hors glyphe)."""
     det, dft, lac = [], [], []
     rings = f["rings"]
     I = [r for r in rings if r[0] == "IMPACT"]
     if not I: return None
     R = relations(f); lac += R["sans_trace"]
     etre = any(r[2][:1] == ["PUISSANCE"] for r in I)
+    n = R["n_cibles"]
+    multi = n == "plein" or (_num(n) and n >= 2)
+    colonne = ("plusieurs" if (multi or R["zone"]) else "une") if degats_officiels else None
     es, sugg = [], False
     for r in I:
         ws = set(r[2])
@@ -214,7 +256,7 @@ def cout(f, facteur_montant=1.0, force_tous_ajouts=True):
             sugg = sugg or "SUGGESTION" in ws
             det.append(f"2.3 « {' · '.join(sorted(ws & {'INJONCTION', 'SUGGESTION', 'DOMINATION'})).lower()} » comprise dans la puissance de l'être appelé")
             continue
-        p, k, rg, d_, l_ = prix_impact(r, facteur_montant)
+        p, k, rg, d_, l_ = prix_impact(r, facteur_montant, colonne)
         dft += d_; lac += l_
         aj = []
         st = _sats(r)
@@ -226,10 +268,10 @@ def cout(f, facteur_montant=1.0, force_tous_ajouts=True):
         if conds and p > 3:
             x = 0.3 * (p - 3); p -= x; aj.append(f"2.2 condition sur l'effet −{x:.2f}")
         if "SUSPENSION" in ws: p -= 1.0; aj.append("2.2 suspension −1")
-        es.append((p, k)); det.append(f"effet « {' · '.join(r[2]).lower() or 'sans mot'} » {r[1]} : {p:.2f} — {rg}" + (" ; " + " ; ".join(aj) if aj else ""))
+        es.append((p, k, genre(r, k, f.get("verb", "")))); det.append(f"effet « {' · '.join(r[2]).lower() or 'sans mot'} » {r[1]} : {p:.2f} — {rg}" + (" ; " + " ; ".join(aj) if aj else ""))
     if not es: return None
     es.sort(key=lambda e: -e[0])
-    g, k0 = es[0]
+    g, k0, genre0 = es[0]
     inst = (not R["permanent"]) and 0 < R["duree"] <= 6
     if inst and k0 == "état":
         g *= 0.75; det.append("2.3 état d'un instant × 0,75")
@@ -246,16 +288,18 @@ def cout(f, facteur_montant=1.0, force_tous_ajouts=True):
         x2 = x * (fz if (force and (force_tous_ajouts or nom in ("cibles", "zone", "budget"))) else 1.0)
         if x2 > 0.005: ext += x2; aj.append(f"{nom} +{x2:.2f}")
     long_ = R["permanent"] or R["duree"] > 3600
-    n = R["n_cibles"]
-    multi = n == "plein" or (_num(n) and n >= 2)
-    if multi:
+    tableau = colonne == "plusieurs" and k0 == "blessure"      # variante D : la colonne « plusieurs cibles » compte déjà zone et cibles
+    if tableau: aj.append("variante D : ni zone ni cibles (le tableau officiel les compte)")
+    if multi and not tableau:
         ajoute((4.0 if long_ else 2.5) if n == "plein" else 2.0 if n >= 4 else 1.0, "cibles")
-    elif R["budget"]:
+    elif R["budget"] and not multi:
         ajoute(1.0 if R["budget"][0] < 60 else 2.0, "budget")
     if R["distance"] == "loin": ajoute(0.4, "distance")
-    if R["zone"] and R["volume"] and not multi:
+    if R["zone"] and R["volume"] and not multi and not tableau:
         ajoute(min(3.0, 0.3 * math.log2(max(R["volume"], 30) / 30)), "zone")
     if R["psyche"]: ajoute(0.3, "psyché")
+    if R["profonde"]: ajoute(1.0, "cible profonde « " + " · ".join(w.lower() for w in R["profonde"]) + " »")
+    if R["ouvre"]: ajoute(1.0, "condition qui ouvre « " + " · ".join(w.lower() for w in R["ouvre"]) + " »")
     if R["permanent"] or R["duree"] > 6:
         L = 6.0 if R["permanent"] else min(5.0, math.log10(R["duree"] / 6))
         w = 1 if g < 3 else 0.5 if g < 6 else 0.25
@@ -287,6 +331,8 @@ def cout(f, facteur_montant=1.0, force_tous_ajouts=True):
     rp = min(2.0, (rabs[0][0] + 0.5 * sum(x for x, _ in rabs[1:])) if rabs else 0.0)
     if rabs: det.append("2.5 rabais : " + " ; ".join(f"{n_} −{x:.2f}" for x, n_ in rabs) + f" → −{rp:.2f} (le plus fort entier, la moitié des autres, 2 au plus)")
     tot = c + ext - rab_cat - rp
+    if rabais_concentration and (R["concentration"] if concentration is None else concentration):
+        tot -= rabais_concentration; det.append(f"variante C : concentration −{rabais_concentration:g}")
     for r in R["contrecoup"]:
         mot = r[2][1] if len(r[2]) > 1 else None
         e = _echelle_mot(mot, r[2]) if mot else None
@@ -299,6 +345,6 @@ def cout(f, facteur_montant=1.0, force_tous_ajouts=True):
         fr = 0.3 if sv[0] < 30 else 0.2 if sv[0] < 60 else 0.1 if sv[0] <= 120 else 0.0
         if fr:
             x = fr * max(tot, 0); tot -= x; det.append(f"2.5 seuil de vie {sv[0]} : −{100 * fr:.0f} % (−{x:.2f})")
-    palier = int(min(9, max(0, math.floor(tot + 0.5))))
-    return dict(cout=round(tot, 3), palier=palier, detail=det, effets=[(round(p, 3), k) for p, k in es], sorte=k0,
+    palier = int(min(PALIER_MAX, max(0, math.floor(tot + 0.5))))
+    return dict(cout=round(tot, 3), palier=palier, detail=det, effets=[(round(p, 3), k) for p, k, _ in es], sorte=k0, genre=genre0,
                 sans_trace=sorted(set(lac)), defaut=dft)

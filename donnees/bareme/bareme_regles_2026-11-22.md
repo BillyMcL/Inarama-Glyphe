@@ -57,7 +57,8 @@ Chaque ajout est multiplié par la force de l'effet (prix ÷ 3, au plus 1). Le t
 | budget de vie à répartir | +1 sous 60, +2 au-delà |
 | à distance | +0,4 |
 | zone | +0,3 × log2(volume ÷ 30), au plus 3 |
-| cible profonde, ou ouverte | +1 |
+| cible profonde (mots de Cible : AME, CORPS, ESPRIT, SORT) | +1 |
+| condition qui ouvre (mots de Condition : MORT, SORT, ARTEFACT) | +1 |
 | psyché | +0,3 |
 | durée | +0,3 par décuplement depuis 6 s ; finie plafonnée à une semaine (1,5) ; sans fin 1,8 ; poids 1 / 0,5 / 0,25 selon que l'effet vaut moins de 3, moins de 6, ou plus |
 | quantité (instances) | +log2(nombre) pour une blessure, la moitié pour un autre effet |
@@ -72,7 +73,7 @@ Chaque ajout est multiplié par la force de l'effet (prix ÷ 3, au plus 1). Le t
 
 ### 2.6 Le palier
 
-Le total est arrondi et borné de 0 à 9.
+Le total est arrondi et borné de 0 à 10. Le palier 10 est celui de la Quintessence (sorts de rang 10 de PF2) : il est atteignable.
 
 ## 3. Ce qui a changé dans la bibliothèque depuis le 20 novembre, et ce que le barème doit en faire
 
@@ -125,3 +126,31 @@ Si une relation n'a aucune trace dans le glyphe, c'est une lacune d'écriture, p
 
 - Pas de facteur par jeu dans le coût : le calcul du 20 novembre multipliait les montants par un facteur propre à chaque jeu (3.5 × 1,25, PF1 × 1,2, PF2 × 1,25). Un glyphe ne dit pas de quel jeu il vient : le coût d'Inarama lit le montant écrit. Le rapport de mesure donne les résultats avec et sans ce facteur, pour voir son effet.
 - Tables : `bareme_tables_2026-11-22.json` (échelles, mots, montants, outils, coefficients de levée, fins).
+
+## 7. Décision de cadrage (23 novembre)
+
+- L'échelle d'Inarama est calée sur D&D 5 (5e et 2024). Un niveau n d'Inarama vaut à peu près un niveau n de D&D 5, quelle que soit la source du sort ; on peut faire mieux que D&D 5 là où il est mal équilibré, tant que ça reste sensé.
+- Exigence ferme : un sort de niveau n est plus fort qu'un sort de niveau n−1 et plus faible qu'un sort de niveau n+1.
+- Le barème se règle sur D&D 5 seulement. Les autres jeux ne sont pas des cibles : leur niveau d'origine reste affiché à titre indicatif, avec son système. La conversion se contrôle sur les sorts présents dans deux jeux (même effet → même palier d'Inarama).
+- Une fois le barème réglé, le cercle d'Interaction de chaque sort recevra son niveau d'Inarama ; le niveau d'origine passera entre parenthèses avec son système. L'éditeur donnera le niveau d'Inarama, et une estimation du niveau dans chaque système d'origine.
+
+## 8. Repères officiels de D&D 5 (Guide du maître, « Créer un sort », p. 283-284 ; repris par la communauté)
+
+Dégâts moyens par niveau, une action, instantané :
+
+| Niveau | Une cible, jet pour moitié | Plusieurs cibles, jet pour moitié |
+|---|---|---|
+| tour de magie | 5,5 (1d10) | 3,5 (1d6) |
+| 1 | 11 (2d10) | 7 (2d6) |
+| 2 | 16,5 (3d10) | 10,5 (3d6) |
+| 3 | 27,5 (5d10) | 21 (6d6) |
+| 4 | 33 (6d10) | 24,5 (7d6) |
+| 5 | 38,5 (7d10) | 28 (8d6) |
+| 6 | 55 (10d10) | 38,5 (11d6) |
+| 7 | 60,5 (11d10) | 42 (12d6) |
+| 8 | 66 (12d10) | 45,5 (13d6) |
+| 9 | 82,5 (15d10) | 49 (14d6) |
+
+Autres repères : un jet qui annule vaut environ 1,25 fois un jet pour moitié ; des dégâts sans jet valent environ 0,6 fois ; une action répétée chaque tour vaut la moitié du tableau ; à effet égal, une portée plus longue rend le sort plus cher ; un sort sans concentration doit être plus faible (la concentration est une contrainte) ; une incantation longue autorise plus de puissance, une action bonus ou une réaction moins ; un état handicapant sans nouveau jet chaque tour vaut au moins le niveau 6.
+
+Constat : les dégâts de D&D 5 montent à peu près en ligne droite avec le niveau (environ +8 par niveau sur une cible). La règle actuelle du barème suppose un doublement des dégâts tous les 1,25 palier : elle donne 5,2 pour 82,5 dégâts au lieu de 9. C'est la cause probable des niveaux 7 à 9 trop bas.

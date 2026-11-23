@@ -41,6 +41,8 @@ def _sat(txt, par):
 
 def cercle(c, niveau, ref, ou, combinee=True):
     """un cercle de B12 → (critère, valeur, mots, lecture, satellites), lecture écrite comme le moteur"""
+    if c["cercle"] == "CONDITION" and "CONCENTRATION" in c["mots"]:      # écriture de la concentration (23 novembre) : valeur =
+        c = dict(c, valeur=len(c["mots"]), parenthese="")               # nombre de conditions, pas de parenthèse (le mot suffit)
     crit, v, par = c["cercle"], c["valeur"], c["parenthese"]
     ws = [C.word(w) for w in c["mots"]]
     sats = [_sat(s, par) for s in c["satellites"]]

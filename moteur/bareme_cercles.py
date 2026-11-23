@@ -22,6 +22,23 @@ PALIER_MAX = 10
 
 
 def _num(v): return isinstance(v, (int, float)) and not isinstance(v, bool)
+
+
+def cle_cercle(r):
+    """l'identité d'un cercle, comme le répertoire : type, valeur, mots dans l'ordre, satellites (position, valeur, texte, options)"""
+    import json
+    jv = lambda x: json.loads(json.dumps(x, ensure_ascii=False, default=repr))
+    sats = tuple(json.dumps(jv([s[0], s[1], s[2] if len(s) > 2 else None, dict(sorted((s[3] if len(s) > 3 and s[3] else {}).items()))]),
+                            ensure_ascii=False) for s in (r[4] if len(r) > 4 and r[4] else []))
+    return (r[0], json.dumps(jv(r[1]), ensure_ascii=False), tuple(r[2]), sats)
+
+
+def combiner(prix, sugg=False):
+    """plusieurs effets (règle 2.3, provisoire) : le plus cher entier, les autres en part"""
+    if not prix: return 0.0
+    ps = sorted(prix, reverse=True); g = ps[0]
+    part = 0.5 if g < 3 else 0.25 if g < 6 else 0.1
+    return g + part * sum(max(x, 0) for x in ps[1:]) - (1 if sugg else 0)
 def _sats(r): return list(r[4]) if len(r) > 4 and r[4] else []
 def _txt(s): return s[2] if len(s) > 2 and isinstance(s[2], str) else ""
 def _sym(v): return isinstance(v, (tuple, list)) and len(v) == 2 and v[0] == "sym"
@@ -295,7 +312,7 @@ def analyse(f):
             sugg = sugg or "SUGGESTION" in ws
             det.append(dict(cercle="IMPACT", lecture=" · ".join(r[2]).lower(), prix=0.0, regle="2.3 : comprise dans la puissance de l'être appelé")); continue
         p, g, fam, role, rg = effet(r, ctx)
-        es.append(dict(prix=p, genre=g, famille=fam, role=role))
+        es.append(dict(prix=p, genre=g, famille=fam, role=role, cercle=cle_cercle(r), sans_prix=rg.startswith("aucun prix")))
         det.append(dict(cercle="IMPACT", lecture=f"{r[1]} « {' · '.join(r[2]).lower()} »", prix=round(p, 3), regle=rg))
     if es:
         es.sort(key=lambda e: -e["prix"])
@@ -323,6 +340,7 @@ def analyse(f):
     mesures = dict(cibles=n_cibles, cibles_lecture=why_c, zone=est_zone, marche=round(marche(sec, perm), 3), duree_s=sec, permanent=perm,
                    incantation_s=cast, restriction=rs, instances=instances)
     return dict(prix_effet=round(prix_effet, 3), decides=round(decides, 3), genre=principal["genre"], famille=principal.get("famille"),
+                effets=[dict(prix=round(e["prix"], 3), genre=e["genre"], cercle=e["cercle"], sans_prix=e["sans_prix"]) for e in es], suggestion=sugg,
                 role=principal.get("role"), mesures=mesures, detail=det, lacunes=lacunes, sans_impact=not es)
 
 

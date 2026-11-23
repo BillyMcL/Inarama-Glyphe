@@ -13,9 +13,10 @@ est listé (AMBIGUS).
 
 Écriture (celle des formes combinées) : le mot CONCENTRATION dans le cercle de Condition (« parole · concentration »),
 ajouté aux mots du cercle sans rien retirer ; sans cercle de Condition, un cercle de Condition est ajouté à sa place dans
-l'ordre des cercles. La valeur du cercle compte ses conditions : elle est égale à son nombre de mots. Phrase : le début est
+l'ordre des cercles. La valeur du cercle compte ses conditions : un mot de manière (sans, contre) forme une seule condition
+avec les mots qu'il gouverne (« parole · vu · concentration · sans · plomb » = 4). Phrase : le début est
 régénéré, sans parenthèse ajoutée (le mot suffit). Les formes qui portaient déjà CONCENTRATION dans leur Condition prennent
-la même écriture (valeur = nombre de mots, parenthèse retirée : NORMALISEES ; les formes combinées le font dans
+la même écriture (valeur = nombre de conditions, parenthèse retirée : NORMALISEES ; les formes combinées le font dans
 combinees.cercle). Une forme qui l'écrit ailleurs (Durée « tant que · concentration », satellite) n'est pas changée (DEJA).
 Appliqué tout à la fin de la chaîne (après B13) ; les formes touchées sont redessinées par le moteur.
 """
@@ -105,6 +106,18 @@ def _decoupe(r):
     return par, reste
 
 
+def conditions(ws):
+    """le nombre de conditions d'un cercle de Condition : un mot de manière forme une seule condition avec les mots qu'il
+    gouverne (« sans » : tous les mots qui le suivent ; « contre » : le mot qui le suit), comme la phrase les groupe"""
+    if set(ws) & {"MALGRE", "SAUF"}: raise ValueError(f"concentration : mot de manière sans règle de groupe dans une Condition : {ws}")
+    n, i = 0, 0
+    while i < len(ws):
+        if ws[i] == "SANS": return n + 1
+        i += 2 if ws[i] == "CONTRE" and i + 1 < len(ws) else 1
+        n += 1
+    return n
+
+
 def _cercle(r, ajout_mot, garder_par):
     """le cercle de Condition écrit avec la concentration (r : le cercle existant, ou None)"""
     import convert as C, corrections as K, phase4b as P
@@ -118,8 +131,9 @@ def _cercle(r, ajout_mot, garder_par):
             ws = ws[:k] + ["CONCENTRATION"] + ws[k:]
         sats = r[4] if len(r) > 4 else None
     with K._Accentue():
-        rd = P._tete_b9("CONDITION", len(ws), ws) + (par if garder_par else "") + reste
-    return ("CONDITION", len(ws), ws, rd, sats) if sats is not None else ("CONDITION", len(ws), ws, rd)
+        rd = P._tete_b9("CONDITION", conditions(ws), ws) + (par if garder_par else "") + reste
+    v = conditions(ws)
+    return ("CONDITION", v, ws, rd, sats) if sats is not None else ("CONDITION", v, ws, rd)
 
 
 def appliquer(cle, formes):

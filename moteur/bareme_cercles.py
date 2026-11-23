@@ -1,0 +1,341 @@
+"""Barème par cercles : le coût d'une forme lu sur son glyphe, cercle par cercle (décisions du 23 novembre 2026, « validé pour
+l'instant, affiné à la fin »). Aucune construction du site ne l'appelle.
+
+Sources : les lots du barème (Claude outputs/phase4 : lots 1 à 7, I1, I2, I3, I6, I7-I12) et donnees/bareme/bareme_tables
+(échelles d'états, prix fixes des outils), lus pour les prix décidés ; les prix provisoires et les relations sont marqués.
+
+    analyse(forme)          -> les mesures lues sur le glyphe et le prix de chaque cercle (sans les relations)
+    palier(analyse, coefs)  -> le coût et le palier, avec les coefficients des relations réglés (outils/mesure_bareme_cercles.py)
+
+Prix décidés (points de départ) : Localisation (lot 1), rabais d'incantation (lot 2), Condition (lot 3 : parole, concentration,
+officiants), Composante (lot 4), Cosmétique (lot 6), blessures (I1), soins (I2), êtres appelés (I6).
+Provisoires : états et genres voisins (échelles de bareme_tables), outils et déplacements (prix fixes), garde (échelle I3),
+plusieurs effets (règle 2.3 de l'ancien barème).
+Relations réglées sur les niveaux de la source, genre par genre et système par système :
+    palier ≈ prix de l'effet + a × log2(cibles) + b × marche de durée + c × restriction + prix décidés
+"""
+import math, re
+import bareme as B          # échelles et tables du barème du 22 novembre (prix_degre, MOT_ECHELLE, OUTIL…)
+import lexique as LX
+
+PALIER_MAX = 10
+
+
+def _num(v): return isinstance(v, (int, float)) and not isinstance(v, bool)
+def _sats(r): return list(r[4]) if len(r) > 4 and r[4] else []
+def _txt(s): return s[2] if len(s) > 2 and isinstance(s[2], str) else ""
+def _sym(v): return isinstance(v, (tuple, list)) and len(v) == 2 and v[0] == "sym"
+
+
+def interp_log(x, points):
+    """interpolation « à proportion sur une échelle de rapports » (logarithmique) entre les deux paliers qui encadrent x ;
+    bornée au premier et au dernier palier"""
+    if x <= points[0][0]: return points[0][1]
+    for (x1, p1), (x2, p2) in zip(points, points[1:]):
+        if x <= x2: return p1 + (p2 - p1) * math.log(x / x1) / math.log(x2 / x1)
+    return points[-1][1]
+
+
+# ---------------------------------------------------------------- lot 1 : Localisation (ajout, prix décidé)
+LOCALISATION = [(3, 0.10), (9, 0.25), (18, 0.30), (27, 0.33), (36, 0.36), (45, 0.40), (90, 0.50), (150, 0.60), (300, 0.75),
+                (1600, 1.00), (8000, 1.50), (160000, 2.00), (800000, 2.50)]
+def prix_localisation(r):
+    if r is None: return 0.0, "pas de Localisation (soi) : 0"
+    if r[1] == "plein": return 3.0, "lot 1 : illimitée 3,00"
+    if set(r[2]) & {"AVENIR", "PASSE"}: return 0.0, "lot 1 : Localisation dans le temps, sans prix (lacune)"
+    m = r[1] * (1000 if "KILOMETRES" in r[2] else 1)
+    if m <= 2: return 0.0, "lot 1 : contact 0"
+    if m < 3: return 0.0, "lot 1 : sous 3 m, 0"
+    return round(interp_log(m, LOCALISATION), 3), f"lot 1 : {m:g} m"
+
+
+# ---------------------------------------------------------------- lot 2 : Durée (marche, mesure) et incantation (rabais décidé)
+UNITES = {"SECONDES": 1, "MINUTES": 60, "HEURES": 3600, "JOURS": 86400, "ANS": 31536000}
+MARCHES = [(6, 1), (60, 2), (600, 3), (3600, 4), (28800, 5), (86400, 6), (604800, 7), (31536000, 8)]
+INCANTATION = [(6, 0.10), (60, 0.50), (600, 0.75), (3600, 1.00), (28800, 1.25), (43200, 1.35), (86400, 1.50), (604800, 2.00)]
+def duree(rings):
+    """(secondes de l'effet ou None si permanent, permanent, secondes d'incantation)"""
+    r = next((x for x in rings if x[0] == "DUREE"), None)
+    if r is None: return 0.0, False, 0.0
+    us = [w for w in r[2] if w in UNITES]
+    st = [s for s in _sats(r) if not _txt(s) and not _sym(s[1]) and (s[0] == "NS" or len(_sats(r)) == 1)]
+    if st:                                      # incantation sur le cercle, durée de l'effet en satellite nord-sud
+        cast = r[1] * UNITES[us[0]] if _num(r[1]) and us else 0.0
+        dv = st[0][1]
+        if dv == "plein": return None, True, cast
+        u = us[1] if len(us) > 1 else (us[0] if us else "SECONDES")
+        return float(dv) * UNITES[u], False, cast
+    if r[1] == "plein": return None, True, 0.0
+    if _num(r[1]) and us: return float(r[1]) * UNITES[us[0]], False, 0.0
+    return 0.0, False, 0.0
+
+
+def marche(sec, perm):
+    if perm: return 9.0
+    if not sec: return 0.0
+    if sec < 6: return sec / 6                  # sous le round : à proportion du round
+    return min(8.0, interp_log(sec, MARCHES)) if sec <= 31536000 else 8.0
+
+
+def rabais_incantation(cast):
+    if cast < 6: return 0.0
+    return round(interp_log(cast, INCANTATION), 3)
+
+
+# ---------------------------------------------------------------- lot 3 : Condition (rabais décidés)
+OFFICIANTS = {1: 0.25, 2: 0.35, 3: 0.43, 4: 0.50, 5: 0.55, 6: 0.60}
+FAMILLE2 = set("VIVANT COMPAGNON MORTVIVANT BETE PEUPLE HOSTILE TENEBREUX LUMINEUX INVOQUE ESPECE PLANTE DRAGON CADAVRE MINUSCULE PAIR ALLIE "
+               "MONTURE FOULE EQUIPAGE GRAND MONSTRE PROIE SEMBLABLE SERVITEUR INSTINCT PARENTE SOUFFLE SANG".split())
+def rabais_condition(rings):
+    out, det = 0.0, []
+    for r in rings:
+        if r[0] != "CONDITION": continue
+        if "PAROLE" in r[2]: out += 0.10; det.append("parole 0,10")
+        if "CONCENTRATION" in r[2]: out += 0.50; det.append("concentration 0,50")
+        if "OFFICIANT" in r[2]:
+            n = [s[1] for s in _sats(r) if _num(s[1]) and _txt(s) in ("", "OFFICIANT")]
+            if n:
+                x = OFFICIANTS.get(int(n[0]), 0.60 if n[0] > 6 else 0.0); out += x; det.append(f"{n[0]} officiant(s) {x:.2f}")
+    return out, det
+
+
+# ---------------------------------------------------------------- lot 4 : Composante (rabais décidé)
+COMPOSANTE = [(0.1, 0.05), (1, 0.15), (2.5, 0.20), (5, 0.30), (10, 0.40), (25, 0.55), (50, 0.70), (100, 0.85), (250, 1.00), (500, 1.20),
+              (1000, 1.40), (2500, 1.60)]
+def rabais_composante(rings):
+    out, det, ouverts = 0.0, [], []
+    for r in rings:
+        if r[0] != "COMPOSANTE": continue
+        if r[2][:1] in (["CONTREPARTIE"], ["VIE"], ["GARDE"]):
+            ouverts.append(" · ".join(r[2]).lower()); continue
+        if not _num(r[1]): continue                         # matériel sans valeur : 0
+        mon = "PLATINE" if "PLATINE" in r[2] else "OR" if "OR" in r[2] else "ARGENT" if "ARGENT" in r[2] else None
+        if mon is None: continue
+        v = r[1] * {"PLATINE": 1, "OR": 0.1, "ARGENT": 0.01}[mon]
+        for s in _sats(r):
+            if _txt(s) == "FOIS" and _num(s[1]): v *= s[1]
+        x = interp_log(v, COMPOSANTE) if v >= 0.1 else 0.05 * v / 0.1
+        tenu = "CONSOMME" not in r[2]
+        if tenu: x /= 2
+        out += x; det.append(f"{v:g} platine{' tenu (moitié)' if tenu else ''} {x:.2f}")
+    return out, det, ouverts
+
+
+# ---------------------------------------------------------------- cibles (lot 5) et zones (lot 1)
+SUPPORTS = {"COUP", "RESISTANCE", "APTITUDE", "FRAPPE", "GARDE", "PRESTANCE", "RAISON", "LUCIDITE", "ENDURANCE", "ADRESSE", "FORCE"}
+FAMILLE_D = set("BETE ELEMENTAIRE PLANTE FEE INVOQUE CADAVRE MONTURE SERVITEUR MORTVIVANT DRAGON DIVINITE PETIT COMPAGNON VERMINE INSECTE NUEE "
+                "ANCETRE ARAIGNEE MOLOSSE CHEVAL ETRE GOULE CREATURE MILLEPATTES GOLEM MORT GENIE GUEPE VIVANT SERPENT HOSTILE VER EQUIPAGE AIGLE "
+                "AUROCHS FOULE GRENOUILLE MONSTRE SINGE PASSAGER FOURMI ALLIE CORBEAU GEANT LOUP SAVANT LUMINEUX CHAUVESOURIS RAT SQUELETTE "
+                "TENEBREUX MAMMOUTH".split())
+FIGURES = {("plein", 1): "sphère", (4, 1): "cube", (3, 2): "cône", (1, 1): "ligne", (9, 2): "cylindre"}    # (valeur de la Forme, satellites de proportion)
+DIVISEUR = {"sphère": 5, "cylindre": 5, "cube": 5, "cône": 10, "ligne": 30}
+def _m3(a):
+    v, ws = a[1], list(a[2])
+    if not _num(v): return None, None
+    if ws[:1] == ["VOLUME"] or ws[-1:] == ["CUBES"]:
+        return v * {"METRES": 1, "DECAMETRES": 1e3, "HECTOMETRES": 1e6, "KILOMETRES": 1e9}.get(next((w for w in ws if w in ("METRES", "DECAMETRES", "HECTOMETRES", "KILOMETRES")), "METRES"), 1), "volume"
+    if ws[:1] == ["LONGUEUR"]: return v * (1000 if "KILOMETRES" in ws else 1), "longueur"
+    return None, None
+
+
+def cibles_zone(rings):
+    """(nombre de cibles de la zone, explication) ; None si la mesure manque (figure à part, zone sans taille)"""
+    f = next((r for r in rings if r[0] == "FORME"), None)
+    cible_zone = any(r[0] == "CIBLE" and r[1] == "plein" for r in rings)
+    if f is None and not cible_zone: return None, None
+    if f is None: return None, "zone sans Forme ni taille"
+    sats_f = _sats(f)
+    fig = FIGURES.get((f[1], len([s for s in sats_f if not _txt(s) and not _sym(s[1])])))
+    if set(f[2]) & {"EXPLOSION", "PONT"} or fig is None:
+        return None, f"figure à part ({' · '.join(f[2]).lower() or f[1]})"
+    a = next((r for r in rings if r[0] == "AMPLEUR"), None)
+    taille = _m3(a) if a else (None, None)
+    if taille[0] is None:
+        sa = [s for s in sats_f if _txt(s).startswith("AMPLEUR")]
+        if sa and _num(sa[0][1]):
+            taille = _m3(("AMPLEUR", sa[0][1], _txt(sa[0]).split()[1:]))
+    v, sorte = taille
+    if v is None: return None, f"zone sans taille ({fig})"
+    if sorte == "longueur": dim = v
+    elif fig == "sphère": dim = (3 * v / (4 * math.pi)) ** (1 / 3)
+    elif fig == "cube": dim = v ** (1 / 3)
+    elif fig == "cylindre": dim = (v / (2 * math.pi)) ** (1 / 3)
+    elif fig == "cône": dim = (12 * v / math.pi) ** (1 / 3)
+    else: dim = v                                  # une ligne écrite en volume : rare
+    pieds = max(5, 5 * round(dim / 0.3048 / 5))
+    n = max(1, math.ceil(pieds / DIVISEUR[fig]))
+    return n, f"{fig} de {pieds} pieds → {n} cibles"
+
+
+def nombre_cibles(rings):
+    c = next((r for r in rings if r[0] == "CIBLE"), None)
+    q = [s[1] for s in (_sats(c) if c else []) if not _txt(s) and not _sym(s[1]) and (_num(s[1]) or s[1] == "plein")]
+    if q:
+        if q[0] == "plein": return 10, "Quantité pleine (« tous ceux que je choisis ») lue 10", False
+        return int(q[0]), f"Quantité {q[0]} sur la Cible", False
+    n, why = cibles_zone(rings)
+    if n is not None: return n, "zone : " + why, True
+    if why: return 1, "mesure absente : " + why, True
+    return 1, "une cible", False
+
+
+def restriction(rings):
+    out = []
+    for r in rings:
+        if r[0] == "CONDITION": out += [w for w in r[2] if w in FAMILLE2]
+        if r[0] == "CIBLE":
+            out += [{"lumineux": "LUMINEUX", "tenebreux": "TENEBREUX"}[s[1][1]] + " (pôle)" for s in _sats(r) if _sym(s[1]) and s[1][1] in ("lumineux", "tenebreux")]
+            if r[1] not in (1, None): out += [w for w in r[2] if w in FAMILLE_D]
+    return sorted(set(out))
+
+
+# ---------------------------------------------------------------- les effets (cercles d'Impact)
+BLESSURE = {"CHOC", "PERCE", "TRANCHANT", "FRACAS", "VENIN", "SAIGNEMENT", "DOULEUR", "IMPARABLE"}
+DEGATS = {"une": [5.5, 11, 16.5, 27.5, 33, 38.5, 55, 60.5, 66, 82.5], "plusieurs": [3.5, 7, 10.5, 21, 24.5, 28, 38.5, 42, 45.5, 49]}
+GARDE = {1: 1.2, 2: 1.6, 3: 1.9, 4: 2.25, 5: 2.6, 6: 2.95}
+GRANDE_FAMILLE = {"sens": "sens", "savoir": "savoir", "être vu": "caché", "matière": "caché", "paraître": "caché", "forme": "caché",
+                  "illusion": "caché", "peur": "esprit", "attitude": "esprit", "conduite": "esprit", "conscience": "esprit", "oubli": "esprit"}
+def palier_degats(m, col):
+    t = DEGATS[col]
+    if m <= t[0]: return max(0.0, (m - t[0]) / (t[1] - t[0]))
+    for i in range(9):
+        if m <= t[i + 1]: return i + (m - t[i]) / (t[i + 1] - t[i])
+    return min(float(PALIER_MAX), 9 + (m - t[9]) / (t[9] - t[8]))
+
+
+def effet(r, ctx):
+    """(prix, genre, famille, rôle, règle) d'un cercle d'Impact ; ctx : plusieurs cibles, zone, nombre d'êtres, verbe, supports"""
+    v, ws = r[1], [w for w in r[2]]
+    st = _sats(r)
+    repete = any(_txt(s).startswith("DUREE CHAQUE") for s in st)
+    seuil_i = [s for s in st if _txt(s).split()[:1] == ["IMPACT"] and len(_txt(s).split()) > 1]
+    seuil_x = [s for s in st if _txt(s).split()[:1] == ["INTERACTION"]]
+    if "PUISSANCE" in ws[:1] or (ws and ws[0] == "PUISSANCE"):
+        if not _num(v): return 3.0, "être appelé", None, None, "I6 : puissance pleine, prix ouvert (3,0 provisoire)"
+        n = ctx["etres"]
+        return v + math.log2(max(n, 1)), "être appelé", None, None, f"I6 : puissance {v} + log2({n})"
+    # bonus : la Cible porte un support (coup, garde, résistance, une faculté) et l'Impact est chiffré ou de facultés
+    if ctx["supports"] and _num(v) and (not ws or B.MOT_ECHELLE.get(ws[0]) == "facultés"):
+        p = B.prix_degre("facultés", v)
+        return p, "bonus", None, None, f"provisoire : bonus {v} sur l'échelle des facultés"
+    if ws[:1] == ["VIE"] and _num(v) and ctx["verbe"].split(" · ")[0] not in LX.VERBES_NUISIBLES:
+        p = -3.1 + 1.4 * math.log2(max(v, 1)) + (2 if ctx["plusieurs"] else 0)
+        p = min(PALIER_MAX, max(0.0, p))
+        quoi = "vie d'emprunt" if any(_txt(s) == "DUREE" and s[1] == "plein" for s in st) else "soin répété (prix ouvert)" if repete else "soin"
+        return p, "soin", None, None, f"I2 : {quoi} {v} : −3,1 + 1,4 × log2" + (" + 2 (plusieurs cibles)" if ctx["plusieurs"] else "")
+    if ws[:1] in (["REMPART"], ["ABSORPTION"], ["RIPOSTE"]) and _num(v):
+        return B.prix_montant(v), "garde", "garde", "protéger", f"provisoire : {ws[0].lower()} {v}, règle des montants (règle à fixer, I3)"
+    garde = [w for w in ws if B.MOT_ECHELLE.get(w) == "garde"]
+    if garde:
+        w = garde[0]
+        if v == "plein" and w in ("IMMUNITE", "BARRIERE", "PROTECTION"): p = 4.0
+        elif w == "RESISTANCE": p = 2.6
+        elif w == "PROTECTION" and _num(v): p = GARDE.get(v, 2.95 + 0.35 * (v - 6))
+        else: p = B.prix_degre("garde", v if (_num(v) or v == "plein") else "plein")
+        return p, "garde", "garde", "protéger", f"I3 : {w.lower()} {v}" + ("" if w in ("PROTECTION", "RESISTANCE", "IMMUNITE", "BARRIERE") else " (hors échelle validée, provisoire)")
+    if _num(v) and (not ws or ws[0] in BLESSURE or ws[0] in B.MONTANT or ws[0] not in B.DEGRES) and not [w for w in ws if B.MOT_ECHELLE.get(w) or w in B.OUTIL]:
+        m = v * (1.5 if repete else 1)
+        col = "plusieurs" if ctx["plusieurs"] else "une"
+        if not ctx["zone"] and ctx["instances"] > 1: m *= ctx["instances"]
+        p = palier_degats(m, col)
+        return p, "blessure", None, None, (f"I1 : montant {v}" + (" × 1,5 (répétée)" if repete else "") + (f" × {ctx['instances']} (Quantité)" if not ctx["zone"] and ctx["instances"] > 1 else "")
+                                          + f", colonne « {'plusieurs cibles' if col == 'plusieurs' else 'une cible'} »")
+    role = "lever" if seuil_i else "protéger" if set(ws) & {"LIBERTE", "CONTRE", "IMMUNITE", "PROTECTION"} else "infliger"
+    if seuil_x and not seuil_i:
+        x = seuil_x[0][1]
+        return (9.0 if not _num(x) else float(max(0, x - 1))), "état", "dissipation", "lever", "provisoire : seuil en Interaction (dissiper jusqu'au palier)"
+    if seuil_i:
+        p, _k, rg, *_ = B.prix_impact(r)
+        fam = B._echelle_mot(_txt(seuil_i[0]).split()[1], ws) or "autre"
+        return p, genre_echelle(fam), fam, "lever", "provisoire : " + rg
+    cands = []
+    for w in ws:
+        e = B._echelle_mot(w, ws)
+        if e: cands.append((B.prix_degre(e, v if (_num(v) or v == "plein") else "plein") * (1.5 if w == "CHANCE" else 1), e, w))
+    if cands:
+        p, e, w = max(cands)
+        return p, genre_echelle(e), e, role, f"provisoire : état « {w.lower()} » {v} sur l'échelle {e}"
+    outils = [(B.OUTIL[w], w) for w in ws if w in B.OUTIL]
+    if outils:
+        p, w = max(outils)
+        return float(p), "outil ou déplacement", None, None, f"provisoire : prix fixe de « {w.lower()} »"
+    if "SOUHAIT" in ws: return 9.0, "autre", None, None, "provisoire : souhait"
+    return 3.0, "autre", None, None, "aucun prix : défaut 3,0 (" + (" · ".join(ws).lower() or "sans mot") + ")"
+
+
+def genre_echelle(e):
+    if e == "savoir": return "savoir"
+    if e == "création": return "création"
+    if e == "illusion": return "illusion"
+    if e in ("mort", "retour"): return "mort ou retour"
+    if e == "garde": return "garde"
+    return "état"
+
+
+# ---------------------------------------------------------------- analyse d'une forme
+def analyse(f):
+    rings = f["rings"]
+    I = [r for r in rings if r[0] == "IMPACT"]
+    n_cibles, why_c, est_zone = nombre_cibles(rings)
+    q = [r for r in rings if r[0] == "QUANTITE" and _num(r[1])]
+    instances = int(q[0][1]) if q and not q[0][2] else 1
+    c = next((r for r in rings if r[0] == "CIBLE"), None)
+    ctx = dict(plusieurs=n_cibles > 1 or est_zone, zone=est_zone, instances=instances, etres=int(q[0][1]) if q else 1,
+               verbe=f.get("verb", ""), supports=bool(c and set(c[2]) & SUPPORTS))
+    sec, perm, cast = duree(rings)
+    det, lacunes = [], []
+    if "mesure absente" in why_c: lacunes.append(why_c.replace("mesure absente : ", ""))
+    # effets
+    es = []
+    etre = any(r[2][:1] == ["PUISSANCE"] for r in I)
+    sugg = False
+    for r in I:
+        ws = set(r[2])
+        if etre and ws & {"INJONCTION", "SUGGESTION", "DOMINATION"} and "PUISSANCE" not in ws:
+            sugg = sugg or "SUGGESTION" in ws
+            det.append(dict(cercle="IMPACT", lecture=" · ".join(r[2]).lower(), prix=0.0, regle="2.3 : comprise dans la puissance de l'être appelé")); continue
+        p, g, fam, role, rg = effet(r, ctx)
+        es.append(dict(prix=p, genre=g, famille=fam, role=role))
+        det.append(dict(cercle="IMPACT", lecture=f"{r[1]} « {' · '.join(r[2]).lower()} »", prix=round(p, 3), regle=rg))
+    if es:
+        es.sort(key=lambda e: -e["prix"])
+        g = es[0]["prix"]
+        part = 0.5 if g < 3 else 0.25 if g < 6 else 0.1
+        prix_effet = g + part * sum(max(e["prix"], 0) for e in es[1:]) - (1 if sugg else 0)
+        if len(es) > 1: det.append(dict(cercle="(effets)", prix=round(prix_effet, 3), regle=f"provisoire, règle 2.3 : le plus cher {g:.2f} + {part:g} × les autres"))
+        principal = es[0]
+    else:                                                   # Cosmétique seule : le plus petit prix d'un effet
+        prix_effet, principal = 0.0, dict(genre="cosmétique seule", famille=None, role=None)
+        det.append(dict(cercle="COSMETIQUE", prix=0.0, regle="lot 6 : Cosmétique seule = le plus petit prix d'un effet (pris à 0, aucun nombre fixé)"))
+    loc = next((r for r in rings if r[0] == "LOCALISATION"), None)
+    p_loc, rg_loc = prix_localisation(loc)
+    det.append(dict(cercle="LOCALISATION", prix=p_loc, regle=rg_loc))
+    if "dans le temps" in rg_loc: lacunes.append("Localisation dans le temps")
+    r_inc = rabais_incantation(cast)
+    if r_inc: det.append(dict(cercle="DUREE (incantation)", prix=-r_inc, regle=f"lot 2 : incantation de {cast:g} s, rabais"))
+    r_cond, d_cond = rabais_condition(rings)
+    if r_cond: det.append(dict(cercle="CONDITION", prix=-round(r_cond, 3), regle="lot 3 : " + " ; ".join(d_cond)))
+    r_comp, d_comp, ouverts = rabais_composante(rings)
+    if r_comp: det.append(dict(cercle="COMPOSANTE", prix=-round(r_comp, 3), regle="lot 4 : " + " ; ".join(d_comp)))
+    if ouverts: det.append(dict(cercle="COMPOSANTE", prix=0.0, regle="lot 4 : payé par le lanceur, prix ouvert (" + ", ".join(ouverts) + ")"))
+    decides = p_loc - r_inc - r_cond - r_comp
+    rs = restriction(rings)
+    mesures = dict(cibles=n_cibles, cibles_lecture=why_c, zone=est_zone, marche=round(marche(sec, perm), 3), duree_s=sec, permanent=perm,
+                   incantation_s=cast, restriction=rs, instances=instances)
+    return dict(prix_effet=round(prix_effet, 3), decides=round(decides, 3), genre=principal["genre"], famille=principal.get("famille"),
+                role=principal.get("role"), mesures=mesures, detail=det, lacunes=lacunes, sans_impact=not es)
+
+
+def groupe(a):
+    """le groupe de réglage d'une forme : son genre ; pour un état, sa famille (et sa grande famille en repli)"""
+    if a["genre"] == "état": return "état : " + (a["famille"] or "?")
+    return a["genre"]
+
+
+def palier(a, coefs):
+    """coût et palier avec les coefficients des relations (a, b, c) du groupe ; coefs : dict(a=, b=, c=, groupe=)"""
+    m = a["mesures"]
+    x_c = math.log2(max(m["cibles"], 1)) if a["genre"] not in ("blessure", "soin") else 0.0
+    rel = coefs.get("a", 0) * x_c + coefs.get("b", 0) * m["marche"] + coefs.get("c", 0) * (1 if m["restriction"] else 0)
+    cout = a["prix_effet"] + a["decides"] + rel
+    return round(cout, 3), int(min(PALIER_MAX, max(0, math.floor(cout + 0.5)))), round(rel, 3)

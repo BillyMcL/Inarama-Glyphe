@@ -5,14 +5,16 @@ Sources : les lots du barème (Claude outputs/phase4 : lots 1 à 7, I1, I2, I3, 
 (échelles d'états, prix fixes des outils), lus pour les prix décidés ; les prix provisoires et les relations sont marqués.
 
     analyse(forme)          -> les mesures lues sur le glyphe et le prix de chaque cercle (sans les relations)
-    palier(analyse, coefs)  -> le coût et le palier, avec les coefficients des relations réglés (outils/mesure_bareme_cercles.py)
+    palier(analyse, coefs)  -> le coût et le palier, avec les coefficients des relations réglés (regles_systeme ; outils/mesure_bareme_cercles_v5.py)
 
 Prix décidés (points de départ) : Localisation (lot 1), rabais d'incantation (lot 2), Condition (lot 3 : parole, concentration,
 officiants), Composante (lot 4), Cosmétique (lot 6), blessures (I1), soins (I2), êtres appelés (I6).
 Provisoires : états et genres voisins (échelles de bareme_tables), outils et déplacements (prix fixes), garde (échelle I3),
 plusieurs effets (règle 2.3 de l'ancien barème).
-Relations réglées sur les niveaux de la source, genre par genre et système par système :
+Relations réglées sur les niveaux de la source, système par système (décision du 24 novembre, version B) : b (durée) réglé une
+fois par système sur tous les genres ; a (cibles) et c (restriction) réglés genre par genre avec ce b fixé (regles_systeme) :
     palier ≈ prix de l'effet + a × log2(cibles) + b × marche de durée + c × restriction + prix décidés
+Effets uniques (aucun prix ici, prix propre par cercle déduit des niveaux) : cercles sans règle, absorption, puissance « pleine ».
 """
 import math, re
 import bareme as B          # échelles et tables du barème du 22 novembre (prix_degre, MOT_ECHELLE, OUTIL…)
@@ -231,7 +233,8 @@ def effet(r, ctx):
     seuil_i = [s for s in st if _txt(s).split()[:1] == ["IMPACT"] and len(_txt(s).split()) > 1]
     seuil_x = [s for s in st if _txt(s).split()[:1] == ["INTERACTION"]]
     if "PUISSANCE" in ws[:1] or (ws and ws[0] == "PUISSANCE"):
-        if not _num(v): return 3.0, "être appelé", None, None, "I6 : puissance pleine, prix ouvert (3,0 provisoire)"
+        if not _num(v):                          # décision du 24 novembre : un être choisi sans plafond est un effet unique
+            return 3.0, "être appelé", None, None, "aucun prix : puissance pleine, effet unique (prix propre)"
         n = ctx["etres"]
         return v + math.log2(max(n, 1)), "être appelé", None, None, f"I6 : puissance {v} + log2({n})"
     # bonus : la Cible porte un support (coup, garde, résistance, une faculté) et l'Impact est chiffré ou de facultés
@@ -370,3 +373,84 @@ def palier(a, coefs):
     rel = coefs.get("a", 0) * x_c + coefs.get("b", 0) * m["marche"] + coefs.get("c", 0) * (1 if m["restriction"] else 0)
     cout = a["prix_effet"] + a["decides"] + rel
     return round(cout, 3), int(min(PALIER_MAX, max(0, math.floor(cout + 0.5)))), round(rel, 3)
+
+
+# ---------------------------------------------------------------- réglage des relations (décision du 24 novembre : version B)
+# Pour un système : la règle générale (a, b, c réglés ensemble sur toutes ses formes) donne le b de la durée, commun à tous les
+# genres ; puis a et c de chaque genre (15 formes ou plus) sont réglés avec ce b fixé ; un genre plus petit prend la règle générale.
+# Blessures et soins : a n'est pas réglé (la relation « cibles » est dans leur prix). Contraintes : a ≥ 0, b ≥ 0, c ≤ 0.
+# Les moindres carrés se font sur des sommes (n, XᵀX, Xᵀy), qu'on peut additionner et retrancher (calcul « sort caché »).
+# Variables : x = (log2(cibles), marche de durée, −restriction) ; y = niveau − prix des effets − prix décidés.
+GEN = "(règle générale)"
+MIN_FORMES = 15
+
+
+def sommes_vides(): return [0.0, [[0.0] * 3 for _ in range(3)], [0.0] * 3]
+
+
+def sommes_ajoute(S, v, y, sgn=1):
+    S[0] += sgn
+    for i in range(3):
+        S[2][i] += sgn * v[i] * y
+        for j in range(3): S[1][i][j] += sgn * v[i] * v[j]
+
+
+def sommes_moins(S, T): return [S[0] - T[0], [[S[1][i][j] - T[1][i][j] for j in range(3)] for i in range(3)], [S[2][i] - T[2][i] for i in range(3)]]
+
+
+def sommes_plus(*Ss):
+    out = sommes_vides()
+    for S in Ss:
+        out[0] += S[0]
+        for i in range(3):
+            out[2][i] += S[2][i]
+            for j in range(3): out[1][i][j] += S[1][i][j]
+    return out
+
+
+def moindres_carres(S, libres):
+    """moindres carrés positifs (a, b ≥ 0 ; c ≤ 0, porté par la variable −restriction) sur les variables libres : le meilleur
+    sous-ensemble faisable"""
+    best, bx = 0.0, [0.0, 0.0, 0.0]
+    for m in range(1, 2 ** len(libres)):
+        idx = [libres[j] for j in range(len(libres)) if m >> j & 1]
+        M = [[S[1][p][q] for q in idx] for p in idx]; b = [S[2][p] for p in idx]; n = len(idx)
+        try:
+            for c in range(n):
+                piv = max(range(c, n), key=lambda r: abs(M[r][c]))
+                if abs(M[piv][c]) < 1e-9: raise ZeroDivisionError
+                M[c], M[piv] = M[piv], M[c]; b[c], b[piv] = b[piv], b[c]
+                for r in range(n):
+                    if r != c:
+                        t = M[r][c] / M[c][c]; M[r] = [x - t * yy for x, yy in zip(M[r], M[c])]; b[r] -= t * b[c]
+            sol = [b[c] / M[c][c] for c in range(n)]
+        except ZeroDivisionError:
+            continue
+        if any(v < -1e-9 for v in sol): continue
+        gain = sum(v * S[2][p] for v, p in zip(sol, idx))        # baisse de la somme des carrés à l'optimum
+        if gain > best + 1e-12:
+            best = gain; bx = [0.0, 0.0, 0.0]
+            for p, v in zip(idx, sol): bx[p] = v
+    return dict(a=bx[0], b=bx[1], c=-bx[2])
+
+
+def regle_genre(S, genre, b):
+    """a et c d'un genre, b (commun au système) fixé : on retire b × marche de la cible, puis moindres carrés sur a et c"""
+    T = [S[0], S[1], [S[2][i] - b * S[1][i][1] for i in range(3)]]
+    r = moindres_carres(T, [2] if genre in ("blessure", "soin") else [0, 2])
+    return dict(r, b=b)
+
+
+def regles_systeme(general, par_genre):
+    """general : sommes de toutes les formes du système ; par_genre : {genre: sommes}. Rend {genre ou GEN: dict(a, b, c)}"""
+    co = {GEN: moindres_carres(general, [0, 1, 2])}
+    for g, S in par_genre.items():
+        if S[0] >= MIN_FORMES: co[g] = regle_genre(S, g, co[GEN]["b"])
+    return co
+
+
+def regle(co, genre):
+    """la règle d'un genre dans un système (co : rendu de regles_systeme)"""
+    r = dict(co.get(genre) or co[GEN])
+    if genre in ("blessure", "soin"): r["a"] = 0.0
+    return r

@@ -197,6 +197,9 @@ def nombre_cibles(rings):
 
 
 def restriction(rings):
+    # une Cible « un être qui relève d'un plan » (valeur 9) : ses mots et son pôle disent QUEL être est appelé, jamais une
+    # restriction (décision du 23 novembre) : la forme n'a pas de restriction
+    if any(r[0] == "CIBLE" and r[1] == 9 for r in rings): return []
     out = []
     for r in rings:
         if r[0] == "CONDITION": out += [w for w in r[2] if w in FAMILLE2]
@@ -240,8 +243,14 @@ def effet(r, ctx):
         p = min(PALIER_MAX, max(0.0, p))
         quoi = "vie d'emprunt" if any(_txt(s) == "DUREE" and s[1] == "plein" for s in st) else "soin répété (prix ouvert)" if repete else "soin"
         return p, "soin", None, None, f"I2 : {quoi} {v} : −3,1 + 1,4 × log2" + (" + 2 (plusieurs cibles)" if ctx["plusieurs"] else "")
-    if ws[:1] in (["REMPART"], ["ABSORPTION"], ["RIPOSTE"]) and _num(v):
-        return B.prix_montant(v), "garde", "garde", "protéger", f"provisoire : {ws[0].lower()} {v}, règle des montants (règle à fixer, I3)"
+    if ws[:1] == ["REMPART"] and _num(v):        # décision du 23 novembre : 1,33 + 1,33 × log2(montant), − 2,4 contre un seul élément
+        elem = any(_sym(s_[1]) and s_[1][1] in ("feu", "air", "terre", "eau") for s_ in st)
+        p = 1.33 + 1.33 * math.log2(max(v, 1)) - (2.4 if elem else 0)
+        return p, "garde", "garde", "protéger", f"rempart {v} : 1,33 + 1,33 × log2" + (" − 2,4 (contre un élément)" if elem else "")
+    if ws[:1] == ["ABSORPTION"]:                 # décision du 23 novembre : effet unique, prix propre
+        return 3.0, "garde", "garde", "protéger", "aucun prix : absorption, effet unique (prix propre)"
+    if ws[:1] == ["RIPOSTE"] and _num(v):
+        return B.prix_montant(v), "garde", "garde", "protéger", f"provisoire : riposte {v}, règle des montants (règle à fixer, I3)"
     garde = [w for w in ws if B.MOT_ECHELLE.get(w) == "garde"]
     if garde:
         w = garde[0]
@@ -323,7 +332,6 @@ def analyse(f):
         principal = es[0]
     else:                                                   # Cosmétique seule : le plus petit prix d'un effet
         prix_effet, principal = 0.0, dict(genre="cosmétique seule", famille=None, role=None)
-        det.append(dict(cercle="COSMETIQUE", prix=0.0, regle="lot 6 : Cosmétique seule = le plus petit prix d'un effet (pris à 0, aucun nombre fixé)"))
     loc = next((r for r in rings if r[0] == "LOCALISATION"), None)
     p_loc, rg_loc = prix_localisation(loc)
     det.append(dict(cercle="LOCALISATION", prix=p_loc, regle=rg_loc))
@@ -335,7 +343,12 @@ def analyse(f):
     r_comp, d_comp, ouverts = rabais_composante(rings)
     if r_comp: det.append(dict(cercle="COMPOSANTE", prix=-round(r_comp, 3), regle="lot 4 : " + " ; ".join(d_comp)))
     if ouverts: det.append(dict(cercle="COMPOSANTE", prix=0.0, regle="lot 4 : payé par le lanceur, prix ouvert (" + ", ".join(ouverts) + ")"))
-    decides = p_loc - r_inc - r_cond - r_comp
+    cosm = 0.0                                   # décision du 23 novembre (provisoire) : 0,05 par sens, « plein » = 5 sens
+    for r in rings:
+        if r[0] == "COSMETIQUE":
+            n = 5 if r[1] == "plein" else (r[1] if _num(r[1]) else 0)
+            cosm += 0.05 * n; det.append(dict(cercle="COSMETIQUE", prix=round(0.05 * n, 3), regle=f"Cosmétique : {n} sens × 0,05"))
+    decides = p_loc - r_inc - r_cond - r_comp + cosm
     rs = restriction(rings)
     mesures = dict(cibles=n_cibles, cibles_lecture=why_c, zone=est_zone, marche=round(marche(sec, perm), 3), duree_s=sec, permanent=perm,
                    incantation_s=cast, restriction=rs, instances=instances)

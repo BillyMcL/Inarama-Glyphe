@@ -225,6 +225,10 @@ def palier_degats(m, col):
     return min(float(PALIER_MAX), 9 + (m - t[9]) / (t[9] - t[8]))
 
 
+MECAS = {"PROTECTION": "protection", "RENFORT": "renfort", "FAIBLESSE": "faiblesse", "CHANCE": "chance", "MALCHANCE": "malchance",
+         "SEUIL": "seuil", "MESURE": "mesure", "SURCROIT": "surcroît"}
+
+
 def effet(r, ctx):
     """(prix, genre, famille, rôle, règle) d'un cercle d'Impact ; ctx : plusieurs cibles, zone, nombre d'êtres, verbe, supports"""
     v, ws = r[1], [w for w in r[2]]
@@ -232,11 +236,26 @@ def effet(r, ctx):
     repete = any(_txt(s).startswith("DUREE CHAQUE") for s in st)
     seuil_i = [s for s in st if _txt(s).split()[:1] == ["IMPACT"] and len(_txt(s).split()) > 1]
     seuil_x = [s for s in st if _txt(s).split()[:1] == ["INTERACTION"]]
+    frac = next((s_[1] for s_ in st if _txt(s_).startswith("QUANTITE FRACTIONNE") and _num(s_[1]) and s_[1] > 0), None)
     if "PUISSANCE" in ws[:1] or (ws and ws[0] == "PUISSANCE"):
         if not _num(v):                          # décision du 24 novembre : un être choisi sans plafond est un effet unique
             return 3.0, "être appelé", None, None, "aucun prix : puissance pleine, effet unique (prix propre)"
         n = ctx["etres"]
-        return v + math.log2(max(n, 1)), "être appelé", None, None, f"I6 : puissance {v} + log2({n})"
+        pv = v / frac if frac else v             # v6 : puissance ½ ou ¼ (satellite « fractionné »)
+        return pv + math.log2(max(n, 1)), "être appelé", None, None, f"I6 : puissance {pv:g}" + (f" (= {v} fractionné {frac})" if frac else "") + f" + log2({n})"
+    if ws[:1] == ["ANIMATION"] and _num(v):      # v6 : animation, n = la taille ; la règle des êtres appelés
+        n = ctx["etres"] if ctx["etres"] > 1 else ctx["etres_cible"]     # le nombre : cercle de Quantité, ou Quantité de la Cible
+        pv = v / frac if frac else v
+        return pv + math.log2(max(n, 1)), "être appelé", None, None, f"I6 : animation {pv:g} (taille) + log2({n})"
+    if ws[:1] == ["NOURRITURE"]:                 # v6 : effet unique tant qu'aucune règle n'est prouvée
+        return 3.0, "autre", None, None, f"aucun prix : nourriture {v}, effet unique (prix propre)"
+    if ws[:1] and ws[0] in MECAS:                # v6 : mécaniques des bonus (prix réglé par la mesure : a × degré, ou prix fixe)
+        m = MECAS[ws[0]]
+        if _num(v):
+            return B.prix_degre("facultés", v), "bonus", None, None, f"mécanique:{m}:{v} — provisoire : échelle des facultés"
+        if v == "plein" and ws[0] in ("CHANCE", "MALCHANCE"):
+            m = ("relance" if ws[0] == "CHANCE" else "relance au pire") if "REPETITION" in ws else ("avantage" if ws[0] == "CHANCE" else "désavantage")
+            return 3.0, "bonus", None, None, f"mécanique:{m}:plein — provisoire : 3,0"
     # bonus : la Cible porte un support (coup, garde, résistance, une faculté) et l'Impact est chiffré ou de facultés
     if ctx["supports"] and _num(v) and (not ws or B.MOT_ECHELLE.get(ws[0]) == "facultés"):
         p = B.prix_degre("facultés", v)
@@ -302,6 +321,49 @@ def genre_echelle(e):
 
 
 # ---------------------------------------------------------------- analyse d'une forme
+def sursaut(rings):
+    """v6 : la nouvelle chance (« fin : chaque · … · sursaut »), sur la Durée ou en satellite de Durée d'un Impact"""
+    for r in rings:
+        if r[0] == "DUREE" and "SURSAUT" in r[2]: return True
+        if r[0] == "IMPACT" and any(_txt(s_).startswith("DUREE") and "SURSAUT" in _txt(s_).split() for s_ in _sats(r)): return True
+    return False
+
+
+UNITE_BASE = {("VOLUME", "METRES", "CUBES"): 1, ("VOLUME", "DECAMETRES", "CUBES"): 1e3, ("VOLUME", "HECTOMETRES", "CUBES"): 1e6,
+              ("VOLUME", "KILOMETRES", "CUBES"): 1e9, ("SURFACE", "METRES"): 1, ("LONGUEUR", "METRES"): 1, ("LONGUEUR", "KILOMETRES"): 1e3,
+              ("DIAMETRE", "METRES"): 1, ("HAUTEUR", "METRES"): 1}
+
+
+def figure_a_part(rings):
+    """v6 : (figure, log2 de sa taille écrite, taille) d'une figure à part — chacune pour elle-même, aucun regroupement ; None sinon.
+    Figures : explosion, pont, dôme (calotte), disque, mur et paroi (Forme 2 dite mur, muret, rempart, panneaux, paroi), figure 2
+    (les autres plans), figure 9 (un cylindre à trois satellites), « plein » (une sphère à deux satellites), hélice."""
+    f = next((r for r in rings if r[0] == "FORME"), None)
+    if f is None: return None
+    sats_f = _sats(f)
+    prop = len([s_ for s_ in sats_f if not _txt(s_) and not _sym(s_[1])])
+    if FIGURES.get((f[1], prop)) and not set(f[2]) & {"EXPLOSION", "PONT"} and len(sats_f) == prop: return None
+    rd = f[3].lower()
+    if "EXPLOSION" in f[2]: fig = "explosion"
+    elif "PONT" in f[2] or "pont" in rd: fig = "pont"
+    elif rd.startswith("calotte"): fig = "dôme"
+    elif "hélice" in rd: fig = "hélice"
+    elif f[1] == 9 and rd.startswith("disque"): fig = "disque"
+    elif f[1] == 2 and re.search(r"mur|paroi|rempart|panneau", rd): fig = "mur et paroi"
+    elif f[1] == 2: fig = "figure 2"
+    elif f[1] == 9: fig = "figure 9"
+    elif f[1] == "plein": fig = "plein"
+    else: fig = f"figure {f[1]}"
+    a = next((r for r in rings if r[0] == "AMPLEUR"), None)
+    v, u = (a[1], tuple(a[2])) if a else (None, None)
+    if v is None:
+        sa = [s_ for s_ in sats_f if _txt(s_).startswith("AMPLEUR")]
+        if sa: v, u = sa[0][1], tuple(_txt(sa[0]).split()[1:])
+    if not _num(v) or u not in UNITE_BASE: return (fig, None, None)
+    t = v * UNITE_BASE[u]
+    return (fig, round(math.log2(max(t, 1)), 4), t)
+
+
 def analyse(f):
     rings = f["rings"]
     I = [r for r in rings if r[0] == "IMPACT"]
@@ -310,6 +372,7 @@ def analyse(f):
     instances = int(q[0][1]) if q and not q[0][2] else 1
     c = next((r for r in rings if r[0] == "CIBLE"), None)
     ctx = dict(plusieurs=n_cibles > 1 or est_zone, zone=est_zone, instances=instances, etres=int(q[0][1]) if q else 1,
+               etres_cible=n_cibles if why_c.startswith("Quantité") else 1,
                verbe=f.get("verb", ""), supports=bool(c and set(c[2]) & SUPPORTS))
     sec, perm, cast = duree(rings)
     det, lacunes = [], []
@@ -324,7 +387,9 @@ def analyse(f):
             sugg = sugg or "SUGGESTION" in ws
             det.append(dict(cercle="IMPACT", lecture=" · ".join(r[2]).lower(), prix=0.0, regle="2.3 : comprise dans la puissance de l'être appelé")); continue
         p, g, fam, role, rg = effet(r, ctx)
-        es.append(dict(prix=p, genre=g, famille=fam, role=role, cercle=cle_cercle(r), sans_prix=rg.startswith("aucun prix")))
+        mm = re.match(r"mécanique:([^:]+):(\S+)", rg)
+        es.append(dict(prix=p, genre=g, famille=fam, role=role, cercle=cle_cercle(r), sans_prix=rg.startswith("aucun prix"),
+                       meca=mm.group(1) if mm else None, degre=(None if not mm or mm.group(2) == "plein" else float(mm.group(2)))))
         det.append(dict(cercle="IMPACT", lecture=f"{r[1]} « {' · '.join(r[2]).lower()} »", prix=round(p, 3), regle=rg))
     if es:
         es.sort(key=lambda e: -e["prix"])
@@ -354,9 +419,10 @@ def analyse(f):
     decides = p_loc - r_inc - r_cond - r_comp + cosm
     rs = restriction(rings)
     mesures = dict(cibles=n_cibles, cibles_lecture=why_c, zone=est_zone, marche=round(marche(sec, perm), 3), duree_s=sec, permanent=perm,
-                   incantation_s=cast, restriction=rs, instances=instances)
+                   incantation_s=cast, restriction=rs, instances=instances, sursaut=sursaut(rings), figure=figure_a_part(rings))
     return dict(prix_effet=round(prix_effet, 3), decides=round(decides, 3), genre=principal["genre"], famille=principal.get("famille"),
-                effets=[dict(prix=round(e["prix"], 3), genre=e["genre"], cercle=e["cercle"], sans_prix=e["sans_prix"]) for e in es], suggestion=sugg,
+                effets=[dict(prix=round(e["prix"], 3), genre=e["genre"], cercle=e["cercle"], sans_prix=e["sans_prix"], meca=e["meca"], degre=e["degre"])
+                        for e in es], suggestion=sugg,
                 role=principal.get("role"), mesures=mesures, detail=det, lacunes=lacunes, sans_impact=not es)
 
 
@@ -370,7 +436,8 @@ def palier(a, coefs):
     """coût et palier avec les coefficients des relations (a, b, c) du groupe ; coefs : dict(a=, b=, c=, groupe=)"""
     m = a["mesures"]
     x_c = math.log2(max(m["cibles"], 1)) if a["genre"] not in ("blessure", "soin") else 0.0
-    rel = coefs.get("a", 0) * x_c + coefs.get("b", 0) * m["marche"] + coefs.get("c", 0) * (1 if m["restriction"] else 0)
+    rel = (coefs.get("a", 0) * x_c + coefs.get("b", 0) * m["marche"] + coefs.get("c", 0) * (1 if m["restriction"] else 0)
+           + coefs.get("d", 0) * (1 if m.get("sursaut") else 0))          # v6 : d ≤ 0, le rabais de la nouvelle chance
     cout = a["prix_effet"] + a["decides"] + rel
     return round(cout, 3), int(min(PALIER_MAX, max(0, math.floor(cout + 0.5)))), round(rel, 3)
 
@@ -380,38 +447,40 @@ def palier(a, coefs):
 # genres ; puis a et c de chaque genre (15 formes ou plus) sont réglés avec ce b fixé ; un genre plus petit prend la règle générale.
 # Blessures et soins : a n'est pas réglé (la relation « cibles » est dans leur prix). Contraintes : a ≥ 0, b ≥ 0, c ≤ 0.
 # Les moindres carrés se font sur des sommes (n, XᵀX, Xᵀy), qu'on peut additionner et retrancher (calcul « sort caché »).
-# Variables : x = (log2(cibles), marche de durée, −restriction) ; y = niveau − prix des effets − prix décidés.
+# Variables : x = (log2(cibles), marche de durée, −restriction, −nouvelle chance) ; y = niveau − prix des effets − prix décidés.
+# v6 : la nouvelle chance (« fin : chaque · … · sursaut ») est une relation réglée comme la restriction (d ≤ 0 : un rabais).
 GEN = "(règle générale)"
 MIN_FORMES = 15
 
 
-def sommes_vides(): return [0.0, [[0.0] * 3 for _ in range(3)], [0.0] * 3]
+NV = 4             # v6 : (log2(cibles), marche de durée, −restriction, −nouvelle chance)
+def sommes_vides(): return [0.0, [[0.0] * NV for _ in range(NV)], [0.0] * NV]
 
 
 def sommes_ajoute(S, v, y, sgn=1):
     S[0] += sgn
-    for i in range(3):
+    for i in range(NV):
         S[2][i] += sgn * v[i] * y
-        for j in range(3): S[1][i][j] += sgn * v[i] * v[j]
+        for j in range(NV): S[1][i][j] += sgn * v[i] * v[j]
 
 
-def sommes_moins(S, T): return [S[0] - T[0], [[S[1][i][j] - T[1][i][j] for j in range(3)] for i in range(3)], [S[2][i] - T[2][i] for i in range(3)]]
+def sommes_moins(S, T): return [S[0] - T[0], [[S[1][i][j] - T[1][i][j] for j in range(NV)] for i in range(NV)], [S[2][i] - T[2][i] for i in range(NV)]]
 
 
 def sommes_plus(*Ss):
     out = sommes_vides()
     for S in Ss:
         out[0] += S[0]
-        for i in range(3):
+        for i in range(NV):
             out[2][i] += S[2][i]
-            for j in range(3): out[1][i][j] += S[1][i][j]
+            for j in range(NV): out[1][i][j] += S[1][i][j]
     return out
 
 
 def moindres_carres(S, libres):
     """moindres carrés positifs (a, b ≥ 0 ; c ≤ 0, porté par la variable −restriction) sur les variables libres : le meilleur
     sous-ensemble faisable"""
-    best, bx = 0.0, [0.0, 0.0, 0.0]
+    best, bx = 0.0, [0.0] * NV
     for m in range(1, 2 ** len(libres)):
         idx = [libres[j] for j in range(len(libres)) if m >> j & 1]
         M = [[S[1][p][q] for q in idx] for p in idx]; b = [S[2][p] for p in idx]; n = len(idx)
@@ -429,21 +498,21 @@ def moindres_carres(S, libres):
         if any(v < -1e-9 for v in sol): continue
         gain = sum(v * S[2][p] for v, p in zip(sol, idx))        # baisse de la somme des carrés à l'optimum
         if gain > best + 1e-12:
-            best = gain; bx = [0.0, 0.0, 0.0]
+            best = gain; bx = [0.0] * NV
             for p, v in zip(idx, sol): bx[p] = v
-    return dict(a=bx[0], b=bx[1], c=-bx[2])
+    return dict(a=bx[0], b=bx[1], c=-bx[2], d=-bx[3])
 
 
 def regle_genre(S, genre, b):
     """a et c d'un genre, b (commun au système) fixé : on retire b × marche de la cible, puis moindres carrés sur a et c"""
-    T = [S[0], S[1], [S[2][i] - b * S[1][i][1] for i in range(3)]]
-    r = moindres_carres(T, [2] if genre in ("blessure", "soin") else [0, 2])
+    T = [S[0], S[1], [S[2][i] - b * S[1][i][1] for i in range(NV)]]
+    r = moindres_carres(T, [2, 3] if genre in ("blessure", "soin") else [0, 2, 3])
     return dict(r, b=b)
 
 
 def regles_systeme(general, par_genre):
     """general : sommes de toutes les formes du système ; par_genre : {genre: sommes}. Rend {genre ou GEN: dict(a, b, c)}"""
-    co = {GEN: moindres_carres(general, [0, 1, 2])}
+    co = {GEN: moindres_carres(general, [0, 1, 2, 3])}
     for g, S in par_genre.items():
         if S[0] >= MIN_FORMES: co[g] = regle_genre(S, g, co[GEN]["b"])
     return co

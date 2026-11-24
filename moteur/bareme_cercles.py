@@ -225,8 +225,10 @@ def palier_degats(m, col):
     return min(float(PALIER_MAX), 9 + (m - t[9]) / (t[9] - t[8]))
 
 
-MECAS = {"PROTECTION": "protection", "RENFORT": "renfort", "FAIBLESSE": "faiblesse", "CHANCE": "chance", "MALCHANCE": "malchance",
-         "SEUIL": "seuil", "MESURE": "mesure", "SURCROIT": "surcroît"}
+# v7 (25 novembre) : la protection reprend l'échelle DÉCIDÉE de la garde (lot I3) ; le seuil prend la même échelle (provisoire) ;
+# les autres mécaniques sont réglées par la mesure (a × degré, ou prix fixe)
+MECAS = {"RENFORT": "renfort", "FAIBLESSE": "faiblesse", "CHANCE": "chance", "MALCHANCE": "malchance", "MESURE": "mesure",
+         "SURCROIT": "surcroît"}
 
 
 def effet(r, ctx):
@@ -247,8 +249,11 @@ def effet(r, ctx):
         n = ctx["etres"] if ctx["etres"] > 1 else ctx["etres_cible"]     # le nombre : cercle de Quantité, ou Quantité de la Cible
         pv = v / frac if frac else v
         return pv + math.log2(max(n, 1)), "être appelé", None, None, f"I6 : animation {pv:g} (taille) + log2({n})"
-    if ws[:1] == ["NOURRITURE"]:                 # v6 : effet unique tant qu'aucune règle n'est prouvée
+    if ws[:1] == ["NOURRITURE"]:                 # v7 : une relation sur log2(personnes nourries), réglée par la mesure ; « plein » : prix propre
+        if _num(v): return 3.0, "autre", None, None, f"mécanique:nourriture:{v} — provisoire : 3,0"
         return 3.0, "autre", None, None, f"aucun prix : nourriture {v}, effet unique (prix propre)"
+    if ws[:1] == ["SEUIL"] and _num(v):          # v7 : le seuil (défense fixée) prend l'échelle de la protection, provisoire
+        return GARDE.get(v, 2.95 + 0.35 * (v - 6)), "garde", "garde", "protéger", f"seuil {v} : l'échelle de la protection (provisoire, v7)"
     if ws[:1] and ws[0] in MECAS:                # v6 : mécaniques des bonus (prix réglé par la mesure : a × degré, ou prix fixe)
         m = MECAS[ws[0]]
         if _num(v):
@@ -454,6 +459,7 @@ MIN_FORMES = 15
 
 
 NV = 4             # v6 : (log2(cibles), marche de durée, −restriction, −nouvelle chance)
+NOUVELLE_CHANCE = False     # v7 (25 novembre) : le rabais de la nouvelle chance n'est pas prouvé (il ne tient pas partout) : 0 pour l'instant
 def sommes_vides(): return [0.0, [[0.0] * NV for _ in range(NV)], [0.0] * NV]
 
 
@@ -506,13 +512,13 @@ def moindres_carres(S, libres):
 def regle_genre(S, genre, b):
     """a et c d'un genre, b (commun au système) fixé : on retire b × marche de la cible, puis moindres carrés sur a et c"""
     T = [S[0], S[1], [S[2][i] - b * S[1][i][1] for i in range(NV)]]
-    r = moindres_carres(T, [2, 3] if genre in ("blessure", "soin") else [0, 2, 3])
+    r = moindres_carres(T, [i for i in ([2, 3] if genre in ("blessure", "soin") else [0, 2, 3]) if NOUVELLE_CHANCE or i != 3])
     return dict(r, b=b)
 
 
 def regles_systeme(general, par_genre):
     """general : sommes de toutes les formes du système ; par_genre : {genre: sommes}. Rend {genre ou GEN: dict(a, b, c)}"""
-    co = {GEN: moindres_carres(general, [0, 1, 2, 3])}
+    co = {GEN: moindres_carres(general, [0, 1, 2, 3] if NOUVELLE_CHANCE else [0, 1, 2])}
     for g, S in par_genre.items():
         if S[0] >= MIN_FORMES: co[g] = regle_genre(S, g, co[GEN]["b"])
     return co

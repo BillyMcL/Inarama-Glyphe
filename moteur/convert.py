@@ -856,7 +856,7 @@ _PAGE = [None]
 def _resats(sats):
     """replace des satellites déjà posés quand on en ajoute : même règle de symétrie que place_sats"""
     n = len(sats)
-    angles = ["NS"] if n == 1 else ["SYM", "SYM"] if n == 2 else [(90 + k * 360 / n) % 360 for k in range(n)]
+    angles = ["NS"] if n == 1 else ["SYM", "SYM"] if n == 2 else [round((90 + k * 360 / n) % 360) for k in range(n)]   # angles entiers (« 90 », non « 90.0 »)
     return [(a, *st[1:]) for a, st in zip(angles, sats)]
 # Symboles à côté d'autres satellites (règle validée, branche « placement ») : seulement sur un cercle qui porte au moins un
 # symbole (élément ou face) ET au moins un autre satellite. Les autres satellites prennent l'axe nord-sud (un : nord ;

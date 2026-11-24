@@ -231,6 +231,22 @@ MECAS = {"RENFORT": "renfort", "FAIBLESSE": "faiblesse", "CHANCE": "chance", "MA
          "SURCROIT": "surcroît"}
 
 
+COUPS = {"CHOC", "PERCE", "TRANCHANT", "FRACAS", "VENIN"}
+
+
+def une_sorte(r):
+    """v8 : l'effet ne vaut que contre UNE sorte (le nom de cette sorte), sinon None : un symbole d'élément (un ou plusieurs symboles
+    qui forment un seul élément), un symbole de face astrale, un mot de sorte de coup, ou, pour une forme hybride, l'élément de son
+    Noyau quand le glyphe ne le redit pas (la phrase « … est dite par le noyau »)"""
+    ss = _sats(r); sortes = []
+    if any(_sym(s_[1]) and s_[1][1] in ("feu", "air", "terre", "eau") for s_ in ss): sortes.append("élément")
+    sortes += [s_[1][1] for s_ in ss if _sym(s_[1]) and s_[1][1] in ("lumineux", "tenebreux")]
+    sortes += [w.lower() for w in r[2] if w in COUPS]
+    m = re.search(r"\(« ([^»]+) »\) est dite par le noyau", r[3] or "")
+    if m and not sortes: sortes.append(m.group(1))
+    return sortes[0] if len(sortes) == 1 else None
+
+
 def effet(r, ctx):
     """(prix, genre, famille, rôle, règle) d'un cercle d'Impact ; ctx : plusieurs cibles, zone, nombre d'êtres, verbe, supports"""
     v, ws = r[1], [w for w in r[2]]
@@ -270,10 +286,10 @@ def effet(r, ctx):
         p = min(PALIER_MAX, max(0.0, p))
         quoi = "vie d'emprunt" if any(_txt(s) == "DUREE" and s[1] == "plein" for s in st) else "soin répété (prix ouvert)" if repete else "soin"
         return p, "soin", None, None, f"I2 : {quoi} {v} : −3,1 + 1,4 × log2" + (" + 2 (plusieurs cibles)" if ctx["plusieurs"] else "")
-    if ws[:1] == ["REMPART"] and _num(v):        # décision du 23 novembre : 1,33 + 1,33 × log2(montant), − 2,4 contre un seul élément
-        elem = any(_sym(s_[1]) and s_[1][1] in ("feu", "air", "terre", "eau") for s_ in st)
-        p = 1.33 + 1.33 * math.log2(max(v, 1)) - (2.4 if elem else 0)
-        return p, "garde", "garde", "protéger", f"rempart {v} : 1,33 + 1,33 × log2" + (" − 2,4 (contre un élément)" if elem else "")
+    if ws[:1] == ["REMPART"] and _num(v):        # décision du 23 novembre : 1,33 + 1,33 × log2(montant), − 2,4 contre une seule sorte (v8)
+        une = une_sorte(r)
+        p = 1.33 + 1.33 * math.log2(max(v, 1)) - (2.4 if une else 0)
+        return p, "garde", "garde", "protéger", f"rempart {v} : 1,33 + 1,33 × log2" + (f" − 2,4 (contre une seule sorte : {une})" if une else "")
     if ws[:1] == ["ABSORPTION"]:                 # décision du 23 novembre : effet unique, prix propre
         return 3.0, "garde", "garde", "protéger", "aucun prix : absorption, effet unique (prix propre)"
     if ws[:1] == ["RIPOSTE"] and _num(v):
@@ -393,8 +409,10 @@ def analyse(f):
             det.append(dict(cercle="IMPACT", lecture=" · ".join(r[2]).lower(), prix=0.0, regle="2.3 : comprise dans la puissance de l'être appelé")); continue
         p, g, fam, role, rg = effet(r, ctx)
         mm = re.match(r"mécanique:([^:]+):(\S+)", rg)
+        gw = next((w for w in r[2] if w in ("IMMUNITE", "RESISTANCE", "BARRIERE", "PROTECTION", "REMPART")), None)
         es.append(dict(prix=p, genre=g, famille=fam, role=role, cercle=cle_cercle(r), sans_prix=rg.startswith("aucun prix"),
-                       meca=mm.group(1) if mm else None, degre=(None if not mm or mm.group(2) == "plein" else float(mm.group(2)))))
+                       meca=mm.group(1) if mm else None, degre=(None if not mm or mm.group(2) == "plein" else float(mm.group(2))),
+                       garde=gw if g == "garde" else None, une_sorte=une_sorte(r) if g == "garde" else None))
         det.append(dict(cercle="IMPACT", lecture=f"{r[1]} « {' · '.join(r[2]).lower()} »", prix=round(p, 3), regle=rg))
     if es:
         es.sort(key=lambda e: -e["prix"])
@@ -426,7 +444,8 @@ def analyse(f):
     mesures = dict(cibles=n_cibles, cibles_lecture=why_c, zone=est_zone, marche=round(marche(sec, perm), 3), duree_s=sec, permanent=perm,
                    incantation_s=cast, restriction=rs, instances=instances, sursaut=sursaut(rings), figure=figure_a_part(rings))
     return dict(prix_effet=round(prix_effet, 3), decides=round(decides, 3), genre=principal["genre"], famille=principal.get("famille"),
-                effets=[dict(prix=round(e["prix"], 3), genre=e["genre"], cercle=e["cercle"], sans_prix=e["sans_prix"], meca=e["meca"], degre=e["degre"])
+                effets=[dict(prix=round(e["prix"], 3), genre=e["genre"], cercle=e["cercle"], sans_prix=e["sans_prix"], meca=e["meca"], degre=e["degre"],
+                             garde=e["garde"], une_sorte=e["une_sorte"])
                         for e in es], suggestion=sugg,
                 role=principal.get("role"), mesures=mesures, detail=det, lacunes=lacunes, sans_impact=not es)
 
@@ -509,18 +528,20 @@ def moindres_carres(S, libres):
     return dict(a=bx[0], b=bx[1], c=-bx[2], d=-bx[3])
 
 
-def regle_genre(S, genre, b):
+def regle_genre(S, genre, b, nc=None):
     """a et c d'un genre, b (commun au système) fixé : on retire b × marche de la cible, puis moindres carrés sur a et c"""
     T = [S[0], S[1], [S[2][i] - b * S[1][i][1] for i in range(NV)]]
-    r = moindres_carres(T, [i for i in ([2, 3] if genre in ("blessure", "soin") else [0, 2, 3]) if NOUVELLE_CHANCE or i != 3])
+    nc = NOUVELLE_CHANCE if nc is None else nc
+    r = moindres_carres(T, [i for i in ([2, 3] if genre in ("blessure", "soin") else [0, 2, 3]) if nc or i != 3])
     return dict(r, b=b)
 
 
-def regles_systeme(general, par_genre):
+def regles_systeme(general, par_genre, nc=None):
     """general : sommes de toutes les formes du système ; par_genre : {genre: sommes}. Rend {genre ou GEN: dict(a, b, c)}"""
-    co = {GEN: moindres_carres(general, [0, 1, 2, 3] if NOUVELLE_CHANCE else [0, 1, 2])}
+    nc = NOUVELLE_CHANCE if nc is None else nc      # v8 : réglée dans les systèmes où elle tient (3.5, PF1), 0 ailleurs
+    co = {GEN: moindres_carres(general, [0, 1, 2, 3] if nc else [0, 1, 2])}
     for g, S in par_genre.items():
-        if S[0] >= MIN_FORMES: co[g] = regle_genre(S, g, co[GEN]["b"])
+        if S[0] >= MIN_FORMES: co[g] = regle_genre(S, g, co[GEN]["b"], nc)
     return co
 
 

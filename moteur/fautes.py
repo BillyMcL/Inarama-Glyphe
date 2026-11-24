@@ -22,7 +22,10 @@ PHRASES = [("mieux armée contre la courage", "mieux armée contre la peur"),
            ("un vie · durable perdu rendu", "la vie durablement perdue, rendue"),
            # Main agrippante (5e, 2024) : le broyage est dit par le cercle ajouté (B11)
            ("(l'adversaire agrippé, puis broyé (2d6 + 3))", "(l'adversaire agrippé)"),
-           ("(l'adversaire agrippé, puis broyé (4d6 + 3))", "(l'adversaire agrippé)")]
+           ("(l'adversaire agrippé, puis broyé (4d6 + 3))", "(l'adversaire agrippé)"),
+           # passe de correction du chantier d'écriture (24 novembre 2026) : Maléfice jaloux, Mois de chance
+           ("son plus grand chance lui est retiré", "sa plus grande caractéristique lui est retirée"),
+           ("le premier chance qui compte est rejoué", "la première chance qui compte est rejouée")]
 
 # c) articles du mauvais genre laissés devant un mot qu'une règle a remplacé
 PAIRES = [("une abri", "un abri"), ("une ancrage", "un ancrage"), ("un ans", "un an"), ("un jours", "un jour"),

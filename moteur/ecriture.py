@@ -26,7 +26,13 @@ for _p in FICHIERS:
         LIGNES[(_l["cle"], _l["forme"])].append(_l)
 CLES = {k[0] for k in LIGNES}
 FAITS, RETRAITS, VU = [], [], set()
-ACTIONS = ("modifier", "ajouter avant", "ajouter après", "retirer")
+ACTIONS = ("modifier", "ajouter avant", "ajouter après", "retirer", "placer les satellites")
+_valeur0 = B13._valeur
+def _valeur(txt, garde):
+    """comme constats._valeur ; en plus « vide » : une Cible sans valeur (la trame elle-même, comme Dissipation de la magie)"""
+    return None if txt.strip() == "vide" else _valeur0(txt, garde)
+B13._valeur = _valeur
+FORMES_ACTIONS = ("créer la forme", "renommer la forme")       # colonne « nouvelle_forme » : le libellé de la forme créée / le nouveau
 
 
 UNITES = {("VOLUME", "METRES", "CUBES"): "m³", ("VOLUME", "DECAMETRES", "CUBES"): "dam³", ("VOLUME", "HECTOMETRES", "CUBES"): "hm³",
@@ -81,6 +87,31 @@ def _forme_lue(l):
     return ("FORME", v, ws, l["lecture"].strip(), sats)
 
 
+def _placer(r, l, k):
+    """« placer les satellites » : les angles (colonne valeur, « 90 270 ») donnés aux satellites du cercle, dans leur ordre ; la
+    phrase ne change pas (la règle de symétrie : un satellite de Durée au nord, l'autre au sud)"""
+    sats = list(r[4]) if len(r) > 4 and r[4] else []
+    angs = [int(a) for a in l["valeur"].split()]
+    if len(angs) != len(sats): raise ValueError(f"écriture : {len(angs)} angles pour {len(sats)} satellites ({k[0]})")
+    return (*r[:4], [(a, *s_[1:]) for a, s_ in zip(angs, sats)], *r[5:])
+
+
+def _duree_lue(rr, r0):
+    """la tête d'une Durée avec fin : le mot d'unité n'est retiré qu'une fois (« 11 jours ; fin : « chaque · jours · sursaut » ») ;
+    une Durée pleine garde sa tête d'origine (« permanent » ou « jusqu'à dissipation »)"""
+    import convert as C, corrections as K
+    v, ws = rr[1], list(rr[2])
+    mauvaise = K._tete("DUREE", v, ws)
+    u = None if v == "plein" else next((w for w in ws if w in C.UNIT_FR), None)      # une Durée pleine n'a pas d'unité : tout est fin
+    fin = list(ws)
+    if u: fin.remove(u)
+    t0 = r0[3].split(" ; ")[0].split(" (")[0]
+    t = C.fr_time(v, u) if u else (t0 if v == "plein" and t0 in ("permanent", "jusqu'à dissipation") else mauvaise.split(" ; ")[0])
+    bonne = t + (f" ; fin : « {' · '.join(C.shown(w) for w in fin)} »" if fin else "")
+    if not rr[3].startswith(mauvaise): return rr
+    return (rr[0], rr[1], rr[2], bonne + rr[3][len(mauvaise):], *rr[4:])
+
+
 def _modifie(r, l, k):
     """comme constats._modifie, avec les satellites « p: » et « q: »"""
     if any(x.strip().startswith(("p:", "q:")) for x in (l["satellites_a_ajouter"] + ";" + l["satellites_a_retirer"]).split(";")):
@@ -122,6 +153,7 @@ def _cercles(g, rows, k):
         ap = [l for l in ls if l["action"] == "ajouter après"]
         mod = [l for l in ls if l["action"] == "modifier"]
         ret = [l for l in ls if l["action"] == "retirer"]
+        pla = [l for l in ls if l["action"] == "placer les satellites"]
         if len(mod) + len(ret) > 1: raise ValueError(f"écriture : deux changements du même cercle ({k[0]}, {g['label']}, {r[0]} {n})")
         if ls and ls[0]["cercle_actuel"].strip() and B13.decrit(r) != ls[0]["cercle_actuel"].strip():
             raise ValueError(f"écriture : cercle actuel « {B13.decrit(r)} » ≠ « {ls[0]['cercle_actuel']} » ({k[0]}, {g['label']})")
@@ -132,6 +164,8 @@ def _cercles(g, rows, k):
             if r[0] == "IMPACT": ii += 1
         else:
             rr = _lu(_modifie(r, mod[0], k), mod[0]) if mod else r
+            if mod and r[0] == "DUREE": rr = _duree_lue(rr, r)
+            if pla: rr = _placer(rr, pla[0], k)
             if r[0] == "FORME" and any(l["cercle"] == "FORME" for l in ap): rr = B13._sans_taille(rr)
             out.append(rr)
             if r[0] == "IMPACT": nps.append(pole); ii += 1
@@ -181,19 +215,55 @@ def forme(f, ls, cle):
     return CB._redessiner(g, rings)
 
 
+CREEES = []          # (clé, forme modèle, forme créée)
+
+
+def _une(f, ls, cle, vus):
+    if f["label"] in vus: raise ValueError(f"écriture : deux formes « {f['label']} » ({cle})")
+    vus.add(f["label"]); VU.add((cle, f["label"]))
+    if any(l["jeu"] != B13.jeu(f) for l in ls): raise ValueError(f"écriture : jeu {B13.jeu(f)} ({cle}, {f['label']})")
+    lf = [l for l in ls if l["action"] not in FORMES_ACTIONS]
+    g = forme(f, lf, cle) if lf else f
+    ren = [l for l in ls if l["action"] == "renommer la forme"]
+    if ren: g = dict(g, label=ren[0]["nouvelle_forme"].strip())
+    return g
+
+
 def appliquer(cle, formes):
-    if cle not in CLES: return formes
-    out, vus = [], set()
+    if cle in CLES: formes = _appliquer(cle, formes)
+    return [_fautes(f) for f in formes]
+
+
+def _appliquer(cle, formes):
+    import corrections as K
+    out, vus, rang = [], set(), 0
     for i, f in enumerate(formes):
         ls = LIGNES.get((cle, f["label"]))
+        r0 = rang
+        if not K.est_elden_ring(f) and not f.get("cree_4b"): rang += 1
         if not ls: out.append(f); continue
-        if f["label"] in vus: raise ValueError(f"écriture : deux formes « {f['label']} » ({cle})")
-        vus.add(f["label"]); VU.add((cle, f["label"]))
-        if any(l["jeu"] != B13.jeu(f) for l in ls): raise ValueError(f"écriture : jeu {B13.jeu(f)} ({cle}, {f['label']})")
         if any(l["action"] == "retirer la forme" for l in ls):
-            RETRAITS.append((cle, i, f)); continue
-        out.append(forme(f, ls, cle))
+            RETRAITS.append((cle, i, f)); VU.add((cle, f["label"])); continue
+        out.append(_une(f, ls, cle, vus))
+        for l in [l for l in ls if l["action"] == "créer la forme"]:          # une forme par choix fait au lancement
+            nom = l["nouvelle_forme"].strip()
+            nf = dict(f, label=nom, cree_4b=[r0, "chantier d'écriture : une forme par choix au lancement"])
+            out.append(_une(nf, LIGNES.get((cle, nom), []), cle, vus))
+            CREEES.append((cle, f["label"], nom))
     return out
+
+
+def _fautes(f):
+    """les fautes des phrases (fautes.py) corrigées aussi dans les cercles, pas seulement à l'affichage (passe de correction du
+    chantier d'écriture : « symbole de le feu »…) ; Elden Ring excepté, seules les phrases des cercles changent"""
+    import corrections as K, fautes as FT
+    if K.est_elden_ring(f): return f
+    rings, chg = [], False
+    for r in f["rings"]:
+        rd = FT.corriger(r[3], False)
+        if rd != r[3]: r = (r[0], r[1], r[2], rd, *r[4:]); chg = True
+        rings.append(r)
+    return dict(f, rings=rings) if chg else f
 
 
 def manquantes():

@@ -44,7 +44,7 @@ for _p in FICHIERS:
 CLES = {k[0] for _, L in LOTS for k in L}
 FAITS, VU = [], set()
 ACTIONS = ("modifier", "ajouter avant", "ajouter après", "retirer")
-FORMES_ACTIONS = ("créer la forme", "renommer la forme")
+FORMES_ACTIONS = ("créer la forme", "renommer la forme", "noter")      # « noter » : la colonne « lecture » s'ajoute aux notes de la forme
 CREEES = []          # (lot, clé, forme modèle, forme créée)
 
 
@@ -203,6 +203,8 @@ def appliquer(cle, formes):
             g = _forme(f, lf, cle, lot) if lf else f
             ren = [l for l in ls if l["action"] == "renommer la forme"]
             if ren: g = dict(g, label=ren[0]["nouvelle_forme"].strip())
+            nts = [l["lecture"].strip() for l in ls if l["action"] == "noter"]
+            if nts: g = dict(g, notes=list(g.get("notes") or []) + nts)
             out.append(g)
             for l in [l for l in ls if l["action"] == "créer la forme"]:
                 nom = l["nouvelle_forme"].strip()

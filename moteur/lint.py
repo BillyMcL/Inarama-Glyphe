@@ -36,7 +36,10 @@ def lint(spells):
                 elems = [v for v, l in ss if isinstance(v, tuple) and v[1] in ("feu", "air", "terre", "eau")]
                 if fm["fam"] == "H" and r[1] == "plein" and not r[2] and not any(mots): err("règle 1", "hybride : Impact plein sans mot d'action")
                 # (une part de la vie de la cible — « vie » avec un satellite « fractionné » — est une mesure, non un soin)
-                if r[1] != "plein" and r[2][:1] == ["VIE"] and verbe in L.VERBES_NUISIBLES and not any("FRACTIONNE" in l for l in mots): err("règle 3", "« vie » chiffrée sous un verbe qui nuit")
+                # exception (chantier d'écriture 2, 28 novembre 2026, décision de l'utilisateur) : la « vie » qui porte sa propre Cible
+                # alliée en satellite (Cible 2) soigne un autre que la cible du verbe qui nuit (Chaleur guérisseuse PF1)
+                allie = any(v == 2 and (l or "").split()[:1] == ["CIBLE"] for v, l in ss)
+                if r[1] != "plein" and r[2][:1] == ["VIE"] and verbe in L.VERBES_NUISIBLES and not any("FRACTIONNE" in l for l in mots) and not allie: err("règle 3", "« vie » chiffrée sous un verbe qui nuit")
                 if len(elems) > 4: err("règle 4", f"{len(elems)} symboles d'éléments sur un seul Impact")
                 degre = bool(r[2]) and r[2][0] in L.DEGRES        # premier mot de degré : un degré, pas une mesure (phase 4a)
                 # un mot placé juste après « contre » dit ce dont on se garde, pas une mesure (chantier « contre », 22 novembre 2026)

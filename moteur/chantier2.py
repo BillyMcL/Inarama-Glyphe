@@ -17,6 +17,12 @@ devine rien. Colonnes :
                  symétrie du moteur (_resats) place tous les satellites du cercle ; « garder » : ceux du cercle actuel
   lecture        la phrase entière du cercle ; « garder » : la phrase actuelle
   raison, inventaire  pourquoi (règle, source) et le numéro de l'inventaire
+Deuxième passe (28 novembre 2026) : deux actions de plus sur la forme entière (colonne « nouvelle_forme ») :
+  créer la forme     une forme de plus, copiée de la forme visée (une forme par choix au lancement) ; ses cercles
+                     se changent par des lignes qui visent son nouveau libellé, dans le même lot, après la ligne de création
+  renommer la forme  le libellé de la forme change
+et les formes combinées (B12) : leurs lignes visent les cercles COMMUNS (numéro parmi les cercles communs de ce critère) ;
+la forme est redessinée par le dessin des formes combinées (combinees.py).
 Une ligne qui ne s'accorde pas avec la forme arrête la construction (ValueError) : rien n'est contourné. Elden Ring n'est
 jamais touché. Les formes touchées sont redessinées par le moteur (placement des symboles, répartition, dessin, nombres,
 fautes), comme celles du chantier du 24 novembre.
@@ -38,6 +44,8 @@ for _p in FICHIERS:
 CLES = {k[0] for _, L in LOTS for k in L}
 FAITS, VU = [], set()
 ACTIONS = ("modifier", "ajouter avant", "ajouter après", "retirer")
+FORMES_ACTIONS = ("créer la forme", "renommer la forme")
+CREEES = []          # (lot, clé, forme modèle, forme créée)
 
 
 def _valeur(t):
@@ -122,10 +130,55 @@ def _cercles(g, rows, k):
     return out, (tuple(nps) if ps else g.get("poles_impacts"))
 
 
+def _combinee(f, ls, cle, lot):
+    """une forme combinée (B12) : les lignes visent ses cercles communs ; redessinée comme combinees.forme la dessine"""
+    import combinees as CB, combos as KB, convert as C, spells as SP, phase4b as P, fautes as FT
+    cb = f["combinee"]
+    g = dict(f, rings=list(cb["communs"]), poles_impacts=None)
+    communs, _ = _cercles(g, ls, cle)
+    communs = [r if len(r) >= 5 else (*r[:4], []) for r in communs]      # un cercle de forme combinée porte toujours sa liste de satellites
+    noyaux = [(n["combinaison"], list(n["cercles"])) for n in cb["noyaux"]]
+    ecole, hemi, pole = cb["ecole"], cb["hemisphere"], cb["pole"]
+    niveau = f["level"]
+    crits = []
+    for r in sorted(communs + [r for _, rs in noyaux for r in rs], key=lambda r: CB.RANG[r[0]]):
+        if r[0] not in crits: crits.append(r[0])
+    n_imp = sum(1 for r in communs if r[0] == "IMPACT") + sum(1 for _, rs in noyaux for r in rs if r[0] == "IMPACT")
+    split, _ = P.split_poles(crits, hemi[0], niveau, [pole] * n_imp)
+    def p_of(crit):
+        if crit == "IMPACT": return "up" if pole == "lumineux" else "down"
+        return "up" if crit in split[0] else "down"
+    undet = []
+    def des(rs):
+        out = []
+        for r in rs:
+            a, ok = CB.anneau(r, p_of(r[0]))
+            if not ok: undet.append(r[0])
+            out.append(a)
+        return out
+    g_com = des(communs)
+    g_noy = [(comb, SP.hyb(*KB.COMBOS[comb]), des(rs)) for comb, rs in noyaux]
+    part = ([c for c in split[0] if c in undet], [c for c in split[1] if c in undet])
+    lab_ecole = C.word(C.norm(ecole))
+    nom = f"{f['fr']} — {f['label']}"
+    dec = CB.dessin(lab_ecole, g_com, g_noy, True, nom); epu = CB.dessin(lab_ecole, g_com, g_noy, False, nom)
+    svg = (SP.compose(dec, split, always=True), SP.compose(epu, part, always=False))
+    svg_b = (CB.bande(nom, lab_ecole, g_noy, communs, split, part, pole, True), CB.bande(nom, lab_ecole, g_noy, communs, split, part, pole, False))
+    rows = []
+    for comb, rs in noyaux: rows += [(str(CB.RANG[r[0]]), f"{SP.NAMES[r[0]][1]} — Noyau {comb}", r[3]) for r in rs]
+    rows.append(("1", "École", ecole))
+    rows += [(str(CB.RANG[r[0]]), SP.NAMES[r[0]][1], r[3]) for r in communs]
+    FAITS.append((lot, cle, f["label"]))
+    rings = [x for _, rs in noyaux for x in rs] + communs
+    return dict(f, rings=rings, svg=svg, rows=rows, split=split, bsplit=part, combinee=dict(cb, communs=communs, bande=svg_b))
+
+
 def _forme(f, ls, cle, lot):
     import combinees as CB, corrections as K, constats as B13
     if K.est_elden_ring(f): raise ValueError(f"chantier 2 : Elden Ring n'est jamais touché ({cle}, {f['label']})")
-    if f.get("combinee"): raise ValueError(f"chantier 2 : forme combinée non prévue ({cle}, {f['label']})")
+    if f.get("combinee"):
+        if any(l["action"] not in ACTIONS for l in ls): raise ValueError(f"chantier 2 : action inconnue ({cle})")
+        return _combinee(f, ls, cle, lot)
     if any(l["jeu"] != B13.jeu(f) for l in ls): raise ValueError(f"chantier 2 : jeu {B13.jeu(f)} ({cle}, {f['label']})")
     autres = [l for l in ls if l["action"] not in ACTIONS]
     if autres: raise ValueError(f"chantier 2 : action inconnue {[l['action'] for l in autres]}")
@@ -136,14 +189,29 @@ def _forme(f, ls, cle, lot):
 
 def appliquer(cle, formes):
     if cle not in CLES: return formes
+    import corrections as K
     for lot, L in LOTS:
-        out, vus = [], set()
+        out, vus, rang = [], set(), 0
         for f in formes:
+            r0 = rang
+            if not K.est_elden_ring(f) and not f.get("cree_4b"): rang += 1
             ls = L.get((cle, f["label"]))
             if not ls: out.append(f); continue
             if f["label"] in vus: raise ValueError(f"chantier 2 : deux formes « {f['label']} » ({cle})")
             vus.add(f["label"]); VU.add((lot, cle, f["label"]))
-            out.append(_forme(f, ls, cle, lot))
+            lf = [l for l in ls if l["action"] not in FORMES_ACTIONS]
+            g = _forme(f, lf, cle, lot) if lf else f
+            ren = [l for l in ls if l["action"] == "renommer la forme"]
+            if ren: g = dict(g, label=ren[0]["nouvelle_forme"].strip())
+            out.append(g)
+            for l in [l for l in ls if l["action"] == "créer la forme"]:
+                nom = l["nouvelle_forme"].strip()
+                if nom in vus or any(x["label"] == nom for x in formes): raise ValueError(f"chantier 2 : forme « {nom} » déjà là ({cle})")
+                nf = dict(f, label=nom, cree_4b=[r0, "chantier d'écriture 2 : une forme par choix au lancement"])
+                ln = L.get((cle, nom), [])
+                vus.add(nom); VU.add((lot, cle, nom))
+                out.append(_forme(nf, ln, cle, lot) if ln else nf)
+                CREEES.append((lot, cle, f["label"], nom))
         formes = out
     return formes
 

@@ -46,6 +46,7 @@ FAITS, VU = [], set()
 ACTIONS = ("modifier", "ajouter avant", "ajouter après", "retirer")
 FORMES_ACTIONS = ("créer la forme", "renommer la forme", "noter")      # « noter » : la colonne « lecture » s'ajoute aux notes de la forme
 CREEES = []          # (lot, clé, forme modèle, forme créée)
+FONDUES = []         # (lot, clé, forme gardée, forme fondue) : formes que le chantier rend identiques à une autre forme du même sort
 
 
 def _valeur(t):
@@ -214,7 +215,17 @@ def appliquer(cle, formes):
                 vus.add(nom); VU.add((lot, cle, nom))
                 out.append(_forme(nf, ln, cle, lot) if ln else nf)
                 CREEES.append((lot, cle, f["label"], nom))
-        formes = out
+        # Fusion (décision de l'utilisateur, 28 novembre 2026) : une forme que ce lot rend identique à une autre forme du même sort
+        # (une autre édition) est fondue dans la première, comme le moteur le fait pour la 3.5 et PF1 (un glyphe, un sort).
+        import convert as C
+        garde, cles = [], {}
+        for g in out:
+            if K.est_elden_ring(g): garde.append(g); continue
+            kk = C.glyph_key(g)
+            if kk in cles and (lot, cle, g["label"]) in VU:
+                FONDUES.append((lot, cle, cles[kk], g["label"])); continue
+            cles.setdefault(kk, g["label"]); garde.append(g)
+        formes = garde
     return formes
 
 

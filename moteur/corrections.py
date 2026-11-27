@@ -605,7 +605,9 @@ def appliquer(cle, formes):
     import concentration as CC                # la concentration écrite sur les glyphes (D&D 5, 3.5, PF1), tout à la fin
     out = CC.appliquer(cle, out)
     import ecriture as EC                     # chantier d'écriture (cinq lots, 24 novembre), forme par forme, tout à la fin
-    return EC.appliquer(cle, out)
+    out = EC.appliquer(cle, out)
+    import chantier2 as C2                    # chantier d'écriture 2 (dix lots, 27 novembre), lot après lot, tout à la fin
+    return C2.appliquer(cle, out)
 
 
 # ---------- placement des symboles à côté d'autres satellites (règle de dessin, après toutes les corrections) ----------

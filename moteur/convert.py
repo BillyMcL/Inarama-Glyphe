@@ -60,7 +60,8 @@ ACCENTS = {"LUMIERE": "lumière", "NECROSE": "nécrose", "DUREE": "durée", "MET
  "PENSEE": "pensée", "LIEUCONNU": "lieu connu", "ETHERE": "éthéré", "OUIE": "ouïe",
  "OEIL": "œil", "REPONSE": "réponse", "DIVINITE": "divinité", "RENOMMEE": "renommée", "LEGENDE": "légende", "ECOLE": "école", "INTREPIDITE": "intrépidité",
  "REPARTIR": "répartir",     # phase 4a : mot ajouté au lexique (A8)
- "TANTQUE": "tant que"}      # second lot du chantier d'écriture : « tant » devient « tant que » (22 novembre 2026)
+ "TANTQUE": "tant que",      # second lot du chantier d'écriture : « tant » devient « tant que » (22 novembre 2026)
+ "ASSURE": "assuré"}         # chantier d'écriture 2, lot A : ASSURÉ entre au lexique (27 novembre 2026)      # second lot du chantier d'écriture : « tant » devient « tant que » (22 novembre 2026)
 def disp(w): return ACCENTS.get(w, w.lower())
 def shown(w):
     """le mot tel qu'on l'affiche : en clair s'il est écrit en minuscules accentuées dans la fiche"""

@@ -18,7 +18,7 @@ cheval graine invoque molosse dragon millepattes equipage guepe aigle ver legion
 allie ecuyer savant mammouth singe corbeau cocher vipere grenouille loup batracien etre aurochs fourmi golem serpent double compagnon"""
 OBJET = """statuette champignon miroir lampe roche racine symbole vetement fleur arbre edifice baie fleche carrosse ouvrage portail navire etendard outil objet arme cadavre eau trait metal ecrit porte pierre os projectile corde nourriture coffre armure bois baton piege talisman
 rune baies serrure livre cape matiere mur instrument tertre fer recipient gemme plume potion echarpe mineral structure mecanisme feu
-chene rose crane empreinte paroi piece bouclier carquois bourse remede contenant receptacle arc lanterne gant miroir œuf selle navire
+rose crane empreinte paroi piece bouclier carquois bourse remede contenant receptacle arc lanterne gant miroir œuf selle navire
 botte etoffe pigne poison maladie entrave passage
 source chaine neige"""       # chantier d'écriture (24 novembre 2026) : choses créées ou visées devenues la Cible (Source cachée, Oasis, Chaîne de perdition, Façonnage de la neige)
 PART = """griffe ombre aile cheveu oreille psyche memoire sang ame souffle corps membre membres peau visage vital tete chair voix cœur gueule bras queue carapace poil

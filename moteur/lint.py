@@ -37,8 +37,10 @@ def lint(spells):
                 if fm["fam"] == "H" and r[1] == "plein" and not r[2] and not any(mots): err("règle 1", "hybride : Impact plein sans mot d'action")
                 # (une part de la vie de la cible — « vie » avec un satellite « fractionné » — est une mesure, non un soin)
                 # exception (chantier d'écriture 2, 28 novembre 2026, décision de l'utilisateur) : la « vie » qui porte sa propre Cible
-                # alliée en satellite (Cible 2) soigne un autre que la cible du verbe qui nuit (Chaleur guérisseuse PF1)
-                allie = any(v == 2 and (l or "").split()[:1] == ["CIBLE"] for v, l in ss)
+                # alliée en satellite (Cible 2) soigne un autre que la cible du verbe qui nuit (Chaleur guérisseuse PF1) ; élargie
+                # (chantier 2, passe 3, décision de l'utilisateur) : elle joue dès que la vie porte sa propre Cible, soi (1) ou un allié (2),
+                # celle qui reçoit le soin, autre que celle que le verbe blesse (Appel du sang PF2, Brise légère PF2 forme arcane)
+                allie = any(v in (1, 2) and (l or "").split()[:1] == ["CIBLE"] for v, l in ss)
                 if r[1] != "plein" and r[2][:1] == ["VIE"] and verbe in L.VERBES_NUISIBLES and not any("FRACTIONNE" in l for l in mots) and not allie: err("règle 3", "« vie » chiffrée sous un verbe qui nuit")
                 if len(elems) > 4: err("règle 4", f"{len(elems)} symboles d'éléments sur un seul Impact")
                 degre = bool(r[2]) and r[2][0] in L.DEGRES        # premier mot de degré : un degré, pas une mesure (phase 4a)
